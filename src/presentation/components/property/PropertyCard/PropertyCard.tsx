@@ -61,6 +61,16 @@ export function PropertyCard({ property }: PropertyCardProps) {
     RENT: 'Alquiler',
   };
   
+  // En producción cargar imágenes directo de CloudFront/S3 (más rápido)
+  // En desarrollo usar proxy para evitar CORS
+  const getImageUrl = (url: string | undefined | null) => {
+    if (!url) return '';
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      return `/api/images/proxy?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  };
+
   const formatPrice = (price: number, currency: string) => {
     const symbol = currency === 'USD' ? 'US$' : 'S/';
     return `${symbol} ${price.toLocaleString('es-PE')}`;
@@ -105,7 +115,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
       <Link href={`/property/${getPropertySlug(property)}`} className="relative w-full aspect-square rounded-xl overflow-hidden mb-2.5 block">
         {property.coverPhotoUrl ? (
           <LazyImage
-            src={`/api/images/proxy?url=${encodeURIComponent(property.coverPhotoUrl)}`}
+            src={getImageUrl(property.coverPhotoUrl)}
             alt={property.title || ''}
             className="w-full h-full group-hover:scale-105 transition-transform duration-500"
           />

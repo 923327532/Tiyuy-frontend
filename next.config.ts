@@ -12,11 +12,12 @@ const nextConfig: NextConfig = {
         source: '/api/images/proxy/:path*',
         destination: '/api/images/proxy/:path*',
       },
-      // Proxy other API calls to backend (Vercel actuará como puente hacia tu Oracle)
-      // El backend usa context-path /api, por lo que /api/:path* -> BACKEND_URL/api/:path*
+      // Proxy other API calls to backend
+      // BACKEND_URL ya incluye /api (ej: https://api.tiyuy.com/api)
+      // por lo tanto destination = BACKEND_URL/:path*
       {
         source: '/api/:path*',
-        destination: `${process.env.BACKEND_URL ? `${process.env.BACKEND_URL.replace(/\/+$/, '')}/api` : 'http://152.70.129.43:8080/api'}/:path*`,
+        destination: `${process.env.BACKEND_URL ? process.env.BACKEND_URL.replace(/\/+$/, '') : 'http://152.70.129.43:8080/api'}/:path*`,
       },
       // Existing rewrites
       {
