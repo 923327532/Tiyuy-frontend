@@ -50,19 +50,19 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 border border-gray-200 rounded-lg bg-white text-sm text-gray-700 cursor-pointer transition-all hover:border-gray-300 shadow-sm font-medium"
+          className="w-full flex items-center justify-between px-4 py-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-card)] text-sm text-[var(--text-primary)] cursor-pointer transition-all hover:border-[var(--brand-primary)] shadow-sm font-medium"
         >
           <span>{selected?.label || 'S/ PEN'}</span>
-          <svg className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+          <svg className={`w-4 h-4 text-[var(--text-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
         </button>
         {isOpen && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          <div className="absolute z-50 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg overflow-hidden">
             {options.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
                 onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-green-50 hover:text-green-700 ${value === opt.value ? 'bg-green-50 text-green-700 font-semibold' : 'text-gray-700'}`}
+                className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-[var(--brand-primary-light)] hover:text-[var(--brand-primary)] ${value === opt.value ? 'bg-[var(--brand-primary-light)] text-[var(--brand-primary)] font-semibold' : 'text-[var(--text-primary)]'}`}
               >
                 {opt.label}
               </button>
@@ -83,11 +83,11 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           flex: 1;
           padding: 14px 20px;
           border-radius: 12px;
-          border: 1.5px solid #e2e8f0;
-          background: #fff;
+          border: 1.5px solid var(--border-color);
+          background: var(--bg-card);
           font-weight: 600;
           font-size: 14px;
-          color: #64748b;
+          color: var(--text-secondary);
           cursor: pointer;
           transition: all 0.2s ease;
           display: flex;
@@ -97,13 +97,13 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .transaction-btn:hover {
-          border-color: #00a63e;
-          color: #00a63e;
-          background: #f0fdf4;
+          border-color: var(--brand-primary);
+          color: var(--brand-primary);
+          background: var(--brand-primary-light);
         }
         .transaction-btn.active {
-          border-color: #00a63e;
-          background: #00a63e;
+          border-color: var(--brand-primary);
+          background: var(--brand-primary);
           color: #fff;
           box-shadow: 0 4px 14px rgba(0,166,62,0.3);
         }
@@ -111,11 +111,11 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
         .type-btn {
           padding: 16px 12px;
           border-radius: 12px;
-          border: 1.5px solid #e2e8f0;
-          background: #fff;
+          border: 1.5px solid var(--border-color);
+          background: var(--bg-card);
           font-weight: 600;
           font-size: 13px;
-          color: #64748b;
+          color: var(--text-secondary);
           cursor: pointer;
           transition: all 0.2s ease;
           display: flex;
@@ -126,24 +126,24 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           width: 100%;
         }
         .type-btn:hover {
-          border-color: #00a63e;
-          color: #00a63e;
-          background: #f0fdf4;
+          border-color: var(--brand-primary);
+          color: var(--brand-primary);
+          background: var(--brand-primary-light);
         }
-        .type-btn:hover svg { color: #00a63e; }
+        .type-btn:hover svg { color: var(--brand-primary); }
         .type-btn.active {
-          border-color: #00a63e;
-          background: #f0fdf4;
-          color: #004d1a;
+          border-color: var(--brand-primary);
+          background: var(--brand-primary-light);
+          color: rgba(0,0,0,0.8);
         }
-        .type-btn.active svg { color: #00a63e; }
+        .type-btn.active svg { color: var(--brand-primary); }
 
         .field-label {
           font-size: 11px;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.12em;
-          color: #94a3b8;
+          color: var(--text-muted);
           margin-bottom: 10px;
           display: block;
           font-family: 'Plus Jakarta Sans', sans-serif;
@@ -152,29 +152,29 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
         .form-input {
           width: 100%;
           padding: 13px 16px;
-          border: 1.5px solid #e2e8f0;
+          border: 1.5px solid var(--border-color);
           border-radius: 10px;
           font-size: 14px;
-          color: #1e293b;
-          background: #fafffe;
+          color: var(--text-primary);
+          background: var(--bg-card);
           transition: all 0.2s ease;
           outline: none;
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .form-input::placeholder { color: #94a3b8; }
+        .form-input::placeholder { color: var(--text-muted); }
         .form-input:focus {
-          border-color: #00a63e;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(0,166,62,0.08);
+          border-color: var(--brand-primary);
+          background: var(--bg-card);
+          box-shadow: 0 0 0 3px var(--brand-primary-light);
         }
 
         .form-select {
           padding: 13px 16px;
-          border: 1.5px solid #e2e8f0;
+          border: 1.5px solid var(--border-color);
           border-radius: 10px;
           font-size: 14px;
-          color: #1e293b;
-          background: #fafffe;
+          color: var(--text-primary);
+          background: var(--bg-card);
           transition: all 0.2s ease;
           outline: none;
           cursor: pointer;
@@ -182,15 +182,15 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .form-select:focus {
-          border-color: #00a63e;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(0,166,62,0.08);
+          border-color: var(--brand-primary);
+          background: var(--bg-card);
+          box-shadow: 0 0 0 3px var(--brand-primary-light);
         }
 
         .section-divider {
           width: 28px;
           height: 2.5px;
-          background: #00a63e;
+          background: var(--brand-primary);
           border-radius: 2px;
           margin-bottom: 14px;
         }
@@ -237,7 +237,7 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
                 onClick={() => onChange('type', type.value)}
                 className={`type-btn ${isActive('type', type.value) ? 'active' : ''}`}
               >
-                <span style={{ color: isActive('type', type.value) ? '#00a63e' : '#94a3b8', transition: 'color 0.2s' }}>
+                <span style={{ color: isActive('type', type.value) ? 'var(--brand-primary)' : 'var(--text-muted)', transition: 'color 0.2s' }}>
                   {type.icon}
                 </span>
                 <span>{type.label}</span>

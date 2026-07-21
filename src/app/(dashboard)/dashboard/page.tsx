@@ -445,7 +445,7 @@ export default function DashboardPage() {
                   <h3 className="font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" /> Verificacion
                     {user?.isVerified && (
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">Verificado</span>
+                      <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">Verificado</span>
                     )}
                   </h3>
                   
@@ -453,7 +453,7 @@ export default function DashboardPage() {
                     <div className="bg-[var(--bg-tertiary)] px-4 py-3 rounded-xl border border-[var(--border-color)]">
                       <label className="block text-xs text-[var(--text-secondary)] mb-1">Numero de Documento</label>
                       <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded">DNI</span>
+                        <span className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 text-xs font-medium rounded">DNI</span>
                         <span className="font-semibold text-[var(--text-primary)]">{user?.dni || 'No disponible'}</span>
                       </div>
                       <p className="text-xs text-[var(--text-muted)] mt-2">Tu DNI esta vinculado a tu cuenta</p>
@@ -482,31 +482,31 @@ export default function DashboardPage() {
                   {/* Tarjeta: Mis Proyectos */}
                   <Link 
                     href="/my-projects" 
-                    className="flex items-center gap-4 p-4 bg-green-50 border border-transparent rounded-xl hover:bg-green-100 transition-colors"
+                    className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-900/30 border border-transparent rounded-xl hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
                   >
-                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                      <FolderGit className="w-6 h-6 text-green-600" />
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-800/50 rounded-xl flex items-center justify-center">
+                      <FolderGit className="w-6 h-6 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-[var(--text-primary)]">Mis Proyectos</h3>
                       <p className="text-sm text-[var(--text-secondary)]">Desarrollos activos</p>
                     </div>
-                    <span className="ml-auto text-green-600 font-bold">→</span>
+                    <span className="ml-auto text-green-600 dark:text-green-400 font-bold">→</span>
                   </Link>
 
                   {/* Tarjeta: Nuevo Proyecto */}
                   <Link 
                     href="/dashboard/projects/new" 
-                    className="flex items-center gap-4 p-4 bg-purple-50 border border-transparent rounded-xl hover:bg-purple-100 transition-colors"
+                    className="flex items-center gap-4 p-4 bg-purple-50 dark:bg-purple-900/30 border border-transparent rounded-xl hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors"
                   >
-                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                      <PlusCircle className="w-6 h-6 text-purple-600" />
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-800/50 rounded-xl flex items-center justify-center">
+                      <PlusCircle className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-[var(--text-primary)]">Nuevo Proyecto</h3>
                       <p className="text-sm text-[var(--text-secondary)]">Crear desarrollo</p>
                     </div>
-                    <span className="ml-auto text-purple-600 font-bold">→</span>
+                    <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">→</span>
                   </Link>
                 </div>
               </div>
@@ -524,7 +524,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setTheme('light')}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                        theme === 'light' ? 'bg-teal-50 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
+                        theme === 'light' ? 'bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
                       }`}
                     >
                       <Sun className="w-6 h-6 text-orange-500" />
@@ -536,7 +536,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => setTheme('dark')}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                        theme === 'dark' ? 'bg-teal-50 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
+                        theme === 'dark' ? 'bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
                       }`}
                     >
                       <Moon className="w-6 h-6 text-indigo-500" />
@@ -580,7 +580,7 @@ export default function DashboardPage() {
                         key={size}
                         onClick={() => setFontSize(size)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                          fontSize === size ? 'bg-teal-50 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
+                          fontSize === size ? 'bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
                         }`}
                       >
                         <span className={`${size === 'small' ? 'text-sm' : size === 'normal' ? 'text-base' : 'text-lg'} font-bold text-[var(--text-secondary)]`}>Aa</span>
@@ -628,7 +628,7 @@ export default function DashboardPage() {
                           value={country}
                           onChange={(e) => setCountry(e.target.value)}
                           placeholder="Ej: Peru"
-                          className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                         />
                       </div>
                       <div className="flex-1">
@@ -638,7 +638,7 @@ export default function DashboardPage() {
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
                           placeholder="Ej: Lima"
-                          className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                         />
                       </div>
                     </div>
@@ -678,7 +678,7 @@ export default function DashboardPage() {
                         readOnly={!isEditingEmail}
                         className={`flex-1 px-4 py-3 rounded-xl border outline-none transition-all ${
                           isEditingEmail 
-                            ? 'border-teal-500 ring-2 ring-teal-200 bg-[var(--bg-card)]' 
+                            ? 'border-teal-500 ring-2 ring-teal-200 bg-[var(--bg-card)] text-[var(--text-primary)]' 
                             : 'border-[var(--border-color)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
                         }`}
                       />
@@ -718,7 +718,7 @@ export default function DashboardPage() {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="Ingresa tu contrasena actual"
-                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                     />
                   </div>
 
@@ -729,7 +729,7 @@ export default function DashboardPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Minimo 6 caracteres"
-                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                     />
                   </div>
 
@@ -740,7 +740,7 @@ export default function DashboardPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Repite la nueva contrasena"
-                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                     />
                   </div>
 

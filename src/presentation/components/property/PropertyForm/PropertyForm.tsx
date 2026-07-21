@@ -808,19 +808,19 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
 
       {/* ── STEP HEADER ── */}
       <div className="mb-8">
-        <p style={{ color: '#00a63e' }} className="text-xs font-bold uppercase tracking-widest mb-1">
+        <p style={{ color: 'var(--brand-primary)' }} className="text-xs font-bold uppercase tracking-widest mb-1">
           Paso {currentStep} de {totalSteps}
         </p>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
           {currentSteps[currentStep - 1].title}
         </h1>
-        <p className="text-sm text-gray-400 mt-0.5">{currentSteps[currentStep - 1].description}</p>
+        <p className="text-sm text-[var(--text-secondary)] mt-0.5">{currentSteps[currentStep - 1].description}</p>
         {/* Mostrar errores solo al lado de cada campo; no resumir globalmente aquí */}
       </div>
 
       {/* ── STEP CONTENT (con contenedor robusto) ── */}
       <div className="min-h-[400px] w-full">
-        <div className="bg-white rounded-lg p-4 sm:p-6">
+        <div className="bg-[var(--bg-card)] rounded-lg p-4 sm:p-6">
           <ActiveComponent
             formData={formData}
             onChange={handleChange}
@@ -837,7 +837,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
             <button
               onClick={handlePrev}
               disabled={currentStep === 1}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-medium text-gray-500 border border-gray-200 hover:border-gray-300 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-white"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-medium text-[var(--text-muted)] border border-[var(--border-color)] hover:text-[var(--text-primary)] disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-[var(--bg-card)] hover:bg-[var(--bg-tertiary)]"
             >
               <ChevronLeft className="w-4 h-4" />
               Anterior
@@ -943,10 +943,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
            <button
              onClick={isLastStep ? handleSubmit : handleNext}
              disabled={isLoading}
-             className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-             style={{ backgroundColor: '#00a63e' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#009135')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00a63e')}
+             className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)]"
           >
             {isLoading ? (
               <>
