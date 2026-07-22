@@ -32,6 +32,10 @@ export default function MyPropertiesPage() {
     id: null,
     title: '',
   });
+  const [pauseModal, setPauseModal] = useState<{ isOpen: boolean; id: number | null }>({
+    isOpen: false,
+    id: null,
+  });
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showPlanExpiredModal, setShowPlanExpiredModal] = useState(false);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
@@ -174,6 +178,24 @@ export default function MyPropertiesPage() {
 
   const handleDeleteClick = (id: number, title: string, status: string) => {
     setDeleteModal({ isOpen: true, id, title });
+  };
+
+  const handlePauseClick = (id: number) => {
+    setPauseModal({ isOpen: true, id });
+  };
+
+  const handleConfirmPause = async () => {
+    if (pauseModal.id) {
+      try {
+        await unpublishMutation.mutateAsync(pauseModal.id);
+        toast.success('Propiedad pausada (pasó a borrador)');
+        setPauseModal({ isOpen: false, id: null });
+        refetch();
+      } catch (e) {
+        toast.error('Error al pausar');
+        setPauseModal({ isOpen: false, id: null });
+      }
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -577,17 +599,7 @@ export default function MyPropertiesPage() {
                       {/* Pause button for published properties - changes to DRAFT */}
                       {property.status === 'PUBLISHED' && (
                         <button
-                          onClick={async () => {
-                            if (confirm('¿Pausar esta propiedad? Pasará a borrador y podrás eliminarla desde ahí.')) {
-                              try {
-                                await unpublishMutation.mutateAsync(property.id);
-                                toast.success('Propiedad pausada (pasó a borrador)');
-                                refetch();
-                              } catch (e) {
-                                toast.error('Error al pausar');
-                              }
-                            }
-                          }}
+                          onClick={() => handlePauseClick(property.id)}
                           disabled={unpublishMutation.isPending}
                           className="w-full py-1.5 bg-orange-50 text-orange-700 border border-orange-200 text-[11px] font-semibold rounded-md hover:bg-orange-100 transition-colors flex items-center justify-center gap-1"
                         >
@@ -702,6 +714,50 @@ export default function MyPropertiesPage() {
         isOpen={showPlanExpiredModal}
         onClose={() => setShowPlanExpiredModal(false)}
       />
+
+      {/* Pause Confirmation Modal */}
+      {pauseModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
+            <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-orange-100 flex items-center justify-center">
+              <svg className="w-7 h-7 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">Pausar propiedad</h3>
+            <p className="text-sm text-gray-500 mb-6 text-center">
+              La propiedad pasará a estado <strong>Borrador</strong>. Podrás volver a publicarla cuando quieras.
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => setPauseModal({ isOpen: false, id: null })}
+                className="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
+                disabled={unpublishMutation.isPending}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmPause}
+                disabled={unpublishMutation.isPending}
+                className="px-5 py-2.5 text-sm font-semibold text-white rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-md"
+                style={{ backgroundColor: '#f97316' }}
+                onMouseEnter={e => !unpublishMutation.isPending && (e.currentTarget.style.backgroundColor = '#ea580c')}
+                onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#f97316')}
+              >
+                {unpublishMutation.isPending ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Pausando...
+                  </span>
+                ) : 'Sí, pausar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       {deleteModal.isOpen && (
