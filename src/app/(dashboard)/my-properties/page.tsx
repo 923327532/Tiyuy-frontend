@@ -1,6 +1,6 @@
 'use client';
 
-import { useMyProperties, useDeleteProperty, usePublishProperty } from '@/presentation/hooks/useProperties';
+import { useMyProperties, useDeleteProperty, usePublishProperty, useUnpublishProperty } from '@/presentation/hooks/useProperties';
 import { useActiveSubscription } from '@/presentation/hooks/useFinance';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -21,6 +21,7 @@ export default function MyPropertiesPage() {
   const { data, isLoading, refetch } = useMyProperties(currentPage, pageSize);
   const deleteMutation = useDeleteProperty();
   const publishMutation = usePublishProperty();
+  const unpublishMutation = useUnpublishProperty();
   const { data: activeSubscription, refetch: refetchSubscription } = useActiveSubscription();
   const { user } = useAuthStore();
   const router = useRouter();
@@ -579,7 +580,7 @@ export default function MyPropertiesPage() {
                           onClick={async () => {
                             if (confirm('¿Pausar esta propiedad? Pasará a borrador y podrás eliminarla desde ahí.')) {
                               try {
-                                await publishMutation.mutateAsync(property.id);
+                                await unpublishMutation.mutateAsync(property.id);
                                 toast.success('Propiedad pausada (pasó a borrador)');
                                 refetch();
                               } catch (e) {
@@ -587,7 +588,7 @@ export default function MyPropertiesPage() {
                               }
                             }
                           }}
-                          disabled={publishMutation.isPending}
+                          disabled={unpublishMutation.isPending}
                           className="w-full py-1.5 bg-orange-50 text-orange-700 border border-orange-200 text-[11px] font-semibold rounded-md hover:bg-orange-100 transition-colors flex items-center justify-center gap-1"
                         >
                           Pausar

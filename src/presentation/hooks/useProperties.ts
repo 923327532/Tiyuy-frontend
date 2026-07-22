@@ -103,6 +103,22 @@ export function usePublishProperty() {
   });
 }
 
+export function useUnpublishProperty() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (id: number) => propertyRepo.unpublish(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['properties', 'my-properties'], exact: false });
+      queryClient.refetchQueries({ queryKey: ['properties', 'my-properties'] });
+      toast.success('Propiedad pausada (pasó a borrador)');
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Error al pausar la propiedad');
+    },
+  });
+}
+
 export function useDeleteProperty() {
   const queryClient = useQueryClient();
   

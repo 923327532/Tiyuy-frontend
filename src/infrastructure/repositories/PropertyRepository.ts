@@ -134,6 +134,10 @@ async getById(id: number): Promise<Property> {
     return PropertyMapper.toSummary(response.data);
   }
 
+  async unpublish(id: number): Promise<void> {
+    await axiosClient.patch(ENDPOINTS.PROPERTIES.UNPUBLISH(id));
+  }
+
   async delete(id: number): Promise<void> {
     await axiosClient.delete(`${ENDPOINTS.PROPERTIES.BASE}/${id}`);
   }
