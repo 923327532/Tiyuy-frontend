@@ -13,9 +13,9 @@ export const Card: React.FC<CardProps> = ({ children, className = '', hover = fa
   return (
     <div
       className={`
-        bg-white rounded-2xl shadow-lg
+        bg-[var(--bg-card)] rounded-2xl shadow-lg
         transition-all duration-300
-        border border-gray-100
+        border border-[var(--border-color)]
         ${hoverStyles}
         ${className}
       `}
@@ -33,7 +33,7 @@ interface CardHeaderProps {
 
 export const CardHeader: React.FC<CardHeaderProps> = ({ children, className = '' }) => {
   return (
-    <div className={`px-6 py-4 border-b border-gray-100 ${className}`}>
+    <div className={`px-6 py-4 border-b border-[var(--border-color)] ${className}`}>
       {children}
     </div>
   );
@@ -46,7 +46,7 @@ interface CardTitleProps {
 
 export const CardTitle: React.FC<CardTitleProps> = ({ children, className = '' }) => {
   return (
-    <h3 className={`text-lg font-semibold text-gray-900 flex items-center gap-2 ${className}`}>
+    <h3 className={`text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2 ${className}`}>
       {children}
     </h3>
   );
