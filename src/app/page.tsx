@@ -7,6 +7,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { LocationSearch } from '@/presentation/components/forms/LocationSearch/LocationSearch';
 import { usePublicBanners } from '@/presentation/hooks/usePublicBanners';
+import { prefetchFeaturedProperties } from '@/presentation/hooks/useFeaturedProperties';
+import { prefetchFeaturedProjects } from '@/presentation/hooks/useFeaturedProjects';
+import { prefetchFilteredProperties } from '@/presentation/hooks/useFilteredProperties';
 
 // Componentes pesados con lazy loading + Splitting de código para reducir bundle inicial
 const FeaturedProperties = lazy(() => import('@/presentation/components/property/FeaturedProperties/FeaturedProperties').then(m => ({ default: m.FeaturedProperties })));
@@ -15,9 +18,29 @@ const FilteredProperties = lazy(() => import('@/presentation/components/property
 const FeaturedCampaigns = lazy(() => import('@/presentation/components/marketing/FeaturedCampaigns').then(m => ({ default: m.FeaturedCampaigns })));
 const Footer = lazy(() => import('@/presentation/components/layout/Footer/Footer').then(m => ({ default: m.Footer })));
 
-// Fallback loading simple para secciones lazy
-const SectionFallback = ({ height = '200px' }: { height?: string }) => (
-  <div style={{ height, background: 'var(--bg-secondary)', borderRadius: '8px', margin: '0.5rem 0' }} />
+// Skeleton de cards que coincide exactamente con el layout real
+const CardsSkeleton = () => (
+  <div className="flex overflow-x-auto hide-scrollbar gap-3">
+    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+      <div key={i} className="w-[160px] sm:w-[280px] md:w-[320px] lg:w-[240px] xl:w-[190px] 2xl:w-[220px] flex-shrink-0">
+        <div className="bg-transparent rounded-none border-none overflow-hidden animate-pulse">
+          <div className="w-full aspect-square bg-[var(--bg-tertiary)] rounded-[14px]" />
+          <div className="pt-2 space-y-1.5">
+            <div className="h-3.5 bg-[var(--bg-tertiary)] rounded w-full" />
+            <div className="h-3 bg-[var(--bg-tertiary)] rounded w-2/3" />
+            <div className="h-3 bg-[var(--bg-tertiary)] rounded w-16" />
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+// Fallback para Suspense que ya muestra las cards skeleton (el usuario ve algo inmediato)
+const SectionFallback = ({ height = '300px' }: { height?: string }) => (
+  <div className="py-4" style={{ minHeight: height }}>
+    <CardsSkeleton />
+  </div>
 );
 
 // Fallback images si no hay banners configurados en admin
@@ -115,6 +138,16 @@ function CustomSelect({ options, value, onChange, placeholder }: { options: { va
 }
 
 export default function HomePage() {
+  // Prefetch inmediato de TODAS las secciones — arranca antes que monten los componentes
+  useEffect(() => {
+    prefetchFeaturedProperties();
+    prefetchFeaturedProjects();
+    prefetchFilteredProperties({ type: 'APARTMENT', transactionType: 'RENT' });
+    prefetchFilteredProperties({ type: 'HOUSE', transactionType: 'SALE' });
+    prefetchFilteredProperties({ type: 'COMMERCIAL' });
+    prefetchFilteredProperties({ type: 'LAND' });
+  }, []);
+
   const { data: sliderBanners = [] } = usePublicBanners('SLIDER');
   const { data: mainBanners = [] } = usePublicBanners('HOME_MAIN');
   const { data: homeBanners = [] } = usePublicBanners('HOME_BANNER');
