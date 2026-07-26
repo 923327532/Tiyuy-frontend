@@ -659,8 +659,6 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
               </div>
             </div>
 
-            {/* 9. PROYECTOS SIMILARES */}
-            <SimilarProjects currentProject={currentProject} />
           </div>
 
           {/* ════════════════════════════════════════
@@ -672,6 +670,11 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
               units={units}
               currency={currency}
             />
+          </div>
+
+          {/* 9. PROYECTOS SIMILARES (al final, después del contacto en mobile) */}
+          <div className="col-span-1 lg:col-span-12 mt-2">
+            <SimilarProjects currentProject={currentProject} />
           </div>
 
         </div>

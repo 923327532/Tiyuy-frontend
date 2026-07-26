@@ -486,8 +486,8 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
 
       {/* Modal de creación de posts que cubre toda la pantalla */}
       {showCreateForm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="relative bg-white dark:bg-gray-800 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-700">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm overflow-y-auto">
+          <div className="relative bg-white dark:bg-gray-800 rounded-none md:rounded-lg w-full h-full md:h-auto md:w-full md:max-w-2xl md:max-h-[85vh] overflow-y-auto shadow-2xl border-0 md:border border-gray-200 dark:border-gray-700 md:m-4">
 
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">

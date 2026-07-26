@@ -85,7 +85,29 @@ export const IC = {
 
 function ChatBackground({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex-1 overflow-y-auto relative bg-[var(--bg-secondary)]">
+    <div className="flex-1 overflow-y-auto relative"
+      style={{
+        backgroundColor: '#efeae2',
+        backgroundImage: `
+          radial-gradient(circle at 20% 50%, rgba(0, 168, 62, 0.03) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(0, 168, 62, 0.02) 0%, transparent 50%),
+          repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 40px,
+            rgba(0, 168, 62, 0.02) 40px,
+            rgba(0, 168, 62, 0.02) 41px
+          ),
+          repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 40px,
+            rgba(0, 168, 62, 0.02) 40px,
+            rgba(0, 168, 62, 0.02) 41px
+          )
+        `
+      }}
+    >
       <div className="px-4 py-3 space-y-1">{children}</div>
     </div>
   );

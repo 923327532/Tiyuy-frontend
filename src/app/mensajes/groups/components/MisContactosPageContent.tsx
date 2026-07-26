@@ -240,7 +240,29 @@ export function MisContactosPageContent() {
                             <button onClick={(e) => { e.stopPropagation(); setPinnedMessage(null); }} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] text-xl leading-none flex-shrink-0 ml-2">×</button>
                         </div>
                     )}
-                    <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1 bg-[var(--bg-secondary)]" data-chat-area>
+                    <div className="flex-1 overflow-y-auto px-3 py-3 space-y-1" data-chat-area
+                      style={{
+                        backgroundColor: '#efeae2',
+                        backgroundImage: `
+                          radial-gradient(circle at 20% 50%, rgba(0, 168, 62, 0.03) 0%, transparent 50%),
+                          radial-gradient(circle at 80% 20%, rgba(0, 168, 62, 0.02) 0%, transparent 50%),
+                          repeating-linear-gradient(
+                            0deg,
+                            transparent,
+                            transparent 40px,
+                            rgba(0, 168, 62, 0.02) 40px,
+                            rgba(0, 168, 62, 0.02) 41px
+                          ),
+                          repeating-linear-gradient(
+                            90deg,
+                            transparent,
+                            transparent 40px,
+                            rgba(0, 168, 62, 0.02) 40px,
+                            rgba(0, 168, 62, 0.02) 41px
+                          )
+                        `
+                      }}
+                    >
                         {messagesError ? (
                             <div className="flex flex-col items-center justify-center h-full gap-4 text-red-600 p-4">
                                 <p className="font-semibold">Error al cargar mensajes</p>
