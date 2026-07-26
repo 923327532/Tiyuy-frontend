@@ -914,7 +914,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
       </div>
 
       {/* ── STEP CONTENT (con contenedor robusto) ── */}
-        <div className="min-h-[400px] w-full">
+      <div className="min-h-[400px] w-full">
         <div className="bg-[var(--bg-card)] rounded-lg p-4 sm:p-6">
           <ActiveComponent
             formData={formData}
