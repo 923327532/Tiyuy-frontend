@@ -2,13 +2,36 @@
 
 import React, { useState } from 'react';
 import { Home, LayoutDashboard, Maximize } from 'lucide-react';
+import { authStorage } from '@/infrastructure/storage/auth-storage';
+import { toast } from 'sonner';
 import {
   PROJECT_UNIT_TYPES_LABELS,
   PROJECT_UNIT_STATUS_LABELS,
   CURRENCIES,
 } from '@/config/constants';
 
-const INDIVIDUAL_FIELDS_CONFIG = [
+const LOT_FIELDS_CONFIG = [
+  { key: 'lotNumber', label: 'Número de lote *', type: 'text', placeholder: 'Ej: L-01' },
+  { key: 'block', label: 'Manzana', type: 'text', placeholder: 'Ej: Mz A' },
+  { key: 'area', label: 'Área (m²) *', type: 'number', min: 0, step: 0.01 },
+  { key: 'frontWidth', label: 'Frente (ml)', type: 'number', min: 0, step: 0.01 },
+  { key: 'price', label: 'Precio *', type: 'number', min: 0, isPrice: true },
+  { key: 'status', label: 'Estado *', type: 'select', options: 'PROJECT_UNIT_STATUS_LABELS' },
+  { key: 'view', label: 'Ubicación', type: 'text', placeholder: 'Ej: Frente a parque principal' },
+];
+
+const LOT_GROUP_FIELDS_CONFIG = [
+  { key: 'groupName', label: 'Nombre del grupo *', type: 'text', placeholder: 'Ej: Lotes Mz A - Frente' },
+  { key: 'block', label: 'Manzana', type: 'text', placeholder: 'Ej: Mz A' },
+  { key: 'area', label: 'Área (m²) *', type: 'number', min: 0, step: 0.01 },
+  { key: 'frontWidth', label: 'Frente (ml)', type: 'number', min: 0, step: 0.01 },
+  { key: 'price', label: 'Precio *', type: 'number', min: 0, isPrice: true },
+  { key: 'status', label: 'Estado *', type: 'select', options: 'PROJECT_UNIT_STATUS_LABELS' },
+  { key: 'view', label: 'Ubicación', type: 'text', placeholder: 'Ej: Frente a parque principal' },
+  { key: 'quantity', label: 'Cantidad de lotes *', type: 'number', min: 1 },
+];
+
+const DEPARTMENT_FIELDS_CONFIG = [
   { key: 'unitNumber', label: 'Número de unidad *', type: 'text', placeholder: 'Ej: 101-A' },
   { key: 'type', label: 'Tipo *', type: 'select', options: 'PROJECT_UNIT_TYPES_LABELS' },
   { key: 'floor', label: 'Piso *', type: 'number', min: 1 },
@@ -25,6 +48,7 @@ interface ProjectUnitsStepProps {
   formData: any;
   onChange: (field: string, value: any) => void;
   propertyId?: number;
+  projectType?: string;
 }
 
 function Field({ label, children, className = '' }: {
@@ -40,15 +64,27 @@ function Field({ label, children, className = '' }: {
   );
 }
 
-export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnitsStepProps) {
+export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }: ProjectUnitsStepProps) {
   const selectedCurrency = formData.currency || 'PEN';
+  const isLotization = projectType === 'LOTIZATION';
   const currencySymbol = CURRENCIES[selectedCurrency as keyof typeof CURRENCIES]?.symbol || 'S/';
 
   const [mode, setMode] = useState<'individual' | 'group'>('individual');
   const [showUnitForm, setShowUnitForm] = useState(false);
   const [showGroupForm, setShowGroupForm] = useState(false);
+  const [uploadingBP, setUploadingBP] = useState(false);
 
-  const emptyUnit = {
+  const emptyUnit = isLotization ? {
+    lotNumber: '',
+    block: '',
+    area: 120,
+    frontWidth: 8,
+    price: selectedCurrency === 'USD' ? 20000 : 50000,
+    status: 'AVAILABLE',
+    view: '',
+    blueprintImage: '',
+    _previewUrl: '',
+  } : {
     unitNumber: '',
     type: 'APARTMENT',
     floor: 1,
@@ -63,7 +99,23 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
     _previewUrl: '',
   };
 
-  const emptyGroup = {
+  const emptyGroup = isLotization ? {
+    groupName: '',
+    unitType: 'LOT',
+    floorStart: 1,
+    floorEnd: 1,
+    area: 120,
+    bedrooms: 0,
+    bathrooms: 0,
+    parkingSpots: 0,
+    price: selectedCurrency === 'USD' ? 20000 : 50000,
+    status: 'AVAILABLE',
+    view: '',
+    quantity: 1,
+    blueprintImage: '',
+    inheritBlueprint: true,
+    _previewUrl: '',
+  } : {
     groupName: '',
     unitType: 'APARTMENT',
     floorStart: 1,
@@ -77,6 +129,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
     view: '',
     quantity: 1,
     blueprintImage: '',
+    inheritBlueprint: true,
     _previewUrl: '',
   };
 
@@ -103,29 +156,91 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
     }
   };
 
-  const handleUnitBlueprint = (file: File) => {
-    const previewUrl = URL.createObjectURL(file);
-    const tempId = `unit_temp_${Date.now()}`;
-    onChange('unitBlueprintFiles', {
-      ...(formData.unitBlueprintFiles || {}),
-      [tempId]: { file, previewUrl },
-    });
-    setCurrentUnit(prev => ({ ...prev, blueprintImage: tempId, _previewUrl: previewUrl }));
+  // Subir plano a S3 inmediatamente
+  const uploadBlueprintFile = async (file: File, type: 'unit' | 'group'): Promise<string | null> => {
+    if (!propertyId || propertyId <= 0) return null;
+    
+    const token = authStorage.getToken() || localStorage.getItem('tiyuy-auth-token') || localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      setUploadingBP(true);
+      const formDataUpload = new FormData();
+      formDataUpload.append('files', file);
+      formDataUpload.append('type', 'blueprints');
+
+      const response = await fetch(`/api/projects/${propertyId}/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formDataUpload,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const url = Array.isArray(result) ? result[0]?.url || result[0] : result?.url;
+        if (url) {
+          toast.success(`Plano de ${type} subido correctamente`);
+          return url;
+        }
+      } else {
+        console.error(`Error subiendo plano: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(`Error subiendo plano:`, error);
+    } finally {
+      setUploadingBP(false);
+    }
+    return null;
   };
 
-  const handleGroupBlueprint = (file: File) => {
+  const handleUnitBlueprint = async (file: File) => {
     const previewUrl = URL.createObjectURL(file);
-    const tempId = `group_temp_${Date.now()}`;
-    onChange('groupBlueprintFiles', {
-      ...(formData.groupBlueprintFiles || {}),
-      [tempId]: { file, previewUrl },
-    });
-    setCurrentGroup(prev => ({ ...prev, blueprintImage: tempId, _previewUrl: previewUrl }));
+    
+    // Subir a S3 si hay propertyId
+    let finalUrl = previewUrl;
+    if (propertyId && propertyId > 0) {
+      const uploadedUrl = await uploadBlueprintFile(file, 'unit');
+      if (uploadedUrl) finalUrl = uploadedUrl;
+    } else {
+      // Guardar temporalmente si no hay propertyId (creación nueva)
+      const tempId = `unit_temp_${Date.now()}`;
+      onChange('unitBlueprintFiles', {
+        ...(formData.unitBlueprintFiles || {}),
+        [tempId]: { file, previewUrl },
+      });
+      setCurrentUnit(prev => ({ ...prev, blueprintImage: tempId, _previewUrl: previewUrl }));
+      return;
+    }
+    
+    setCurrentUnit(prev => ({ ...prev, blueprintImage: finalUrl, _previewUrl: previewUrl }));
+  };
+
+  const handleGroupBlueprint = async (file: File) => {
+    const previewUrl = URL.createObjectURL(file);
+    
+    // Subir a S3 si hay propertyId
+    let finalUrl = previewUrl;
+    if (propertyId && propertyId > 0) {
+      const uploadedUrl = await uploadBlueprintFile(file, 'group');
+      if (uploadedUrl) finalUrl = uploadedUrl;
+    } else {
+      // Guardar temporalmente si no hay propertyId
+      const tempId = `group_temp_${Date.now()}`;
+      onChange('groupBlueprintFiles', {
+        ...(formData.groupBlueprintFiles || {}),
+        [tempId]: { file, previewUrl },
+      });
+      setCurrentGroup(prev => ({ ...prev, blueprintImage: tempId, _previewUrl: previewUrl }));
+      return;
+    }
+    
+    setCurrentGroup(prev => ({ ...prev, blueprintImage: finalUrl, _previewUrl: previewUrl }));
   };
 
   const getPreviewUrl = (blueprintImage: string, type: 'unit' | 'group'): string => {
     if (!blueprintImage) return '';
     if (blueprintImage.startsWith('http')) return blueprintImage;
+    if (blueprintImage.startsWith('blob:')) return blueprintImage;
     const files = type === 'unit' ? formData.unitBlueprintFiles : formData.groupBlueprintFiles;
     return files?.[blueprintImage]?.previewUrl || '';
   };
@@ -133,13 +248,17 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
   const totalFromGroups = () =>
     (formData.unitGroups || []).reduce((s: number, g: any) => s + (g.quantity || 0), 0);
 
+  const currentFieldsConfig = isLotization ? LOT_FIELDS_CONFIG : DEPARTMENT_FIELDS_CONFIG;
+  const currentGroupFieldsConfig = isLotization ? LOT_GROUP_FIELDS_CONFIG : null;
+
   const addUnit = () => {
-    if (!currentUnit.unitNumber.trim()) return;
+    const unitId = isLotization ? (currentUnit as any).lotNumber : (currentUnit as any).unitNumber;
+    if (!unitId?.trim()) return;
     const units = formData.units || [];
     const newId = Date.now();
     const tempId = currentUnit.blueprintImage;
 
-    if (tempId && !tempId.startsWith('http')) {
+    if (tempId && !tempId.startsWith('http') && !tempId.startsWith('blob:')) {
       const existing = formData.unitBlueprintFiles?.[tempId];
       if (existing) {
         const updated = { ...(formData.unitBlueprintFiles || {}) };
@@ -149,7 +268,23 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
       }
     }
 
-    const newUnit = {
+    const newUnit = isLotization ? {
+      id: newId,
+      unitNumber: (currentUnit as any).lotNumber || '',
+      type: 'LOT',
+      floor: 1,
+      area: currentUnit.area,
+      bedrooms: 0,
+      bathrooms: 0,
+      parkingSpots: 0,
+      price: currentUnit.price,
+      status: currentUnit.status,
+      view: currentUnit.view,
+      lotNumber: (currentUnit as any).lotNumber || '',
+      block: (currentUnit as any).block || '',
+      frontWidth: (currentUnit as any).frontWidth || 0,
+      blueprintImage: (currentUnit as any).blueprintImage || '',
+    } : {
       id: newId,
       unitNumber: currentUnit.unitNumber,
       type: currentUnit.type,
@@ -161,7 +296,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
       price: currentUnit.price,
       status: currentUnit.status,
       view: currentUnit.view,
-      blueprintImage: tempId?.startsWith('http') ? tempId : String(newId),
+      blueprintImage: currentUnit.blueprintImage || '',
     };
 
     const newUnits = [...units, newUnit];
@@ -188,7 +323,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
     const newId = Date.now();
     const tempId = currentGroup.blueprintImage;
 
-    if (tempId && !tempId.startsWith('http')) {
+    if (tempId && !tempId.startsWith('http') && !tempId.startsWith('blob:')) {
       const existing = formData.groupBlueprintFiles?.[tempId];
       if (existing) {
         const updated = { ...(formData.groupBlueprintFiles || {}) };
@@ -212,7 +347,8 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
       status: currentGroup.status,
       view: currentGroup.view,
       quantity: currentGroup.quantity,
-      blueprintImage: tempId?.startsWith('http') ? tempId : String(newId),
+      blueprintImage: currentGroup.blueprintImage || '',
+      inheritBlueprint: currentGroup.inheritBlueprint,
     };
 
     const newGroups = [...unitGroups, newGroup];
@@ -268,8 +404,8 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
       )}
       <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
         <LayoutDashboard className="w-4 h-4" />
-        {previewUrl ? 'Cambiar plano' : 'Subir plano'}
-        <input type="file" accept="image/*" className="hidden"
+        {uploadingBP ? 'Subiendo...' : (previewUrl ? 'Cambiar plano' : 'Subir plano')}
+        <input type="file" accept="image/*" className="hidden" disabled={uploadingBP}
           onChange={e => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
       </label>
     </div>
@@ -280,9 +416,13 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900">Tipos de Unidades</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{isLotization ? 'Tipos de Lotes' : 'Tipos de Unidades'}</h3>
         <p className="text-sm text-gray-500 mt-1">
-          Define los departamentos de tu proyecto. Usa <strong>grupos</strong> para unidades idénticas.
+          {isLotization ? (
+            <>Define los lotes disponibles de tu proyecto. Usa <strong>grupos</strong> para lotes idénticos.</>
+          ) : (
+            <>Define los departamentos de tu proyecto. Usa <strong>grupos</strong> para unidades idénticas.</>
+          )}
         </p>
       </div>
 
@@ -326,11 +466,22 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
                     </button>
                   </div>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-gray-600">
-                    <span>{group.bedrooms} dorm</span>
-                    <span>{group.bathrooms} baños</span>
-                    <span>{group.area} m²</span>
-                    <span>{group.parkingSpots} est.</span>
-                    <span>Pisos {group.floorStart}–{group.floorEnd}</span>
+                    {isLotization ? (
+                      <>
+                        {group.block && <span>Mz {group.block}</span>}
+                        <span>{group.area} m²</span>
+                        {group.frontWidth && <span>{group.frontWidth} ml frente</span>}
+                        <span>{group.quantity} lotes</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{group.bedrooms} dorm</span>
+                        <span>{group.bathrooms} baños</span>
+                        <span>{group.area} m²</span>
+                        <span>{group.parkingSpots} est.</span>
+                        <span>Pisos {group.floorStart}–{group.floorEnd}</span>
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center gap-3 mt-3">
                     <span className="text-base font-bold text-gray-900">{currencySymbol} {group.price.toLocaleString()}</span>
@@ -400,9 +551,9 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
 
       {showUnitForm && (
         <div className="border border-[var(--brand-primary)]/20 rounded-xl p-5 bg-[var(--brand-primary)]/[0.04] space-y-4">
-          <h4 className="font-semibold text-gray-900">Nueva unidad individual</h4>
+          <h4 className="font-semibold text-gray-900">{isLotization ? 'Nuevo lote individual' : 'Nueva unidad individual'}</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {INDIVIDUAL_FIELDS_CONFIG.map((field) => {
+            {currentFieldsConfig.map((field: any) => {
               if (field.dependsOnType && !field.dependsOnType.includes(currentUnit.type)) return null;
               const labelText = field.isPrice ? `Precio (${currencySymbol}) *` : field.label;
               return (
@@ -436,6 +587,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
               );
             })}
             <Field label="Imagen de plano" className="md:col-span-2">
+              {uploadingBP && <p className="text-xs text-blue-600 mb-2">Subiendo plano a S3...</p>}
               <BlueprintUploader
                 previewUrl={currentUnit._previewUrl}
                 onFile={handleUnitBlueprint}
@@ -458,79 +610,153 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
 
       {showGroupForm && (
         <div className="border border-[var(--brand-primary)]/20 rounded-xl p-5 bg-[var(--brand-primary)]/[0.04] space-y-4">
-          <h4 className="font-semibold text-gray-900">Nuevo grupo de unidades</h4>
-          <p className="text-xs text-gray-500">Un grupo representa N unidades idénticas.</p>
+          <h4 className="font-semibold text-gray-900">
+            {isLotization ? 'Nuevo grupo de lotes' : 'Nuevo grupo de unidades'}
+          </h4>
+          <p className="text-xs text-gray-500">
+            {isLotization 
+              ? 'Un grupo representa N lotes idénticos (misma manzana, área, frente y precio).'
+              : 'Un grupo representa N unidades idénticas.'}
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Nombre del grupo *">
-              <input type="text" value={currentGroup.groupName}
-                onChange={e => setCurrentGroup(p => ({ ...p, groupName: e.target.value }))}
-                className={inputClasses} placeholder="Ej: Departamentos 2 dorm - Torre A" />
-            </Field>
-            <Field label="Tipo de unidad *">
-              <select value={currentGroup.unitType}
-                onChange={e => setCurrentGroup(p => ({ ...p, unitType: e.target.value }))}
-                className={inputClasses}>
-                {Object.entries(PROJECT_UNIT_TYPES_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Piso inicio">
-              <input type="number" value={currentGroup.floorStart} min={1}
-                onChange={e => setCurrentGroup(p => ({ ...p, floorStart: +e.target.value || 1 }))}
-                className={inputClasses} />
-            </Field>
-            <Field label="Piso fin">
-              <input type="number" value={currentGroup.floorEnd} min={currentGroup.floorStart}
-                onChange={e => setCurrentGroup(p => ({ ...p, floorEnd: +e.target.value || 1 }))}
-                className={inputClasses} />
-            </Field>
-            <Field label="Área (m²) *">
-              <input type="number" value={currentGroup.area} min={0} step={0.01}
-                onChange={e => setCurrentGroup(p => ({ ...p, area: +e.target.value || 60 }))}
-                className={inputClasses} />
-            </Field>
-            <Field label="Dormitorios">
-              <input type="number" value={currentGroup.bedrooms} min={0}
-                onChange={e => setCurrentGroup(p => ({ ...p, bedrooms: +e.target.value || 0 }))}
-                className={inputClasses} />
-            </Field>
-            <Field label="Baños *">
-              <input type="number" value={currentGroup.bathrooms} min={0}
-                onChange={e => setCurrentGroup(p => ({ ...p, bathrooms: +e.target.value || 0 }))}
-                className={inputClasses} />
-            </Field>
-            <Field label="Estacionamientos">
-              <input type="number" value={currentGroup.parkingSpots} min={0}
-                onChange={e => setCurrentGroup(p => ({ ...p, parkingSpots: +e.target.value || 0 }))}
-                className={inputClasses} />
-            </Field>
-            <Field label={`Precio (${currencySymbol}) *`}>
-              <input type="number" value={currentGroup.price} min={0}
-                onChange={e => setCurrentGroup(p => ({ ...p, price: +e.target.value || 0 }))}
-                className={inputClasses} />
-            </Field>
-            <Field label="Cantidad de unidades *">
-              <input type="number" value={currentGroup.quantity} min={1}
-                onChange={e => setCurrentGroup(p => ({ ...p, quantity: +e.target.value || 1 }))}
-                className={inputClasses} placeholder="Ej: 5" />
-              <p className="text-xs text-gray-400 mt-1">Se crearán {currentGroup.quantity} unidades con las mismas características</p>
-            </Field>
-            <Field label="Estado *">
-              <select value={currentGroup.status}
-                onChange={e => setCurrentGroup(p => ({ ...p, status: e.target.value }))}
-                className={inputClasses}>
-                {Object.entries(PROJECT_UNIT_STATUS_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Vista">
-              <input type="text" value={currentGroup.view}
-                onChange={e => setCurrentGroup(p => ({ ...p, view: e.target.value }))}
-                className={inputClasses} placeholder="Ej: Vista al parque" />
-            </Field>
+            {isLotization ? (
+              <>
+                {LOT_GROUP_FIELDS_CONFIG.map((field: any) => {
+                  const labelText = field.isPrice ? `Precio (${currencySymbol}) *` : field.label;
+                  return (
+                    <Field key={field.key} label={labelText}>
+                      {field.type === 'select' ? (
+                        <select
+                          value={String(currentGroup[field.key as keyof typeof currentGroup] || '')}
+                          onChange={e => setCurrentGroup(p => ({ ...p, [field.key]: e.target.value }))}
+                          className={inputClasses}>
+                          {Object.entries(PROJECT_UNIT_STATUS_LABELS).map(([k, v]) => (
+                            <option key={k} value={k}>{v as string}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type={field.type}
+                          placeholder={field.placeholder}
+                          min={field.min}
+                          step={field.step}
+                          value={String(currentGroup[field.key as keyof typeof currentGroup] ?? '')}
+                          onChange={e => {
+                            const val = field.type === 'number'
+                              ? (field.step ? parseFloat(e.target.value) : parseInt(e.target.value, 10))
+                              : e.target.value;
+                            setCurrentGroup(p => ({ ...p, [field.key]: isNaN(val as number) && field.type === 'number' ? '' : val }));
+                          }}
+                          className={inputClasses}
+                        />
+                      )}
+                    </Field>
+                  );
+                })}
+                <Field label="Estado *">
+                  <select value={currentGroup.status}
+                    onChange={e => setCurrentGroup(p => ({ ...p, status: e.target.value }))}
+                    className={inputClasses}>
+                    {Object.entries(PROJECT_UNIT_STATUS_LABELS).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
+                    ))}
+                  </select>
+                </Field>
+              </>
+            ) : (
+              <>
+                <Field label="Nombre del grupo *">
+                  <input type="text" value={currentGroup.groupName}
+                    onChange={e => setCurrentGroup(p => ({ ...p, groupName: e.target.value }))}
+                    className={inputClasses} placeholder="Ej: Departamentos 2 dorm - Torre A" />
+                </Field>
+                <Field label="Tipo de unidad *">
+                  <select value={currentGroup.unitType}
+                    onChange={e => setCurrentGroup(p => ({ ...p, unitType: e.target.value }))}
+                    className={inputClasses}>
+                    {Object.entries(PROJECT_UNIT_TYPES_LABELS).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Piso inicio">
+                  <input type="number" value={currentGroup.floorStart} min={1}
+                    onChange={e => setCurrentGroup(p => ({ ...p, floorStart: +e.target.value || 1 }))}
+                    className={inputClasses} />
+                </Field>
+                <Field label="Piso fin">
+                  <input type="number" value={currentGroup.floorEnd} min={currentGroup.floorStart}
+                    onChange={e => setCurrentGroup(p => ({ ...p, floorEnd: +e.target.value || 1 }))}
+                    className={inputClasses} />
+                </Field>
+                <Field label="Área (m²) *">
+                  <input type="number" value={currentGroup.area} min={0} step={0.01}
+                    onChange={e => setCurrentGroup(p => ({ ...p, area: +e.target.value || 60 }))}
+                    className={inputClasses} />
+                </Field>
+                <Field label="Dormitorios">
+                  <input type="number" value={currentGroup.bedrooms} min={0}
+                    onChange={e => setCurrentGroup(p => ({ ...p, bedrooms: +e.target.value || 0 }))}
+                    className={inputClasses} />
+                </Field>
+                <Field label="Baños *">
+                  <input type="number" value={currentGroup.bathrooms} min={0}
+                    onChange={e => setCurrentGroup(p => ({ ...p, bathrooms: +e.target.value || 0 }))}
+                    className={inputClasses} />
+                </Field>
+                <Field label="Estacionamientos">
+                  <input type="number" value={currentGroup.parkingSpots} min={0}
+                    onChange={e => setCurrentGroup(p => ({ ...p, parkingSpots: +e.target.value || 0 }))}
+                    className={inputClasses} />
+                </Field>
+                <Field label={`Precio (${currencySymbol}) *`}>
+                  <input type="number" value={currentGroup.price} min={0}
+                    onChange={e => setCurrentGroup(p => ({ ...p, price: +e.target.value || 0 }))}
+                    className={inputClasses} />
+                </Field>
+                <Field label="Cantidad de unidades *">
+                  <input type="number" value={currentGroup.quantity} min={1}
+                    onChange={e => setCurrentGroup(p => ({ ...p, quantity: +e.target.value || 1 }))}
+                    className={inputClasses} placeholder="Ej: 5" />
+                  <p className="text-xs text-gray-400 mt-1">Se crearán {currentGroup.quantity} unidades con las mismas características</p>
+                </Field>
+                <Field label="Estado *">
+                  <select value={currentGroup.status}
+                    onChange={e => setCurrentGroup(p => ({ ...p, status: e.target.value }))}
+                    className={inputClasses}>
+                    {Object.entries(PROJECT_UNIT_STATUS_LABELS).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Vista">
+                  <input type="text" value={currentGroup.view}
+                    onChange={e => setCurrentGroup(p => ({ ...p, view: e.target.value }))}
+                    className={inputClasses} placeholder="Ej: Vista al parque" />
+                </Field>
+              </>
+            )}
+            <div className="md:col-span-2">
+              <div className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 border border-gray-200">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Heredar imagen del grupo</p>
+                  <p className="text-xs text-gray-400">Todas las unidades usarán el plano del grupo</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCurrentGroup(p => ({ ...p, inheritBlueprint: !p.inheritBlueprint }))}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    currentGroup.inheritBlueprint ? 'bg-blue-600' : 'bg-gray-300'
+                  }`}
+                >
+                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                    currentGroup.inheritBlueprint ? 'translate-x-6' : 'translate-x-0'
+                  }`} />
+                </button>
+              </div>
+            </div>
             <Field label="Plano del tipo de unidad" className="md:col-span-2">
+              {uploadingBP && <p className="text-xs text-blue-600 mb-2">Subiendo plano a S3...</p>}
               <BlueprintUploader
                 previewUrl={currentGroup._previewUrl}
                 onFile={handleGroupBlueprint}
@@ -541,7 +767,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId }: ProjectUnit
           <div className="flex gap-2 pt-2">
             <button type="button" onClick={addGroup}
               className="px-5 py-2 bg-[var(--brand-primary)] text-white rounded-lg text-sm font-medium transition-colors shadow-sm hover:opacity-90">
-              Agregar grupo
+              {isLotization ? 'Agregar grupo de lotes' : 'Agregar grupo'}
             </button>
             <button type="button" onClick={() => setShowGroupForm(false)}
               className="px-5 py-2 border border-[var(--brand-primary)] text-[var(--brand-primary)] rounded-lg text-sm font-medium transition-colors hover:bg-[var(--brand-primary)]/[0.06]">

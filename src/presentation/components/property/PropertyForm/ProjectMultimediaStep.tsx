@@ -98,7 +98,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
           formDataUpload.append('type', 'blueprints');
 
           try {
-            const response = await fetch(`/api/properties/${propertyId}/photos`, {
+            const endpoint = entityType === 'project' ? 'projects' : 'properties';
+            const response = await fetch(`/api/${endpoint}/${propertyId}/upload`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` },
               body: formDataUpload,
@@ -106,7 +107,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
             if (response.ok) {
               const result = await response.json();
-              const uploadedUrl = result[0];
+              const uploadedUrl = Array.isArray(result) ? result[0] : result.url;
               console.log(`Plano de unidad ${unitId} subido:`, uploadedUrl);
               
               // Guardar la URL para actualizar la unidad
@@ -128,7 +129,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
           formDataUpload.append('type', 'blueprints');
 
           try {
-            const response = await fetch(`/api/properties/${propertyId}/photos`, {
+            const endpoint = entityType === 'project' ? 'projects' : 'properties';
+            const response = await fetch(`/api/${endpoint}/${propertyId}/upload`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` },
               body: formDataUpload,
@@ -136,7 +138,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
             if (response.ok) {
               const result = await response.json();
-              const uploadedUrl = result[0];
+              const uploadedUrl = Array.isArray(result) ? result[0] : result.url;
               console.log(`Plano de grupo ${groupId} subido:`, uploadedUrl);
               
               // Guardar la URL para actualizar el grupo
@@ -200,7 +202,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
       }, 500);
 
       // Usar ruta relativa - Vercel actúa como puente
-      const uploadUrl = `/api/properties/${propertyId}/photos`;
+      const endpoint = entityType === 'project' ? 'projects' : 'properties';
+      const uploadUrl = `/api/${endpoint}/${propertyId}/upload`;
 
       console.log(`Enviando POST a: ${uploadUrl}`);
 

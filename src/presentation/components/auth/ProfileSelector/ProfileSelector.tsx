@@ -49,12 +49,12 @@ export default function ProfileSelector() {
   };
 
   return (
-    <div className="min-h-screen py-4 sm:py-5 lg:py-12 px-8 xl:px-16">
+    <div className="min-h-screen py-4 sm:py-5 lg:py-12 px-8 xl:px-16 bg-[var(--bg-primary)]">
       <div className="text-center mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-2">
           Elige tu perfil
         </h1>
-        <p className="text-sm sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-[var(--text-secondary)]">
           Selecciona cómo quieres usar TIYUY
         </p>
       </div>
@@ -106,11 +106,11 @@ export default function ProfileSelector() {
       </div>
 
       <div className="text-center mt-6 sm:mt-8 lg:mt-12">
-        <p className="text-sm sm:text-base text-gray-600">
+        <p className="text-sm sm:text-base text-[var(--text-secondary)]">
           ¿Ya tienes cuenta?{' '}
           <Link
             href="/login"
-            className="text-blue-600 hover:text-blue-700 font-semibold text-sm sm:text-base"
+            className="text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] font-semibold text-sm sm:text-base"
           >
             Inicia sesión aquí
           </Link>

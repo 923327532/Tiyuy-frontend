@@ -134,11 +134,56 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
       address: (property && 'address' in property) ? property.address : ((property && 'location' in property) ? `${property.location?.district || ''}, ${property.location?.province || ''}, ${property.location?.region || ''}` : ''),
       units: (property && 'units' in property) ? property.units : [],
       timeline: (property && 'timeline' in property) ? property.timeline : [],
-      amenities: (property && 'amenities' in property) ? property.amenities : [],
+      // Amenities: convertir de objetos {name} a strings planos para checkboxes
+      amenities: (property && 'amenities' in property) 
+        ? ((property as any).amenities || []).map((a: any) => typeof a === 'string' ? a : a?.name || '').filter(Boolean)
+        : [],
       images: (property && 'images' in property) ? property.images : [],
       blueprints: (property && 'blueprints' in property) ? property.blueprints : [],
       renders: (property && 'renders' in property) ? property.renders : [],
       coverImageUrl: (property && 'coverImageUrl' in property) ? (property as any).coverImageUrl : '',
+
+      // Lotización fields
+      ruc: (property && 'ruc' in property) ? (property as any).ruc : '',
+      socialReason: (property && 'socialReason' in property) ? (property as any).socialReason : '',
+      initialFee: (property && 'initialFee' in property) ? (property as any).initialFee : '',
+      monthlyPayment: (property && 'monthlyPayment' in property) ? (property as any).monthlyPayment : '',
+      financingInfo: (property && 'financingInfo' in property) ? (property as any).financingInfo : '',
+      totalBlocks: (property && 'totalBlocks' in property) ? (property as any).totalBlocks : '',
+      // Checkboxes: detectar desde amenities guardadas o desde campos directos
+      hasUrbanization: (property && 'hasUrbanization' in property) ? (property as any).hasUrbanization 
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name)?.toLowerCase().includes('habilitación'))) || false,
+      hasPropertyTitle: (property && 'hasPropertyTitle' in property) ? (property as any).hasPropertyTitle
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name)?.toLowerCase().includes('título'))) || false,
+      hasWater: (property && 'hasWater' in property) ? (property as any).hasWater
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name) === 'Agua')) || false,
+      hasElectricity: (property && 'hasElectricity' in property) ? (property as any).hasElectricity
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name) === 'Electricidad')) || false,
+      hasSewerage: (property && 'hasSewerage' in property) ? (property as any).hasSewerage
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name) === 'Desagüe')) || false,
+      hasPavedRoads: (property && 'hasPavedRoads' in property) ? (property as any).hasPavedRoads
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name) === 'Pistas')) || false,
+      hasStreetLighting: (property && 'hasStreetLighting' in property) ? (property as any).hasStreetLighting
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name)?.includes('Alumbrado'))) || false,
+      hasGasNetwork: (property && 'hasGasNetwork' in property) ? (property as any).hasGasNetwork
+        : (property && 'amenities' in property && (property as any).amenities?.some((a: any) => (typeof a === 'string' ? a : a.name)?.toLowerCase().includes('gas'))) || false,
+      urbanizationName: (property && 'urbanizationName' in property) ? (property as any).urbanizationName : '',
+      registryNumber: (property && 'registryNumber' in property) ? (property as any).registryNumber : '',
+
+      // Social media — parsear socialMediaUrl a campos individuales
+      ...(() => {
+        const socialRaw = (property as any)?.socialMediaUrl || '';
+        const parts = socialRaw.split('|').filter(Boolean);
+        const socialObj: any = { socialInstagram: '', socialFacebook: '', socialTiktok: '', socialWeb: '' };
+        parts.forEach((url: string) => {
+          const lower = url.toLowerCase();
+          if (lower.includes('instagram')) socialObj.socialInstagram = url;
+          else if (lower.includes('facebook')) socialObj.socialFacebook = url;
+          else if (lower.includes('tiktok')) socialObj.socialTiktok = url;
+          else socialObj.socialWeb = url;
+        });
+        return socialObj;
+      })(),
     } : {})
   });
 
@@ -199,23 +244,42 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
     }
 
       if (step === 2) {
-        if (!formData.address || !formData.address.trim()) {
-          errors.address = 'La dirección es obligatoria';
-        }
-        if (!formData.district || !formData.district.trim()) {
-          errors.district = 'Selecciona el distrito';
-        }
-        if (!formData.province || !formData.province.trim()) {
-          errors.province = 'Selecciona la provincia';
-        }
-        if (!formData.region || !formData.region.trim()) {
-          errors.region = 'Selecciona la región';
-        }
-        if (!formData.street || !formData.street.trim()) {
-          errors.street = 'El nombre de la calle es obligatorio';
-        }
-        if (!formData.streetNumber || !formData.streetNumber.trim()) {
-          errors.streetNumber = 'El número de la calle es obligatorio';
+        if (formData.manualCoordinates) {
+          // Modo coordenadas manuales: solo validar coordenadas y ubicación básica
+          if (!formData.latitude || isNaN(Number(formData.latitude))) {
+            errors.latitude = 'Ingresa una latitud válida';
+          }
+          if (!formData.longitude || isNaN(Number(formData.longitude))) {
+            errors.longitude = 'Ingresa una longitud válida';
+          }
+          if (!formData.district || !formData.district.trim()) {
+            errors.district = 'Ingresa el distrito';
+          }
+          if (!formData.province || !formData.province.trim()) {
+            errors.province = 'Ingresa la provincia';
+          }
+          if (!formData.region || !formData.region.trim()) {
+            errors.region = 'Ingresa la región';
+          }
+        } else {
+          if (!formData.address || !formData.address.trim()) {
+            errors.address = 'La dirección es obligatoria';
+          }
+          if (!formData.district || !formData.district.trim()) {
+            errors.district = 'Selecciona el distrito';
+          }
+          if (!formData.province || !formData.province.trim()) {
+            errors.province = 'Selecciona la provincia';
+          }
+          if (!formData.region || !formData.region.trim()) {
+            errors.region = 'Selecciona la región';
+          }
+          if (!formData.street || !formData.street.trim()) {
+            errors.street = 'El nombre de la calle es obligatorio';
+          }
+          if (!formData.streetNumber || !formData.streetNumber.trim()) {
+            errors.streetNumber = 'El número de la calle es obligatorio';
+          }
         }
       }
 
@@ -314,6 +378,11 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
       ];
       const calculatedTotalUnits = (formData.units?.length || 0) + (formData.unitGroups || []).reduce((s: number, g: any) => s + (g.quantity || 0), 0);
       
+      const addressValue = formData.fullAddress || 
+        (formData.manualCoordinates && formData.latitude && formData.longitude 
+          ? `${formData.latitude}, ${formData.longitude}` 
+          : formData.address || '');
+
       const requiredFields = {
         name: formData.name,
         description: formData.description,
@@ -322,7 +391,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
         totalUnits: calculatedTotalUnits > 0 ? calculatedTotalUnits : formData.totalUnits,
         areaFrom: allAreas.length > 0 ? Math.min(...allAreas) : formData.areaFrom,
         areaTo: allAreas.length > 0 ? Math.max(...allAreas) : formData.areaTo,
-        address: formData.address,
+        address: addressValue,
         district: formData.district,
         province: formData.province,
         region: formData.region
@@ -524,7 +593,9 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
       type: data.projectType || 'RESIDENTIAL',
       
       // Step 2: Location
-      address: data.fullAddress || '',
+      address: data.fullAddress || (data.manualCoordinates && data.latitude && data.longitude 
+        ? `${data.latitude}, ${data.longitude}` 
+        : ''),
       district: data.district || '',
       province: data.province || '',
       region: data.region || '',
@@ -550,23 +621,46 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
       
       // NEW: Units (from step 3) - WITH IMAGES
       units: (data.units || []).map((unit: any) => ({
-        unitNumber: unit.unitNumber || '',
-        type: unit.type || 'APARTMENT',
-        floor: unit.floor || 1,
-        area: unit.area || 60,
-        bedrooms: unit.bedrooms || 1,
-        bathrooms: unit.bathrooms || 1,
-        parkingSpots: unit.parkingSpots || 1,
-        price: unit.price || 150000,
-        status: unit.status || 'AVAILABLE',
-        view: unit.view || '',
-        image: unit.image || '',
-        blueprintImage: unit.blueprintImage || ''
+        unitNumber: unit.unitNumber ?? '',
+        type: unit.type ?? 'APARTMENT',
+        floor: unit.floor ?? 1,
+        area: unit.area ?? 60,
+        bedrooms: unit.bedrooms ?? 1,
+        bathrooms: unit.bathrooms ?? 1,
+        parkingSpots: unit.parkingSpots ?? 0,
+        price: unit.price ?? 150000,
+        status: unit.status ?? 'AVAILABLE',
+        view: unit.view ?? '',
+        image: unit.image ?? '',
+        blueprintImage: unit.blueprintImage ?? ''
       })),
       
       // FIX: Add missing fields from step 3
       certifications: data.certifications || [],
       timeline: data.timeline || [],
+
+      // Lotización services (se guardan como amenities)
+      ...(data.projectType === 'LOTIZATION' ? {
+        mainAmenities: [
+          ...(data.mainAmenities || []),
+          ...(data.amenities || []).map((a: any) => typeof a === 'string' ? a : a.name || '').filter(Boolean),
+          ...(data.hasUrbanization ? ['Habilitación Urbana'] : []),
+          ...(data.hasPropertyTitle ? ['Título de Propiedad'] : []),
+          ...(data.hasWater ? ['Agua'] : []),
+          ...(data.hasElectricity ? ['Electricidad'] : []),
+          ...(data.hasSewerage ? ['Desagüe'] : []),
+          ...(data.hasPavedRoads ? ['Pistas'] : []),
+          ...(data.hasStreetLighting ? ['Alumbrado Público'] : []),
+          ...(data.hasGasNetwork ? ['Gas Natural'] : []),
+          ...(data.urbanizationName ? [`Urbanización: ${data.urbanizationName}`] : []),
+          ...(data.registryNumber ? [`Partida Registral: ${data.registryNumber}`] : []),
+        ]
+      } : {}),
+      
+      // Social media (convertir campos sueltos a JSON string)
+      socialMediaUrl: [data.socialInstagram, data.socialFacebook, data.socialTiktok, data.socialWeb]
+        .filter(Boolean)
+        .join('|'),
       
       // Step 5: Multimedia -  FIX PORTADA: No sobrescribir coverImageUrl si ya existe
       coverImageUrl: data.coverImageUrl || (data.images && data.images.length > 0 ? data.images[0] : ''),
@@ -703,7 +797,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
           if (canPublish) {
             try {
               const publishResponse = await fetch(publishUrl, {
-                method: 'POST',
+                method: 'PATCH',
                 headers: {
                   'Authorization': `Bearer ${token}`
                 },
@@ -713,15 +807,12 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
                 toast.success('¡Proyecto publicado! 🎉');
                 router.push('/my-projects');
                 return;
-
               } else {
                 const publishError = await publishResponse.json();
                 console.warn('No se pudo publicar automáticamente:', publishError);
-                // Si falla la publicación, al menos se guardó como borrador
               }
             } catch (publishError) {
               console.warn('Error al publicar:', publishError);
-              // Si falla la publicación, al menos se guardó como borrador
             }
           }
           
@@ -808,19 +899,23 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
 
       {/* ── STEP HEADER ── */}
       <div className="mb-8">
-        <p style={{ color: '#00a63e' }} className="text-xs font-bold uppercase tracking-widest mb-1">
+        <p style={{ color: 'var(--brand-primary)' }} className="text-xs font-bold uppercase tracking-widest mb-1">
           Paso {currentStep} de {totalSteps}
         </p>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
           {currentSteps[currentStep - 1].title}
         </h1>
-        <p className="text-sm text-gray-400 mt-0.5">{currentSteps[currentStep - 1].description}</p>
+        <p className="text-sm text-[var(--text-secondary)] mt-0.5">
+          {currentStep === 3 && currentSteps[2].description === 'Departamentos disponibles' && formData.projectType === 'LOTIZATION'
+            ? 'Lotes disponibles'
+            : currentSteps[currentStep - 1].description}
+        </p>
         {/* Mostrar errores solo al lado de cada campo; no resumir globalmente aquí */}
       </div>
 
       {/* ── STEP CONTENT (con contenedor robusto) ── */}
-      <div className="min-h-[400px] w-full">
-        <div className="bg-white rounded-lg p-4 sm:p-6">
+        <div className="min-h-[400px] w-full">
+        <div className="bg-[var(--bg-card)] rounded-lg p-4 sm:p-6">
           <ActiveComponent
             formData={formData}
             onChange={handleChange}
@@ -828,6 +923,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
             projectId={createdPropertyId}
             groupBlueprintFiles={formData.groupBlueprintFiles}
             validationErrors={validationErrors}
+            projectType={formData.projectType}
           />
         </div>
       </div>
@@ -837,7 +933,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
             <button
               onClick={handlePrev}
               disabled={currentStep === 1}
-              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-medium text-gray-500 border border-gray-200 hover:border-gray-300 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-white"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-lg text-sm font-medium text-[var(--text-muted)] border border-[var(--border-color)] hover:text-[var(--text-primary)] disabled:opacity-30 disabled:cursor-not-allowed transition-all bg-[var(--bg-card)] hover:bg-[var(--bg-tertiary)]"
             >
               <ChevronLeft className="w-4 h-4" />
               Anterior
@@ -943,10 +1039,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
            <button
              onClick={isLastStep ? handleSubmit : handleNext}
              disabled={isLoading}
-             className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-             style={{ backgroundColor: '#00a63e' }}
-            onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#009135')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00a63e')}
+             className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-white text-sm font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)]"
           >
             {isLoading ? (
               <>

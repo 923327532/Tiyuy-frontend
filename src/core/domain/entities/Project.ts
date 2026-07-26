@@ -8,8 +8,8 @@ export interface Project {
   slug: string;
   description: string;
   status: ProjectStatus;
-  phase: 'PRE_SALE' | 'SALE' | 'DELIVERY';
-  type: 'INDUSTRIAL' | 'COMMERCIAL' | 'MIXED_USE' | 'RESIDENTIAL';
+  phase: 'PRE_SALE' | 'SALE' | 'DELIVERY' | 'PLOTTING' | 'PRE_LOTIZATION' | 'URBANIZATION' | 'REGISTRATION' | 'COMPLETED' | 'LAND_BANK';
+  type: 'INDUSTRIAL' | 'COMMERCIAL' | 'MIXED_USE' | 'RESIDENTIAL' | 'LOTIZATION' | 'LAND_SUBDIVISION' | 'LAND_BANK';
   totalUnits: number;
   availableUnits: number;
   soldUnits: number;
@@ -66,7 +66,7 @@ export interface Project {
 export interface ProjectUnit {
   id: number;
   unitNumber: string;
-  type: 'APARTMENT' | 'DUPLEX' | 'PENTHOUSE' | 'OFFICE' | 'STORE' | 'WAREHOUSE';
+  type: 'APARTMENT' | 'DUPLEX' | 'PENTHOUSE' | 'OFFICE' | 'STORE' | 'WAREHOUSE' | 'LOT';
   floor: number;
   area: number;
   bedrooms?: number;
@@ -122,4 +122,5 @@ export interface ProjectFull extends Project {
   images?: string[];
   blueprints?: string[];
   renders?: string[];
+  socialMediaUrl?: string;
 }

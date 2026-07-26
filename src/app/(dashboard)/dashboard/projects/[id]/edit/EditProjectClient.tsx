@@ -10,8 +10,8 @@ import Link from 'next/link';
 
 export default function EditProjectClient({ id }: { id: number }) {
   const { isAuthenticated } = useAuthStore();
-  const { projectById } = useProjects();
-  const { data: project, isLoading, error } = projectById(id);
+  const { projectFull } = useProjects();
+  const { data: project, isLoading, error } = projectFull(id);
 
   if (!isAuthenticated) {
     return (

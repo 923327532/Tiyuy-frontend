@@ -81,7 +81,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, isSelected, o
 
 
   return (
-    <Card hover onClick={() => onClick(profile)} className={`${isSelected ? 'ring-4 ring-blue-500 ring-offset-2' : ''} p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:shadow-2xl relative`}>
+    <Card hover onClick={() => onClick(profile)} className={`${isSelected ? 'ring-4 ring-[var(--brand-primary)] ring-offset-2 ring-offset-[var(--bg-primary)]' : ''} p-4 sm:p-6 lg:p-8 h-full flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:shadow-2xl relative`}>
       {profile === 'DEVELOPER' && (
         <div className="absolute top-2 sm:top-4 right-2 sm:right-4">
           <Badge variant="warning" size="sm">30 días gratis</Badge>
@@ -90,26 +90,26 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, isSelected, o
 
       <div className="flex items-center justify-center mb-4 sm:mb-6">
         {profile === 'USER' && (
-          <Home className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-blue-500" />
+          <Home className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-[var(--brand-primary)]" />
         )}
         {profile === 'AGENT' && (
-          <Users className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-green-500" />
+          <Users className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-[var(--brand-primary)]" />
         )}
         {profile === 'DEVELOPER' && (
-          <Building className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-purple-500" />
+          <Building className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-[var(--brand-primary)]" />
         )}
         {profile === 'ADMIN' && (
-          <Shield className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-red-500" />
+          <Shield className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-[var(--brand-primary)]" />
         )}
       </div>
 
-      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">{config.title}</h3>
-      <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">{config.description}</p>
+      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-[var(--text-primary)] mb-2 sm:mb-3">{config.title}</h3>
+      <p className="text-sm sm:text-base text-[var(--text-secondary)] mb-4 sm:mb-6 leading-relaxed">{config.description}</p>
       
       <ul className="space-y-2 sm:space-y-3">
         {config.features.map((feature: string, index: number) => (
-          <li key={index} className="flex items-center gap-2 sm:gap-3 text-gray-700">
-            <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-green-500 flex-shrink-0" />
+          <li key={index} className="flex items-center gap-2 sm:gap-3 text-[var(--text-secondary)]">
+            <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[var(--brand-primary)] flex-shrink-0" />
             <span className="text-xs sm:text-sm font-medium">{feature}</span>
           </li>
         ))}
@@ -117,7 +117,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({ profile, isSelected, o
 
       {isSelected && (
         <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-6">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--brand-primary)] rounded-full flex items-center justify-center shadow-lg">
             <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
           </div>
         </div>

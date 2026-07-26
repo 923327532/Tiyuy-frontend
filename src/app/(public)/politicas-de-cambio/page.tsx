@@ -2,21 +2,21 @@ import Link from 'next/link';
 
 export default function PoliticasCambioPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--bg-primary)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Breadcrumb */}
         <div className="mb-8">
-          <Link href="/" className="text-sm text-green-600 hover:text-green-700">
+          <Link href="/" className="text-sm text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)]">
             ← Volver a inicio
           </Link>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Políticas de Cambio o Devoluciones</h1>
-        <p className="text-sm text-gray-500 mb-10">
+        <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">Políticas de Cambio o Devoluciones</h1>
+        <p className="text-sm text-[var(--text-tertiary)] mb-10">
           Última actualización: 17 de julio de 2026.
         </p>
 
-        <p className="text-gray-600 leading-relaxed mb-10">
+        <p className="text-[var(--text-secondary)] leading-relaxed mb-10">
           tiyuy ofrece planes de suscripción y servicios digitales para publicación y promoción de propiedades, con modalidades de facturación mensual, trimestral o anual, según el plan elegido. Estas políticas regulan los cambios, cancelaciones y devoluciones aplicables a los servicios contratados en la plataforma.
         </p>
 
@@ -60,13 +60,13 @@ export default function PoliticasCambioPage() {
 
           <Section num={10} title="Contacto">
             <p className="mb-4">Para solicitar cambios, cancelaciones o devoluciones, escríbenos a:</p>
-            <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
-              <p><span className="font-semibold">📧</span> tiyuy@saberoconsulting.com</p>
-              <p><span className="font-semibold">📞</span> +51 923 327 532</p>
+            <div className="bg-[var(--bg-tertiary)] rounded-lg p-4 space-y-2 text-sm">
+              <p><span className="font-semibold text-[var(--text-primary)]">📧</span> tiyuy@saberoconsulting.com</p>
+              <p><span className="font-semibold text-[var(--text-primary)]">📞</span> +51 923 327 532</p>
             </div>
-            <p className="mt-4">Si tu solicitud no es atendida satisfactoriamente, puedes registrar tu reclamo en nuestro Libro de Reclamaciones.</p>
+            <p className="mt-4 text-[var(--text-secondary)]">Si tu solicitud no es atendida satisfactoriamente, puedes registrar tu reclamo en nuestro Libro de Reclamaciones.</p>
             <div className="mt-3">
-              <Link href="/libro-de-reclamaciones" className="inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-lg transition-colors">
+              <Link href="/libro-de-reclamaciones" className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] bg-[var(--brand-primary-light)] hover:bg-[var(--brand-primary-light-hover)] px-4 py-2 rounded-lg transition-colors">
                 Ir al Libro de Reclamaciones →
               </Link>
             </div>
@@ -74,10 +74,10 @@ export default function PoliticasCambioPage() {
         </div>
 
         {/* Versión resumida */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-5">
-            <h3 className="text-sm font-bold text-green-800 mb-2">En resumen</h3>
-            <p className="text-sm text-green-700 leading-relaxed">
+        <div className="mt-12 pt-8 border-t border-[var(--border-color)]">
+          <div className="bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 rounded-lg p-5">
+            <h3 className="text-sm font-bold text-[var(--brand-primary)] mb-2">En resumen</h3>
+            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
               Los planes de tiyuy no son reembolsables una vez utilizados. El usuario puede solicitar devolución total dentro de los 7 días calendario posteriores a la contratación, siempre que no haya usado el servicio. No aplican devoluciones por planes ya consumidos, salvo error de cobro o falla técnica atribuible a tiyuy.
             </p>
           </div>
@@ -90,13 +90,13 @@ export default function PoliticasCambioPage() {
 function Section({ num, title, children }: { num: number; title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-        <span className="w-7 h-7 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm font-bold shrink-0">
+      <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
+        <span className="w-7 h-7 rounded-full bg-[var(--brand-primary-light)] text-[var(--brand-primary)] flex items-center justify-center text-sm font-bold shrink-0">
           {num}
         </span>
         {title}
       </h2>
-      <div className="text-gray-600 leading-relaxed ml-9 space-y-3">
+      <div className="text-[var(--text-secondary)] leading-relaxed ml-9 space-y-3">
         {children}
       </div>
     </div>

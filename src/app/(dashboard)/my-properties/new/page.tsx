@@ -52,7 +52,7 @@ export default function NuevaPropiedadPage() {
         <div className="text-center">
           <div
             className="animate-spin rounded-full h-10 w-10 border-2 border-t-transparent mx-auto mb-3"
-            style={{ borderColor: '#61BF53', borderTopColor: 'transparent' }}
+            style={{ borderColor: 'var(--brand-primary)', borderTopColor: 'transparent' }}
           />
           <p className="text-sm text-[var(--text-muted)]">Verificando autenticación...</p>
         </div>
@@ -120,8 +120,8 @@ export default function NuevaPropiedadPage() {
                       className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300"
                       style={
                         isDone || isActive
-                          ? { backgroundColor: '#61BF53', color: '#fff' }
-                          : { backgroundColor: '#f3f4f6', color: '#9ca3af' }
+                          ? { backgroundColor: 'var(--brand-primary)', color: '#fff' }
+                          : { backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-tertiary)' }
                       }
                     >
                       {isDone ? (
@@ -137,7 +137,7 @@ export default function NuevaPropiedadPage() {
                   {index < STEPS.length - 1 && (
                     <div
                       className="w-8 sm:w-12 h-0.5 mx-1 rounded-full transition-all duration-300"
-                      style={{ backgroundColor: isDone ? '#61BF53' : '#e5e7eb' }}
+                        style={{ backgroundColor: isDone ? 'var(--brand-primary)' : 'var(--border-color)' }}
                     />
                   )}
                 </div>
@@ -169,9 +169,9 @@ export default function NuevaPropiedadPage() {
                         className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 transition-all duration-300"
                         style={
                           isDone || isActive
-                            ? { backgroundColor: '#61BF53', color: '#fff',
-                                boxShadow: isActive ? '0 0 0 4px rgba(97, 191, 83, 0.2)' : 'none' }
-                            : { backgroundColor: '#f3f4f6', color: '#9ca3af' }
+                            ? { backgroundColor: 'var(--brand-primary)', color: '#fff',
+                                boxShadow: isActive ? '0 0 0 4px var(--brand-primary-light)' : 'none' }
+                            : { backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-tertiary)' }
                         }
                       >
                         {isDone ? (
@@ -181,7 +181,7 @@ export default function NuevaPropiedadPage() {
                       {index < STEPS.length - 1 && (
                         <div
                           className="w-0.5 h-10 mt-1 rounded-full transition-all duration-300"
-                          style={{ backgroundColor: isDone ? '#61BF53' : '#e5e7eb' }}
+                            style={{ backgroundColor: isDone ? 'var(--brand-primary)' : 'var(--border-color)' }}
                         />
                       )}
                     </div>
