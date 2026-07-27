@@ -35,7 +35,7 @@ export class AuthRepository implements IAuthRepository {
       
       if (status === 401) {
         if (data?.message?.toLowerCase().includes('contraseña') || data?.message?.toLowerCase().includes('password')) {
-          throw new Error('La contraseña es incorrecta. Por favor, inténtalo de nuevo.');
+          throw new Error('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
         } else if (data?.message?.toLowerCase().includes('correo') || data?.message?.toLowerCase().includes('email')) {
           throw new Error('El correo electrónico no está registrado.');
         } else {
