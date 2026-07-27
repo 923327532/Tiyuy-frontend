@@ -47,8 +47,8 @@ const SectionFallback = ({ height = '300px' }: { height?: string }) => (
 const FALLBACK_HERO_IMAGES = [
   '/assets/images/hero/hero-1.jpg',
   '/assets/images/hero/hero-2.jpg',
-  '/assets/images/hero/hero-3.jpg',
-  '/assets/images/hero/hero-4.jpg',
+  '/assets/images/hero/hero-3.webp',
+  '/assets/images/hero/hero-4.webp',
 ];
 
 const links = [
