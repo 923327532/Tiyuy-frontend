@@ -66,11 +66,11 @@ export function PropertyQuickInfo({ property }: PropertyQuickInfoProps) {
   });
 
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
       {stats.map((stat, i) => (
-        <div key={i} className="flex items-center gap-2 text-gray-600">
-          <span className="text-gray-400">{stat.icon}</span>
-          <span className="text-sm font-semibold text-gray-800">{stat.value}</span>
+        <div key={i} className="flex items-center gap-2 text-[var(--text-primary)]">
+          <span className="text-[var(--text-secondary)] w-5 h-5 flex items-center justify-center">{stat.icon}</span>
+          <span className="text-sm font-semibold">{stat.value}</span>
         </div>
       ))}
     </div>
