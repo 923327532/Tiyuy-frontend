@@ -39,7 +39,7 @@ const SOCIAL_NETWORKS = [
   { key: 'socialInstagram', label: 'Instagram', type: 'instagram', hoverClass: 'hover:bg-pink-50 hover:border-pink-300', borderClass: 'border-pink-500', borderColor: '#DD2A7B', placeholder: 'https://instagram.com/...' },
   { key: 'socialTiktok', label: 'TikTok', type: 'tiktok', hoverClass: 'hover:bg-gray-100 hover:border-gray-400', borderClass: 'border-gray-600', borderColor: '#000', placeholder: 'https://tiktok.com/@...' },
   { key: 'socialFacebook', label: 'Facebook', type: 'facebook', hoverClass: 'hover:bg-blue-50 hover:border-blue-300', borderClass: 'border-blue-500', borderColor: '#1877F2', placeholder: 'https://facebook.com/...' },
-  { key: 'socialWeb', label: 'Web', type: 'web', hoverClass: 'hover:bg-teal-50 hover:border-teal-300', borderClass: 'border-teal-500', borderColor: '#14b8a6', placeholder: 'https://tupagina.com' },
+  { key: 'socialWeb', label: 'Web', type: 'web', hoverClass: 'hover:bg-[var(--brand-primary-light)] hover:border-[var(--brand-primary)]', borderClass: 'border-[var(--brand-primary)]', borderColor: '#14b8a6', placeholder: 'https://tupagina.com' },
 ];
 
 export function ProjectInfoStep({ formData, onChange, validationErrors }: ProjectInfoStepProps) {
@@ -72,19 +72,19 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm text-gray-700 cursor-pointer transition-all hover:border-gray-400 focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] outline-none"
+          className="w-full flex items-center justify-between px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-card)] text-sm text-[var(--text-secondary)] cursor-pointer transition-all hover:border-gray-400 focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] outline-none"
         >
-          <span className={selected ? 'text-gray-900' : 'text-gray-400'}>{selected ? selected[1] : label || 'Seleccionar'}</span>
-          <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <span className={selected ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}>{selected ? selected[1] : label || 'Seleccionar'}</span>
+          <ChevronDown className={`w-4 h-4 text-[var(--text-secondary)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </button>
         {isOpen && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+          <div className="absolute z-50 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg overflow-hidden">
             {entries.map(([key, lbl]) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => { onChange(key); setIsOpen(false); }}
-                className={`w-full text-left px-3 py-2.5 text-sm transition-colors hover:bg-green-50 hover:text-green-700 ${value === key ? 'bg-green-50 text-green-700 font-semibold' : 'text-gray-700'}`}
+                className={`w-full text-left px-3 py-2.5 text-sm transition-colors hover:bg-[var(--brand-primary-light)] hover:text-[var(--brand-primary)] ${value === key ? 'bg-[var(--brand-primary-light)] text-[var(--brand-primary)] font-semibold' : 'text-[var(--text-secondary)]'}`}
               >
                 {lbl}
               </button>
@@ -98,15 +98,15 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">Información del Proyecto</h3>
-        <p className="text-sm text-gray-500">
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-1">Información del Proyecto</h3>
+        <p className="text-sm text-[var(--text-secondary)]">
           Describe tu proyecto inmobiliario y especifica la fase actual. Los campos con (*) son obligatorios.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Propiedad *</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Tipo de Propiedad *</label>
           <CustomSelect
             value={formData.projectType || 'RESIDENTIAL'}
             onChange={(v) => onChange('projectType', v)}
@@ -115,7 +115,7 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Fase Actual *</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Fase Actual *</label>
           <CustomSelect
             value={formData.phase || 'PRE_SALE'}
             onChange={(v) => onChange('phase', v)}
@@ -127,7 +127,7 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Moneda</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Moneda</label>
           <CustomSelect
             value={formData.currency || 'PEN'}
             onChange={(v) => onChange('currency', v)}
@@ -136,13 +136,13 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Precio Desde ({currencySymbol})</label>
-          <input type="number" value={formData.priceFrom ?? ''} onChange={(e) => { const raw = e.target.value; onChange('priceFrom', raw === '' ? '' : parseFloat(raw)); }} placeholder="Ej: 150000" min="0" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-white text-gray-900 outline-none" />
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Precio Desde ({currencySymbol})</label>
+          <input type="number" value={formData.priceFrom ?? ''} onChange={(e) => { const raw = e.target.value; onChange('priceFrom', raw === '' ? '' : parseFloat(raw)); }} placeholder="Ej: 150000" min="0" step="0.01" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)] outline-none" />
           {validationErrors?.priceFrom && <div className="mt-2 flex items-start gap-2 bg-red-50/50 border-l-4 border-red-500 p-2.5 rounded-r-lg text-sm text-red-700"><span className="mt-0.5">⚠️</span><span className="font-medium">{validationErrors.priceFrom}</span></div>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Precio Hasta ({currencySymbol})</label>
-          <input type="number" value={formData.priceTo ?? ''} onChange={(e) => { const raw = e.target.value; onChange('priceTo', raw === '' ? '' : parseFloat(raw)); }} placeholder="Ej: 300000" min="0" step="0.01" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-white text-gray-900 outline-none" />
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Precio Hasta ({currencySymbol})</label>
+          <input type="number" value={formData.priceTo ?? ''} onChange={(e) => { const raw = e.target.value; onChange('priceTo', raw === '' ? '' : parseFloat(raw)); }} placeholder="Ej: 300000" min="0" step="0.01" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)] outline-none" />
           {validationErrors?.priceTo && <div className="mt-2 flex items-start gap-2 bg-red-50/50 border-l-4 border-red-500 p-2.5 rounded-r-lg text-sm text-red-700"><span className="mt-0.5">⚠️</span><span className="font-medium">{validationErrors.priceTo}</span></div>}
         </div>
       </div>
@@ -162,63 +162,63 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Nombre del Proyecto *</label>
-        <input type="text" value={formData.name || formData.projectName || ''} onChange={(e) => onChange('name', e.target.value)} className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] outline-none text-gray-900 bg-white ${validationErrors?.name ? 'border-red-300 bg-red-50/10' : 'border-gray-300'}`} placeholder="Ej: Residencial Las Flores" required />
+        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Nombre del Proyecto *</label>
+        <input type="text" value={formData.name || formData.projectName || ''} onChange={(e) => onChange('name', e.target.value)} className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] outline-none text-[var(--text-primary)] bg-[var(--bg-card)] ${validationErrors?.name ? 'border-red-300 bg-red-50/10' : 'border-[var(--input-border)]'}`} placeholder="Ej: Residencial Las Flores" required />
         {validationErrors?.name && <div className="mt-2 flex items-start gap-2 bg-red-50/50 border-l-4 border-red-500 p-2.5 rounded-r-lg text-sm text-red-700"><span className="mt-0.5">⚠️</span><span className="font-medium">{validationErrors.name}</span></div>}
       </div>
 
       <div>
         <div className="flex justify-between items-center mb-2">
-          <label className="block text-sm font-medium text-gray-700">Descripción del Proyecto *</label>
+          <label className="block text-sm font-medium text-[var(--text-secondary)]">Descripción del Proyecto *</label>
           <span className={`text-xs font-medium ${(formData.description?.length || 0) < 50 ? 'text-amber-600' : 'text-emerald-600'}`}>{formData.description?.length || 0} caracteres (Mín. 50)</span>
         </div>
-        <textarea value={formData.description || ''} onChange={(e) => onChange('description', e.target.value)} rows={4} className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] outline-none text-gray-900 bg-white ${validationErrors?.description ? 'border-red-300 bg-red-50/10' : 'border-gray-300'}`} placeholder="Describe tu proyecto, características principales, amenities, ubicación privilegiada..." required />
-        <p className="text-xs text-gray-400 mt-1">Una buena descripción mejora significativamente el posicionamiento SEO en los motores de búsqueda.</p>
+        <textarea value={formData.description || ''} onChange={(e) => onChange('description', e.target.value)} rows={4} className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] outline-none text-[var(--text-primary)] bg-[var(--bg-card)] ${validationErrors?.description ? 'border-red-300 bg-red-50/10' : 'border-[var(--input-border)]'}`} placeholder="Describe tu proyecto, características principales, amenities, ubicación privilegiada..." required />
+        <p className="text-xs text-[var(--text-muted)] mt-1">Una buena descripción mejora significativamente el posicionamiento SEO en los motores de búsqueda.</p>
         {validationErrors?.description && <div className="mt-2 flex items-start gap-2 bg-red-50/50 border-l-4 border-red-500 p-2.5 rounded-r-lg text-sm text-red-700"><span className="mt-0.5">⚠️</span><span className="font-medium">{validationErrors.description}</span></div>}
       </div>
 
       {formData.projectType === 'LOTIZATION' && (
-        <div className="space-y-4 border-l-4 border-teal-400 pl-4 bg-teal-50/30 rounded-r-xl p-4">
-          <h4 className="font-bold text-gray-900 text-sm">Datos de Lotizacion</h4>
+        <div className="space-y-4 border-l-4 border-[var(--brand-primary)] pl-4 bg-[var(--brand-primary-light)] rounded-r-xl p-4">
+          <h4 className="font-bold text-[var(--text-primary)] text-sm">Datos de Lotizacion</h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">RUC (privado)</label>
-              <input type="text" value={formData.ruc || ''} onChange={e => onChange('ruc', e.target.value)} placeholder="20600000001" maxLength={11} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" />
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">RUC (privado)</label>
+              <input type="text" value={formData.ruc || ''} onChange={e => onChange('ruc', e.target.value)} placeholder="20600000001" maxLength={11} className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Razon social</label>
-              <input type="text" value={formData.socialReason || ''} onChange={e => onChange('socialReason', e.target.value)} placeholder="Nombre de la empresa" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" />
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Razon social</label>
+              <input type="text" value={formData.socialReason || ''} onChange={e => onChange('socialReason', e.target.value)} placeholder="Nombre de la empresa" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Inicial desde (S/)</label>
-              <input type="number" value={formData.initialFee || ''} onChange={e => onChange('initialFee', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 5000" min="0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" />
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Inicial desde (S/)</label>
+              <input type="number" value={formData.initialFee || ''} onChange={e => onChange('initialFee', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 5000" min="0" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Cuota mensual (S/)</label>
-              <input type="number" value={formData.monthlyPayment || ''} onChange={e => onChange('monthlyPayment', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 800" min="0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" />
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Cuota mensual (S/)</label>
+              <input type="number" value={formData.monthlyPayment || ''} onChange={e => onChange('monthlyPayment', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 800" min="0" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" />
             </div>
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Informacion de financiamiento</label>
-            <input type="text" value={formData.financingInfo || ''} onChange={e => onChange('financingInfo', e.target.value)} placeholder="Ej: Financiamiento directo sin intereses a 24 meses" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" />
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Informacion de financiamiento</label>
+            <input type="text" value={formData.financingInfo || ''} onChange={e => onChange('financingInfo', e.target.value)} placeholder="Ej: Financiamiento directo sin intereses a 24 meses" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Total de manzanas</label>
-              <input type="number" value={formData.totalBlocks || ''} onChange={e => onChange('totalBlocks', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 8" min="0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" />
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Total de manzanas</label>
+              <input type="number" value={formData.totalBlocks || ''} onChange={e => onChange('totalBlocks', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 8" min="0" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Total de lotes</label>
-              <input type="number" value={formData.totalLots || ''} onChange={e => onChange('totalLots', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 120" min="0" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" />
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">Total de lotes</label>
+              <input type="number" value={formData.totalLots || ''} onChange={e => onChange('totalLots', e.target.value ? Number(e.target.value) : '')} placeholder="Ej: 120" min="0" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Redes sociales</label>
-            <p className="text-xs text-gray-400 mb-3">Haz clic en el icono y pega el enlace de tu red social</p>
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Redes sociales</label>
+            <p className="text-xs text-[var(--text-muted)] mb-3">Haz clic en el icono y pega el enlace de tu red social</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {SOCIAL_NETWORKS.map(social => {
                 const value = formData[social.key] || '';
@@ -226,22 +226,22 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
                 return (
                   <div key={social.key} className="relative">
                     {isEditing ? (
-                      <div className="flex flex-col gap-1.5 p-2 border-2 rounded-xl bg-white shadow-sm" style={{ borderColor: social.borderColor }}>
+                      <div className="flex flex-col gap-1.5 p-2 border-2 rounded-xl bg-[var(--bg-card)] shadow-sm" style={{ borderColor: social.borderColor }}>
                         <div className="flex items-center gap-2">
                           <SocialIcon type={social.type} />
-                          <span className="text-xs font-semibold text-gray-700">{social.label}</span>
+                          <span className="text-xs font-semibold text-[var(--text-secondary)]">{social.label}</span>
                         </div>
-                        <input type="url" value={value} onChange={e => onChange(social.key, e.target.value)} placeholder={social.placeholder} className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 outline-none bg-white text-gray-900" autoFocus />
+                        <input type="url" value={value} onChange={e => onChange(social.key, e.target.value)} placeholder={social.placeholder} className="w-full px-2 py-1.5 text-xs border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] outline-none bg-[var(--bg-card)] text-[var(--text-primary)]" autoFocus />
                         <div className="flex gap-1">
-                          <button type="button" onClick={() => setEditingSocial(null)} className="flex-1 text-xs py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition font-medium">{value ? 'Guardar' : 'Cerrar'}</button>
+                          <button type="button" onClick={() => setEditingSocial(null)} className="flex-1 text-xs py-1 bg-[var(--brand-primary)] text-white rounded-lg hover:opacity-90 transition font-medium">{value ? 'Guardar' : 'Cerrar'}</button>
                           {value && <button type="button" onClick={() => { onChange(social.key, ''); setEditingSocial(null); }} className="px-2 py-1 text-xs border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition">✕</button>}
                         </div>
                       </div>
                     ) : (
-                      <button type="button" onClick={() => setEditingSocial(social.key)} className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl border-2 bg-white transition-all ${social.hoverClass} ${value ? social.borderClass + ' bg-opacity-50' : 'border-gray-200'}`}>
+                      <button type="button" onClick={() => setEditingSocial(social.key)} className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl border-2 bg-[var(--bg-card)] transition-all ${social.hoverClass} ${value ? social.borderClass + ' bg-opacity-50' : 'border-[var(--border-color)]'}`}>
                         <SocialIcon type={social.type} />
-                        <span className="text-xs font-medium text-gray-600">{social.label}</span>
-                        {value && <span className="text-[10px] text-teal-600 truncate max-w-full mt-0.5">✓ Enlace agregado</span>}
+                        <span className="text-xs font-medium text-[var(--text-secondary)]">{social.label}</span>
+                        {value && <span className="text-[10px] text-[var(--brand-primary)] truncate max-w-full mt-0.5">✓ Enlace agregado</span>}
                       </button>
                     )}
                   </div>
@@ -250,28 +250,28 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-gray-200">
-            <h5 className="font-semibold text-gray-800 text-sm mb-3">Habilitacion urbana y documentos</h5>
+          <div className="bg-[var(--bg-card)] rounded-lg p-4 border border-[var(--border-color)]">
+            <h5 className="font-semibold text-[var(--text-primary)] text-sm mb-3">Habilitacion urbana y documentos</h5>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasUrbanization || false} onChange={e => onChange('hasUrbanization', e.target.checked)} className="rounded text-teal-600" /><span>Habilitacion urbana</span></label>
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasPropertyTitle || false} onChange={e => onChange('hasPropertyTitle', e.target.checked)} className="rounded text-teal-600" /><span>Titulo de propiedad</span></label>
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasWater || false} onChange={e => onChange('hasWater', e.target.checked)} className="rounded text-teal-600" /><span>Agua</span></label>
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasElectricity || false} onChange={e => onChange('hasElectricity', e.target.checked)} className="rounded text-teal-600" /><span>Electricidad</span></label>
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasSewerage || false} onChange={e => onChange('hasSewerage', e.target.checked)} className="rounded text-teal-600" /><span>Desague</span></label>
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasPavedRoads || false} onChange={e => onChange('hasPavedRoads', e.target.checked)} className="rounded text-teal-600" /><span>Pistas</span></label>
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasStreetLighting || false} onChange={e => onChange('hasStreetLighting', e.target.checked)} className="rounded text-teal-600" /><span>Alumbrado publico</span></label>
-              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasGasNetwork || false} onChange={e => onChange('hasGasNetwork', e.target.checked)} className="rounded text-teal-600" /><span>Gas natural</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasUrbanization || false} onChange={e => onChange('hasUrbanization', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Habilitacion urbana</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasPropertyTitle || false} onChange={e => onChange('hasPropertyTitle', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Titulo de propiedad</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasWater || false} onChange={e => onChange('hasWater', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Agua</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasElectricity || false} onChange={e => onChange('hasElectricity', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Electricidad</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasSewerage || false} onChange={e => onChange('hasSewerage', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Desague</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasPavedRoads || false} onChange={e => onChange('hasPavedRoads', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Pistas</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasStreetLighting || false} onChange={e => onChange('hasStreetLighting', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Alumbrado publico</span></label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked={formData.hasGasNetwork || false} onChange={e => onChange('hasGasNetwork', e.target.checked)} className="rounded text-[var(--brand-primary)]" /><span>Gas natural</span></label>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pt-3 border-t border-gray-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pt-3 border-t border-[var(--border-color)]">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Nombre de urbanizacion <span className="text-gray-400 font-normal">(opcional)</span></label>
-                <input type="text" value={formData.urbanizationName || ''} onChange={e => onChange('urbanizationName', e.target.value)} placeholder="Ej: Los Olivos de Monterrico" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-teal-500 outline-none text-gray-900" />
-                <p className="text-[10px] text-gray-400 mt-0.5">Esto genera mayor credibilidad a tu proyecto</p>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Nombre de urbanizacion <span className="text-[var(--text-muted)] font-normal">(opcional)</span></label>
+                <input type="text" value={formData.urbanizationName || ''} onChange={e => onChange('urbanizationName', e.target.value)} placeholder="Ej: Los Olivos de Monterrico" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm bg-[var(--bg-card)] focus:ring-2 focus:ring-[var(--brand-primary)] outline-none text-[var(--text-primary)]" />
+                <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Esto genera mayor credibilidad a tu proyecto</p>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Numero de partida registral <span className="text-gray-400 font-normal">(opcional)</span></label>
-                <input type="text" value={formData.registryNumber || ''} onChange={e => onChange('registryNumber', e.target.value)} placeholder="Ej: P03234567" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-teal-500 outline-none text-gray-900" />
-                <p className="text-[10px] text-gray-400 mt-0.5">Esto genera mayor credibilidad a tu proyecto</p>
+                <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">Numero de partida registral <span className="text-[var(--text-muted)] font-normal">(opcional)</span></label>
+                <input type="text" value={formData.registryNumber || ''} onChange={e => onChange('registryNumber', e.target.value)} placeholder="Ej: P03234567" className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg text-sm bg-[var(--bg-card)] focus:ring-2 focus:ring-[var(--brand-primary)] outline-none text-[var(--text-primary)]" />
+                <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Esto genera mayor credibilidad a tu proyecto</p>
               </div>
             </div>
           </div>
@@ -279,14 +279,14 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
       )}
 
       <div>
-        <div className={`p-4 rounded-xl border transition-colors ${validationErrors?.amenities ? 'border-red-200 bg-red-50/5' : 'border-gray-200 bg-gray-50/30'}`}>
-          <label className="block text-sm font-bold text-gray-800 mb-3">Amenidades Principales</label>
+        <div className={`p-4 rounded-xl border transition-colors ${validationErrors?.amenities ? 'border-red-200 bg-red-50/5' : 'border-[var(--border-color)] bg-[var(--bg-secondary)]'}`}>
+          <label className="block text-sm font-bold text-[var(--text-primary)] mb-3">Amenidades Principales</label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {AMENITY_OPTIONS.map((amenity) => {
               const isChecked = formData.amenities?.includes(amenity) || false;
               return (
-                <label key={amenity} className={`flex items-center space-x-3 p-2.5 rounded-lg border cursor-pointer select-none transition-all duration-150 ${isChecked ? 'bg-[var(--brand-primary)]/10 border-[var(--brand-primary)] text-gray-900 font-medium' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
-                  <input type="checkbox" checked={isChecked} onChange={(e) => { const current = formData.amenities || []; if (e.target.checked) { onChange('amenities', [...current, amenity]); } else { onChange('amenities', current.filter((a: string) => a !== amenity)); } }} style={{ color: 'var(--brand-primary)' }} className="rounded h-4 w-4 border-gray-300 focus:ring-[var(--brand-primary)] dynamic-checkbox" />
+                <label key={amenity} className={`flex items-center space-x-3 p-2.5 rounded-lg border cursor-pointer select-none transition-all duration-150 ${isChecked ? 'bg-[var(--brand-primary)]/10 border-[var(--brand-primary)] text-[var(--text-primary)] font-medium' : 'bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-gray-50'}`}>
+                  <input type="checkbox" checked={isChecked} onChange={(e) => { const current = formData.amenities || []; if (e.target.checked) { onChange('amenities', [...current, amenity]); } else { onChange('amenities', current.filter((a: string) => a !== amenity)); } }} style={{ color: 'var(--brand-primary)' }} className="rounded h-4 w-4 border-[var(--border-color)] focus:ring-[var(--brand-primary)] dynamic-checkbox" />
                   <span className="text-sm">{amenity}</span>
                 </label>
               );

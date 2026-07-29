@@ -160,7 +160,7 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
         .form-input {
           width: 100%;
           padding: 13px 16px;
-          border: 1.5px solid var(--border-color);
+          border: 1.5px solid var(--input-border);
           border-radius: 10px;
           font-size: 14px;
           color: var(--text-primary);
@@ -178,7 +178,7 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
 
         .form-select {
           padding: 13px 16px;
-          border: 1.5px solid var(--border-color);
+          border: 1.5px solid var(--input-border);
           border-radius: 10px;
           font-size: 14px;
           color: var(--text-primary);

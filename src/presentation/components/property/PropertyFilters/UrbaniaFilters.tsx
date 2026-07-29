@@ -45,7 +45,7 @@ function StyledDropdown({ label, options, value, onChange }: {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent flex items-center justify-between cursor-pointer transition-all"
+        className="w-full px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent flex items-center justify-between cursor-pointer transition-all"
       >
         <span>{selectedLabel}</span>
         <svg className={`w-4 h-4 text-[var(--text-muted)] transition-transform ${open ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,8 +62,8 @@ function StyledDropdown({ label, options, value, onChange }: {
               type="button"
               className={`w-full px-4 py-3 text-sm text-left transition-colors cursor-pointer flex items-center gap-3 ${
                 value === opt.value
-                  ? 'bg-green-50 text-green-700 font-semibold'
-                  : 'text-[var(--text-secondary)] hover:bg-green-50/50 hover:text-green-700'
+                  ? 'bg-[var(--brand-primary-light)] text-[var(--brand-primary)] font-semibold'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--brand-primary-light-hover)] hover:text-[var(--brand-primary)]'
               }`}
               onClick={() => {
                 onChange(opt.value);
@@ -73,7 +73,7 @@ function StyledDropdown({ label, options, value, onChange }: {
               {/* Indicador circular tipo radio */}
               <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                 value === opt.value
-                  ? 'border-green-500 bg-green-500'
+                  ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)]'
                   : 'border-[var(--border-color)] bg-[var(--bg-card)]'
               }`}>
                 {value === opt.value && (
@@ -130,12 +130,12 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
           <span className="font-semibold text-[var(--text-primary)]">Precio</span>
           <div className="flex items-center gap-3">
             <button
-              className="text-sm text-green-600 hover:text-green-700 font-medium"
+              className="text-sm text-[var(--brand-primary)] hover:opacity-80 font-medium"
               onClick={() => setShowMoreFilters(!showMoreFilters)}
             >
               ≡ {showMoreFilters ? 'Menos filtros' : 'Más filtros'}
             </button>
-            <button className="text-sm text-orange-500 hover:text-orange-600 font-medium">
+            <button className="text-sm text-[var(--brand-primary)] hover:opacity-80 font-medium">
               Crear alerta
             </button>
           </div>
@@ -144,7 +144,7 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
         <div className="flex gap-2 mb-3">
           <button
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              currency === 'PEN' ? 'bg-green-600 text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--border-color)]'
+              currency === 'PEN' ? 'bg-[var(--brand-primary)] text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--border-color)]'
             }`}
             onClick={() => setCurrency('PEN')}
           >
@@ -152,7 +152,7 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
           </button>
           <button
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              currency === 'USD' ? 'bg-green-600 text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--border-color)]'
+              currency === 'USD' ? 'bg-[var(--brand-primary)] text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--border-color)]'
             }`}
             onClick={() => setCurrency('USD')}
           >
@@ -164,13 +164,13 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
           <input
             type="number"
             placeholder="Desde"
-            className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
             onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
           />
           <input
             type="number"
             placeholder="Hasta"
-            className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
             onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
           />
         </div>
@@ -178,7 +178,7 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
         <label className="flex items-center mt-3 cursor-pointer">
           <input
             type="checkbox"
-            className="mr-2 accent-green-600"
+            className="mr-2 accent-[var(--brand-primary)]"
             checked={includeMaintenance}
             onChange={(e) => setIncludeMaintenance(e.target.checked)}
           />
@@ -235,7 +235,7 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
                 type="radio"
                 name="tipoBano"
                 value="propio"
-                className="mr-3 accent-green-600"
+                className="mr-3 accent-[var(--brand-primary)]"
                 onChange={(e) => setFilters({ ...filters, hasPrivateBathroom: true })}
                 checked={filters.hasPrivateBathroom === true}
               />
@@ -246,7 +246,7 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
                 type="radio"
                 name="tipoBano"
                 value="compartido"
-                className="mr-3 accent-green-600"
+                className="mr-3 accent-[var(--brand-primary)]"
                 onChange={(e) => setFilters({ ...filters, hasPrivateBathroom: false })}
                 checked={filters.hasPrivateBathroom === false}
               />
@@ -264,13 +264,13 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
             <input
               type="number"
               placeholder="Desde"
-              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
               onChange={(e) => setFilters({ ...filters, minArea: e.target.value })}
             />
             <input
               type="number"
               placeholder="Hasta"
-              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
               onChange={(e) => setFilters({ ...filters, maxArea: e.target.value })}
             />
           </div>
@@ -303,13 +303,13 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
             <input
               type="number"
               placeholder="Desde"
-              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
               onChange={(e) => setFilters({ ...filters, minLand: e.target.value })}
             />
             <input
               type="number"
               placeholder="Hasta"
-              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
               onChange={(e) => setFilters({ ...filters, maxLand: e.target.value })}
             />
           </div>
@@ -326,13 +326,13 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
               <input
                 type="number"
                 placeholder="Desde"
-                className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                 onChange={(e) => setFilters({ ...filters, minFrontis: e.target.value })}
               />
               <input
                 type="number"
                 placeholder="Hasta"
-                className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] placeholder:text-[var(--text-muted)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                 onChange={(e) => setFilters({ ...filters, maxFrontis: e.target.value })}
               />
             </div>
@@ -351,7 +351,7 @@ export function UrbaniaFilters({ initialFilters, onFilterChange, propertyType }:
           Limpiar
         </button>
         <button
-          className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-semibold text-sm transition-colors"
+          className="flex-1 bg-[var(--brand-primary)] hover:opacity-90 text-white px-4 py-3 rounded-lg font-semibold text-sm transition-opacity"
           onClick={handleSubmit}
         >
           Ver resultados

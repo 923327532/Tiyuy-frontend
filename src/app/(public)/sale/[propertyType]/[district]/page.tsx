@@ -334,7 +334,7 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
         }}
       />
 
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-[var(--bg-secondary)]">
         <div className="px-8 pt-6 pb-8">
 
           {/* ── BARRA DE BÚSQUEDA SUPERIOR ── */}
@@ -349,7 +349,7 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
             <aside className="lg:col-span-1">
               <div className="sticky top-4">
                 <Suspense fallback={
-                  <div className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse h-96" />
+                  <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-4 animate-pulse h-96" />
                 }>
                   <PropertyFiltersClient
                     initialFilters={filters}
@@ -363,9 +363,9 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
             <div className="lg:col-span-3">
               {/* Título de resultados */}
               <div className="mb-4 flex items-center justify-between">
-                <h1 className="text-lg font-semibold text-gray-900">
+                <h1 className="text-lg font-semibold text-[var(--text-primary)]">
                   {propertyTypeLabel} en {district}
-                  <span className="ml-2 text-sm font-normal text-gray-500">
+                  <span className="ml-2 text-sm font-normal text-[var(--text-secondary)]">
                     ({result.pagination.totalElements} propiedades)
                   </span>
                 </h1>

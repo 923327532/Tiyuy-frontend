@@ -58,7 +58,7 @@ function Field({ label, children, className = '' }: {
 }) {
   return (
     <div className={className}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">{label}</label>
       {children}
     </div>
   );
@@ -394,7 +394,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
   }) => (
     <div className="space-y-2">
       {previewUrl && (
-        <div className="relative w-full h-36 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+        <div className="relative w-full h-36 bg-[var(--bg-secondary)] rounded-lg overflow-hidden border border-[var(--border-color)]">
           <img src={previewUrl} alt="Plano" className="w-full h-full object-contain p-1" />
           <button type="button" onClick={onClear}
             className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
@@ -402,7 +402,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
           </button>
         </div>
       )}
-      <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
+      <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 bg-[var(--brand-primary)] text-white rounded-lg hover:bg-[var(--brand-primary-hover)] transition text-sm">
         <LayoutDashboard className="w-4 h-4" />
         {uploadingBP ? 'Subiendo...' : (previewUrl ? 'Cambiar plano' : 'Subir plano')}
         <input type="file" accept="image/*" className="hidden" disabled={uploadingBP}
@@ -411,13 +411,13 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
     </div>
   );
 
-  const inputClasses = "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-white text-gray-900 outline-none transition";
+  const inputClasses = "w-full px-3 py-2 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)] outline-none transition";
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900">{isLotization ? 'Tipos de Lotes' : 'Tipos de Unidades'}</h3>
-        <p className="text-sm text-gray-500 mt-1">
+        <h3 className="text-lg font-semibold text-[var(--text-primary)]">{isLotization ? 'Tipos de Lotes' : 'Tipos de Unidades'}</h3>
+        <p className="text-sm text-[var(--text-muted)] mt-1">
           {isLotization ? (
             <>Define los lotes disponibles de tu proyecto. Usa <strong>grupos</strong> para lotes idénticos.</>
           ) : (
@@ -426,36 +426,36 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
         </p>
       </div>
 
-      <div className="flex gap-3 p-1 bg-gray-100 rounded-xl w-fit">
+      <div className="flex gap-3 p-1 bg-[var(--bg-secondary)] rounded-xl w-fit">
         <button type="button" onClick={() => handleModeChange('individual')}
-          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${mode === 'individual' ? 'bg-white shadow text-[var(--brand-primary)]' : 'text-gray-500 hover:text-gray-700'}`}>
+          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${mode === 'individual' ? 'bg-[var(--bg-card)] shadow text-[var(--brand-primary)]' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}>
           Individual
         </button>
         <button type="button" onClick={() => handleModeChange('group')}
-          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${mode === 'group' ? 'bg-white shadow text-[var(--brand-primary)]' : 'text-gray-500 hover:text-gray-700'}`}>
+          className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-150 ${mode === 'group' ? 'bg-[var(--bg-card)] shadow text-[var(--brand-primary)]' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}>
           Por Grupo
         </button>
       </div>
 
       {formData.unitGroups?.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Grupos configurados</h4>
+          <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Grupos configurados</h4>
           {formData.unitGroups.map((group: any) => {
             const preview = getPreviewUrl(group.blueprintImage, 'group');
             const available = group.status === 'AVAILABLE' ? group.quantity : 0;
             return (
               <div key={group.id} className="flex gap-4 border border-[var(--brand-primary)]/20 bg-[var(--brand-primary)]/[0.03] rounded-xl p-4 hover:shadow-sm transition">
-                <div className="flex-shrink-0 w-28 h-28 bg-white rounded-lg border border-[var(--brand-primary)]/10 overflow-hidden flex items-center justify-center">
+                <div className="flex-shrink-0 w-28 h-28 bg-[var(--bg-card)] rounded-lg border border-[var(--brand-primary)]/10 overflow-hidden flex items-center justify-center">
                   {preview ? (
                     <img src={preview} alt="Plano" className="w-full h-full object-contain p-1" />
                   ) : (
-                    <Maximize className="w-8 h-8 text-gray-300" />
+                    <Maximize className="w-8 h-8 text-[var(--text-muted)]" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="font-bold text-gray-900">{group.groupName}</p>
+                      <p className="font-bold text-[var(--text-primary)]">{group.groupName}</p>
                       <p className="text-xs text-[var(--brand-primary)] font-medium mt-0.5">
                         {PROJECT_UNIT_TYPES_LABELS[group.unitType as keyof typeof PROJECT_UNIT_TYPES_LABELS] || group.unitType}
                       </p>
@@ -465,7 +465,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
                       Eliminar
                     </button>
                   </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-gray-600">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-[var(--text-secondary)]">
                     {isLotization ? (
                       <>
                         {group.block && <span>Mz {group.block}</span>}
@@ -484,9 +484,9 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
                     )}
                   </div>
                   <div className="flex items-center gap-3 mt-3">
-                    <span className="text-base font-bold text-gray-900">{currencySymbol} {group.price.toLocaleString()}</span>
-                    <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full">{available} disponibles</span>
-                    <span className="text-xs text-gray-400">({group.quantity} en total)</span>
+                    <span className="text-base font-bold text-[var(--text-primary)]">{currencySymbol} {group.price.toLocaleString()}</span>
+                    <span className="bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-xs font-bold px-2 py-0.5 rounded-full">{available} disponibles</span>
+                    <span className="text-xs text-[var(--text-muted)]">({group.quantity} en total)</span>
                   </div>
                 </div>
               </div>
@@ -497,23 +497,23 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
 
       {formData.units?.length > 0 && (
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Unidades individuales</h4>
+          <h4 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wide">Unidades individuales</h4>
           {formData.units.map((unit: any) => {
             const preview = getPreviewUrl(unit.blueprintImage, 'unit');
             return (
-              <div key={unit.id} className="flex gap-4 border border-gray-200 bg-white rounded-xl p-4 hover:shadow-sm transition">
-                <div className="flex-shrink-0 w-20 h-20 bg-gray-50 rounded-lg border overflow-hidden flex items-center justify-center">
+              <div key={unit.id} className="flex gap-4 border border-[var(--border-color)] bg-[var(--bg-card)] rounded-xl p-4 hover:shadow-sm transition">
+                <div className="flex-shrink-0 w-20 h-20 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-color)] overflow-hidden flex items-center justify-center">
                   {preview ? (
                     <img src={preview} alt="Plano" className="w-full h-full object-contain p-1" />
                   ) : (
-                    <Home className="w-7 h-7 text-gray-300" />
+                    <Home className="w-7 h-7 text-[var(--text-muted)]" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-bold text-gray-900">Unidad {unit.unitNumber}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="font-bold text-[var(--text-primary)]">Unidad {unit.unitNumber}</p>
+                      <p className="text-xs text-[var(--text-muted)]">
                         {PROJECT_UNIT_TYPES_LABELS[unit.type as keyof typeof PROJECT_UNIT_TYPES_LABELS]} · Piso {unit.floor}
                       </p>
                     </div>
@@ -522,16 +522,16 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
                       Eliminar
                     </button>
                   </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-gray-600">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-sm text-[var(--text-secondary)]">
                     {unit.bedrooms && <span>{unit.bedrooms} dorm</span>}
                     <span>{unit.bathrooms} baños</span>
                     <span>{unit.area} m²</span>
                   </div>
-                  <p className="text-base font-bold text-gray-900 mt-2">
+                  <p className="text-base font-bold text-[var(--text-primary)] mt-2">
                     {currencySymbol} {unit.price.toLocaleString()}
                     <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-medium ${
-                      unit.status === 'AVAILABLE' ? 'bg-green-100 text-green-700' :
-                      unit.status === 'RESERVED' ? 'bg-yellow-100 text-yellow-700' :
+                      unit.status === 'AVAILABLE' ? 'bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]' :
+                      unit.status === 'RESERVED' ? 'bg-amber-100 text-amber-700' :
                       'bg-red-100 text-red-700'}`}>
                       {PROJECT_UNIT_STATUS_LABELS[unit.status as keyof typeof PROJECT_UNIT_STATUS_LABELS] || unit.status}
                     </span>
@@ -545,13 +545,13 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
 
       <button type="button"
         onClick={() => mode === 'individual' ? setShowUnitForm(true) : setShowGroupForm(true)}
-        className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition text-sm font-medium">
+        className="w-full py-3 border-2 border-dashed border-[var(--border-color)] rounded-xl text-[var(--text-muted)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition text-sm font-medium">
         + {mode === 'individual' ? 'Agregar unidad individual' : 'Agregar grupo de unidades'}
       </button>
 
       {showUnitForm && (
         <div className="border border-[var(--brand-primary)]/20 rounded-xl p-5 bg-[var(--brand-primary)]/[0.04] space-y-4">
-          <h4 className="font-semibold text-gray-900">{isLotization ? 'Nuevo lote individual' : 'Nueva unidad individual'}</h4>
+          <h4 className="font-semibold text-[var(--text-primary)]">{isLotization ? 'Nuevo lote individual' : 'Nueva unidad individual'}</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {currentFieldsConfig.map((field: any) => {
               if (field.dependsOnType && !field.dependsOnType.includes(currentUnit.type)) return null;
@@ -587,7 +587,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
               );
             })}
             <Field label="Imagen de plano" className="md:col-span-2">
-              {uploadingBP && <p className="text-xs text-blue-600 mb-2">Subiendo plano a S3...</p>}
+              {uploadingBP && <p className="text-xs text-[var(--brand-primary)] mb-2">Subiendo plano a S3...</p>}
               <BlueprintUploader
                 previewUrl={currentUnit._previewUrl}
                 onFile={handleUnitBlueprint}
@@ -610,10 +610,10 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
 
       {showGroupForm && (
         <div className="border border-[var(--brand-primary)]/20 rounded-xl p-5 bg-[var(--brand-primary)]/[0.04] space-y-4">
-          <h4 className="font-semibold text-gray-900">
+          <h4 className="font-semibold text-[var(--text-primary)]">
             {isLotization ? 'Nuevo grupo de lotes' : 'Nuevo grupo de unidades'}
           </h4>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-[var(--text-secondary)]">
             {isLotization 
               ? 'Un grupo representa N lotes idénticos (misma manzana, área, frente y precio).'
               : 'Un grupo representa N unidades idénticas.'}
@@ -718,7 +718,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
                   <input type="number" value={currentGroup.quantity} min={1}
                     onChange={e => setCurrentGroup(p => ({ ...p, quantity: +e.target.value || 1 }))}
                     className={inputClasses} placeholder="Ej: 5" />
-                  <p className="text-xs text-gray-400 mt-1">Se crearán {currentGroup.quantity} unidades con las mismas características</p>
+                  <p className="text-xs text-[var(--text-muted)] mt-1">Se crearán {currentGroup.quantity} unidades con las mismas características</p>
                 </Field>
                 <Field label="Estado *">
                   <select value={currentGroup.status}
@@ -737,16 +737,16 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
               </>
             )}
             <div className="md:col-span-2">
-              <div className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 border border-gray-200">
+              <div className="flex items-center justify-between bg-[var(--bg-secondary)] rounded-lg px-4 py-3 border border-[var(--border-color)]">
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Heredar imagen del grupo</p>
-                  <p className="text-xs text-gray-400">Todas las unidades usarán el plano del grupo</p>
+                  <p className="text-sm font-medium text-[var(--text-primary)]">Heredar imagen del grupo</p>
+                  <p className="text-xs text-[var(--text-muted)]">Todas las unidades usarán el plano del grupo</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setCurrentGroup(p => ({ ...p, inheritBlueprint: !p.inheritBlueprint }))}
                   className={`relative w-12 h-6 rounded-full transition-colors ${
-                    currentGroup.inheritBlueprint ? 'bg-blue-600' : 'bg-gray-300'
+                    currentGroup.inheritBlueprint ? 'bg-[var(--brand-primary)]' : 'bg-[var(--border-color)]'
                   }`}
                 >
                   <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
@@ -756,7 +756,7 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
               </div>
             </div>
             <Field label="Plano del tipo de unidad" className="md:col-span-2">
-              {uploadingBP && <p className="text-xs text-blue-600 mb-2">Subiendo plano a S3...</p>}
+              {uploadingBP && <p className="text-xs text-[var(--brand-primary)] mb-2">Subiendo plano a S3...</p>}
               <BlueprintUploader
                 previewUrl={currentGroup._previewUrl}
                 onFile={handleGroupBlueprint}
@@ -779,19 +779,19 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
 
       {hasUnits && (
         <div className="bg-[var(--brand-primary)]/[0.04] border border-[var(--brand-primary)]/20 rounded-xl p-4">
-          <h4 className="font-semibold text-gray-900 mb-3">Resumen</h4>
+          <h4 className="font-semibold text-[var(--text-primary)] mb-3">Resumen</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
               <p className="text-[var(--brand-primary)]/70 text-xs font-medium">Unidades individuales</p>
-              <p className="font-bold text-gray-900 text-lg">{formData.units?.length || 0}</p>
+              <p className="font-bold text-[var(--text-primary)] text-lg">{formData.units?.length || 0}</p>
             </div>
             <div>
               <p className="text-[var(--brand-primary)]/70 text-xs font-medium">Grupos</p>
-              <p className="font-bold text-gray-900 text-lg">{formData.unitGroups?.length || 0}</p>
+              <p className="font-bold text-[var(--text-primary)] text-lg">{formData.unitGroups?.length || 0}</p>
             </div>
             <div>
               <p className="text-[var(--brand-primary)]/70 text-xs font-medium">Total unidades</p>
-              <p className="font-bold text-gray-900 text-lg">{(formData.units?.length || 0) + totalFromGroups()}</p>
+              <p className="font-bold text-[var(--text-primary)] text-lg">{(formData.units?.length || 0) + totalFromGroups()}</p>
             </div>
             <div>
               <p className="text-[var(--brand-primary)]/70 text-xs font-medium">Precio desde</p>

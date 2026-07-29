@@ -31,7 +31,7 @@ const Counter = ({
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+      <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
         {label}
       </label>
       <div className="flex items-center gap-3">
@@ -41,7 +41,7 @@ const Counter = ({
             const newVal = Math.max(min, value - 1);
             onChange(newVal);
           }}
-          className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shrink-0"
+          className="w-10 h-10 rounded-lg border border-[var(--border-color)] flex items-center justify-center hover:bg-[var(--bg-secondary)] transition-colors shrink-0 text-[var(--text-secondary)]"
           disabled={value <= min}
         >
           <Minus className="w-4 h-4" />
@@ -64,7 +64,7 @@ const Counter = ({
                 (e.target as HTMLInputElement).blur();
               }
             }}
-            className="w-full text-center text-lg font-semibold text-gray-900 bg-gray-50 border border-gray-200 rounded-lg py-2 px-2 hide-arrows outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full text-center text-lg font-semibold text-[var(--text-primary)] bg-[var(--bg-card)] border border-[var(--input-border)] rounded-lg py-2 px-2 hide-arrows outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
             min={min}
             max={max}
           />
@@ -75,7 +75,7 @@ const Counter = ({
             const newVal = Math.min(max, value + 1);
             onChange(newVal);
           }}
-          className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shrink-0"
+          className="w-10 h-10 rounded-lg border border-[var(--border-color)] flex items-center justify-center hover:bg-[var(--bg-secondary)] transition-colors shrink-0 text-[var(--text-secondary)]"
           disabled={value >= max}
         >
           <Plus className="w-4 h-4" />
@@ -93,7 +93,7 @@ interface CharacteristicsStepProps {
 
 export function CharacteristicsStep({ formData, onChange, validationErrors }: CharacteristicsStepProps) {
   const inputClass =
-    'w-full px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-900 bg-gray-50 outline-none';
+    'w-full px-4 py-3 rounded-lg border border-[var(--input-border)] text-sm text-[var(--text-primary)] bg-[var(--bg-card)] outline-none';
 
   // Selector de opciones - modo chips cuando hay más de 4 opciones
   const OptionSelector = ({ 
@@ -110,7 +110,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
     const isChipMode = options.length > 4;
     return (
       <div>
-        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
+        <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
           {label}
         </label>
         <div className={isChipMode ? 'flex flex-wrap gap-1.5' : 'flex gap-2'}>
@@ -125,11 +125,11 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
                   ? 'px-3.5 py-1.5 text-[12px] rounded-lg' 
                   : 'flex-1 py-2.5 rounded-lg text-sm'}
                 ${value === option.value
-                  ? 'text-white border-[#00a63e]'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-[#00a63e] hover:text-[#00a63e]'}
+                  ? 'text-white border-[var(--brand-primary)]'
+                  : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border-color)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]'}
               `}
               style={{
-                backgroundColor: value === option.value ? '#00a63e' : undefined,
+                backgroundColor: value === option.value ? 'var(--brand-primary)' : undefined,
               }}
             >
               {option.label}
@@ -181,12 +181,12 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
     return (
       <div>
-        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
-          {label} {optional && <span className="text-gray-300 font-normal normal-case">(opcional)</span>}
+        <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
+          {label} {optional && <span className="text-[var(--text-muted)] font-normal normal-case">(opcional)</span>}
         </label>
         <div className="relative">
           {prefix && (
-            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] text-sm">
               {prefix}
             </span>
           )}
@@ -206,7 +206,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
             className={`${inputClass} ${prefix ? 'pl-8' : ''} ${suffix ? 'pr-12' : ''} hide-arrows`}
           />
           {suffix && (
-            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+            <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] text-sm">
               {suffix}
             </span>
           )}
@@ -222,10 +222,10 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
                 Características de la habitación
               </h2>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-4">
                 Especifica los servicios disponibles
               </p>
 
@@ -268,17 +268,17 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
                 Características del terreno
               </h2>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-4">
                 Especifica las medidas, servicios y zonificacion del lote
               </p>
 
               <div className="space-y-6">
                 {/* ── MEDIDAS ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Medidas del lote</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Medidas del lote</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <NumberInput
@@ -324,7 +324,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
                 {/* ── TOPOGRAFIA ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Topografia</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Topografia</h3>
                   <OptionSelector
                     label="Tipo de terreno"
                     value={formData.topography || 'FLAT'}
@@ -340,7 +340,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
                 {/* ── SERVICIOS BASICOS ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Servicios basicos</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Servicios basicos</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {[
                       ['hasWater', 'Agua'],
@@ -348,14 +348,14 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
                       ['hasSewerage', 'Desague'],
                       ['hasGas', 'Gas natural'],
                     ].map(([key, label]) => (
-                      <label key={key} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors">
+                      <label key={key} className="flex items-center gap-2 p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-color)] cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors">
                         <input
                           type="checkbox"
                           checked={(formData as any)[key] || false}
                           onChange={(e) => onChange(key, e.target.checked)}
-                          className="rounded text-[#00a63e] focus:ring-[#00a63e]"
+                          className="rounded text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
                         />
-                        <span className="text-sm text-gray-700">{label}</span>
+                        <span className="text-sm text-[var(--text-secondary)]">{label}</span>
                       </label>
                     ))}
                   </div>
@@ -363,7 +363,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
                 {/* ── ZONIFICACION Y DOCUMENTOS ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Zonificacion y documentos</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Zonificacion y documentos</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <OptionSelector
                       label="Zonificacion / Uso de suelo"
@@ -379,14 +379,14 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
                       ]}
                     />
                     <div className="space-y-3 pt-2">
-                      <label className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors">
+                      <label className="flex items-center gap-2 p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-color)] cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors">
                         <input
                           type="checkbox"
                           checked={formData.hasPropertyTitle || false}
                           onChange={(e) => onChange('hasPropertyTitle', e.target.checked)}
-                          className="rounded text-[#00a63e] focus:ring-[#00a63e]"
+                          className="rounded text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
                         />
-                        <span className="text-sm text-gray-700">Cuenta con titulo de propiedad</span>
+                        <span className="text-sm text-[var(--text-secondary)]">Cuenta con titulo de propiedad</span>
                       </label>
                     </div>
                   </div>
@@ -400,10 +400,10 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
                 Características de la oficina
               </h2>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-4">
                 Detalles del espacio comercial
               </p>
 
@@ -472,10 +472,10 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
                 Características principales
               </h2>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-4">
                 Indica la cantidad de ambientes disponibles
               </p>
 
@@ -505,10 +505,10 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
                 Medidas del inmueble
               </h2>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-4">
                 Especifica las áreas en metros cuadrados
               </p>
 
@@ -538,10 +538,10 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
             {formData.type === 'APARTMENT' && (
               <section>
-                <h2 className="text-lg font-bold text-gray-900 mb-1">
+                <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
                   Detalles del departamento
                 </h2>
-                <p className="text-sm text-gray-400 mb-4">
+                <p className="text-sm text-[var(--text-muted)] mb-4">
                   Información adicional específica para departamentos
                 </p>
 
@@ -591,7 +591,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
             prefix="$"
             optional={true}
           />
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-[var(--text-muted)] mt-2">
             Costo mensual de mantenimiento o cuota de condominio
           </p>
         </section>

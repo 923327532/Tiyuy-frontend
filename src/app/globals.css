@@ -22,6 +22,7 @@
   --text-muted: #9ca3af;
   --border-color: #e5e7eb;
   --border-light: #f3f4f6;
+  --input-border: #d1d5db;
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -39,6 +40,7 @@
   --text-muted: #6b7280;
   --border-color: #334155;
   --border-light: #1e293b;
+  --input-border: #94a3b8;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --brand-primary-light: rgba(74, 154, 62, 0.2);
   --brand-primary-light-hover: rgba(74, 154, 62, 0.3);
