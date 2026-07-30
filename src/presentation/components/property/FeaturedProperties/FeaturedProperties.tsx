@@ -101,14 +101,14 @@ export function FeaturedProperties({ hideViewAll = false }: FeaturedPropertiesPr
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .carousel-card { width: calc(50% - 4px); flex-shrink: 0; }
+        .carousel-card { width: calc(50% - 10px); flex-shrink: 0; }
 
-        @media (min-width: 640px) { .carousel-card { width: calc((100% - 8px) / 2); } }
-        @media (min-width: 768px) { .carousel-card { width: calc((100% - 2 * 12px) / 3); } }
-        @media (min-width: 1024px) { .carousel-card { width: calc((100% - 3 * 12px) / 4); } }
-        @media (min-width: 1280px) { .carousel-card { width: calc((100% - 4 * 12px) / 5); } }
-        @media (min-width: 1536px) { .carousel-card { width: calc((100% - 5 * 12px) / 6); } }
-        @media (min-width: 1800px) { .carousel-card { width: calc((100% - 6 * 12px) / 7); } }
+        @media (min-width: 640px) { .carousel-card { width: calc((100% - 20px) / 2); } }
+        @media (min-width: 768px) { .carousel-card { width: calc((100% - 2 * 24px) / 3); } }
+        @media (min-width: 1024px) { .carousel-card { width: calc((100% - 3 * 24px) / 4); } }
+        @media (min-width: 1280px) { .carousel-card { width: calc((100% - 4 * 24px) / 5); } }
+        @media (min-width: 1536px) { .carousel-card { width: calc((100% - 5 * 24px) / 6); } }
+        @media (min-width: 1800px) { .carousel-card { width: calc((100% - 6 * 24px) / 7); } }
       `}</style>
 
         <div className="flex justify-between items-end mb-4">

@@ -112,15 +112,16 @@ function AuthenticatedFavoriteButton({ propertyId, size, variant }: FavoriteButt
         className={`
           ${sizes[currentSize]}
           rounded-full flex items-center justify-center
-          bg-white/90 hover:bg-white shadow
+          bg-[var(--bg-card)] shadow
           transition-all duration-200
           disabled:opacity-50 disabled:cursor-not-allowed
+          ${isFavorite ? 'text-rose-500' : 'text-[var(--text-secondary)] hover:text-rose-500'}
         `}
       >
         {isPending ? (
           <Loader className="animate-spin w-4 h-4 text-gray-400" />
         ) : (
-          <Heart className="" />
+          <Heart className={`w-4 h-4 ${isFavorite ? 'fill-rose-500' : ''}`} />
         )}
       </button>
 
@@ -214,9 +215,9 @@ function UnauthenticatedFavoriteButton({ size, variant }: { size?: 'sm' | 'md' |
         type="button"
         onClick={handleClick}
         aria-label="Agregar a favoritos"
-        className={`${sizes[currentSize]} rounded-full flex items-center justify-center bg-white/90 hover:bg-white shadow transition-all duration-200`}
+        className={`${sizes[currentSize]} rounded-full flex items-center justify-center bg-[var(--bg-card)] shadow text-[var(--text-secondary)] hover:text-rose-500 transition-all duration-200`}
       >
-        <Heart className="" />
+        <Heart className="w-4 h-4" />
       </button>
       {showLoginModal && <LoginModal router={router} onClose={() => setShowLoginModal(false)} />}
     </>
