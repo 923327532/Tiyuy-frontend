@@ -171,7 +171,7 @@ export default function PropertiesContent() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white rounded-lg border border-brand/20 hover:border-brand/60 shadow-sm hover:shadow text-gray-600 hover:text-brand-dark text-xs sm:text-sm font-medium transition-all duration-200"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-[var(--bg-card)] rounded-lg border border-brand/20 hover:border-brand/60 shadow-sm hover:shadow text-[var(--text-secondary)] hover:text-brand-dark text-xs sm:text-sm font-medium transition-all duration-200"
               >
                 <span className="text-brand">{item.icon}</span>
                 <span>{item.label}</span>
@@ -222,10 +222,10 @@ function PropertyGridSection({ scroll }: { scroll: any }) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-6">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
           <div key={i} className="animate-pulse">
-            <div className="w-full aspect-square bg-gray-200 rounded-[14px] mb-2" />
+            <div className="w-full aspect-square bg-[var(--bg-tertiary)] rounded-[14px] mb-2" />
             <div className="space-y-1.5">
-              <div className="h-3.5 bg-gray-200 rounded w-3/4" />
-              <div className="h-3 bg-gray-200 rounded w-1/2" />
+              <div className="h-3.5 bg-[var(--bg-tertiary)] rounded w-3/4" />
+              <div className="h-3 bg-[var(--bg-tertiary)] rounded w-1/2" />
             </div>
           </div>
         ))}

@@ -41,7 +41,7 @@ export function PropertyCard({ property, onClick }: PropertyCardProps) {
   return (
     <div
       onClick={() => onClick?.(property)}
-      className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer group"
+      className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden cursor-pointer group"
     >
       {/* Image */}
       <div className="relative h-40 bg-gray-100 overflow-hidden">
@@ -88,27 +88,27 @@ export function PropertyCard({ property, onClick }: PropertyCardProps) {
       {/* Content */}
       <div className="p-3.5 space-y-2.5">
         {/* Title */}
-        <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2 group-hover:text-teal-600 transition-colors">
+        <h3 className="font-semibold text-[var(--text-primary)] text-sm leading-tight line-clamp-2 group-hover:text-teal-600 transition-colors">
           {property.title}
         </h3>
 
         {/* Location */}
-        <div className="flex items-center gap-1.5 text-xs text-gray-500">
-          <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+        <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+          <MapPin className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
           <span className="truncate">
             {property.district || 'Ubicación no disponible'}
           </span>
         </div>
 
         {/* Owner */}
-        <div className="flex items-center gap-1.5 text-xs text-gray-500">
-          <User className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+        <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+          <User className="w-3.5 h-3.5 text-[var(--text-muted)] flex-shrink-0" />
           <span className="truncate">{property.ownerName}</span>
         </div>
 
         {/* Stats Row */}
-        <div className="flex items-center justify-between pt-1.5 border-t border-gray-50">
-          <div className="flex items-center gap-3 text-xs text-gray-400">
+        <div className="flex items-center justify-between pt-1.5 border-t border-[var(--border-color)]">
+          <div className="flex items-center gap-3 text-xs text-[var(--text-muted)]">
             <span className="flex items-center gap-1">
               <Eye className="w-3 h-3" />
               {property.viewsCount ?? 0}
@@ -119,7 +119,7 @@ export function PropertyCard({ property, onClick }: PropertyCardProps) {
             </span>
           </div>
           {formattedDate && (
-            <span className="flex items-center gap-1 text-xs text-gray-400">
+            <span className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
               <Calendar className="w-3 h-3" />
               {formattedDate}
             </span>

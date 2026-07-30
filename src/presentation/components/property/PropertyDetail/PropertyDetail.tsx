@@ -44,12 +44,12 @@ function DescriptionSection({ description }: { description: string }) {
   const truncated = isLong ? words.slice(0, 50).join(' ') + '...' : description;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+    <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+      <h2 className="text-base font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
         <FileText className="w-4 h-4 text-teal-600 flex-shrink-0" />
         Descripción de la propiedad
       </h2>
-      <div className="text-gray-700 leading-relaxed text-sm whitespace-pre-wrap">
+      <div className="text-[var(--text-primary)] leading-relaxed text-sm whitespace-pre-wrap">
         {expanded ? description : truncated}
       </div>
       {isLong && (
@@ -111,7 +111,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
   ].filter(Boolean).join(', ');
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg-secondary)]">
 
       <div className="w-full px-8 xl:px-16 py-6">
         <div className="max-w-[1920px] mx-auto">
@@ -129,19 +129,19 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             </div>
 
             {/* 1. GALERÍA */}
-            <div className="rounded-2xl overflow-hidden bg-white shadow-sm -mt-2">
+            <div className="rounded-2xl overflow-hidden bg-[var(--bg-card)] shadow-[0_1px_2px_var(--shadow-color)] -mt-2">
               <PropertyGallery media={property.media} coverPhotoUrl={property.coverPhotoUrl} />
             </div>
 
             {/* 2. TIPO · PRECIO · TÍTULO · DIRECCIÓN · STATS */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-4">
                     <span className="bg-blue-50 text-blue-700 border border-blue-100 text-xs font-extrabold px-3 py-1.5 rounded-lg uppercase tracking-wide">
                       {propertyTypeLabel}
                     </span>
-                    <span className="bg-gray-100 text-gray-600 border border-gray-200 text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wide">
+                    <span className="bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-color)] text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wide">
                       {transactionLabel}
                     </span>
                     {property.isNegotiable && (
@@ -151,27 +151,27 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     )}
                   </div>
 
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight mb-4 break-words">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] leading-tight mb-4 break-words">
                     {property.title}
                   </h1>
 
                   <div className="flex items-baseline gap-3 flex-wrap mb-4">
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
                       {formatPrice(property.price, property.currency)}
                       {property.transactionType === 'RENT' && (
-                        <span className="text-lg font-medium text-gray-500 ml-1">/ mes</span>
+                        <span className="text-lg font-medium text-[var(--text-secondary)] ml-1">/ mes</span>
                       )}
                     </h2>
                     {property.pricePerSqm && (
-                      <span className="text-sm text-gray-500 font-medium bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                      <span className="text-sm text-[var(--text-secondary)] font-medium bg-[var(--bg-secondary)] px-2 py-1 rounded-md border border-[var(--border-color)]">
                         {formatPrice(property.pricePerSqm, property.currency)} / m²
                       </span>
                     )}
                   </div>
 
                   {locationLine && (
-                    <p className="text-base text-gray-500 flex items-center gap-2 font-medium">
-                      <MapPin className="w-5 h-5 text-gray-400" />
+                    <p className="text-base text-[var(--text-secondary)] flex items-center gap-2 font-medium">
+                      <MapPin className="w-5 h-5 text-[var(--text-tertiary)]" />
                       {locationLine}
                     </p>
                   )}
@@ -192,7 +192,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     }}
                   />
                   {rating && rating.totalRatings > 0 && (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-[var(--text-secondary)]">
                       {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})
                     </span>
                   )}
@@ -200,7 +200,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
 
               {/* Stats — UNA SOLA VEZ aquí */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
                 <PropertyQuickInfo property={property} />
               </div>
             </div>
@@ -212,8 +212,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             
             {/* Si no hay descripción */}
             {!property.description && (
-              <div className="bg-gray-50 border border-dashed border-gray-200 rounded-3xl p-8 text-center flex flex-col items-center justify-center">
-                 <p className="text-gray-400 font-medium">El anunciante no ha proporcionado una descripción detallada.</p>
+              <div className="bg-[var(--bg-secondary)] border border-dashed border-[var(--border-color)] rounded-3xl p-8 text-center flex flex-col items-center justify-center">
+                 <p className="text-[var(--text-tertiary)] font-medium">El anunciante no ha proporcionado una descripción detallada.</p>
               </div>
             )}
 
@@ -222,9 +222,9 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
 
             {/* 5. CONTACTA AL ANUNCIANTE — solo móvil */}
             <div className="lg:hidden space-y-4">
-              <div className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden">
-                <div className="px-6 pt-6 pb-4 border-b border-gray-50">
-                  <h3 className="text-lg font-bold text-gray-900">Contacta al anunciante</h3>
+              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_4px_6px_var(--shadow-color)] border border-[var(--border-color)] overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-[var(--border-light)]">
+                  <h3 className="text-lg font-bold text-[var(--text-primary)]">Contacta al anunciante</h3>
                 </div>
                 <div className="px-6 py-4">
                   <ContactForm propertyId={property.id} ownerId={property.owner.id} />
@@ -238,15 +238,15 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             {/* 6. ANUNCIANTE + ESTADÍSTICAS + CALIFICAR — solo móvil (DEBE IR ANTES DE SIMILARES) */}
             <div className="lg:hidden space-y-4">
               {/* Anunciante */}
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Anunciante</h3>
+              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4">Anunciante</h3>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
                     {property.owner.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-gray-900 text-base truncate">{property.owner.name}</p>
-                    <p className="text-sm text-gray-500">{property.owner.role}</p>
+                    <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{property.owner.role}</p>
                   </div>
                   {(property.owner as any).phone && (
                     <a
@@ -260,39 +260,39 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
 
               {/* Estadísticas */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-3">Estadísticas</h3>
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Estadísticas</h3>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   {[
                     { v: property.viewsCount    ?? 0, l: 'Visitas'   },
                     { v: property.favoritesCount ?? 0, l: 'Favoritos' },
                     { v: property.contactsCount  ?? 0, l: 'Contactos' },
                   ].map(({ v, l }) => (
-                    <div key={l} className="bg-gray-50 rounded-xl p-3">
-                      <div className="text-xl font-bold text-gray-900">{v}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">{l}</div>
+                    <div key={l} className="bg-[var(--bg-secondary)] rounded-xl p-3">
+                      <div className="text-xl font-bold text-[var(--text-primary)]">{v}</div>
+                      <div className="text-xs text-[var(--text-secondary)] mt-0.5">{l}</div>
                     </div>
                   ))}
                 </div>
 
                 {rating && rating.totalRatings > 0 && (
-                  <div className="mt-3 pt-3 border-t border-gray-100">
+                  <div className="mt-3 pt-3 border-t border-[var(--border-color)]">
                     <div className="flex items-center justify-center gap-2">
                       <div className="flex items-center gap-0.5">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`}
+                            className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-[var(--text-tertiary)]'}`}
                           />
                         ))}
                       </div>
-                      <span className="text-sm font-bold text-gray-900">{rating.averageRating.toFixed(1)}</span>
-                      <span className="text-xs text-gray-400">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
+                      <span className="text-sm font-bold text-[var(--text-primary)]">{rating.averageRating.toFixed(1)}</span>
+                      <span className="text-xs text-[var(--text-tertiary)]">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
                     </div>
                   </div>
                 )}
 
-                <p className="mt-3 text-xs text-gray-400 flex items-center gap-1">
+                <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                   <Calendar className="w-3 h-3 flex-shrink-0" />
                   Publicado el {new Date(property.createdAt).toLocaleDateString('es-PE', {
                     day: 'numeric', month: 'long', year: 'numeric',
@@ -301,8 +301,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
 
               {/* Calificar propiedad */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-3">Calificar propiedad</h3>
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Calificar propiedad</h3>
                 <div className="flex flex-col items-center gap-2">
                   <StarRating
                     propertyId={property.id}
@@ -317,12 +317,12 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     }}
                   />
                   {rating && rating.totalRatings > 0 && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-[var(--text-tertiary)]">
                       Promedio: {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'voto' : 'votos'})
                     </p>
                   )}
                   {(!rating || rating.totalRatings === 0) && (
-                    <p className="text-xs text-gray-400">Sé el primero en calificar</p>
+                    <p className="text-xs text-[var(--text-tertiary)]">Sé el primero en calificar</p>
                   )}
                 </div>
               </div>
@@ -350,9 +350,9 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             <div className="sticky top-4 space-y-4">
 
               {/* Contactar */}
-              <div className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden">
-                <div className="px-6 pt-6 pb-4 border-b border-gray-50">
-                  <h3 className="text-lg font-bold text-gray-900">Contacta al anunciante</h3>
+              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_4px_6px_var(--shadow-color)] border border-[var(--border-color)] overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-[var(--border-light)]">
+                  <h3 className="text-lg font-bold text-[var(--text-primary)]">Contacta al anunciante</h3>
                 </div>
                 <div className="px-6 py-4">
                   <ContactForm propertyId={property.id} ownerId={property.owner.id} />
@@ -363,15 +363,15 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
 
               {/* Agente */}
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Anunciante</h3>
+              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4">Anunciante</h3>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
                     {property.owner.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-gray-900 text-base truncate">{property.owner.name}</p>
-                    <p className="text-sm text-gray-500">{property.owner.role}</p>
+                    <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">{property.owner.role}</p>
                   </div>
                   {(property.owner as any).phone && (
                     <a
@@ -385,39 +385,39 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
 
               {/* Estadísticas */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-3">Estadísticas</h3>
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Estadísticas</h3>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   {[
                     { v: property.viewsCount    ?? 0, l: 'Visitas'   },
                     { v: property.favoritesCount ?? 0, l: 'Favoritos' },
                     { v: property.contactsCount  ?? 0, l: 'Contactos' },
                   ].map(({ v, l }) => (
-                    <div key={l} className="bg-gray-50 rounded-xl p-3">
-                      <div className="text-xl font-bold text-gray-900">{v}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">{l}</div>
+                    <div key={l} className="bg-[var(--bg-secondary)] rounded-xl p-3">
+                      <div className="text-xl font-bold text-[var(--text-primary)]">{v}</div>
+                      <div className="text-xs text-[var(--text-secondary)] mt-0.5">{l}</div>
                     </div>
                   ))}
                 </div>
 
                 {rating && rating.totalRatings > 0 && (
-                  <div className="mt-3 pt-3 border-t border-gray-100">
+                  <div className="mt-3 pt-3 border-t border-[var(--border-color)]">
                     <div className="flex items-center justify-center gap-2">
                       <div className="flex items-center gap-0.5">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`}
+                            className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-[var(--text-tertiary)]'}`}
                           />
                         ))}
                       </div>
-                      <span className="text-sm font-bold text-gray-900">{rating.averageRating.toFixed(1)}</span>
-                      <span className="text-xs text-gray-400">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
+                      <span className="text-sm font-bold text-[var(--text-primary)]">{rating.averageRating.toFixed(1)}</span>
+                      <span className="text-xs text-[var(--text-tertiary)]">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
                     </div>
                   </div>
                 )}
 
-                <p className="mt-3 text-xs text-gray-400 flex items-center gap-1">
+                <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                   <Calendar className="w-3 h-3 flex-shrink-0" />
                   Publicado el {new Date(property.createdAt).toLocaleDateString('es-PE', {
                     day: 'numeric', month: 'long', year: 'numeric',
@@ -425,8 +425,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 </p>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-3">Calificar propiedad</h3>
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Calificar propiedad</h3>
                 <div className="flex flex-col items-center gap-2">
                   <StarRating
                     propertyId={property.id}
@@ -441,12 +441,12 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     }}
                   />
                   {rating && rating.totalRatings > 0 && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-[var(--text-tertiary)]">
                       Promedio: {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'voto' : 'votos'})
                     </p>
                   )}
                   {(!rating || rating.totalRatings === 0) && (
-                    <p className="text-xs text-gray-400">Sé el primero en calificar</p>
+                    <p className="text-xs text-[var(--text-tertiary)]">Sé el primero en calificar</p>
                   )}
                 </div>
               </div>
