@@ -420,7 +420,7 @@ export default function HomePage() {
 
                       <button
                         onClick={handleSearch}
-                        className="bg-brand text-white px-10 py-3.5 rounded-xl font-bold text-base hover:bg-brand-hover transition-colors whitespace-nowrap w-full lg:w-[180px] shadow-md hover:shadow-lg cursor-pointer"
+                        className="bg-[#16A34A] text-white px-10 py-3.5 rounded-xl font-bold text-base hover:bg-[#15803D] transition-colors whitespace-nowrap w-full lg:w-[180px] shadow-md hover:shadow-lg cursor-pointer"
                       >
                         Buscar
                       </button>
@@ -496,7 +496,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-2 sm:py-3 bg-background">
+      <section className="py-1 sm:py-1 bg-background">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
           <Suspense fallback={<SectionFallback height="400px" />}>
             <IntelligentPropertySections />
@@ -504,7 +504,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-2 sm:py-3 bg-background">
+      <section className="py-1 sm:py-1 bg-background">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
           <Suspense fallback={<SectionFallback height="300px" />}>
             <FeaturedProjects />

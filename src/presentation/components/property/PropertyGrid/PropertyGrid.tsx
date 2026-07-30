@@ -12,7 +12,7 @@ interface PropertyGridProps {
 export function PropertyGrid({ properties, isLoading }: PropertyGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
         {[...Array(10)].map((_, i) => (
           <PropertyCardSkeleton key={i} />
         ))}
@@ -35,7 +35,7 @@ export function PropertyGrid({ properties, isLoading }: PropertyGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
       {properties.map((property) => (
         <PropertyCard key={property.id} property={property} />
       ))}

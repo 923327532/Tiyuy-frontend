@@ -106,13 +106,13 @@ function SectionRow({
             <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--text-primary)]" />
           </Link>
         </h2>
-        <div className="hidden sm:flex gap-2">
+        <div className="flex gap-2">
           <button onClick={scrollLeft} disabled={!canScrollLeft} className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border-color)] hover:shadow-md transition-all bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none" aria-label="Scroll izquierda"><ChevronLeft className="w-4 h-4" /></button>
           <button onClick={scrollRight} disabled={!canScrollRight} className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border-color)] hover:shadow-md transition-all bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none" aria-label="Scroll derecha"><ChevronRight className="w-4 h-4" /></button>
         </div>
       </div>
 
-      <div ref={scrollContainerRef} className="flex overflow-x-auto gap-3 sm:gap-5 md:gap-6 hide-scrollbar snap-x snap-mandatory scroll-smooth pb-4">
+      <div ref={scrollContainerRef} className="flex overflow-x-auto gap-1.5 sm:gap-2 md:gap-3 hide-scrollbar snap-x snap-mandatory scroll-smooth pb-4">
         {properties.map((property: any) => (
           <div key={property.id} className="carousel-card flex-shrink-0 snap-start">
             <PropertyCard property={property} />

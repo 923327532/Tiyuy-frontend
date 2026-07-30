@@ -46,7 +46,14 @@ export function FeaturedProperties({ hideViewAll = false }: FeaturedPropertiesPr
 
   if (isLoading) {
     return (
-      <div className="relative w-full">
+      <div className="w-full">
+        <div className="flex justify-between items-end mb-4">
+          <h2 className="text-lg sm:text-2xl font-semibold text-foreground flex items-center gap-2">Alojamientos populares</h2>
+          <div className="flex gap-2">
+            <button disabled className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border-color)] opacity-30"><ChevronLeft className="w-4 h-4" /></button>
+            <button disabled className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border-color)] opacity-30"><ChevronRight className="w-4 h-4" /></button>
+          </div>
+        </div>
         <div className="flex overflow-x-auto hide-scrollbar gap-3">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
             <div key={i} className="w-[160px] sm:w-[280px] md:w-[320px] lg:w-[240px] xl:w-[190px] 2xl:w-[220px] flex-shrink-0">
@@ -90,6 +97,20 @@ export function FeaturedProperties({ hideViewAll = false }: FeaturedPropertiesPr
 
   return (
     <div className="w-full">
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .carousel-card { width: calc(50% - 4px); flex-shrink: 0; }
+
+        @media (min-width: 640px) { .carousel-card { width: calc((100% - 8px) / 2); } }
+        @media (min-width: 768px) { .carousel-card { width: calc((100% - 2 * 12px) / 3); } }
+        @media (min-width: 1024px) { .carousel-card { width: calc((100% - 3 * 12px) / 4); } }
+        @media (min-width: 1280px) { .carousel-card { width: calc((100% - 4 * 12px) / 5); } }
+        @media (min-width: 1536px) { .carousel-card { width: calc((100% - 5 * 12px) / 6); } }
+        @media (min-width: 1800px) { .carousel-card { width: calc((100% - 6 * 12px) / 7); } }
+      `}</style>
+
         <div className="flex justify-between items-end mb-4">
           <h2 className="text-lg sm:text-2xl font-semibold text-foreground flex items-center gap-2">
             Alojamientos populares
@@ -103,7 +124,7 @@ export function FeaturedProperties({ hideViewAll = false }: FeaturedPropertiesPr
           </div>
         </div>
 
-        <div ref={scrollContainerRef} className="flex overflow-x-auto gap-3 sm:gap-5 md:gap-6 hide-scrollbar pb-4">
+        <div ref={scrollContainerRef} className="flex overflow-x-auto gap-2 sm:gap-2 md:gap-3 hide-scrollbar pb-4">
           {properties.map((property) => (
             <div key={property.id} className="carousel-card">
               <PropertyCard property={property} />

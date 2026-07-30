@@ -731,7 +731,7 @@ export function Header() {
                   href="/notifications"
                   className="relative flex items-center gap-2 text-[var(--text-primary)] hover:text-[var(--text-secondary)]"
                 >
-                  <Bell className="w-5 h-5" />
+                  <Bell className="w-5 h-5 text-red-500" />
                 </Link>
               )}
               {/* CONTACTOS - Siempre visible (también en mobile) */}
@@ -761,7 +761,7 @@ export function Header() {
                     setShowAuthModal(true);
                   }
                 }}
-                className="inline-flex items-center gap-1 px-3 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition text-sm font-medium"
+                className="inline-flex items-center gap-1 px-3 py-2 bg-[#16A34A] text-white rounded-lg hover:bg-[#15803D] transition text-sm font-medium"
               >
                 <Building className="w-4 h-4" />
                 <span className="hidden sm:inline">Publicar</span>
@@ -784,7 +784,7 @@ export function Header() {
                     onClick={() => setShowUserMenu(!showUserMenu)}
                     className="flex items-center gap-2 text-[var(--text-primary)] hover:text-[var(--text-secondary)]"
                   >
-                    <div className="w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center text-white text-sm font-bold">
+                    <div className="w-8 h-8 rounded-full bg-[#16A34A] flex items-center justify-center text-white text-sm font-bold">
                       {user?.firstName?.[0] || 'U'}
                     </div>
                     <ChevronDown className="w-4 h-4 hidden sm:block" />
@@ -991,7 +991,7 @@ export function Header() {
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block w-full text-center px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition text-sm font-medium"
+                    className="block w-full text-center px-4 py-2 bg-[#16A34A] text-white rounded-lg hover:bg-[#15803D] transition text-sm font-medium"
                   >
                     Iniciar sesión
                   </Link>
@@ -1049,7 +1049,7 @@ export function Header() {
                   setShowAuthModal(false);
                   router.push('/login');
                 }}
-                className="w-full flex items-center justify-center gap-2 bg-teal-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-teal-700 transition-colors"
+                className="w-full flex items-center justify-center gap-2 bg-[#16A34A] text-white font-semibold py-3 px-4 rounded-xl hover:bg-[#15803D] transition-colors"
               >
                 <LogIn className="w-4 h-4" />
                 Iniciar sesión
@@ -1059,7 +1059,7 @@ export function Header() {
                   setShowAuthModal(false);
                   router.push('/profile-selector');
                 }}
-                className="w-full flex items-center justify-center gap-2 bg-[var(--bg-card)] text-teal-600 font-semibold py-3 px-4 rounded-xl border-2 border-teal-600 hover:bg-teal-50 transition-colors"
+                className="w-full flex items-center justify-center gap-2 bg-[var(--bg-card)] text-[#16A34A] font-semibold py-3 px-4 rounded-xl border-2 border-[#16A34A] hover:bg-green-50 transition-colors"
               >
                 <UserPlus className="w-4 h-4" />
                 Crear cuenta gratis

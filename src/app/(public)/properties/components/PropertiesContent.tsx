@@ -65,7 +65,7 @@ export default function PropertiesContent() {
     pageSize: 18,
     threshold: 400,
     deps: [],
-    maxInfinitePages: 1,
+    maxInfinitePages: 4,
   });
 
   const rentScroll = useInfiniteScroll<PropertySummary>({
@@ -73,7 +73,7 @@ export default function PropertiesContent() {
     pageSize: 18,
     threshold: 400,
     deps: [],
-    maxInfinitePages: 1,
+    maxInfinitePages: 4,
   });
 
   return (

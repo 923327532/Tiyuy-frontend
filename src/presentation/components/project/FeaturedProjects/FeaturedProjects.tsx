@@ -144,7 +144,7 @@ export function FeaturedProjects() {
             </Link>
           </h2>
 
-          <div className="hidden sm:flex gap-2">
+          <div className="flex gap-2">
             <button
               onClick={scrollLeft}
               disabled={!canScrollLeft}
@@ -166,7 +166,7 @@ export function FeaturedProjects() {
 
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-auto gap-3 sm:gap-5 md:gap-6 hide-scrollbar snap-x snap-mandatory scroll-smooth pb-4"
+          className="flex overflow-x-auto gap-1.5 sm:gap-2 md:gap-3 hide-scrollbar snap-x snap-mandatory scroll-smooth pb-4"
         >
           {items.map((item: any) => (
             <div key={item.id} className="carousel-card flex-shrink-0 snap-start">
