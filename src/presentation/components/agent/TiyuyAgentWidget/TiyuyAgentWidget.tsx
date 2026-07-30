@@ -2,7 +2,6 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import Image from 'next/image';
 import { Icon } from '@iconify/react';
 import {
   sendCopilotMessage,
@@ -214,11 +213,9 @@ export function TiyuyAgentWidget() {
         {isOpen ? (
           <Icon icon="material-symbols:close" className="w-8 h-8 text-[var(--text-primary)]" />
         ) : (
-          <Image
+          <img
             src="/assets/icons/soporte.ico"
             alt="Soporte"
-            width={64}
-            height={64}
             className="w-16 h-16"
           />
         )}
@@ -227,13 +224,11 @@ export function TiyuyAgentWidget() {
       {isOpen && (
         <div className="fixed bottom-24 right-6 z-50 w-[360px] sm:w-[400px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-8rem)] bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
           <div className="flex items-center gap-3 px-5 py-4 bg-brand text-white">
-            <div className="w-9 h-9 flex items-center justify-center">
-              <Image
+            <div className="w-11 h-11 flex items-center justify-center">
+              <img
                 src="/assets/icons/soporte.ico"
                 alt="Soporte"
-                width={36}
-                height={36}
-                className="w-9 h-9 brightness-0 invert"
+                className="w-11 h-11"
               />
             </div>
             <div className="flex-1 min-w-0">
