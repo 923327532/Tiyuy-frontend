@@ -531,8 +531,8 @@ export function ProjectUnitsStep({ formData, onChange, propertyId, projectType }
                     {currencySymbol} {unit.price.toLocaleString()}
                     <span className={`ml-2 text-xs px-2 py-0.5 rounded-full font-medium ${
                       unit.status === 'AVAILABLE' ? 'bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]' :
-                      unit.status === 'RESERVED' ? 'bg-amber-100 text-amber-700' :
-                      'bg-red-100 text-red-700'}`}>
+                      unit.status === 'RESERVED' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
+                      'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
                       {PROJECT_UNIT_STATUS_LABELS[unit.status as keyof typeof PROJECT_UNIT_STATUS_LABELS] || unit.status}
                     </span>
                   </p>

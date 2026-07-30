@@ -147,15 +147,15 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
         </div>
       </div>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+      <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-lg p-4">
         <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 mt-0.5"><AlertTriangle className="w-5 h-5 text-amber-600" strokeWidth={2} /></div>
+          <div className="flex-shrink-0 mt-0.5"><AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" strokeWidth={2} /></div>
           <div className="flex-1">
-            <h4 className="font-medium text-amber-950 text-sm">Plan Desarrollador</h4>
-            <div className="text-sm text-amber-800 space-y-1 mt-0.5">
+            <h4 className="font-medium text-amber-950 dark:text-amber-100 text-sm">Plan Desarrollador</h4>
+            <div className="text-sm text-amber-800 dark:text-amber-200 space-y-1 mt-0.5">
               <p>• <strong>Primer proyecto GRATIS</strong> (30 días de prueba)</p>
               <p>• <strong>Proyectos adicionales</strong> requieren suscripción <span className="font-semibold text-[var(--brand-primary)]">ENTERPRISE</span></p>
-              <Link href="/plans" className="inline-block text-amber-950 underline hover:text-amber-700 font-semibold mt-1">Ver planes y precios</Link>
+              <Link href="/plans" className="inline-block text-amber-950 dark:text-amber-100 underline hover:text-amber-700 dark:hover:text-amber-300 font-semibold mt-1">Ver planes y precios</Link>
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
             {AMENITY_OPTIONS.map((amenity) => {
               const isChecked = formData.amenities?.includes(amenity) || false;
               return (
-                <label key={amenity} className={`flex items-center space-x-3 p-2.5 rounded-lg border cursor-pointer select-none transition-all duration-150 ${isChecked ? 'bg-[var(--brand-primary)]/10 border-[var(--brand-primary)] text-[var(--text-primary)] font-medium' : 'bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-gray-50'}`}>
+                <label key={amenity} className={`flex items-center space-x-3 p-2.5 rounded-lg border cursor-pointer select-none transition-all duration-150 ${isChecked ? 'bg-[var(--brand-primary)]/10 border-[var(--brand-primary)] text-[var(--text-primary)] font-medium' : 'bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'}`}>
                   <input type="checkbox" checked={isChecked} onChange={(e) => { const current = formData.amenities || []; if (e.target.checked) { onChange('amenities', [...current, amenity]); } else { onChange('amenities', current.filter((a: string) => a !== amenity)); } }} style={{ color: 'var(--brand-primary)' }} className="rounded h-4 w-4 border-[var(--border-color)] focus:ring-[var(--brand-primary)] dynamic-checkbox" />
                   <span className="text-sm">{amenity}</span>
                 </label>

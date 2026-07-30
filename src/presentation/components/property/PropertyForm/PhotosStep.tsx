@@ -204,10 +204,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-lg transition-all"
-              style={{ backgroundColor: '#00a63e' }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#009135')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00a63e')}
+              className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-lg transition-all bg-[var(--brand-primary)] hover:opacity-90"
             >
               <CloudUpload className="w-5 h-5" />
               Seleccionar archivos
@@ -251,7 +248,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
                   <X className="w-4 h-4" />
                 </button>
                 {index === 0 && (
-                  <div className="absolute bottom-2 left-2 text-white text-xs px-2 py-1 rounded" style={{ backgroundColor: '#00a63e' }}>
+                  <div className="absolute bottom-2 left-2 text-white text-xs px-2 py-1 rounded bg-[var(--brand-primary)]">
                     Portada
                   </div>
                 )}
@@ -262,10 +259,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
           <button
             onClick={handleUpload}
             disabled={uploadMutation.isPending || !propertyId}
-            className="w-full mt-6 py-3 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#00a63e' }}
-            onMouseEnter={e => !uploadMutation.isPending && propertyId && (e.currentTarget.style.backgroundColor = '#009135')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00a63e')}
+            className="w-full mt-6 py-3 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--brand-primary)] hover:opacity-90"
           >
             {uploadMutation.isPending ? (
               <div className="flex items-center justify-center gap-2">
@@ -336,8 +330,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
               </button>
               <button
                 onClick={capturePhoto}
-                className="px-6 py-2 text-white rounded-lg"
-                style={{ backgroundColor: '#00a63e' }}
+                className="px-6 py-2 text-white rounded-lg bg-[var(--brand-primary)] hover:opacity-90"
               >
                 <Camera className="w-5 h-5 inline mr-2" />
                 Capturar
@@ -349,9 +342,9 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
 
       {/* ── ALERTA SI NO HAY PROPERTY ID ── */}
       {!propertyId && (
-        <div className="rounded-lg p-4 flex items-start gap-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fbbf24' }}>
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <div className="text-sm" style={{ color: '#92400e' }}>
+        <div className="rounded-lg p-4 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+          <div className="text-sm text-amber-800 dark:text-amber-200">
             <p className="font-semibold">Primero completa los pasos anteriores</p>
             <p className="opacity-80">Para poder subir fotos, primero debes guardar la información básica, ubicación y características de la propiedad.</p>
           </div>

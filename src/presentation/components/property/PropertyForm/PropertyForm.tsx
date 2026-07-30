@@ -928,7 +928,8 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
         </div>
       </div>
 
-       <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-8 pt-6 border-t border-gray-100">
+       <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 mt-8 pt-6 border-t border-[var(--border-color)]">
+
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={handlePrev}
@@ -1028,7 +1029,8 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
                     toast.error('Error al guardar el proyecto');
                   }
                 }}
-                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-orange-600 border border-orange-200 hover:bg-orange-50 transition-all"
+                 className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all"
+
               >
                 <FileText className="w-4 h-4" />
                 Guardar Borrador
