@@ -493,7 +493,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                       );
 
                       return (
-                        <div key={key} className="border border-gray-200 rounded-2xl bg-white hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col overflow-hidden min-w-[220px] max-w-[260px]">
+                        <div key={key} className="border border-gray-200 rounded-2xl bg-white hover:shadow-md hover:border-blue-200 transition-all duration-200 flex flex-col overflow-hidden min-w-[180px] sm:min-w-[220px] max-w-[260px]">
                           {/* Imagen */}
                           <div className="relative h-36 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center border-b border-gray-100 overflow-hidden">
                             {blueprintImageUrl ? (
@@ -698,9 +698,9 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
         const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${whatsappMsg}`;
 
         return (
-          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-2 sm:p-4"
             onClick={(e) => { if (e.target === e.currentTarget) setSelectedUnit(null); }}>
-            <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+            <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                 <div>
                   <h3 className="font-bold text-gray-900 text-lg">{selectedUnit.unitNumber}</h3>
