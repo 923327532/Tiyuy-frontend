@@ -309,6 +309,7 @@ export default function HomePage() {
                 priority={index < 2}
                 loading={index < 2 ? undefined : 'lazy'}
                 className="object-cover"
+                onError={() => console.error('Hero image failed:', image, 'index:', index)}
               />
             </div>
           ))}
