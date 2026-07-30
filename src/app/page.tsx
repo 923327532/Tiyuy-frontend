@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
 import { LocationSearch } from '@/presentation/components/forms/LocationSearch/LocationSearch';
@@ -14,7 +14,7 @@ import { prefetchFilteredProperties } from '@/presentation/hooks/useFilteredProp
 // Componentes pesados con lazy loading + Splitting de código para reducir bundle inicial
 const FeaturedProperties = lazy(() => import('@/presentation/components/property/FeaturedProperties/FeaturedProperties').then(m => ({ default: m.FeaturedProperties })));
 const FeaturedProjects = lazy(() => import('@/presentation/components/project/FeaturedProjects/FeaturedProjects').then(m => ({ default: m.FeaturedProjects })));
-const FilteredProperties = lazy(() => import('@/presentation/components/property/FilteredProperties/FilteredProperties').then(m => ({ default: m.FilteredProperties })));
+const IntelligentPropertySections = lazy(() => import('@/presentation/components/property/IntelligentPropertySections/IntelligentPropertySections').then(m => ({ default: m.IntelligentPropertySections })));
 const FeaturedCampaigns = lazy(() => import('@/presentation/components/marketing/FeaturedCampaigns').then(m => ({ default: m.FeaturedCampaigns })));
 const Footer = lazy(() => import('@/presentation/components/layout/Footer/Footer').then(m => ({ default: m.Footer })));
 
@@ -152,29 +152,32 @@ export default function HomePage() {
   const { data: mainBanners = [] } = usePublicBanners('HOME_MAIN');
   const { data: homeBanners = [] } = usePublicBanners('HOME_BANNER');
 
-  const allBanners = [...sliderBanners, ...mainBanners, ...homeBanners];
-  const integratedBanners = allBanners.filter(b => b.displayMode === 'INTEGRATED' || !b.displayMode);
+  // Memoizar integratedBanners para referencia estable
+  const integratedBanners = useMemo(() => {
+    const all = [...sliderBanners, ...mainBanners, ...homeBanners];
+    return all.filter(b => b.displayMode === 'INTEGRATED' || !b.displayMode);
+  }, [sliderBanners, mainBanners, homeBanners]);
 
   // Si hay banners del admin, SOLO se muestran esos (sin imágenes estáticas de fallback)
   // Si no hay banners del admin, se usan las imágenes estáticas por defecto
-  const heroImages = integratedBanners.length > 0
-    ? integratedBanners.map(b => b.imageUrl)
-    : FALLBACK_HERO_IMAGES;
+  const heroImages = useMemo(() => 
+    integratedBanners.length > 0
+      ? integratedBanners.map(b => b.imageUrl)
+      : FALLBACK_HERO_IMAGES,
+    [integratedBanners]
+  );
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+  const imagesLoadedRef = useRef(false);
 
-  // Precargar todas las imágenes del carrusel al inicio
+  // Precargar todas las imágenes del carrusel (solo una vez)
   useEffect(() => {
+    if (imagesLoadedRef.current) return;
+    imagesLoadedRef.current = true;
     heroImages.forEach((src, index) => {
       const img = new window.Image();
-      img.onload = () => {
-        setLoadedImages(prev => new Set(prev).add(index));
-      };
-      img.onerror = () => {
-        // Si falla la carga, igual marcar como cargada para no bloquear
-        setLoadedImages(prev => new Set(prev).add(index));
-      };
+      img.onload = () => {};
+      img.onerror = () => {};
       img.src = src;
     });
   }, [heroImages]);
@@ -495,24 +498,8 @@ export default function HomePage() {
 
       <section className="py-2 sm:py-3 bg-background">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <Suspense fallback={<SectionFallback height="200px" />}>
-            <FilteredProperties 
-              title="Departamentos para alquilar" 
-              viewAllLink="/rent/departamentos/lima" 
-              filter={{ type: 'APARTMENT', transactionType: 'RENT' }} 
-            />
-          </Suspense>
-        </div>
-      </section>
-
-      <section className="py-2 sm:py-3 bg-background">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <Suspense fallback={<SectionFallback height="200px" />}>
-            <FilteredProperties 
-              title="Casas disponibles para compra" 
-              viewAllLink="/sale/casas/lima" 
-              filter={{ type: 'HOUSE', transactionType: 'SALE' }} 
-            />
+          <Suspense fallback={<SectionFallback height="400px" />}>
+            <IntelligentPropertySections />
           </Suspense>
         </div>
       </section>
@@ -521,30 +508,6 @@ export default function HomePage() {
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
           <Suspense fallback={<SectionFallback height="300px" />}>
             <FeaturedProjects />
-          </Suspense>
-        </div>
-      </section>
-
-      <section className="py-2 sm:py-3 bg-background">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <Suspense fallback={<SectionFallback height="200px" />}>
-            <FilteredProperties 
-              title="Espacios para tu negocio" 
-              viewAllLink="/sale/oficinas/lima" 
-              filter={{ type: 'COMMERCIAL' }} 
-            />
-          </Suspense>
-        </div>
-      </section>
-
-      <section className="py-2 sm:py-3 bg-background">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <Suspense fallback={<SectionFallback height="200px" />}>
-            <FilteredProperties 
-              title="Terrenos y lotes de inversión" 
-              viewAllLink="/sale/terrenos/lima" 
-              filter={{ type: 'LAND' }} 
-            />
           </Suspense>
         </div>
       </section>

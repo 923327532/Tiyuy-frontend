@@ -1,0 +1,1 @@
+export { IntelligentPropertySections } from './IntelligentPropertySections';
