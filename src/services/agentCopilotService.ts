@@ -246,6 +246,18 @@ function localFallbackIntent(message: string, currentPath?: string): CopilotMess
     };
   }
 
+  // Publicar propiedad / agregar propiedad / nuevo inmueble: navigate to /my-properties/new
+  if (lower.includes('publicar') || lower.includes('publica') || lower.includes('agregar propiedad') || lower.includes('poner') || lower.includes('agregar un') || lower.includes('agregar una') || lower.includes('nuevo inmueble') || lower.includes('nueva propiedad') || lower.includes('quiero publicar') || lower.includes('quiero poner')) {
+    return {
+      text: 'Te llevo al formulario para publicar una nueva propiedad.',
+      action: {
+        type: 'NAVIGATE' as const,
+        payload: { path: '/my-properties/new', message: 'Redirigiendo al formulario de publicacion...' },
+      },
+      data: null,
+    };
+  }
+
   // --- Generic route keyword matching ---
   // Try to match the message against route keywords
   for (const entry of ROUTE_REGISTRY) {
