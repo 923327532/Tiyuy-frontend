@@ -44,15 +44,15 @@ export function PropertyMapCard({ property, isSelected, onClick }: PropertyMapCa
 
   return (
     <Link href={`/property/${property.slug || property.id}`} className="block w-full">
-      <div className={`w-full bg-white rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md border ${
-        isSelected ? 'border-brand ring-1 ring-brand shadow-md' : 'border-gray-100 shadow-sm hover:border-brand/40'
+      <div className={`w-full bg-[var(--bg-card)] rounded-lg overflow-hidden transition-all duration-200 hover:shadow-md border ${
+        isSelected ? 'border-brand ring-1 ring-brand shadow-md' : 'border-[var(--border-color)] shadow-sm hover:border-brand/40'
       }`}>
         <div className="flex">
-          <div className="relative w-28 sm:w-32 h-24 sm:h-28 flex-shrink-0 bg-gray-100 overflow-hidden">
+          <div className="relative w-28 sm:w-32 h-24 sm:h-28 flex-shrink-0 bg-[var(--bg-tertiary)] overflow-hidden">
             {property.mainPhotoUrl && !imgError ? (
               <img src={property.mainPhotoUrl} alt={property.title} className="w-full h-full object-cover" onError={() => setImgError(true)} />
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-300"><Image className="w-8 h-8" strokeWidth={1.5} /></div>
+              <div className="flex items-center justify-center h-full text-[var(--text-muted)]"><Image className="w-8 h-8" strokeWidth={1.5} /></div>
             )}
             {property.isFeatured && (
               <span className="absolute top-1 left-1 bg-amber-400 text-amber-900 text-[10px] font-bold px-1.5 py-0.5 rounded-md">Destacado</span>
@@ -62,20 +62,20 @@ export function PropertyMapCard({ property, isSelected, onClick }: PropertyMapCa
             <div>
               <div className="flex items-center gap-1.5 mb-1 flex-wrap">
                 {property.transactionType && <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-brand-light text-brand-dark">{transactionLabels[property.transactionType] || property.transactionType}</span>}
-                {property.type && <span className="text-[10px] text-gray-400 font-medium">{typeLabels[property.type] || property.type}</span>}
+                {property.type && <span className="text-[10px] text-[var(--text-muted)] font-medium">{typeLabels[property.type] || property.type}</span>}
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 leading-tight line-clamp-1">{cleanTitle}</h3>
-              <p className="text-[11px] text-gray-500 mt-0.5 truncate">{property.district}{property.province ? `, ${property.province}` : ''}</p>
-              <div className="flex items-center gap-2 mt-1 text-[11px] text-gray-500 flex-wrap">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)] leading-tight line-clamp-1">{cleanTitle}</h3>
+              <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 truncate">{property.district}{property.province ? `, ${property.province}` : ''}</p>
+              <div className="flex items-center gap-2 mt-1 text-[11px] text-[var(--text-secondary)] flex-wrap">
                 {property.bedrooms && <span>{property.bedrooms} dorm</span>}
                 {property.bathrooms && <span>{property.bathrooms} baños</span>}
                 {property.area && <span>{property.area} m²</span>}
               </div>
             </div>
-            <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-gray-50">
+            <div className="flex items-center justify-between mt-1.5 pt-1.5 border-t border-[var(--border-color)]">
               <div>
-                <p className="text-[10px] text-gray-400">Precio</p>
-                <p className="text-xs sm:text-sm font-bold text-gray-900">{formatPrice(property.price, property.currency)}</p>
+                <p className="text-[10px] text-[var(--text-muted)]">Precio</p>
+                <p className="text-xs sm:text-sm font-bold text-[var(--text-primary)]">{formatPrice(property.price, property.currency)}</p>
               </div>
               <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-white bg-brand px-2 py-1 rounded-md hover:bg-brand-dark transition-colors">
                 Ver <ChevronRight className="w-2.5 h-2.5" />

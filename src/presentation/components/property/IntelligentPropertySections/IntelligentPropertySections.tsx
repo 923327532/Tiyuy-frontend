@@ -90,7 +90,7 @@ function SectionRow({
       <style>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .carousel-card { width: calc(50% - 6px); flex-shrink: 0; }
+        .carousel-card { width: calc(50% - 10px); flex-shrink: 0; }
         @media (min-width: 640px) { .carousel-card { width: calc((100% - 20px) / 2); } }
         @media (min-width: 768px) { .carousel-card { width: calc((100% - 2 * 24px) / 3); } }
         @media (min-width: 1024px) { .carousel-card { width: calc((100% - 3 * 24px) / 4); } }
