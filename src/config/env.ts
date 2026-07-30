@@ -41,4 +41,9 @@ export const env = {
 export const serverEnv = {
   backendUrl: process.env.BACKEND_URL || 'https://api.tiyuy.com',
   brevoApiKey: process.env.BREVO_API_KEY || '',
+  // AI Copilot Agent - LLM endpoint URL for server-side API routes
+  // When changing providers, update LLM_API_URL and LLM_MODEL in env
+  llmApiUrl: process.env.LLM_API_URL || 'https://api.deepseek.com/v1/chat/completions',
+  llmApiKey: process.env.LLM_API_KEY || '',
+  llmModel: process.env.LLM_MODEL || 'deepseek-chat',
 } as const;
