@@ -94,7 +94,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   };
 
   return (
-    <div className="group flex flex-col w-full h-full min-w-[200px] cursor-pointer overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,.06)] hover:shadow-[0_15px_45px_rgba(0,0,0,.10)] hover:-translate-y-1 transition-all duration-300">
+    <div className="group flex flex-col w-full h-full cursor-pointer overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,.06)] hover:shadow-[0_15px_45px_rgba(0,0,0,.10)] hover:-translate-y-1 transition-all duration-300">
       <Link href={`/projects/${getProjectSlug(project)}`} className="relative w-full overflow-hidden rounded-t-2xl" style={{ aspectRatio: '4 / 3' }}>
         {project.coverImageUrl ? (
           <LazyImage
