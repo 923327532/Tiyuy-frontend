@@ -256,15 +256,31 @@ export function useShareStatusPost() {
   });
 }
 
+// El backend usa un toggle en POST /status/{id}/like, así que ambos hooks
+// llaman al mismo endpoint. La diferencia es solo el onSuccess (estado correcto).
 export function useLikeStatusPost() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (postId: number) => apiCall(`/contacts/extended/status/${postId}/like`, { method: 'POST' }),
-    onSuccess: (data, postId) => {
-      queryClient.setQueriesData({ queryKey: ['status-posts'] }, (old: any) => {
+    onSuccess: (data: any, postId) => {
+      // El backend responde isCurrentlyActive: true/false — usar su valor real
+      const isActive = data?.isCurrentlyActive ?? true;
+      queryClient.setQueriesData({ queryKey: ['status-posts'], exact: false }, (old: any) => {
         if (!old?.pages || !Array.isArray(old.pages)) return old;
-        return { ...old, pages: old.pages.map((page: any) => Array.isArray(page) ? page.map((post: any) => post.id === postId ? { ...post, hasUserLiked: false, likeCount: Math.max((post.likeCount || 0) - 1, 0) } : post) : page) };
+        return {
+          ...old,
+          pages: old.pages.map((page: any) =>
+            Array.isArray(page)
+              ? page.map((post: any) =>
+                  post.id === postId
+                    ? { ...post, hasUserLiked: isActive, likeCount: Math.max((isActive ? (post.likeCount || 0) + 1 : (post.likeCount || 0) - 1), 0) }
+                    : post
+                )
+              : page
+          ),
+        };
       });
+      queryClient.invalidateQueries({ queryKey: ['status-posts'], exact: false });
     },
   });
 }
@@ -273,11 +289,24 @@ export function useUnlikeStatusPost() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (postId: number) => apiCall(`/contacts/extended/status/${postId}/like`, { method: 'POST' }),
-    onSuccess: (data, postId) => {
-      queryClient.setQueriesData({ queryKey: ['status-posts'] }, (old: any) => {
-        if (!old?.pages) return old;
-        return { ...old, pages: old.pages.map((page: any) => page.map((post: any) => post.id === postId ? { ...post, hasUserLiked: false, likeCount: Math.max((post.likeCount || 0) - 1, 0) } : post)) };
+    onSuccess: (data: any, postId) => {
+      const isActive = data?.isCurrentlyActive ?? false;
+      queryClient.setQueriesData({ queryKey: ['status-posts'], exact: false }, (old: any) => {
+        if (!old?.pages || !Array.isArray(old.pages)) return old;
+        return {
+          ...old,
+          pages: old.pages.map((page: any) =>
+            Array.isArray(page)
+              ? page.map((post: any) =>
+                  post.id === postId
+                    ? { ...post, hasUserLiked: isActive, likeCount: Math.max((isActive ? (post.likeCount || 0) + 1 : (post.likeCount || 0) - 1), 0) }
+                    : post
+                )
+              : page
+          ),
+        };
       });
+      queryClient.invalidateQueries({ queryKey: ['status-posts'], exact: false });
     },
   });
 }

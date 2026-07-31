@@ -23,10 +23,11 @@ const ROLE_LABEL: Record<string, string> = {
     ADMIN: 'Admin',
 };
 
-export default function EstadosPanel({ user, onNewStatus, onStatusSelect, selectedStatusId }: {
+export default function EstadosPanel({ user, onNewStatus, onStatusSelect, onStatusGroupSelect, selectedStatusId }: {
     user: any;
     onNewStatus: () => void;
     onStatusSelect?: (id: number) => void;
+    onStatusGroupSelect?: (statuses: any[]) => void;
     selectedStatusId?: number | null;
 }) {
     const [shareTarget, setShareTarget] = useState<{ title: string; link: string } | null>(null);
@@ -48,6 +49,26 @@ export default function EstadosPanel({ user, onNewStatus, onStatusSelect, select
 
     const allPosts = statusData?.pages?.flatMap((p: any) => p.content) ?? [];
     const sentinelRef = useRef<HTMLDivElement>(null);
+
+    // ═══ AGRUPAR POR USUARIO (estilo WhatsApp) ═══
+    // Si un usuario publicó varios estados, se muestran agrupados en una sola fila.
+    const groupedPosts = useCallback(() => {
+        const groups = new Map<string, any[]>();
+        allPosts.forEach((post: any) => {
+            const key = String(post.userId ?? post.user?.id ?? post.userEmail ?? post.userName);
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key)!.push(post);
+        });
+        // Ordenar por el estado más reciente de cada grupo
+        return Array.from(groups.values())
+            .map(userStatuses => ({
+                statuses: userStatuses,
+                newest: userStatuses.reduce((a, b) => new Date(a.createdAt) > new Date(b.createdAt) ? a : b),
+            }))
+            .sort((a, b) => new Date(b.newest.createdAt).getTime() - new Date(a.newest.createdAt).getTime());
+    }, [allPosts]);
+
+    const groups = groupedPosts();
 
     // IntersectionObserver para scroll infinito
     useEffect(() => {
@@ -83,9 +104,13 @@ export default function EstadosPanel({ user, onNewStatus, onStatusSelect, select
         });
     };
 
-    const handleStatusClick = (postId: number) => {
-        if (onStatusSelect) {
-            onStatusSelect(postId);
+    const handleStatusClick = (statuses: any[]) => {
+        if (statuses.length === 0) return;
+        // Si hay un grupo (varios estados del mismo usuario), abrir secuencialmente
+        if (statuses.length > 1 && onStatusGroupSelect) {
+            onStatusGroupSelect(statuses);
+        } else if (onStatusSelect) {
+            onStatusSelect(statuses[0].id);
         }
     };
 
@@ -133,7 +158,7 @@ export default function EstadosPanel({ user, onNewStatus, onStatusSelect, select
             </div>
 
             {/* Sección recientes */}
-            {!isLoading && allPosts.length > 0 && (
+            {!isLoading && groups.length > 0 && (
                 <div className="px-4 py-2">
                     <p className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-2">
                         Recientes
@@ -141,59 +166,71 @@ export default function EstadosPanel({ user, onNewStatus, onStatusSelect, select
                 </div>
             )}
 
-            {/* Lista */}
+            {/* Lista agrupada por usuario */}
             <div className="flex-1 overflow-y-auto">
                 {isLoading ? (
                     <div className="flex justify-center py-12">
                         <div className="w-8 h-8 rounded-full border-4 border-brand border-t-transparent animate-spin" />
                     </div>
-                ) : allPosts.length === 0 ? (
+                ) : groups.length === 0 ? (
                     <div className="text-center py-16 px-6">
                         <p className="text-[var(--text-muted)] text-sm font-medium">No hay estados activos</p>
                         <p className="text-[var(--text-muted)] text-xs mt-1">Sé el primero en publicar una búsqueda</p>
                     </div>
                 ) : (
                     <>
-                        {allPosts.map((post: any) => {
-                            const percent = expiresPercent(new Date(post.createdAt), new Date(post.expiresAt));
+                        {groups.map((group: any, groupIndex: number) => {
+                            const statuses: any[] = group.statuses;
+                            const newest = group.newest;
+                            const count = statuses.length;
+                            const first = statuses[0];
+                            const percent = expiresPercent(new Date(newest.createdAt), new Date(newest.expiresAt));
                             const isUrgent = percent >= 75;
-                            const badge = ROLE_BADGE[post.userRole] ?? 'bg-gray-100 text-gray-600';
-                            const roleLabel = ROLE_LABEL[post.userRole] ?? 'Usuario';
+                            const badge = ROLE_BADGE[newest.userRole] ?? 'bg-gray-100 text-gray-600';
+                            const roleLabel = ROLE_LABEL[newest.userRole] ?? 'Usuario';
+                            // El grupo completo: todos los estados de ese usuario
+                            const userStatuses = statuses.length > 0 ? statuses : [newest];
+
                             return (
-                                <div key={post.id}
-                                    className={`flex items-start gap-3 px-4 py-3 hover:bg-[var(--bg-tertiary)] border-b border-[var(--border-light)] transition-colors cursor-pointer ${selectedStatusId === post.id ? 'bg-brand/10' : ''}`}
-                                    onClick={() => handleStatusClick(post.id)}>
+                                <div key={groupIndex}
+                                    className={`flex items-start gap-3 px-4 py-3 hover:bg-[var(--bg-tertiary)] border-b border-[var(--border-light)] transition-colors cursor-pointer ${selectedStatusId === first.id ? 'bg-brand/10' : ''}`}
+                                    onClick={() => handleStatusClick(userStatuses)}>
                                     <div className="relative flex-shrink-0">
                                         <div className={`w-12 h-12 rounded-full ring-2 ring-offset-1 ${isUrgent ? 'ring-red-400' : 'ring-green-400'} overflow-hidden`}>
-                                            <Avatar name={post.userName ?? 'U'} role={post.userRole} size="lg" src={post.userAvatar} />
+                                            <Avatar name={newest.userName ?? 'U'} role={newest.userRole} size="lg" src={newest.userAvatar} />
                                         </div>
                                     </div>
 
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-0.5">
                                             <div className="flex items-center gap-1.5 flex-wrap">
-                                                <span className="text-sm font-semibold text-[var(--text-primary)]">{post.userName}</span>
+                                                <span className="text-sm font-semibold text-[var(--text-primary)]">{newest.userName}</span>
                                                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${badge}`}>{roleLabel}</span>
                                             </div>
                                             <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
                                                 <span className={`text-[10px] font-medium ${isUrgent ? 'text-red-400' : 'text-[var(--text-muted)]'}`}>
-                                                    {isUrgent ? '️ ' : ''}{timeLeft(new Date(post.expiresAt))}
+                                                    {isUrgent ? '️ ' : ''}{timeLeft(new Date(newest.expiresAt))}
                                                 </span>
                                             </div>
                                         </div>
-                                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">{post.content}</p>
+                                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">{newest.content}</p>
                                         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                                            {post.location && (
+                                            {count > 1 && (
                                                 <span className="inline-flex items-center gap-1 text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full font-medium">
-                                                    {post.location}
+                                                    {count} estados
                                                 </span>
                                             )}
-                                            {post.propertyType && (
+                                            {newest.location && (
                                                 <span className="inline-flex items-center gap-1 text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full font-medium">
-                                                    {post.propertyType}
+                                                    {newest.location}
                                                 </span>
                                             )}
-                                            <span className="text-[10px] text-[var(--text-muted)] ml-auto">{post.viewCount} vistas</span>
+                                            {newest.propertyType && (
+                                                <span className="inline-flex items-center gap-1 text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full font-medium">
+                                                    {newest.propertyType}
+                                                </span>
+                                            )}
+                                            <span className="text-[10px] text-[var(--text-muted)] ml-auto">{newest.viewCount} vistas</span>
                                         </div>
                                     </div>
                                 </div>

@@ -35,6 +35,7 @@ export function MisContactosPageContent() {
     const [activeTab, setActiveTab] = useState<MainTab>('chats');
     const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
     const [selectedStatusId, setSelectedStatusId] = useState<number | null>(null);
+    const [selectedStatusGroup, setSelectedStatusGroup] = useState<any[] | null>(null);
     const [selectedGroup, setSelectedGroup] = useState<any>(null);
     const [selectedChannel, setSelectedChannel] = useState<any>(null);
     const [channelsSection, setChannelsSection] = useState<'mis-canales-creados' | 'mis-canales-suscritos' | 'descubrir-canales' | 'crear-canal'>('mis-canales-creados');
@@ -375,7 +376,16 @@ export function MisContactosPageContent() {
             </div>
         );
         if (activeTab === 'estados' && selectedStatusId) {
-            return <StatusDetailPanel status={allPosts.find((post: any) => post.id === selectedStatusId) || { id: selectedStatusId, user: { name: 'Usuario' }, content: '', createdAt: new Date().toISOString(), tags: [], likes: 0, comments: [] }} user={user} onClose={() => setSelectedStatusId(null)} />;
+            const statusForPanel = selectedStatusGroup?.length
+                ? selectedStatusGroup[0]
+                : (allPosts.find((post: any) => post.id === selectedStatusId) || { id: selectedStatusId, user: { name: 'Usuario' }, content: '', createdAt: new Date().toISOString(), tags: [], likes: 0, comments: [] });
+            return <StatusDetailPanel
+                key={selectedStatusId}
+                status={statusForPanel}
+                user={user}
+                statuses={selectedStatusGroup?.length ? selectedStatusGroup : undefined}
+                onClose={() => { setSelectedStatusId(null); setSelectedStatusGroup(null); }}
+            />;
         }
         if (activeTab === 'grupos') {
             if (selectedGroup) return <GrupoDetailPanel group={selectedGroup} user={user} onBack={() => setSelectedGroup(null)} />;
@@ -470,7 +480,7 @@ export function MisContactosPageContent() {
                     </div>
                     <div className="flex-1 overflow-hidden bg-[var(--bg-card)]">
                         {activeTab === 'chats' && <ChatsPanel user={user} selectedChatId={selectedChatId} setSelectedChatId={setSelectedChatId} />}
-                        {activeTab === 'estados' && <EstadosPanel user={user} onNewStatus={() => setStatusSection('crear')} onStatusSelect={setSelectedStatusId} selectedStatusId={selectedStatusId} />}
+                        {activeTab === 'estados' && <EstadosPanel user={user} onNewStatus={() => setStatusSection('crear')} onStatusSelect={(id) => { setSelectedStatusId(id); setSelectedStatusGroup(null); }} onStatusGroupSelect={(statuses) => { setSelectedStatusGroup(statuses); setSelectedStatusId(statuses[0]?.id ?? null); }} selectedStatusId={selectedStatusId} />}
                         {activeTab === 'canales' && <CanalesListPanel user={user} onChannelSelect={setSelectedChannel} activeSection={channelsSection} onSectionChange={setChannelsSection} />}
                         {activeTab === 'grupos' && <GruposListPanel user={user} onGroupSelect={(group) => { setSelectedGroup(group); }} activeSection={gruposSection === 'menu' ? 'mis-grupos' : gruposSection} onSectionChange={(s) => { setGruposSection(s); setSelectedGroup(null); }} />}
                         {activeTab === 'grupos' && gruposSection === 'menu' && (

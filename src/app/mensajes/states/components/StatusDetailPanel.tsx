@@ -13,9 +13,54 @@ interface StatusDetailPanelProps {
   status: any;
   user: any;
   onClose?: () => void;
+  // Opcional: secuencia de estados del mismo usuario (estilo historias WhatsApp)
+  statuses?: any[];
 }
 
-export default function StatusDetailPanel({ status, user, onClose }: StatusDetailPanelProps) {
+export default function StatusDetailPanel({ status, user, onClose, statuses = [] }: StatusDetailPanelProps) {
+  // ═══ SECUENCIA TIPO HISTORIAS (WhatsApp) ═══
+  // Si viene un grupo de estados del mismo usuario, se muestran uno a uno
+  // con barra de progreso (~5s) y avance automático.
+  const sequence = statuses && statuses.length > 0 ? statuses : [status];
+  const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
+  const activeStatus = sequence[currentStatusIndex] || status;
+  const totalInSequence = sequence.length;
+  const isSequenced = totalInSequence > 1;
+
+  // Barra de progreso automática: 10s por estado, con pausa si el usuario
+  // está comentando o dando like, y loop (regresa al primero al terminar).
+  const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Reanuda automáticamente la secuencia tras una interacción (like/comentario)
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoResumeAfterInteraction = (ms = 2500) => {
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    setIsPaused(true);
+    setProgress(0);
+    resumeTimerRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, ms);
+  };
+
+  useEffect(() => {
+    if (!isSequenced || isPaused) return;
+    setProgress(0);
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const next = prev + 100 / 100; // 10s = 100 ticks de 100ms
+        if (next >= 100) {
+          clearInterval(interval);
+          // Loop: al terminar la secuencia, regresar al primer estado
+          setCurrentStatusIndex((idx) => (idx + 1 < totalInSequence ? idx + 1 : 0));
+          return 0;
+        }
+        return next;
+      });
+    }, 100);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStatusIndex, isSequenced, totalInSequence, isPaused]);
 
   //  Nombre real del usuario autenticado - usar firstName + lastName (campos válidos)
   const currentUserName = user?.firstName && user?.lastName
@@ -31,6 +76,25 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
   };
 
 
+  // Registrar vista del estado al abrirlo (el backend incrementa viewCount)
+  useEffect(() => {
+    if (activeStatus?.id) {
+      fetch(`/api/contacts/extended/status/${activeStatus.id}/view`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('tiyuy-auth-token') || localStorage.getItem('token') || ''}`,
+        },
+      })
+        .then(() => {
+          // Refrescar la lista para que el contador de vistas se actualice
+          queryClient.invalidateQueries({ queryKey: ['status-posts'], exact: false });
+        })
+        .catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeStatus?.id]);
+
   const [commentText, setCommentText] = useState('');
   const [likeCount, setLikeCount] = useState(0);
   const [shareCount, setShareCount] = useState(0);
@@ -44,6 +108,25 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
   const hasLocalLikeRef = useRef(false);
   localCommentsRef.current = localComments;
 
+  // ═══ FIX CRÍTICO: al cambiar de ESTADO ACTIVO (dentro de la secuencia), RESETEAR el estado local ═══
+  // Así cada estado del grupo tiene su propio like/comentario — un like NO se aplica a los demás.
+  const previousStatusIdRef = useRef<number>(activeStatus?.id);
+  useEffect(() => {
+    if (previousStatusIdRef.current !== activeStatus?.id) {
+      previousStatusIdRef.current = activeStatus?.id;
+      // Resetear todos los estados y refs al cambiar de estado activo
+      setCommentText('');
+      setLikeCount(0);
+      setShareCount(0);
+      setIsLiked(false);
+      setLocalComments([]);
+      setReplyingTo(null);
+      setShowShareModal(false);
+      localCommentsRef.current = [];
+      hasLocalLikeRef.current = false;
+    }
+  }, [activeStatus?.id]);
+
   const queryClient = useQueryClient();
 
   // Hooks para interacciones con el estado
@@ -55,17 +138,17 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
   const likeCommentMutation = useLikeComment();
   const unlikeCommentMutation = useUnlikeComment();
 
-  //  FIX 1: PASAR status.id al hook
-  const commentMutation = useCommentStatusPost(status.id);
+  //  El hook de comentarios usa el estado activo de la secuencia
+  const commentMutation = useCommentStatusPost(activeStatus.id);
 
-  //  FIX 2: Usar comentarios del backend (NO local)
-  const { data: rawComments = [], isLoading, error } = useStatusComments(status.id);
+  //  Usar comentarios del ESTADO ACTIVO (no del primero del grupo)
+  const { data: rawComments = [], isLoading, error } = useStatusComments(activeStatus.id);
 
   // Obtener datos actualizados del estado para sincronizar contadores
   const { data: statusPostsData } = useGetActiveStatusPosts();
 
   // Encontrar el estado actualizado en la lista
-  const updatedStatus = statusPostsData?.pages?.flat()?.find(s => s.id === status.id) || status;
+  const updatedStatus = statusPostsData?.pages?.flat()?.find(s => s.id === activeStatus.id) || activeStatus;
 
 
   //  Usar rawComments directamente sin useMemo para evitar bucles
@@ -113,7 +196,7 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
         setReplyingTo(null); //  Limpiar respuesta
         toast.success('Comentario enviado');
         // Refrescar los comentarios para mostrar el nuevo
-        queryClient.invalidateQueries({ queryKey: ['status-comments', status.id] });
+        queryClient.invalidateQueries({ queryKey: ['status-comments', activeStatus.id] });
       },
       onError: (error) => {
         console.error('Error:', error);
@@ -158,23 +241,27 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
   const [showShareModal, setShowShareModal] = useState(false);
 
   const handleShare = () => {
-    shareMutation.mutate(status.id);
+    shareMutation.mutate(activeStatus.id);
     setShowShareModal(true);
     setShareCount((prev: number) => prev + 1); // Incrementar contador de compartidos
   };
 
   const handleLike = () => {
+    // Pausa breve para interactuar y se reanuda sola después de 2.5s
+    autoResumeAfterInteraction();
     hasLocalLikeRef.current = true;
     if (isLiked) {
-      unlikeMutation.mutate(status.id);
+      unlikeMutation.mutate(activeStatus.id);
     } else {
-      likeMutation.mutate(status.id);
+      likeMutation.mutate(activeStatus.id);
     }
     setIsLiked(!isLiked);
     setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
   };
 
   const handleLikeComment = (commentId: number, isCommentLiked: boolean) => {
+    // Pausa breve para interactuar y se reanuda sola después de 2.5s
+    autoResumeAfterInteraction();
     //  Feedback visual inmediato
     setLocalComments(prev => prev.map(comment => {
       if (comment.id === commentId) {
@@ -211,30 +298,76 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
   };
 
   const siteUrl = window.location.origin;
-  const shareId = status.shareLink || status.id || '';
+  const shareId = activeStatus.shareLink || activeStatus.id || '';
   const shareUrl = `${siteUrl}/public/view/status/${shareId}`;
-  const shareText = `Mira este estado de ${status.userName || status.user?.name || 'Usuario'} en Tiyuy: ${status.content?.substring(0, 120)}...`;
+  const shareText = `Mira este estado de ${activeStatus.userName || activeStatus.user?.name || 'Usuario'} en Tiyuy: ${activeStatus.content?.substring(0, 120)}...`;
   const encoded = encodeURIComponent(`${shareText} ${shareUrl}`);
+
+  // Limpiar timer de reanudación al desmontar
+  useEffect(() => {
+    return () => {
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    };
+  }, []);
+
+  const goNext = () => {
+    // Avance manual: reanuda y va al siguiente; al final regresa al primero (loop)
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    setIsPaused(false);
+    setCurrentStatusIndex((idx) => {
+      setProgress(0);
+      return idx + 1 < totalInSequence ? idx + 1 : 0;
+    });
+  };
+
+  const goPrev = () => {
+    // Retroceso manual: reanuda y va al anterior
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    setIsPaused(false);
+    setCurrentStatusIndex((idx) => {
+      if (idx > 0) {
+        setProgress(0);
+        return idx - 1;
+      }
+      return idx;
+    });
+  };
 
   return (
     <div className="flex flex-col h-full bg-[var(--bg-primary)]">
       {/* Barra verde delgada solo para avatar + nombre */}
       <div className="bg-green-600 px-4 py-3 flex-shrink-0">
+        {/* Barras de progreso de la secuencia (solo si hay varios estados) */}
+        {isSequenced && (
+          <div className="flex gap-1.5 mb-2">
+            {sequence.map((s: any, i: number) => (
+              <div key={s?.id || i} className="h-1 flex-1 rounded-full bg-white/30 overflow-hidden">
+                <div
+                  className="h-full bg-white transition-none"
+                  style={{
+                    width: `${i < currentStatusIndex ? 100 : i === currentStatusIndex ? progress : 0}%`,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <UserAvatar 
-              user={status.user?.id === user?.id || status.userId === user?.id ? user : status.user} 
+              user={activeStatus.user?.id === user?.id || activeStatus.userId === user?.id ? user : activeStatus.user} 
               size="sm" 
             />
             <div>
               <h3 className="text-white font-semibold text-sm">
-                {status.user?.id === user?.id || status.userId === user?.id
+                {activeStatus.user?.id === user?.id || activeStatus.userId === user?.id
                   ? currentUserName
-                  : status.userName || status.user?.name || 'Usuario'
+                  : activeStatus.userName || activeStatus.user?.name || 'Usuario'
                 }
               </h3>
               <p className="text-xs text-white/70">
-                {formatDistanceToNow(new Date(status.createdAt), { addSuffix: true })}
+                {formatDistanceToNow(new Date(activeStatus.createdAt), { addSuffix: true })}
+                {isSequenced && ` · ${currentStatusIndex + 1}/${totalInSequence}`}
               </p>
             </div>
           </div>
@@ -248,53 +381,62 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
 
       {/* Contenido del estado - estilo Facebook */}
       <div 
-        className="flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] p-6 sm:p-10 text-center"
+        className="flex-1 flex flex-col items-center justify-center min-h-[300px] p-6 sm:p-10 text-center cursor-pointer relative overflow-hidden"
         style={{ 
-          backgroundColor: status.customColor || '#14b8a6',
+          backgroundColor: activeStatus.customColor || '#14b8a6',
         }}
+        onClick={goNext}
       >
         <div className="max-w-md w-full mx-auto">
           {/* Texto del estado con auto-sizing y estilo de texto */}
           <div className={`
             text-white leading-relaxed
-            ${status.textStyle === 'BOLD' ? 'font-bold' : ''}
-            ${status.textStyle === 'ITALIC' ? 'italic' : ''}
-            ${status.textStyle === 'COLORFUL' ? 'text-yellow-200' : ''}
-            ${status.textStyle === 'CODE' ? 'font-mono' : ''}
-            ${status.textStyle === 'HIGHLIGHT' ? 'bg-white/20 px-2 py-1 rounded-lg' : ''}
-            ${(!status.textStyle || status.textStyle === 'NORMAL') ? 'font-medium' : 'font-medium'}
-            ${status.content?.length < 30 ? 'text-3xl sm:text-4xl' : ''}
-            ${status.content?.length >= 30 && status.content?.length < 80 ? 'text-2xl sm:text-3xl' : ''}
-            ${status.content?.length >= 80 && status.content?.length < 150 ? 'text-xl sm:text-2xl' : ''}
-            ${status.content?.length >= 150 ? 'text-base sm:text-lg' : ''}
+            ${activeStatus.textStyle === 'BOLD' ? 'font-bold' : ''}
+            ${activeStatus.textStyle === 'ITALIC' ? 'italic' : ''}
+            ${activeStatus.textStyle === 'COLORFUL' ? 'text-yellow-200' : ''}
+            ${activeStatus.textStyle === 'CODE' ? 'font-mono' : ''}
+            ${activeStatus.textStyle === 'HIGHLIGHT' ? 'bg-white/20 px-2 py-1 rounded-lg' : ''}
+            ${(!activeStatus.textStyle || activeStatus.textStyle === 'NORMAL') ? 'font-medium' : 'font-medium'}
+            ${activeStatus.content?.length < 30 ? 'text-3xl sm:text-4xl' : ''}
+            ${activeStatus.content?.length >= 30 && activeStatus.content?.length < 80 ? 'text-2xl sm:text-3xl' : ''}
+            ${activeStatus.content?.length >= 80 && activeStatus.content?.length < 150 ? 'text-xl sm:text-2xl' : ''}
+            ${activeStatus.content?.length >= 150 ? 'text-base sm:text-lg' : ''}
           `}>
-            {status.content}
+            {activeStatus.content}
           </div>
           
           {/* Metadatos del estado */}
           <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
-            {status.location && (
+            {activeStatus.location && (
               <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">
-                📍 {status.location}
+                📍 {activeStatus.location}
               </span>
             )}
-            {status.propertyType && (
+            {activeStatus.propertyType && (
               <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">
-                🏠 {status.propertyType}
+                🏠 {activeStatus.propertyType}
               </span>
             )}
           </div>
 
-          {status.tags && status.tags.length > 0 && (
+          {activeStatus.tags && activeStatus.tags.length > 0 && (
             <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {status.tags.map((tag: string, index: number) => (
-                <span key={index} className="px-2.5 py-1 bg-white/15 text-white/90 text-[11px] rounded-full font-medium backdrop-blur-sm">
+              {activeStatus.tags.map((tag: string, tagIndex: number) => (
+                <span key={tagIndex} className="px-2.5 py-1 bg-white/15 text-white/90 text-[11px] rounded-full font-medium backdrop-blur-sm">
                   #{tag}
                 </span>
               ))}
             </div>
           )}
         </div>
+
+        {/* Zona izquierda para retroceder (estilo Stories) */}
+        {currentStatusIndex > 0 && (
+          <div
+            className="absolute left-0 top-0 bottom-0 w-1/5 z-10"
+            onClick={(e) => { e.stopPropagation(); goPrev(); }}
+          />
+        )}
       </div>
 
       {/* Acciones */}
@@ -305,7 +447,13 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
             <Heart className="w-5 h-5" fill={isLiked ? 'currentColor' : 'none'} />
             {likeCount > 0 && likeCount}
           </button>
-          <button className="flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] hover:text-brand transition-colors">
+          <button
+            onClick={() => {
+              const input = document.getElementById('comment-input');
+              input?.focus();
+            }}
+            className="flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] hover:text-brand transition-colors"
+          >
             <MessageCircle className="w-5 h-5" /> Comentar
           </button>
           <div className="relative">
@@ -357,6 +505,53 @@ export default function StatusDetailPanel({ status, user, onClose }: StatusDetai
 
       {/* Sección de comentarios */}
       <div className="flex-1 overflow-y-auto p-4">
+        {/* Input de comentario */}
+        <div className="mb-4">
+          {replyingTo && (
+            <div className="flex items-center justify-between bg-[var(--bg-tertiary)] rounded-lg px-3 py-2 mb-2">
+              <span className="text-xs text-[var(--text-secondary)]">
+                Respondiendo a <strong>{replyingTo.userName || replyingTo.user?.name || 'Usuario'}</strong>
+              </span>
+              <button onClick={handleCancelReply} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <input
+              id="comment-input"
+              type="text"
+              value={commentText}
+              onFocus={() => {
+                // Pausar la secuencia mientras el usuario escribe un comentario
+                if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+                setProgress(0);
+                setIsPaused(true);
+              }}
+              onBlur={() => {
+                // Al salir del input, reanudar la secuencia
+                if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+                setIsPaused(false);
+              }}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleComment();
+                }
+              }}
+              placeholder="Escribe un comentario..."
+              className="flex-1 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded-full px-4 py-2.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-brand"
+            />
+            <button
+              onClick={handleComment}
+              disabled={!commentText.trim()}
+              className="flex items-center gap-2 bg-brand text-white px-4 py-2.5 rounded-full text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
         <h4 className="font-semibold text-[var(--text-primary)] mb-4">Comentarios ({updatedStatus.commentCount || 0})</h4>
 
         {/* Lista de comentarios */}

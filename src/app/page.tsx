@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
@@ -159,12 +158,17 @@ export default function HomePage() {
   }, [sliderBanners, mainBanners, homeBanners]);
 
   // Las primeras 2 imágenes SIEMPRE son locales (cargan al instante, sin error en producción).
-  // Las del admin (S3) se agregan después para que ya hayan cargado cuando les toque su turno.
+  // Las del admin (S3) pasan por el proxy interno /api/images/proxy (mismo mecanismo que las cards)
+  // y van después, para que carguen mientras se muestran las locales.
   const heroImages = useMemo(() => 
     integratedBanners.length > 0
       ? [
           ...FALLBACK_HERO_IMAGES.slice(0, 2),
-          ...integratedBanners.map(b => b.imageUrl),
+          ...integratedBanners.map(b =>
+            b.imageUrl.startsWith('http')
+              ? `/api/images/proxy?url=${encodeURIComponent(b.imageUrl)}`
+              : b.imageUrl
+          ),
         ]
       : FALLBACK_HERO_IMAGES,
     [integratedBanners]
@@ -172,18 +176,46 @@ export default function HomePage() {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const imagesLoadedRef = useRef(false);
+  const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
 
-  // Precargar todas las imágenes del carrusel (solo una vez)
+  // Precargar todas las imágenes del carrusel (solo una vez) y marcar cuáles están listas
   useEffect(() => {
     if (imagesLoadedRef.current) return;
     imagesLoadedRef.current = true;
+    setLoadedImages(heroImages.map(() => false));
     heroImages.forEach((src, index) => {
       const img = new window.Image();
-      img.onload = () => {};
-      img.onerror = () => {};
+      img.onload = () => {
+        setLoadedImages(prev => {
+          const next = [...prev];
+          next[index] = true;
+          return next;
+        });
+      };
+      img.onerror = () => {
+        // Si falla, LazyImage mostrará su fallback; no insistir en esperarla
+        setLoadedImages(prev => {
+          const next = [...prev];
+          next[index] = true;
+          return next;
+        });
+      };
       img.src = src;
     });
   }, [heroImages]);
+
+  // Carrusel: avanza cada 5s PERO espera a que la siguiente imagen ya esté cargada.
+  // Así las S3 que tardan no muestran el placeholder vacío al llegar su turno.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => {
+        const next = (prev + 1) % heroImages.length;
+        // Las locales (0-1) siempre están listas; las S3 solo cuando terminaron de precargarse
+        return (next < 2 || loadedImages[next]) ? next : prev;
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length, loadedImages]);
   const [activeTab, setActiveTab] = useState<'rent' | 'sale' | 'projects'>('sale');
   const [selectedPropertyType, setSelectedPropertyType] = useState('departamentos');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -192,13 +224,6 @@ export default function HomePage() {
   const [selectedMinArea, setSelectedMinArea] = useState('');
   const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -304,16 +329,16 @@ export default function HomePage() {
                 index === currentImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <Image
-                src={image}
-                alt=""
-                fill
-                sizes="100vw"
-                priority={index < 2}
-                loading={index < 2 ? undefined : 'lazy'}
-                className="object-cover"
-                onError={() => console.error('Hero image failed:', image, 'index:', index)}
-              />
+              {/* Índices 0-1 (locales): SIEMPRE visibles al instante.
+                  Índices 2+ (S3): solo cuando ya están precargadas para nunca mostrar gris. */}
+              {(index < 2 || loadedImages[index]) && (
+                <img
+                  src={image}
+                  alt=""
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
           ))}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
