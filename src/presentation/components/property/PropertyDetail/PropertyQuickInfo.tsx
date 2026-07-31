@@ -13,12 +13,22 @@ export function PropertyQuickInfo({ property }: PropertyQuickInfoProps) {
 
   const stats: { icon: React.ReactNode; value: string }[] = [];
 
-  if (property.totalArea) {
+  const isRoom = property.type === 'ROOM';
+  // roomDetails SOLO viene del backend (RoomDetails): hasPrivateBathroom y totalCapacity.
+  // Si el backend no lo devuelve, NO mostramos datos falsos por defecto.
+  const roomDetails = (property as any).roomDetails;
+  const hasPrivateBathroom = roomDetails ? Boolean(roomDetails.hasPrivateBathroom) : undefined;
+  const roomArea = (property as any).roomArea;
+  const totalCapacity = roomDetails ? roomDetails.totalCapacity : undefined;
+
+  // Área: para habitaciones se usa roomArea; para el resto totalArea
+  const areaValue = isRoom ? (roomArea ?? property.totalArea) : property.totalArea;
+  if (areaValue) {
     stats.push({
       icon: (
         <Move className="w-5 h-5" />
       ),
-      value: `${property.totalArea.toLocaleString('es-PE')} m² tot.`,
+      value: `${areaValue.toLocaleString('es-PE')} m² tot.`,
     });
   }
 
@@ -31,7 +41,15 @@ export function PropertyQuickInfo({ property }: PropertyQuickInfoProps) {
     });
   }
 
-  if (property.bathrooms != null) {
+  // Baños: para habitaciones mostrar tipo de baño SOLO si el backend lo devuelve
+  if (isRoom && hasPrivateBathroom !== undefined) {
+    stats.push({
+      icon: (
+        <Bath className="w-5 h-5" />
+      ),
+      value: hasPrivateBathroom ? 'Baño propio' : 'Baño compartido',
+    });
+  } else if (!isRoom && property.bathrooms != null) {
     stats.push({
       icon: (
         <Bath className="w-5 h-5" />
@@ -40,7 +58,8 @@ export function PropertyQuickInfo({ property }: PropertyQuickInfoProps) {
     });
   }
 
-  if (property.bedrooms != null) {
+  // Dormitorios: no aplica para habitaciones
+  if (!isRoom && property.bedrooms != null) {
     stats.push({
       icon: (
         <CalendarDays className="w-5 h-5" />
@@ -58,12 +77,22 @@ export function PropertyQuickInfo({ property }: PropertyQuickInfoProps) {
     });
   }
 
-  stats.push({
-    icon: (
-      <CalendarDays className="w-5 h-5" />
-    ),
-    value: age,
-  });
+  // Edad: para habitaciones no aplica; se muestra capacidad máxima en su lugar
+  if (isRoom && totalCapacity) {
+    stats.push({
+      icon: (
+        <CalendarDays className="w-5 h-5" />
+      ),
+      value: `Capacidad ${totalCapacity} pers.`,
+    });
+  } else {
+    stats.push({
+      icon: (
+        <CalendarDays className="w-5 h-5" />
+      ),
+      value: age,
+    });
+  }
 
   return (
     <div className="flex flex-wrap items-center gap-x-6 gap-y-2">

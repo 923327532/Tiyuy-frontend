@@ -39,9 +39,8 @@ const TRANSACTION_TYPE_LABELS: Record<string, string> = {
 
 function DescriptionSection({ description }: { description: string }) {
   const [expanded, setExpanded] = useState(false);
-  const words = description.split(/\s+/);
-  const isLong = words.length > 50;
-  const truncated = isLong ? words.slice(0, 50).join(' ') + '...' : description;
+  const truncated = description.slice(0, 100);
+  const isLong = description.length > 100;
 
   return (
     <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
@@ -51,6 +50,7 @@ function DescriptionSection({ description }: { description: string }) {
       </h2>
       <div className="text-[var(--text-primary)] leading-relaxed text-sm whitespace-pre-wrap">
         {expanded ? description : truncated}
+        {description.length > 100 && !expanded && <span className="text-[var(--text-tertiary)]">...</span>}
       </div>
       {isLong && (
         <button
@@ -196,6 +196,13 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                       {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})
                     </span>
                   )}
+                  <span className="text-xs text-[var(--text-tertiary)]">
+                    {property.publishedAt || property.createdAt
+                      ? `Publicado el ${new Date(property.publishedAt || property.createdAt!).toLocaleDateString('es-PE', {
+                          day: 'numeric', month: 'long', year: 'numeric',
+                        })}`
+                      : 'Publicado'}
+                  </span>
                 </div>
               </div>
 
@@ -246,7 +253,6 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
-                    <p className="text-sm text-[var(--text-secondary)]">{property.owner.role}</p>
                   </div>
                   {(property.owner as any).phone && (
                     <a
@@ -302,32 +308,6 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 </p>
               </div>
 
-              {/* Calificar propiedad */}
-              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Calificar propiedad</h3>
-                <div className="flex flex-col items-center gap-2">
-                  <StarRating
-                    propertyId={property.id}
-                    size="md"
-                    showValue
-                    averageRating={rating?.averageRating || 0}
-                    totalRatings={rating?.totalRatings || 0}
-                    onRatingSaved={() => {
-                      fetch(`/api/properties/${property.id}/rating`).then(res => {
-                        if (res.ok) res.json().then(data => setRating(data));
-                      }).catch(() => {});
-                    }}
-                  />
-                  {rating && rating.totalRatings > 0 && (
-                    <p className="text-xs text-[var(--text-tertiary)]">
-                      Promedio: {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'voto' : 'votos'})
-                    </p>
-                  )}
-                  {(!rating || rating.totalRatings === 0) && (
-                    <p className="text-xs text-[var(--text-tertiary)]">Sé el primero en calificar</p>
-                  )}
-                </div>
-              </div>
             </div>
 
             {/* 7. COMENTARIOS DE LA ZONA */}
@@ -373,7 +353,6 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
-                    <p className="text-sm text-[var(--text-secondary)]">{property.owner.role}</p>
                   </div>
                   {(property.owner as any).phone && (
                     <a
@@ -427,32 +406,6 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                       })}`
                     : 'Publicado'}
                 </p>
-              </div>
-
-              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Calificar propiedad</h3>
-                <div className="flex flex-col items-center gap-2">
-                  <StarRating
-                    propertyId={property.id}
-                    size="md"
-                    showValue
-                    averageRating={rating?.averageRating || 0}
-                    totalRatings={rating?.totalRatings || 0}
-                    onRatingSaved={() => {
-                      fetch(`/api/properties/${property.id}/rating`).then(res => {
-                        if (res.ok) res.json().then(data => setRating(data));
-                      }).catch(() => {});
-                    }}
-                  />
-                  {rating && rating.totalRatings > 0 && (
-                    <p className="text-xs text-[var(--text-tertiary)]">
-                      Promedio: {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'voto' : 'votos'})
-                    </p>
-                  )}
-                  {(!rating || rating.totalRatings === 0) && (
-                    <p className="text-xs text-[var(--text-tertiary)]">Sé el primero en calificar</p>
-                  )}
-                </div>
               </div>
 
               <FeaturePropertyButton 

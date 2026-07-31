@@ -11,7 +11,7 @@ import { ProjectComments } from './ProjectComments';
 import { FavoriteButton } from '../../shared/FavoriteButton/FavoriteButton';
 import { ShareButton } from '../../shared/ShareButton/ShareButton';
 import { StarRating } from '../../property/PropertyDetail/StarRating';
-import { Building, Calendar, ChevronDown, ChevronLeft, ChevronRight, Download, FileText, Globe, Home, Landmark, MapPin, Maximize, Menu, MessageCircle, ShoppingCart, Tag, Truck, X, ImageOff } from 'lucide-react';
+import { Bath, Building, Calendar, ChevronDown, ChevronLeft, ChevronRight, Download, FileText, Globe, Home, Landmark, MapPin, Maximize, Menu, MessageCircle, ShoppingCart, Tag, X, ImageOff } from 'lucide-react';
 
 interface ProjectDetailProps {
   project: ProjectFull;
@@ -336,7 +336,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                     if (bathNums.length > 0) {
                       return (
                         <div className="flex items-center gap-3">
-                          <Truck className="w-5 h-5 text-gray-500" />
+                          <Bath className="w-5 h-5 text-gray-500" />
                           <div>
                             <p className="text-sm font-semibold text-gray-800">
                               {bathNums.length > 1 ? `${bathNums[0]} a ${bathNums[bathNums.length-1]} baños` : `${bathNums[0]} baño${bathNums[0] > 1 ? 's' : ''}`}
@@ -802,7 +802,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                         <p className="font-bold text-gray-800 text-sm">{selectedUnit.bedrooms ?? '-'}</p>
                       </div>
                       <div className="bg-gray-50 rounded-xl p-3 text-center">
-                        <div className="mb-1"><Truck className="w-5 h-5 text-gray-400 mx-auto" /></div>
+                        <div className="mb-1"><Bath className="w-5 h-5 text-gray-400 mx-auto" /></div>
                         <p className="text-xs text-gray-400 mt-0.5">Baños</p>
                         <p className="font-bold text-gray-800 text-sm">{selectedUnit.bathrooms}</p>
                       </div>

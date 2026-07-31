@@ -548,7 +548,11 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
         return {
           ...baseData,
           totalArea: Number(data.roomArea) || undefined,
-          // For rooms, no bedrooms or bathrooms in current backend
+          // Para habitaciones se envía roomDetails (baño propio/compartido y capacidad)
+          roomDetails: {
+            hasPrivateBathroom: data.bathroomType === 'PRIVATE',
+            totalCapacity: Number(data.maxCapacity) || undefined,
+          },
         };
       
       case 'LAND':

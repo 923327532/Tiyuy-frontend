@@ -30,8 +30,17 @@ export class PropertyMapper {
     const createdAtRaw = anyDto.createdAt || anyDto.updatedAt;
     const createdAt = createdAtRaw ? new Date(createdAtRaw) : undefined;
 
+    // Detalles de habitación (ROOM) expuestos por el backend
+    const roomDetails = anyDto.roomDetails || null;
+
     return {
       id: dto.id,
+      ...(roomDetails ? {
+        roomDetails: {
+          hasPrivateBathroom: Boolean(roomDetails.hasPrivateBathroom),
+          totalCapacity: roomDetails.totalCapacity != null ? Number(roomDetails.totalCapacity) : undefined,
+        } as any,
+      } : {}),
       title: anyDto.title,
       type: (anyDto.type || 'APARTMENT') as any,
       transactionType: (anyDto.transactionType || 'SALE') as any,

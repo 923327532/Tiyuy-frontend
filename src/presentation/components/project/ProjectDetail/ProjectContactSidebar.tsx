@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { ProjectFull, ProjectUnit } from '@/core/domain/entities/Project';
-import { StarRating } from '../../property/PropertyDetail/StarRating';
 import { useCRMInteraction } from '@/presentation/hooks/useCRMInteraction';
 import { useAuthStore } from '@/presentation/store/authStore';
 import { Input } from '@/presentation/components/ui';
@@ -520,30 +519,6 @@ export function ProjectContactSidebar({ project, units, currency }: ProjectConta
             Publicado el {publishedDate}
           </p>
         )}
-      </div>
-
-      {/* ⭐ CALIFICAR PROYECTO */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-        <h3 className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-3">Calificar proyecto</h3>
-        <div className="flex flex-col items-center gap-2">
-          <StarRating
-            projectId={project.id}
-            size="md"
-            showValue
-            averageRating={rating?.averageRating || 0}
-            totalRatings={rating?.totalRatings || 0}
-            onRatingSaved={() => {
-              fetch(`/api/projects/${project.id}/rating`).then(res => {
-                if (res.ok) res.json().then(data => setRating(data));
-              }).catch(() => {});
-            }}
-          />
-          {rating && rating.totalRatings > 0 && (
-            <p className="text-xs text-gray-400">
-              Promedio: {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'voto' : 'votos'})
-            </p>
-          )}
-        </div>
       </div>
 
       {/* Modal de inicio de sesión para favoritos */}
