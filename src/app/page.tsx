@@ -158,11 +158,14 @@ export default function HomePage() {
     return all.filter(b => b.displayMode === 'INTEGRATED' || !b.displayMode);
   }, [sliderBanners, mainBanners, homeBanners]);
 
-  // Si hay banners del admin, SOLO se muestran esos (sin imágenes estáticas de fallback)
-  // Si no hay banners del admin, se usan las imágenes estáticas por defecto
+  // Las primeras 2 imágenes SIEMPRE son locales (cargan al instante, sin error en producción).
+  // Las del admin (S3) se agregan después para que ya hayan cargado cuando les toque su turno.
   const heroImages = useMemo(() => 
     integratedBanners.length > 0
-      ? integratedBanners.map(b => b.imageUrl)
+      ? [
+          ...FALLBACK_HERO_IMAGES.slice(0, 2),
+          ...integratedBanners.map(b => b.imageUrl),
+        ]
       : FALLBACK_HERO_IMAGES,
     [integratedBanners]
   );
