@@ -55,6 +55,7 @@ export interface Project {
   isVerified: boolean;
   viewsCount: number;
   contactsCount: number;
+  publishedAt?: Date | string;
   
   // Lifecycle fields for subscription management
   lifecycleStatus?: ProjectLifecycleStatus;
@@ -104,6 +105,7 @@ export interface ProjectSummary {
   isFeatured: boolean;
   isVerified: boolean;
   viewsCount: number;
+  publishedAt?: Date | string;
   // Lifecycle fields for subscription management
   lifecycleStatus?: ProjectLifecycleStatus;
   remainingGraceDays?: number;

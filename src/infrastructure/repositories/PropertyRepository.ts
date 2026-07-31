@@ -202,14 +202,21 @@ async getById(id: number): Promise<Property> {
         timeout: 120000,
       });
 
-      // La respuesta es un objeto con filas (rows), cada fila tiene items
-      // Extraemos todas las propiedades de todas las filas
+      // La respuesta es un objeto con filas (rows), cada fila tiene items.
+      // Cada item es un FeaturedPropertyItem plano (NO tiene `property` anidado).
+      // Lo mapeamos directo a PropertySummary con PropertyMapper.toSummary
+      // para propagar `publishedAt` y `createdAt`.
       if (response.data?.rows && Array.isArray(response.data.rows)) {
         const allProperties: PropertySummary[] = [];
         for (const row of response.data.rows) {
           if (row.items && Array.isArray(row.items)) {
             for (const item of row.items) {
-              if (item.property) {
+              // Caso 1: item plano (FeaturedPropertyItem)
+              if (item && item.id && !item.property) {
+                allProperties.push(PropertyMapper.toSummary(item));
+              }
+              // Caso 2: item anidado (compatibilidad)
+              else if (item && item.property) {
                 allProperties.push(PropertyMapper.toSummary(item.property));
               }
             }

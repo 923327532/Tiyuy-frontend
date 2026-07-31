@@ -9,7 +9,7 @@ const projectRepo = new ProjectRepository();
 const STALE_TIME = 5 * 60 * 1000; // 5 min
 const CACHE_TIME = 30 * 60 * 1000; // 30 min
 
-const LS_KEY = 'tiyuy-featured-projects';
+const LS_KEY = 'tiyuy-featured-projects-v2';
 
 let featuredProjectsPromise: Promise<ProjectSummary[]> | null = null;
 

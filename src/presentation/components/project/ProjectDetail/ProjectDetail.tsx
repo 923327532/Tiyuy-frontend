@@ -239,6 +239,13 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                       {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})
                     </span>
                   )}
+                  <span className="text-xs text-gray-400">
+                    {currentProject.publishedAt
+                      ? `Publicado el ${new Date(currentProject.publishedAt).toLocaleDateString('es-PE', {
+                          day: 'numeric', month: 'long', year: 'numeric',
+                        })}`
+                      : 'Publicado'}
+                  </span>
                 </div>
               </div>
             </div>

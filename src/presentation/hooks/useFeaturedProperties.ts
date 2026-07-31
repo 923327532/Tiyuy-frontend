@@ -9,7 +9,7 @@ const propertyRepo = new PropertyRepository();
 const STALE_TIME = 5 * 60 * 1000; // 5 min
 const CACHE_TIME = 30 * 60 * 1000; // 30 min
 
-const LS_KEY = 'tiyuy-featured-properties';
+const LS_KEY = 'tiyuy-featured-properties-v2';
 
 // InitQuery — dispara la query inmediatamente sin esperar que monte el componente
 let featuredPropertiesPromise: Promise<PropertySummary[]> | null = null;

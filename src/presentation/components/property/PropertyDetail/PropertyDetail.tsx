@@ -294,9 +294,11 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
 
                 <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                   <Calendar className="w-3 h-3 flex-shrink-0" />
-                  Publicado el {new Date(property.createdAt).toLocaleDateString('es-PE', {
-                    day: 'numeric', month: 'long', year: 'numeric',
-                  })}
+                  {property.publishedAt || property.createdAt
+                    ? `Publicado el ${new Date(property.publishedAt || property.createdAt!).toLocaleDateString('es-PE', {
+                        day: 'numeric', month: 'long', year: 'numeric',
+                      })}`
+                    : 'Publicado'}
                 </p>
               </div>
 
@@ -419,9 +421,11 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
 
                 <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                   <Calendar className="w-3 h-3 flex-shrink-0" />
-                  Publicado el {new Date(property.createdAt).toLocaleDateString('es-PE', {
-                    day: 'numeric', month: 'long', year: 'numeric',
-                  })}
+                  {property.publishedAt || property.createdAt
+                    ? `Publicado el ${new Date(property.publishedAt || property.createdAt!).toLocaleDateString('es-PE', {
+                        day: 'numeric', month: 'long', year: 'numeric',
+                      })}`
+                    : 'Publicado'}
                 </p>
               </div>
 

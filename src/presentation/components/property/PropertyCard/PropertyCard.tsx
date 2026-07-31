@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { BadgeCheck, Star, AlertCircle, Clock, MessageCircle, MessageCircleMore } from 'lucide-react';
+import { BadgeCheck, Star, AlertCircle, Clock, MessageCircle, MessageCircleMore, Calendar } from 'lucide-react';
 import type { Property, PropertySummary } from '@/core/domain/entities/Property';
 import { FavoriteButton } from '@/presentation/components/shared/FavoriteButton';
 import { LazyImage } from '@/presentation/components/ui/LazyImage/LazyImage';
+import { formatDistanceToNow } from '@/utils/formatters';
 
 interface PropertyCardProps {
   property: Property | PropertySummary;
@@ -25,6 +26,16 @@ function getPropertySlug(property: Property | PropertySummary): string {
     return property.seo?.slug ?? String(property.id);
   }
   return property.slug ?? String(property.id);
+}
+
+function getPublishedDate(publishedAt?: Date | string): Date | null {
+  if (!publishedAt) return null;
+  const date = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
+  return isNaN(date.getTime()) ? null : date;
+}
+
+function getDaysSince(date: Date): number {
+  return Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
@@ -64,6 +75,14 @@ export function PropertyCard({ property }: PropertyCardProps) {
     const symbol = currency === 'USD' ? 'US$' : 'S/';
     return `${symbol} ${price.toLocaleString('es-PE')}`;
   };
+
+  const publishedDate = getPublishedDate(property.publishedAt);
+  const publishedLabel = publishedDate ? formatDistanceToNow(publishedDate, { addSuffix: true }) : null;
+  const isNew = publishedDate ? getDaysSince(publishedDate) <= 7 : false;
+  const publishedDateLabel = publishedDate
+    ? publishedDate.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
+  const publishedText = publishedDateLabel ? `Publicado el ${publishedDateLabel}` : null;
 
   const renderLifecycleBadge = () => {
     const lifecycleStatus = property.lifecycleStatus;
@@ -130,7 +149,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
               Verificado
             </div>
           )}
-          {!property.isFeatured && !property.isVerified && (
+          {!property.isFeatured && !property.isVerified && isNew && (
             <div className="bg-[var(--bg-card)] text-[var(--text-primary)] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-md">
               Nuevo
             </div>
@@ -199,6 +218,13 @@ export function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         <div className="w-full h-px bg-[var(--border-color)] my-1.5" />
+
+        {publishedText && (
+          <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)] mb-1.5">
+            <Calendar className="w-3 h-3 flex-shrink-0" />
+            <span className="font-medium truncate">{isNew ? 'Recién publicado' : publishedText}</span>
+          </div>
+        )}
 
         <div className="flex items-center justify-between w-full h-[22px]">
           <div className="flex items-baseline gap-1 min-w-0">

@@ -114,8 +114,8 @@ export interface Property {
   canReactivate?: boolean;
   
   // Fechas
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   publishedAt?: Date;
 }
 
@@ -137,6 +137,7 @@ export interface PropertySummary {
   isFeatured: boolean;
   isVerified: boolean;
   viewsCount: number;
+  publishedAt?: Date | string;
   // Lifecycle fields for subscription management
   lifecycleStatus?: PropertyLifecycleStatus;
   remainingGraceDays?: number;
