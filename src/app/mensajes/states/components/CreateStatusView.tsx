@@ -8,7 +8,7 @@ import { ArrowLeft } from 'lucide-react';
 export default function CreateStatusView({ user, onBack }: { user: any; onBack: () => void }) {
     const createStatus = useCreateStatusPost();
 
-    const handleSendStatus = async (content: string, textStyle?: string, customColor?: string, location?: string, propertyType?: string) => {
+    const handleSendStatus = async (content: string, textStyle?: string, customColor?: string, location?: string, propertyType?: string, templateKey?: string) => {
         if (!content.trim()) {
             toast.error('El contenido del estado no puede estar vacío');
             return;
@@ -24,6 +24,7 @@ export default function CreateStatusView({ user, onBack }: { user: any; onBack: 
                 ...(propertyType ? { propertyType } : {}),
                 ...(textStyle && textStyle !== 'NORMAL' ? { textStyle } : {}),
                 ...(customColor ? { customColor } : {}),
+                ...(templateKey ? { templateKey } : {}),
                 isPromoted: false
             });
             toast.success('¡Estado publicado!');

@@ -63,7 +63,7 @@ export default function AgenciesPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)]">
       {/* ===== HERO PREMIUM ===== */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#3f9800] via-[#3f9800] to-[#2d6e00]">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#166534] via-[#14532d] to-[#0d2b1a]">
         {/* Imagen de fondo */}
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `url('https://edifica.com.pe/blog/wp-content/uploads/departamento-jovenes.jpg')`,
@@ -96,11 +96,11 @@ export default function AgenciesPage() {
             <div className="hidden lg:grid grid-cols-2 gap-4 items-center">
               {FEATURES.map((f, i) => (
                 <div key={i}
-                  className="group bg-[var(--bg-card)]/95 backdrop-blur-md rounded-2xl p-5 border border-[#82db3e]/20 hover:border-[#82db3e]/40 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(130,219,62,0.08)] transition-all duration-300 hover:-translate-y-0.5"
+                  className="group bg-[var(--bg-card)]/95 backdrop-blur-md rounded-2xl p-5 border border-white/10 hover:border-[#22c55e]/25 shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(34,197,94,0.05)] transition-all duration-300 hover:-translate-y-0.5"
                   style={{
                     marginTop: i % 2 === 1 ? '24px' : '0',
                   }}>
-                  <div className="w-10 h-10 rounded-xl bg-[#82db3e]/10 flex items-center justify-center text-[#82db3e] mb-3 group-hover:bg-[#82db3e] group-hover:text-white transition-all duration-300">
+                  <div className="w-10 h-10 rounded-xl bg-[#22c55e]/10 flex items-center justify-center text-[#22c55e] mb-3 group-hover:bg-[#166534] group-hover:text-white transition-all duration-300">
                     {f.icon}
                   </div>
                   <h3 className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">{f.title}</h3>
@@ -124,7 +124,7 @@ export default function AgenciesPage() {
           </div>
           <div className="relative sm:min-w-[160px] min-w-0">
             <button type="button" onClick={() => setShowCityDropdown(!showCityDropdown)}
-              className="w-full flex items-center justify-between px-4 py-3 text-sm bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl text-[var(--text-secondary)] hover:border-[#c4beb6] focus:border-[#64cc39] focus:ring-1 focus:ring-[#64cc39]/30 transition-all duration-200">
+              className="w-full flex items-center justify-between px-4 py-3 text-sm bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl text-[var(--text-secondary)] hover:border-[#c4beb6] focus:border-[#22c55e] focus:ring-1 focus:ring-[#22c55e]/30 transition-all duration-200">
               <span className={city ? 'text-[var(--text-secondary)]' : 'text-[var(--text-tertiary)]'}>{city || 'Todas las ciudades'}</span>
               <ChevronDown className={`w-4 h-4 text-[var(--text-tertiary)] transition-transform duration-200 ${showCityDropdown ? 'rotate-180' : ''}`} />
             </button>
@@ -169,8 +169,8 @@ export default function AgenciesPage() {
               {/* ===== CARDS 3 por fila ===== */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {data.content.map((agency) => (
-                  <Link key={agency.id} href={`/agencies/${agency.slug}`}
-                    className="group bg-[var(--bg-card)] rounded-2xl border-2 border-[var(--border-color)] p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(100,204,57,0.08)] hover:border-[#64cc39] hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+          <Link key={agency.id} href={`/agencies/${agency.slug}`}
+            className="group bg-[var(--bg-card)] rounded-2xl border-2 border-[var(--border-color)] p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(20,83,45,0.06)] hover:border-[#22c55e] hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
 
                     {/* Logo + Nombre + Verificado */}
                     <div className="flex items-start gap-4 mb-4">

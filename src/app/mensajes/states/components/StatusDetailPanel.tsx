@@ -8,6 +8,7 @@ import { useCommentStatusPost, useStatusComments, useLikeStatusPost, useUnlikeSt
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/presentation/store/toastStore';
 import { UserAvatar } from '@/presentation/components/shared/UserAvatar';
+import { StatusTemplateView } from './StatusTemplates';
 
 interface StatusDetailPanelProps {
   status: any;
@@ -379,56 +380,70 @@ export default function StatusDetailPanel({ status, user, onClose, statuses = []
         </div>
       </div>
 
-      {/* Contenido del estado - estilo Facebook */}
+      {/* Contenido del estado - con plantilla o texto simple */}
       <div 
-        className="flex-1 flex flex-col items-center justify-center min-h-[300px] p-6 sm:p-10 text-center cursor-pointer relative overflow-hidden"
-        style={{ 
-          backgroundColor: activeStatus.customColor || '#14b8a6',
-        }}
+        className="flex-1 flex flex-col items-center justify-center min-h-[300px] p-0 sm:p-0 text-center cursor-pointer relative overflow-hidden"
         onClick={goNext}
       >
-        <div className="max-w-md w-full mx-auto">
-          {/* Texto del estado con auto-sizing y estilo de texto */}
-          <div className={`
-            text-white leading-relaxed
-            ${activeStatus.textStyle === 'BOLD' ? 'font-bold' : ''}
-            ${activeStatus.textStyle === 'ITALIC' ? 'italic' : ''}
-            ${activeStatus.textStyle === 'COLORFUL' ? 'text-yellow-200' : ''}
-            ${activeStatus.textStyle === 'CODE' ? 'font-mono' : ''}
-            ${activeStatus.textStyle === 'HIGHLIGHT' ? 'bg-white/20 px-2 py-1 rounded-lg' : ''}
-            ${(!activeStatus.textStyle || activeStatus.textStyle === 'NORMAL') ? 'font-medium' : 'font-medium'}
-            ${activeStatus.content?.length < 30 ? 'text-3xl sm:text-4xl' : ''}
-            ${activeStatus.content?.length >= 30 && activeStatus.content?.length < 80 ? 'text-2xl sm:text-3xl' : ''}
-            ${activeStatus.content?.length >= 80 && activeStatus.content?.length < 150 ? 'text-xl sm:text-2xl' : ''}
-            ${activeStatus.content?.length >= 150 ? 'text-base sm:text-lg' : ''}
-          `}>
-            {activeStatus.content}
+        {activeStatus.templateKey ? (
+          <div className="w-full h-full min-h-[300px]">
+            <StatusTemplateView
+              templateKey={activeStatus.templateKey}
+              content={activeStatus.content || ''}
+              textStyle={activeStatus.textStyle}
+              location={activeStatus.location}
+              propertyType={activeStatus.propertyType}
+            />
           </div>
-          
-          {/* Metadatos del estado */}
-          <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
-            {activeStatus.location && (
-              <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">
-                📍 {activeStatus.location}
-              </span>
-            )}
-            {activeStatus.propertyType && (
-              <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">
-                🏠 {activeStatus.propertyType}
-              </span>
-            )}
-          </div>
+        ) : (
+          <div
+            className="w-full h-full min-h-[300px] flex flex-col items-center justify-center p-6 sm:p-10"
+            style={{ backgroundColor: activeStatus.customColor || '#14b8a6' }}
+          >
+            <div className="max-w-md w-full mx-auto">
+              {/* Texto del estado con auto-sizing y estilo de texto */}
+              <div className={`
+                text-white leading-relaxed
+                ${activeStatus.textStyle === 'BOLD' ? 'font-bold' : ''}
+                ${activeStatus.textStyle === 'ITALIC' ? 'italic' : ''}
+                ${activeStatus.textStyle === 'COLORFUL' ? 'text-yellow-200' : ''}
+                ${activeStatus.textStyle === 'CODE' ? 'font-mono' : ''}
+                ${activeStatus.textStyle === 'HIGHLIGHT' ? 'bg-white/20 px-2 py-1 rounded-lg' : ''}
+                ${(!activeStatus.textStyle || activeStatus.textStyle === 'NORMAL') ? 'font-medium' : 'font-medium'}
+                ${activeStatus.content?.length < 30 ? 'text-3xl sm:text-4xl' : ''}
+                ${activeStatus.content?.length >= 30 && activeStatus.content?.length < 80 ? 'text-2xl sm:text-3xl' : ''}
+                ${activeStatus.content?.length >= 80 && activeStatus.content?.length < 150 ? 'text-xl sm:text-2xl' : ''}
+                ${activeStatus.content?.length >= 150 ? 'text-base sm:text-lg' : ''}
+              `}>
+                {activeStatus.content}
+              </div>
+              
+              {/* Metadatos del estado */}
+              <div className="flex items-center justify-center gap-3 mt-6 flex-wrap">
+                {activeStatus.location && (
+                  <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">
+                    📍 {activeStatus.location}
+                  </span>
+                )}
+                {activeStatus.propertyType && (
+                  <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">
+                    🏠 {activeStatus.propertyType}
+                  </span>
+                )}
+              </div>
 
-          {activeStatus.tags && activeStatus.tags.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {activeStatus.tags.map((tag: string, tagIndex: number) => (
-                <span key={tagIndex} className="px-2.5 py-1 bg-white/15 text-white/90 text-[11px] rounded-full font-medium backdrop-blur-sm">
-                  #{tag}
-                </span>
-              ))}
+              {activeStatus.tags && activeStatus.tags.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                  {activeStatus.tags.map((tag: string, tagIndex: number) => (
+                    <span key={tagIndex} className="px-2.5 py-1 bg-white/15 text-white/90 text-[11px] rounded-full font-medium backdrop-blur-sm">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Zona izquierda para retroceder (estilo Stories) */}
         {currentStatusIndex > 0 && (

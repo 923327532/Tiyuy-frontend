@@ -2,10 +2,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import EmojiPicker from 'emoji-picker-react';
-import { Smile, MapPin, Home, Bold, Palette, ChevronDown } from 'lucide-react';
+import { Smile, MapPin, Home, Bold, Palette, ChevronDown, Layout, X } from 'lucide-react';
+import { STATUS_TEMPLATES, StatusTemplateView } from '@/app/mensajes/states/components/StatusTemplates';
 
 interface StatusInputProps {
-  onSendStatus: (content: string, textStyle?: string, customColor?: string, location?: string, propertyType?: string) => void;
+  onSendStatus: (content: string, textStyle?: string, customColor?: string, location?: string, propertyType?: string, templateKey?: string) => void;
   placeholder?: string;
   disabled?: boolean;
   maxLength?: number;
@@ -73,6 +74,8 @@ export default function StatusInput({
   const [customColor, setCustomColor] = useState('#14b8a6');
   const [location, setLocation] = useState('');
   const [propertyType, setPropertyType] = useState('');
+  const [templateKey, setTemplateKey] = useState('');
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const predefinedColors = [
@@ -99,6 +102,7 @@ export default function StatusInput({
     { value: '', label: 'Tipo de propiedad' },
     { value: 'HOUSE', label: 'Casa' },
     { value: 'APARTMENT', label: 'Departamento' },
+    { value: 'ROOM', label: 'Habitación' },
     { value: 'LAND', label: 'Terreno' },
     { value: 'COMMERCIAL', label: 'Comercial' },
     { value: 'OFFICE', label: 'Oficina' },
@@ -125,8 +129,8 @@ export default function StatusInput({
 
   const handleSend = () => {
     if (content.trim() && !disabled) {
-      onSendStatus(content.trim(), textStyle, customColor, location, propertyType);
-      setContent(''); setTextStyle('NORMAL'); setCustomColor(''); setLocation(''); setPropertyType('');
+      onSendStatus(content.trim(), textStyle, customColor, location, propertyType, templateKey || undefined);
+      setContent(''); setTextStyle('NORMAL'); setCustomColor(''); setLocation(''); setPropertyType(''); setTemplateKey('');
       if (textareaRef.current) textareaRef.current.style.height = 'auto';
     }
   };
@@ -214,36 +218,131 @@ export default function StatusInput({
         </div>
       </div>
 
+      {/* ═══ BOTÓN USAR PLANTILLA ═══ */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <Layout className="w-4 h-4 text-gray-500" />
+          <p className="text-xs font-medium text-gray-700 dark:text-gray-300">Dale un diseño bonito a tu estado:</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowTemplatePicker(true)}
+          className="w-full h-16 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex items-center justify-center gap-2"
+        >
+          {templateKey ? (
+            <>
+              <span className="w-8 h-8 rounded-lg shadow" style={{ background: STATUS_TEMPLATES.find(t => t.key === templateKey)?.previewBg }} />
+              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                {STATUS_TEMPLATES.find(t => t.key === templateKey)?.name}
+              </span>
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={(e) => { e.stopPropagation(); setTemplateKey(''); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setTemplateKey(''); } }}
+                className="text-xs text-gray-400 hover:text-red-500 ml-1 cursor-pointer"
+                title="Quitar plantilla"
+              >
+                ✕
+              </span>
+            </>
+          ) : (
+            <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">✨ Usar plantilla</span>
+          )}
+        </button>
+      </div>
+
+      {/* ═══ MODAL SELECTOR DE PLANTILLAS ═══ */}
+      {showTemplatePicker && (
+        <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowTemplatePicker(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
+              <div>
+                <h3 className="text-base font-bold text-gray-900 dark:text-white">Elige una plantilla</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Tu texto se mostrará sobre el diseño</p>
+              </div>
+              <button onClick={() => setShowTemplatePicker(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 max-h-[60vh] overflow-y-auto">
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setTemplateKey(''); setShowTemplatePicker(false); }}
+                  className={`rounded-xl overflow-hidden border-2 transition-all ${!templateKey ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'}`}
+                >
+                  <div className="h-24 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #e2e8f0, #94a3b8)' }}>
+                    <span className="text-xs font-bold text-gray-700">SIMPLE</span>
+                  </div>
+                  <div className="px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 text-center">Color / texto simple</div>
+                </button>
+                {STATUS_TEMPLATES.map((tpl: any) => (
+                  <button
+                    key={tpl.key}
+                    type="button"
+                    onClick={() => { setTemplateKey(tpl.key); setShowTemplatePicker(false); }}
+                    className={`rounded-xl overflow-hidden border-2 transition-all ${templateKey === tpl.key ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200 dark:border-gray-600 hover:border-gray-300'}`}
+                  >
+                    <div className="h-28 relative overflow-hidden">
+                      <StatusTemplateView
+                        templateKey={tpl.key}
+                        content={content.trim() ? content : 'Tu texto'}
+                        textStyle={textStyle}
+                        location={location}
+                        propertyType={propertyType}
+                        compact
+                      />
+                    </div>
+                    <div className="px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 text-center">{tpl.name}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Preview - Estilo Facebook */}
       {content.trim() && (
         <div className="mt-4 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600 shadow-md">
           <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-4 pt-3 pb-1 bg-gray-50 dark:bg-gray-700">Vista previa:</p>
-          <div 
-            className="flex flex-col items-center justify-center min-h-[200px] p-8 text-center"
-            style={{ backgroundColor: customColor || '#14b8a6' }}
-          >
-            <div className={`
-              text-white leading-relaxed max-w-sm
-              ${textStyle === 'BOLD' ? 'font-bold' : ''}
-              ${textStyle === 'ITALIC' ? 'italic' : ''}
-              ${textStyle === 'COLORFUL' ? 'text-yellow-200' : ''}
-              ${textStyle === 'CODE' ? 'font-mono' : ''}
-              ${textStyle === 'HIGHLIGHT' ? 'bg-white/20 px-2 py-1 rounded-lg' : ''}
-              ${(!textStyle || textStyle === 'NORMAL') ? 'font-medium' : 'font-medium'}
-              ${content.length < 30 ? 'text-2xl sm:text-3xl' : ''}
-              ${content.length >= 30 && content.length < 80 ? 'text-xl sm:text-2xl' : ''}
-              ${content.length >= 80 && content.length < 150 ? 'text-lg sm:text-xl' : ''}
-              ${content.length >= 150 ? 'text-sm sm:text-base' : ''}
-            `}>
-              {content}
-            </div>
-            {(location || propertyType) && (
-              <div className="flex flex-wrap justify-center gap-2 mt-4">
-                {location && <span className="inline-flex items-center gap-1 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">📍 {location}</span>}
-                {propertyType && <span className="inline-flex items-center gap-1 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">🏠 {propertyType}</span>}
+          {templateKey ? (
+            <StatusTemplateView
+              templateKey={templateKey}
+              content={content}
+              textStyle={textStyle}
+              location={location}
+              propertyType={propertyType}
+            />
+          ) : (
+            <div 
+              className="flex flex-col items-center justify-center min-h-[200px] p-8 text-center"
+              style={{ backgroundColor: customColor || '#14b8a6' }}
+            >
+              <div className={`
+                text-white leading-relaxed max-w-sm
+                ${textStyle === 'BOLD' ? 'font-bold' : ''}
+                ${textStyle === 'ITALIC' ? 'italic' : ''}
+                ${textStyle === 'COLORFUL' ? 'text-yellow-200' : ''}
+                ${textStyle === 'CODE' ? 'font-mono' : ''}
+                ${textStyle === 'HIGHLIGHT' ? 'bg-white/20 px-2 py-1 rounded-lg' : ''}
+                ${(!textStyle || textStyle === 'NORMAL') ? 'font-medium' : 'font-medium'}
+                ${content.length < 30 ? 'text-2xl sm:text-3xl' : ''}
+                ${content.length >= 30 && content.length < 80 ? 'text-xl sm:text-2xl' : ''}
+                ${content.length >= 80 && content.length < 150 ? 'text-lg sm:text-xl' : ''}
+                ${content.length >= 150 ? 'text-sm sm:text-base' : ''}
+              `}>
+                {content}
               </div>
-            )}
-          </div>
+              {(location || propertyType) && (
+                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                  {location && <span className="inline-flex items-center gap-1 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">📍 {location}</span>}
+                  {propertyType && <span className="inline-flex items-center gap-1 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">🏠 {propertyType}</span>}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
