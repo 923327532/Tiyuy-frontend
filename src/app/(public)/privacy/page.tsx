@@ -4,66 +4,114 @@ import { useState } from 'react';
 import {
   Shield, User, Building2, BarChart3, CreditCard,
   CheckCircle, Zap, Mail, ShieldCheck, Sliders,
-  Check, Menu, X, BookOpen
+  Check, Menu, X, MessageCircle, Users, Heart, Database, Globe
 } from 'lucide-react';
 
 const privacyData = {
-  lastUpdated: "3 de junio de 2025",
+  lastUpdated: "1 de agosto de 2026",
   intro: {
     title: "Introducción",
-    highlight: 'Tiyuy ("nosotros", "nuestra" o "la Plataforma") es una plataforma digital que conecta a compradores, vendedores, arrendadores y arrendatarios de bienes inmuebles en Latinoamérica. Esta Política de Privacidad describe cómo tratamos tus datos personales cuando utilizas nuestros servicios.',
+    highlight: 'Tiyuy ("nosotros", "nuestra" o "la Plataforma") es una plataforma digital peruana que conecta a compradores, vendedores, arrendadores, arrendatarios, agentes inmobiliarios, inmobiliarias y desarrolladores de bienes raíces. Esta Política de Privacidad describe cómo tratamos tus datos personales cuando utilizas nuestros servicios.',
     paragraphs: [
-      "Cumplimos con las normativas de protección de datos aplicables, incluyendo la Ley N° 29733, Ley de Protección de Datos Personales del Perú y su reglamento, así como los principios del Reglamento General de Protección de Datos (RGPD) de la Unión Europea cuando corresponda.",
-      "Al utilizar nuestros servicios, aceptas las prácticas descritas en esta política. Si no estás de acuerdo, te pedimos que no utilices la Plataforma."
+      "Cumplimos con la Ley N° 29733, Ley de Protección de Datos Personales del Perú, su reglamento y las normas sectoriales aplicables, así como los principios del Reglamento General de Protección de Datos (RGPD) de la Unión Europea cuando corresponda.",
+      "Al crear tu cuenta o utilizar nuestros servicios, aceptas el tratamiento de tus datos personales conforme a esta política. Si no estás de acuerdo, te pedimos que no utilices la Plataforma."
     ]
   },
   categories: [
     {
-      title: "Datos de identificación",
-      desc: "Nombre, apellido, correo electrónico, número de teléfono, documento de identidad (DNI/RUC), fotografía de perfil y datos de registro de cuenta.",
+      title: "Datos de identificación y contacto",
+      desc: "Nombre, apellido, correo electrónico, número de teléfono, documento de identidad (DNI de 8 dígitos), RUC (11 dígitos, opcional), rol en la plataforma (usuario, agente, desarrollador, inmobiliaria o administrador), fotografía de perfil y datos de registro de cuenta.",
       iconType: "user"
     },
     {
-      title: "Datos de propiedades",
-      desc: "Información de inmuebles publicados: dirección, características, fotografías, precios, descripción y datos de ubicación geográfica.",
+      title: "Datos de propiedades y proyectos",
+      desc: "Información de inmuebles y proyectos publicados: dirección, características, precio y moneda (PEN/USD), tipo, área, dormitorios, baños, estacionamiento, antigüedad, ubicación y coordenadas, servicios, fotografías (hasta 20 por propiedad), video tour, renders, planos y documentos (permisos de construcción y licencias).",
       iconType: "property"
     },
     {
       title: "Datos de uso y navegación",
-      desc: "Direcciones IP, tipo de navegador, páginas visitadas, tiempo de permanencia, clics, búsquedas realizadas, interacciones con publicaciones y preferencias de navegación.",
+      desc: "Direcciones IP, tipo de navegador, páginas visitadas, tiempo de permanencia, clics, búsquedas realizadas (tipo de propiedad, tipo de transacción, distrito, rango de precios, dormitorios, baños), interacciones con publicaciones, preferencias de navegación y tipo de dispositivo (escritorio, móvil o tablet).",
       iconType: "navigation"
     },
     {
-      title: "Datos de pago",
-      desc: "Información de transacciones, historial de pagos, suscripciones y datos de facturación. Nota: No almacenamos datos completos de tarjetas de crédito; estos son procesados por pasarelas de pago certificadas PCI-DSS.",
+      title: "Datos de verificación de identidad (KYC)",
+      desc: "DNI, RUC y documentos de identidad que subes durante el proceso de verificación de identidad (KYC). Se validan contra fuentes oficiales a través de nuestros servicios para prevenir fraudes y garantizar la seguridad de la Plataforma.",
+      iconType: "kyc"
+    },
+    {
+      title: "Datos de comunicación",
+      desc: "Mensajes de chat en tiempo real (vía WebSocket), posts de canales, eventos con confirmación de asistencia (RSVP), comentarios con respuestas anidadas, estados o historias con expiración de 24 horas, contactos y documentos o imágenes compartidos en la mensajería.",
+      iconType: "message"
+    },
+    {
+      title: "Datos de pagos y facturación",
+      desc: "Información de transacciones, historial de pagos, suscripciones a planes, estado del periodo de prueba (trial), saldo de billetera y datos de facturación. No almacenamos datos completos de tarjetas de crédito; estos son procesados por pasarelas de pago certificadas PCI-DSS (MercadoPago y Culqi) mediante tokenización.",
       iconType: "payment"
+    },
+    {
+      title: "Datos de gestión comercial y CRM",
+      desc: "Leads (nuevo, contactado, calificado, negociación, cerrado), interacciones con clientes, calificaciones, historial de actividad y métricas de engagement (interactionScore, engagementRate) para agentes, inmobiliarias y desarrolladores.",
+      iconType: "crm"
+    },
+    {
+      title: "Datos de favoritos y preferencias",
+      desc: "Propiedades y proyectos favoritos, notas personalizadas (máximo 500 caracteres), preferencias de búsqueda, preferencias de notificaciones y configuración de la cuenta.",
+      iconType: "favorite"
     }
   ],
+  tracking: [
+    { title: "Vistas de propiedades", desc: "Cada vez que ves una propiedad registramos el identificador de la propiedad, la sesión, la referencia de origen (referrer), el agente de usuario (userAgent) y el tipo de dispositivo (escritorio, móvil o tablet)." },
+    { title: "Búsquedas realizadas", desc: "Registramos cada búsqueda (tipo de propiedad, tipo de transacción, distrito, rango de precios, dormitorios, baños) para generar notificaciones automáticas de nuevas propiedades y mejorar las recomendaciones." },
+    { title: "Actividad del usuario", desc: "Registramos tus actividades dentro de la Plataforma (vistas, contactos, favoritos, publicaciones) para estadísticas, informes y mejoras del servicio." },
+    { title: "Asistente virtual (AI Copilot)", desc: "Cuando usas nuestro asistente, recopilamos tus mensajes, la ruta actual dentro de la Plataforma, el historial del chat, tu estado de autenticación y tu rol para poder responderte y ayudarte a navegar." },
+    { title: "Analítica administrativa", desc: "Los administradores pueden acceder a métricas globales, actividad de los usuarios y registros de auditoría (quién hizo qué y cuándo) para garantizar la seguridad y el correcto funcionamiento de la Plataforma." }
+  ],
   uses: [
-    { icon: "CheckCircle", title: "Prestar servicios", desc: "Gestionar tu cuenta, publicar propiedades y facilitar conexiones entre usuarios" },
-    { icon: "Zap", title: "Mejorar la plataforma", desc: "Analizar el uso para optimizar funcionalidades, rendimiento y experiencia de usuario" },
-    { icon: "Mail", title: "Comunicaciones", desc: "Enviar notificaciones, alertas de propiedades, actualizaciones y soporte" },
-    { icon: "Shield", title: "Seguridad", desc: "Prevenir fraudes, verificar identidades y proteger la integridad de la plataforma" },
-    { icon: "BarChart3", title: "Análisis", desc: "Generar estadísticas anonimizadas para informes de mercado y mejoras" },
-    { icon: "Sliders", title: "Cumplimiento legal", desc: "Cumplir con obligaciones legales, regulatorias y responder a autoridades" }
+    { icon: "CheckCircle", title: "Prestar servicios", desc: "Gestionar tu cuenta, publicar propiedades y proyectos, facilitar conexiones entre usuarios y la mensajería en tiempo real" },
+    { icon: "Zap", title: "Mejorar la plataforma", desc: "Analizar el uso para optimizar funcionalidades, rendimiento, mapas y experiencia de usuario" },
+    { icon: "Mail", title: "Comunicaciones y notificaciones", desc: "Enviar notificaciones, alertas de nuevas propiedades según tus búsquedas guardadas, actualizaciones y soporte" },
+    { icon: "Shield", title: "Seguridad y verificación", desc: "Prevenir fraudes, verificar identidades (DNI/RUC/KYC) y proteger la integridad de la Plataforma" },
+    { icon: "BarChart3", title: "Análisis y recomendaciones", desc: "Generar estadísticas anonimizadas, informes de mercado (Market Radar) y recomendaciones personalizadas" },
+    { icon: "Sliders", title: "Cumplimiento legal", desc: "Cumplir con obligaciones legales y regulatorias, incluyendo el Libro de Reclamaciones, y responder a autoridades" }
   ],
   shares: [
-    { title: "Proveedores de servicios", desc: "Empresas que nos ayudan a operar la plataforma (hosting, análisis, pasarelas de pago, envío de emails), bajo estrictos acuerdos de confidencialidad." },
-    { title: "Entre usuarios", desc: "Cuando publicas una propiedad, ciertos datos (nombre, foto de perfil, teléfono) son visibles para otros usuarios interesados en contactarte." },
+    { title: "Proveedores de servicios", desc: "Empresas que nos ayudan a operar la Plataforma (hosting, análisis, pasarelas de pago, envío de emails, geolocalización, autenticación), bajo estrictos acuerdos de confidencialidad." },
+    { title: "Entre usuarios", desc: "Cuando publicas una propiedad o proyecto, ciertos datos (nombre, foto de perfil, teléfono) son visibles para otros usuarios interesados en contactarte." },
     { title: "Obligación legal", desc: "Cuando lo requiera la ley, una autoridad competente o para proteger los derechos y seguridad de Tiyuy y sus usuarios." },
     { title: "Transacciones comerciales", desc: "En caso de fusión, adquisición o venta de activos, tus datos podrían ser transferidos como parte de la operación, manteniendo las garantías de privacidad." }
   ],
   cookies: [
-    { type: "Esenciales", purpose: "Funcionamiento básico de la plataforma (sesión, autenticación)", duration: "Sesión" },
-    { type: "Analíticas", purpose: "Entender cómo usas la plataforma para mejorar el servicio", duration: "Hasta 2 años" },
+    { type: "Esenciales", purpose: "Funcionamiento básico de la Plataforma (sesión, autenticación)", duration: "Sesión" },
+    { type: "Analíticas", purpose: "Entender cómo usas la Plataforma para mejorar el servicio", duration: "Hasta 2 años" },
     { type: "Funcionales", purpose: "Recordar preferencias (idioma, moneda, ubicación)", duration: "Hasta 1 año" },
     { type: "Marketing", purpose: "Mostrar anuncios relevantes y medir campañas", duration: "Hasta 6 meses" }
+  ],
+  storage: [
+    { type: 'localStorage', name: 'tiyuy-auth-token', desc: 'Token de acceso (JWT) para mantener tu sesión iniciada' },
+    { type: 'localStorage', name: 'tiyuy-user', desc: 'Datos básicos del usuario para personalizar la experiencia' },
+    { type: 'localStorage', name: 'tiyuy-auth-store', desc: 'Estado de autenticación, rol, permisos y datos de sesión' },
+    { type: 'localStorage', name: 'Stores de preferencias', desc: 'Favoritos, perfil, onboarding, KYC, identidad, mapas y vista de mapa' },
+    { type: 'Cookie', name: 'jwt', desc: 'Token JWT de autenticación (vigencia de 1 día, SameSite=Lax)' }
+  ],
+  externalServices: [
+    { name: 'Backend API de Tiyuy', purpose: 'Almacenamiento de todos los datos de negocio de la Plataforma', privacy: 'Servidores de Tiyuy' },
+    { name: 'Firebase (Google)', purpose: 'Autenticación con correo/contraseña y con Google, y base de datos Firestore', privacy: 'Google Cloud' },
+    { name: 'Google Places', purpose: 'Autocompletado de direcciones y geolocalización en búsquedas', privacy: 'Google' },
+    { name: 'MercadoPago', purpose: 'Procesamiento de pagos en línea y tokenización de tarjetas', privacy: 'MercadoLibre' },
+    { name: 'Culqi', purpose: 'Procesamiento de pagos en línea y tokenización de tarjetas', privacy: 'Culqi Perú' },
+    { name: 'Brevo (Sendinblue)', purpose: 'Envío de correos electrónicos: bienvenida, recuperación de contraseña y notificaciones', privacy: 'Brevo' },
+    { name: 'WebSocket', purpose: 'Mensajería en tiempo real dentro de la Plataforma', privacy: 'Infraestructura de Tiyuy' },
+    { name: 'Notificaciones Push', purpose: 'Envío de notificaciones push en tu navegador (VAPID)', privacy: 'Infraestructura de Tiyuy' },
+    { name: 'LLM (DeepSeek)', purpose: 'Asistente virtual AI Copilot para ayudarte a navegar la Plataforma', privacy: 'DeepSeek' }
   ],
   securityMeasures: [
     "Cifrado SSL/TLS para todas las comunicaciones",
     "Almacenamiento de contraseñas con hash seguro (bcrypt)",
+    "Tokenización de datos de pago mediante pasarelas certificadas PCI-DSS",
     "Acceso restringido a datos personales (principio de mínimo privilegio)",
+    "Verificación de identidad (KYC) para prevenir fraudes y suplantación",
     "Monitoreo continuo y detección de actividades sospechosas",
+    "Registros de auditoría de las acciones administrativas",
     "Copias de seguridad cifradas y protocolos de recuperación"
   ],
   rights: [
@@ -79,9 +127,11 @@ const privacyData = {
 const SECTIONS = [
   { id: 'intro', title: 'Introducción' },
   { id: 'data-collect', title: 'Datos que recopilamos' },
+  { id: 'data-tracking', title: 'Recopilación y tracking' },
   { id: 'data-use', title: 'Uso de la información' },
   { id: 'data-share', title: 'Compartir datos' },
-  { id: 'cookies', title: 'Cookies y tecnologías' },
+  { id: 'cookies', title: 'Cookies y almacenamiento' },
+  { id: 'external-services', title: 'Servicios externos' },
   { id: 'security', title: 'Seguridad' },
   { id: 'rights', title: 'Tus derechos' },
   { id: 'retention', title: 'Retención de datos' },
@@ -103,8 +153,16 @@ const CategoryIcon = ({ type }: { type: string }) => {
       return <Building2 className={baseClass} strokeWidth={1.5} />;
     case 'navigation':
       return <BarChart3 className={baseClass} strokeWidth={1.5} />;
+    case 'kyc':
+      return <ShieldCheck className={baseClass} strokeWidth={1.5} />;
+    case 'message':
+      return <MessageCircle className={baseClass} strokeWidth={1.5} />;
     case 'payment':
       return <CreditCard className={baseClass} strokeWidth={1.5} />;
+    case 'crm':
+      return <Users className={baseClass} strokeWidth={1.5} />;
+    case 'favorite':
+      return <Heart className={baseClass} strokeWidth={1.5} />;
     default:
       return null;
   }
@@ -242,9 +300,30 @@ export default function PrivacyPage() {
                     </div>
                   </section>
 
-                  {/* 3. Uso de la información */}
+                  {/* 3. Recopilación y tracking */}
+                  <section id="data-tracking" className="mb-12 scroll-mt-24">
+                    <SectionHeader num={3} title="Recopilación de datos y tracking" />
+                    <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
+                      Además de los datos que nos proporcionas, la Plataforma recopila automáticamente información sobre tu comportamiento para analytics, notificaciones automáticas y mejoras del producto:
+                    </p>
+                    <div className="space-y-3">
+                      {privacyData.tracking.map((item, i) => (
+                        <div key={i} className="flex gap-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4">
+                          <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-bold">
+                            {i + 1}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-[var(--text-primary)] text-sm">{item.title}</h3>
+                            <p className="text-sm text-[var(--text-muted)] mt-1">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  {/* 4. Uso de la información */}
                   <section id="data-use" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={3} title="Uso de la información" />
+                    <SectionHeader num={4} title="Uso de la información" />
                     <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                       Utilizamos tus datos personales exclusivamente para las siguientes finalidades:
                     </p>
@@ -262,9 +341,9 @@ export default function PrivacyPage() {
                     </div>
                   </section>
 
-                  {/* 4. Compartir datos */}
+                  {/* 5. Compartir datos */}
                   <section id="data-share" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={4} title="Compartir datos con terceros" />
+                    <SectionHeader num={5} title="Compartir datos con terceros" />
                     <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                       <strong>No vendemos tus datos personales.</strong> Solo compartimos información en los siguientes casos:
                     </p>
@@ -283,13 +362,13 @@ export default function PrivacyPage() {
                     </div>
                   </section>
 
-                  {/* 5. Cookies */}
+                  {/* 6. Cookies y almacenamiento */}
                   <section id="cookies" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={5} title="Cookies y tecnologías similares" />
+                    <SectionHeader num={6} title="Cookies y almacenamiento local" />
                     <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                      Utilizamos cookies y tecnologías similares para mejorar tu experiencia. Puedes configurar tu navegador para rechazar cookies, aunque esto podría afectar algunas funcionalidades.
+                      Utilizamos cookies y tecnologías similares para mejorar tu experiencia. Puedes configurar tu navegador para rechazar cookies, aunque esto podría afectar algunas funcionalidades. Además, utilizamos almacenamiento local del navegador para mantener tu sesión y preferencias.
                     </p>
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto mb-6">
                       <table className="w-full border border-[var(--border-color)] rounded-xl overflow-hidden">
                         <thead>
                           <tr className="bg-[var(--bg-secondary)]">
@@ -309,11 +388,55 @@ export default function PrivacyPage() {
                         </tbody>
                       </table>
                     </div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Database className="w-5 h-5 text-green-600 flex-shrink-0" strokeWidth={1.5} />
+                      <h3 className="font-semibold text-[var(--text-primary)]">Almacenamiento local del navegador</h3>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full border border-[var(--border-color)] rounded-xl overflow-hidden">
+                        <thead>
+                          <tr className="bg-[var(--bg-secondary)]">
+                            <th className="text-left px-4 py-3 text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)]">Tipo</th>
+                            <th className="text-left px-4 py-3 text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)]">Clave</th>
+                            <th className="text-left px-4 py-3 text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border-color)]">Contenido</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {privacyData.storage.map((row, i) => (
+                            <tr key={i} className={i % 2 === 0 ? 'bg-[var(--bg-card)]' : 'bg-[var(--bg-secondary)]/50'}>
+                              <td className="px-4 py-3 text-sm font-medium text-[var(--text-primary)] border-b border-[var(--border-light)]">{row.type}</td>
+                              <td className="px-4 py-3 text-sm text-[var(--text-secondary)] border-b border-[var(--border-light)]">{row.name}</td>
+                              <td className="px-4 py-3 text-sm text-[var(--text-muted)] border-b border-[var(--border-light)]">{row.desc}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </section>
 
-                  {/* 6. Seguridad */}
+                  {/* 7. Servicios externos */}
+                  <section id="external-services" className="mb-12 scroll-mt-24">
+                    <SectionHeader num={7} title="Servicios externos e integraciones" />
+                    <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
+                      Para operar la Plataforma utilizamos proveedores de servicios externos que tratan tus datos en nuestro nombre bajo acuerdos de confidencialidad y conforme a esta política:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {privacyData.externalServices.map((item, i) => (
+                        <div key={i} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Globe className="w-4 h-4 text-green-600 flex-shrink-0" strokeWidth={1.5} />
+                            <h3 className="font-semibold text-[var(--text-primary)] text-sm">{item.name}</h3>
+                          </div>
+                          <p className="text-sm text-[var(--text-muted)] mb-2">{item.purpose}</p>
+                          <p className="text-xs text-[var(--text-secondary)]/60">Tratamiento: {item.privacy}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  {/* 8. Seguridad */}
                   <section id="security" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={6} title="Seguridad de tus datos" />
+                    <SectionHeader num={8} title="Seguridad de tus datos" />
                     <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6">
                       <div className="flex items-start gap-4">
                         <div className="w-10 h-10 rounded-xl bg-green-600 text-white flex items-center justify-center flex-shrink-0">
@@ -334,9 +457,9 @@ export default function PrivacyPage() {
                     </div>
                   </section>
 
-                  {/* 7. Tus derechos */}
+                  {/* 9. Tus derechos */}
                   <section id="rights" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={7} title="Tus derechos" />
+                    <SectionHeader num={9} title="Tus derechos" />
                     <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                       Asumiendo la titularidad de tus datos personales, tienes los siguientes derechos:
                     </p>
@@ -358,9 +481,9 @@ export default function PrivacyPage() {
                     </p>
                   </section>
 
-                  {/* 8. Retención */}
+                  {/* 10. Retención */}
                   <section id="retention" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={8} title="Retención de datos" />
+                    <SectionHeader num={10} title="Retención de datos" />
                     <p className="text-[var(--text-secondary)] leading-relaxed mb-4">
                       Conservamos tus datos personales mientras tu cuenta esté activa y durante el tiempo necesario para cumplir con las finalidades descritas en esta política, incluyendo obligaciones legales y fiscales.
                     </p>
@@ -371,25 +494,25 @@ export default function PrivacyPage() {
                     </div>
                   </section>
 
-                  {/* 9. Menores */}
+                  {/* 11. Menores */}
                   <section id="minors" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={9} title="Menores de edad" />
+                    <SectionHeader num={11} title="Menores de edad" />
                     <p className="text-[var(--text-secondary)] leading-relaxed">
                       Nuestros servicios no están dirigidos a menores de 18 años. No recopilamos intencionalmente datos personales de menores. Si descubrimos que un menor ha proporcionado datos personales, procederemos a eliminarlos de inmediato. Si eres padre o tutor y crees que tu hijo ha compartido información con nosotros, contáctanos.
                     </p>
                   </section>
 
-                  {/* 10. Cambios */}
+                  {/* 12. Cambios */}
                   <section id="changes" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={10} title="Cambios en esta política" />
+                    <SectionHeader num={12} title="Cambios en esta política" />
                     <p className="text-[var(--text-secondary)] leading-relaxed">
                       Podemos actualizar esta Política de Privacidad periódicamente para reflejar cambios en nuestros servicios, tecnologías o requisitos legales. Te notificaremos sobre cambios significativos mediante un aviso en la plataforma o por correo electrónico. Te recomendamos revisar esta política regularmente.
                     </p>
                   </section>
 
-                  {/* 11. Contacto */}
+                  {/* 13. Contacto */}
                   <section id="contact" className="mb-12 scroll-mt-24">
-                    <SectionHeader num={11} title="Contacto" />
+                    <SectionHeader num={13} title="Contacto" />
                     <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
                       Si tienes preguntas, dudas o solicitudes sobre esta Política de Privacidad o el tratamiento de tus datos, puedes contactarnos:
                     </p>

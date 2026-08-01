@@ -60,9 +60,9 @@ export const metadata: Metadata = {
       'Plataforma líder de bienes raíces en Perú. Departamentos, casas, terrenos y locales en venta y alquiler.',
     images: [
       {
-        url: '/tiyuy.svg',
-        width: 443,
-        height: 433,
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
         alt: 'TIYUY - Bienes Raíces',
       },
     ],
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     title: 'TIYUY - Encuentra tu hogar ideal en Perú',
     description:
       'Plataforma líder de bienes raíces en Perú. Departamentos, casas, terrenos y locales en venta y alquiler.',
-    images: ['/tiyuy.svg'],
+    images: ['/og-image.png'],
     creator: '@tiyuy',
   },
   alternates: {
