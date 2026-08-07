@@ -7,32 +7,35 @@ import {
 } from 'lucide-react';
 
 const termsData = {
-  lastUpdated: "3 de junio de 2025",
+  lastUpdated: "1 de agosto de 2026",
   intro: {
     highlight: 'Bienvenido a Tiyuy. Estos Términos de Servicio ("Términos") constituyen un acuerdo legal entre ti ("Usuario", "tu" o "tus") y Tiyuy ("nosotros", "nuestro" o "la Plataforma") que regula el acceso y uso de nuestros servicios.',
     paragraphs: [
-      "Al registrarte, acceder o utilizar cualquier servicio de Tiyuy, declaras que has leído, comprendido y aceptas estar sujeto a estos Términos y a nuestra Política de Privacidad. Si no aceptas estos términos, no debes utilizar la Plataforma.",
+      "Al registrarte, acceder o utilizar cualquier servicio de Tiyuy, declaras que has leído, comprendido y aceptas estar sujeto a estos Términos, a nuestra Política de Privacidad y al tratamiento de tus datos personales. Si no aceptas estos términos, no debes utilizar la Plataforma.",
       "Nos reservamos el derecho de actualizar estos Términos en cualquier momento. Los cambios entrarán en vigor desde su publicación. El uso continuado de la Plataforma después de modificaciones constituye aceptación de los nuevos Términos."
     ]
   },
   services: [
     { icon: "Home", title: 'Publicación de inmuebles', desc: 'Permite a propietarios, agentes e inmobiliarias publicar propiedades en venta o alquiler' },
     { icon: "Search", title: 'Búsqueda y descubrimiento', desc: 'Herramientas avanzadas de búsqueda, filtros y geolocalización para encontrar inmuebles' },
-    { icon: "MessageCircle", title: 'Comunicación entre usuarios', desc: 'Sistema de mensajería para conectar interesados con publicantes de forma segura' },
-    { icon: "BarChart3", title: 'Herramientas de gestión', desc: 'Panel de administración para gestionar propiedades, contactos y estadísticas' },
-    { icon: "CreditCard", title: 'Planes y suscripciones', desc: 'Servicios premium con funcionalidades avanzadas para profesionales del sector' },
-    { icon: "MapPin", title: 'Mapas y ubicación', desc: 'Integración con servicios de mapas para mostrar ubicaciones de propiedades' }
+    { icon: "MessageCircle", title: 'Mensajería en tiempo real', desc: 'Chats, canales, grupos, estados con expiración de 24 horas y eventos con confirmación de asistencia' },
+    { icon: "BarChart3", title: 'Herramientas de gestión', desc: 'Panel de administración para gestionar propiedades, proyectos, contactos, CRM y estadísticas' },
+    { icon: "CreditCard", title: 'Planes y suscripciones', desc: 'Servicios premium con funcionalidades avanzadas para profesionales del sector inmobiliario' },
+    { icon: "MapPin", title: 'Mapas y ubicación', desc: 'Integración con servicios de mapas para mostrar ubicaciones de propiedades y proyectos' }
   ],
   requirements: [
     "Ser mayor de 18 años",
     "Proporcionar información veraz, exacta y actualizada",
     "Contar con un correo electrónico válido",
-    "Completar el proceso de verificación de identidad cuando sea requerido"
+    "Completar el proceso de verificación de identidad (DNI/RUC/KYC) cuando sea requerido",
+    "Aceptar los Términos y Condiciones, la Política de Privacidad y el tratamiento de datos personales"
   ],
   accountTypes: [
-    { name: 'Usuario', desc: 'Busca propiedades y contacta publicantes' },
-    { name: 'Agente', desc: 'Publica propiedades y gestiona clientes' },
-    { name: 'Inmobiliaria', desc: 'Gestión avanzada con equipo de trabajo' }
+    { name: 'Usuario', desc: 'Busca propiedades y proyectos, y contacta publicantes' },
+    { name: 'Agente', desc: 'Publica propiedades y gestiona clientes con CRM' },
+    { name: 'Desarrollador', desc: 'Publica proyectos inmobiliarios y gestiona unidades' },
+    { name: 'Inmobiliaria', desc: 'Gestión avanzada con equipo de trabajo' },
+    { name: 'Administrador', desc: 'Acceso restringido a la administración de la plataforma' }
   ],
   prohibitedContent: [
     'Información falsa o engañosa',
@@ -80,22 +83,6 @@ const SectionHeader = ({ num, title }: { num: number; title: string }) => (
     {title}
   </h2>
 );
-
-function Section({ num, title, children }: { num: number; title: string; children: React.ReactNode }) {
-  return (
-    <div id={`section-${num}`}>
-      <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
-        <span className="w-7 h-7 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm font-bold shrink-0">
-          {num}
-        </span>
-        {title}
-      </h2>
-      <div className="text-gray-600 leading-relaxed ml-9 space-y-3">
-        {children}
-      </div>
-    </div>
-  );
-}
 
 export default function TermsPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -166,7 +153,7 @@ export default function TermsPage() {
                 <section id="services" className="mb-12 scroll-mt-24">
                   <SectionHeader num={2} title="Descripción de los servicios" />
                   <p className="text-[var(--text-secondary)] leading-relaxed mb-6">
-                    Tiyuy es una plataforma digital que ofrece los siguientes servicios:
+                    Tiyuy es una plataforma digital peruana que ofrece los siguientes servicios:
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {termsData.services.map((item, i) => {
@@ -207,7 +194,7 @@ export default function TermsPage() {
 
                     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
                       <h3 className="font-semibold text-[var(--text-primary)] mb-3">3.3 Tipos de cuenta</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {termsData.accountTypes.map((type, i) => (
                           <div key={i} className="bg-green-50 border border-green-100 rounded-lg p-3">
                             <h4 className="font-semibold text-green-800 text-sm">{type.name}</h4>
@@ -236,10 +223,6 @@ export default function TermsPage() {
                         Tiyuy se reserva el derecho de revisar, editar o eliminar publicaciones que incumplan estos Términos, contengan información falsa, engañosa o inapropiada. Las publicaciones están sujetas a moderación previa y posterior.
                       </p>
                     </div>
-
-                    <Section num={14} title="Propiedad intelectual">
-                      <p>El nombre tiyuy, su logotipo, diseño, textos institucionales, estructura de la plataforma, código y elementos gráficos pueden estar protegidos por derechos de propiedad intelectual. Queda prohibida su reproducción o uso no autorizado sin consentimiento previo por escrito de tiyuy.</p>
-                    </Section>
                   </div>
                 </section>
 
@@ -271,7 +254,7 @@ export default function TermsPage() {
                     <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
                       <h3 className="font-semibold text-[var(--text-primary)] mb-3">6.1 Planes disponibles</h3>
                       <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                        Tiyuy ofrece planes gratuitos y de pago. Los detalles de cada plan, incluyendo funcionalidades, límites de publicación y precios, se encuentran disponibles en nuestra página de planes. Los precios están expresados en moneda local (PEN/USD) e incluyen impuestos aplicables.
+                        Tiyuy ofrece los siguientes planes: <strong>Básico</strong> (gratuito, incluye 3 publicaciones), <strong>Profesional</strong> (US$ 99/mes, incluye 15 publicaciones) y <strong>Empresarial</strong> (US$ 299/mes, publicaciones ilimitadas). Los desarrolladores inmobiliarios pueden acceder a un periodo de prueba (trial) empresarial de 30 días. Los detalles de cada plan, funcionalidades y límites se encuentran disponibles en nuestra página de planes. Los precios están expresados en moneda local (PEN/USD) e incluyen los impuestos aplicables.
                       </p>
                     </div>
 
@@ -286,6 +269,13 @@ export default function TermsPage() {
                       <h3 className="font-semibold text-[var(--text-primary)] mb-3">6.3 Política de reembolso</h3>
                       <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
                         Los pagos realizados son no reembolsables, salvo que se establezca lo contrario por ley o en casos excepcionales evaluados por nuestro equipo de soporte. Si tienes un problema con tu suscripción, contáctanos para buscar una solución.
+                      </p>
+                    </div>
+
+                    <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-5">
+                      <h3 className="font-semibold text-[var(--text-primary)] mb-3">6.4 Pasarelas de pago</h3>
+                      <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+                        Los pagos se procesan a través de pasarelas de pago certificadas PCI-DSS (MercadoPago y Culqi). Los datos de tu tarjeta son tokenizados por estas plataformas y no son almacenados en nuestros servidores.
                       </p>
                     </div>
                   </div>

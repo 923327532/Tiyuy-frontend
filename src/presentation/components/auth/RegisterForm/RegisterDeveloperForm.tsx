@@ -50,6 +50,7 @@ export const RegisterDeveloperForm: React.FC = () => {
   const [isDniValidated, setIsDniValidated] = useState(false);
   const [isRucValidated, setIsRucValidated] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [emailExists, setEmailExists] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -116,6 +117,7 @@ export const RegisterDeveloperForm: React.FC = () => {
     if (step === 3) {
       if (!formData.ruc) newErrors.ruc = 'El RUC de la empresa es obligatorio';
       else if (formData.ruc.length !== 11) newErrors.ruc = 'El RUC debe tener 11 dígitos';
+      if (!acceptedPrivacy) newErrors.privacy = 'Debes aceptar el tratamiento de tus datos personales';
       if (!acceptedTerms) newErrors.terms = 'Debes aceptar los términos y condiciones';
     }
 
@@ -451,7 +453,29 @@ export const RegisterDeveloperForm: React.FC = () => {
               ))}
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptedPrivacy}
+                  onChange={(e) => {
+                    setAcceptedPrivacy(e.target.checked);
+                    if (e.target.checked && errors.privacy) {
+                      setErrors((prev) => { const n = { ...prev }; delete n.privacy; return n; });
+                    }
+                  }}
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <div className="text-sm text-gray-600">
+                  Acepto el tratamiento de mis datos personales conforme a la{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Política de Privacidad</a>{' '}
+                  de TIYUY
+                </div>
+              </label>
+              {errors.privacy && (
+                <p className="text-sm text-red-600 ml-7" role="alert">{errors.privacy}</p>
+              )}
+
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -462,18 +486,16 @@ export const RegisterDeveloperForm: React.FC = () => {
                       setErrors((prev) => { const n = { ...prev }; delete n.terms; return n; });
                     }
                   }}
-                  className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <div className="text-sm text-gray-600">
                   Acepto los{' '}
-                  <a href="/terminos" className="text-blue-600 hover:underline">Términos y Condiciones</a>{' '}
-                  y la{' '}
-                  <a href="/privacidad" className="text-blue-600 hover:underline">Política de Privacidad</a>{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Términos y Condiciones</a>{' '}
                   de TIYUY
                 </div>
               </label>
               {errors.terms && (
-                <p className="mt-2 text-sm text-red-600 ml-7" role="alert">{errors.terms}</p>
+                <p className="text-sm text-red-600 ml-7" role="alert">{errors.terms}</p>
               )}
             </div>
 
