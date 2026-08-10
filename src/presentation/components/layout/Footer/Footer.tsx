@@ -72,17 +72,18 @@ const SOCIAL_LINKS = [
     hoverBg: 'hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]',
   },
   {
-    href: 'https://www.facebook.com/tiyuyperu',
+    href: 'https://web.facebook.com/profile.php?id=61592199742048',
     icon: 'fa6-brands:facebook',
     label: 'Facebook',
     hoverBg: 'hover:bg-[#1877F2]',
   },
   {
-    href: 'https://twitter.com/tiyuyperu',
+    href: 'https://x.com/tiyuy6y',
     icon: 'fa6-brands:x-twitter',
     label: 'X (Twitter)',
     hoverBg: 'hover:bg-[#000000]',
   },
+
   {
     href: 'https://www.tiktok.com/@tiyuyperu_oficial',
     icon: 'fa6-brands:tiktok',
@@ -90,17 +91,19 @@ const SOCIAL_LINKS = [
     hoverBg: 'hover:bg-[#000000]',
   },
   {
-    href: 'https://www.youtube.com/@tiyuyperu',
+    href: 'https://www.youtube.com/@TiyuyTiyuy-r8s',
     icon: 'fa6-brands:youtube',
     label: 'YouTube',
     hoverBg: 'hover:bg-[#FF0000]',
   },
+
   {
-    href: 'https://www.linkedin.com/in/tiyuy-peru-4858863b5/',
+    href: 'https://www.linkedin.com/company/143109038/admin/dashboard/',
     icon: 'fa6-brands:linkedin',
     label: 'LinkedIn',
     hoverBg: 'hover:bg-[#0077B5]',
   },
+
 ];
 
 export function Footer() {
