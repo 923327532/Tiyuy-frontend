@@ -126,3 +126,28 @@ export interface ProjectFull extends Project {
   renders?: string[];
   socialMediaUrl?: string;
 }
+
+// Perfil público del desarrollador (al hacer clic en el desarrollador de un proyecto)
+export interface DeveloperPublicProfile {
+  userId: number;
+  companyName: string;
+  ruc: string;
+  email: string;
+  phone: string;
+  photoUrl?: string;
+  memberSince?: string;  // Cuándo se unió a Tiyuy
+  totalActiveProjects: number;
+  projects: DeveloperProject[];
+}
+
+export interface DeveloperProject {
+  id: number;
+  slug?: string;
+  name?: string;
+  type?: string;
+  phase?: string;
+  priceFrom: number;
+  currency?: string;
+  district?: string;
+  coverImageUrl?: string;
+}

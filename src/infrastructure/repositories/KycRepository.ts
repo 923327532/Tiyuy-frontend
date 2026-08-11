@@ -1,4 +1,4 @@
-import { publicApiClient } from '../api/axios-client';
+import { publicApiClient, axiosClient } from '../api/axios-client';
 import { KYC_ENDPOINTS } from '../api/endpoints';
 import { IKycRepository } from '@/core/domain/repositories';
 import {
@@ -62,6 +62,29 @@ export class KycRepository implements IKycRepository {
     } catch (error: any) {
       const data = error.response?.data;
       const msg = data?.message || 'Error al actualizar a desarrollador';
+      throw new Error(msg);
+    }
+  }
+
+  /**
+   * Sube la foto del documento internacional y la selfie a S3.
+   * El registro queda en estado PENDING hasta que un administrador lo apruebe.
+   * NO se simula ninguna verificación real.
+   */
+  async uploadInternationalDocuments(documentImage: File, selfieImage: File): Promise<any> {
+    try {
+      const formData = new FormData();
+      formData.append('documentImage', documentImage);
+      formData.append('selfieImage', selfieImage);
+      const response = await axiosClient.post(
+        '/identity/kyc-international/upload',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data;
+    } catch (error: any) {
+      const data = error.response?.data;
+      const msg = data?.message || 'Error al subir los documentos';
       throw new Error(msg);
     }
   }

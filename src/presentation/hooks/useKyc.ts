@@ -80,6 +80,20 @@ export const useKyc = () => {
     }
   };
 
+  const uploadInternationalDocuments = async (documentImage: File, selfieImage: File) => {
+    try {
+      setValidating(true);
+      setError(null);
+      const result = await kycRepository.uploadInternationalDocuments(documentImage, selfieImage);
+      return result;
+    } catch (err: any) {
+      setError(err.message || 'Error al subir los documentos');
+      throw err;
+    } finally {
+      setValidating(false);
+    }
+  };
+
   return {
     dniValidation,
     rucValidation,
@@ -89,6 +103,7 @@ export const useKyc = () => {
     validateRuc,
     completeKyc,
     upgradeToDeveloper,
+    uploadInternationalDocuments,
     clearKyc,
   };
 };

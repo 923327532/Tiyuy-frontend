@@ -37,6 +37,8 @@ export const useAuth = () => {
         phoneVerified: false,
         publishedPropertiesCount: 0,
         createdAt: new Date(),
+        documentType: response.documentType,
+        verificationStatus: response.verificationStatus,
       };
 
       // Extract admin data if present
@@ -80,12 +82,14 @@ export const useAuth = () => {
         phone: registerData.phone || '',
         firstName: response.firstName,
         lastName: response.lastName,
-        dni: registerData.dni,
+        dni: registerData.dni ?? '',
         role: response.role,
         emailVerified: false,
         phoneVerified: false,
         publishedPropertiesCount: 0,
         createdAt: new Date(),
+        documentType: response.documentType,
+        verificationStatus: response.verificationStatus,
       };
 
       authStorage.setToken(response.token);
@@ -107,6 +111,11 @@ export const useAuth = () => {
       // Redirigir a la pantalla principal después del registro
       const adminRoles = ['ADMIN', 'SUPER_ADMIN', 'SUPPORT'];
       const targetRoute = adminRoles.includes(response.role) ? '/admin' : '/';
+      // Un usuario internacional primero sube su documento + selfie para revisión
+      if (registerData.documentType === 'INTERNATIONAL') {
+        router.push('/kyc-internacional');
+        return;
+      }
       router.push(targetRoute);
     } catch (err: any) {
       setError(err.message || 'Error al registrar usuario');

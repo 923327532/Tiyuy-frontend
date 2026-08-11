@@ -16,7 +16,7 @@ import { authStorage } from '@/infrastructure/storage/auth-storage';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { AdminHeader } from '@/presentation/components/admin/AdminHeader/AdminHeader';
-import { Activity, Bell, Building, Building2, DollarSign, FileText, Image as ImageIcon, Layers, LayoutDashboard, LogOut, Megaphone, MessageSquare, Package, ShieldAlert, ShieldCheck, Tag, TriangleAlert, UserCircle, Users } from 'lucide-react';
+import { Activity, Bell, Building, Building2, DollarSign, FileText, Globe2, Image as ImageIcon, Layers, LayoutDashboard, LogOut, Megaphone, MessageSquare, Package, ShieldAlert, ShieldCheck, Tag, TriangleAlert, UserCircle, Users } from 'lucide-react';
 
 
 interface GitHubShellProps {
@@ -58,6 +58,7 @@ const NAV_SECTIONS: NavSectionWithPermission[] = [
     title: 'USUARIOS',
     items: [
       { label: 'Usuarios', href: '/admin/users', icon: Users, requiredPermission: 'USERS_VIEW' },
+      { label: 'Extranjeros', href: '/admin/international', icon: Globe2, requiredPermission: 'USERS_VIEW' },
     ],
   },
   {
