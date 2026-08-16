@@ -194,6 +194,26 @@ async getById(id: number): Promise<Property> {
     return response.data;
   }
 
+  async getMostViewed(page = 0, size = 10): Promise<PropertySummary[]> {
+    try {
+      // Endpoint público: /properties/most-viewed devuelve Page<PropertySummaryDto>
+      // ordenado por viewsCount DESC (sort por defecto del backend).
+      const response = await publicApiClient.get('/properties/most-viewed', {
+        params: { page, size },
+        timeout: 120000,
+      });
+
+      const content = response.data?.content || response.data;
+      if (Array.isArray(content)) {
+        return content.map(PropertyMapper.toSummary);
+      }
+      return [];
+    } catch (error) {
+      console.error('Error loading most viewed properties:', error);
+      return [];
+    }
+  }
+
   async getFeaturedMix(): Promise<PropertySummary[]> {
     try {
       // El backend tiene el endpoint en /featured/properties que devuelve

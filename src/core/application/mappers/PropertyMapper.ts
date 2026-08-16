@@ -129,6 +129,12 @@ export class PropertyMapper {
       bedrooms: dto.bedrooms,
       bathrooms: dto.bathrooms,
       totalArea: dto.totalArea,
+      ...(anyDto.roomDetails ? {
+        roomDetails: {
+          hasPrivateBathroom: Boolean(anyDto.roomDetails.hasPrivateBathroom),
+          totalCapacity: anyDto.roomDetails.totalCapacity != null ? Number(anyDto.roomDetails.totalCapacity) : undefined,
+        } as any,
+      } : {}),
       district,
       province,
       coverPhotoUrl: dto.coverPhotoUrl || undefined,

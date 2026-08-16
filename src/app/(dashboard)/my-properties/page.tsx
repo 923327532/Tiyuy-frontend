@@ -209,13 +209,16 @@ export default function MyPropertiesPage() {
     }
   };
 
-  const handlePublish = async (id: unknown) => {
+  const handlePublish = async (id: unknown, currentStatus?: string) => {
     const parsedId = typeof id === 'number' ? id : Number(id);
     if (!parsedId || Number.isNaN(parsedId)) {
       toast.error('No se pudo publicar: falta ID de propiedad');
       return;
     }
-    if (!canPublish) {
+
+    // Reactivar una propiedad PAUSED no consume cupo nuevo: el backend decide si
+    // procede (plan activo o publicación FREE). Publicar un borrador sí exige cupo.
+    if (currentStatus !== 'PAUSED' && !canPublish) {
       setShowPlanExpiredModal(true);
       return;
     }
@@ -599,7 +602,7 @@ export default function MyPropertiesPage() {
                       {/* Publish / Reactivate Button */}
                       {(property.status === 'DRAFT' || property.status === 'PAUSED') && (
                         <button
-                          onClick={() => handlePublish(property.id)}
+                          onClick={() => handlePublish(property.id, property.status)}
                           disabled={publishMutation.isPending}
                           className="w-full py-1.5 bg-[var(--brand-primary)] text-white text-[11px] font-semibold rounded-md hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-1 shadow-sm"
                         >

@@ -99,6 +99,12 @@ export interface Property {
   parkingSpots?: number;
   totalArea?: number;
   builtArea?: number;
+
+  // Detalles específicos de habitación (ROOM): baño propio/compartido y cupo máximo
+  roomDetails?: {
+    hasPrivateBathroom?: boolean;
+    totalCapacity?: number;
+  };
   
   // Descripción
   description?: string;
@@ -156,6 +162,11 @@ export interface PropertySummary {
   bedrooms?: number;
   bathrooms?: number;
   totalArea?: number;
+  // Detalles específicos de habitación (ROOM): baño propio/compartido y cupo máximo
+  roomDetails?: {
+    hasPrivateBathroom?: boolean;
+    totalCapacity?: number;
+  };
   district: string;
   province: string;
   coverPhotoUrl?: string;

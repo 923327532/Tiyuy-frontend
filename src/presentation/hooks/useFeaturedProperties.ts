@@ -14,29 +14,59 @@ const LS_KEY = 'tiyuy-featured-properties-v2';
 // InitQuery — dispara la query inmediatamente sin esperar que monte el componente
 let featuredPropertiesPromise: Promise<PropertySummary[]> | null = null;
 
+// Carga la sección "Alojamientos populares":
+// 1) Destacadas SIEMPRE primero (el usuario espera que una propiedad destacada
+//    salga en el home aunque tenga pocas vistas), 2) más vistas, 3) recientes en venta.
+async function loadPopularProperties(): Promise<PropertySummary[]> {
+  const featured = await propertyRepo.getFeaturedMix();
+
+  const mostViewed = await propertyRepo.getMostViewed(0, 10);
+
+  const seen = new Set<number>();
+  const merged: PropertySummary[] = [];
+
+  // Destacadas primero (curadas/patrocinadas)
+  for (const p of featured) {
+    if (!seen.has(p.id)) {
+      seen.add(p.id);
+      merged.push(p);
+    }
+  }
+
+  // Populares (más vistas) para completar
+  for (const p of mostViewed) {
+    if (!seen.has(p.id)) {
+      seen.add(p.id);
+      merged.push(p);
+    }
+  }
+
+  // Fallback: recientes en venta si aún no hay nada
+  if (merged.length === 0) {
+    const recentResult = await propertyRepo.search({
+      transactionType: 'SALE' as any,
+      page: 0,
+      size: 10,
+      sort: 'createdAt,desc',
+    } as any);
+    for (const p of (recentResult.properties || [])) {
+      if (!seen.has(p.id)) {
+        seen.add(p.id);
+        merged.push(p);
+      }
+    }
+  }
+
+  const items = merged.slice(0, 10);
+  try { localStorage.setItem(LS_KEY, JSON.stringify(items)); } catch {}
+  return items;
+}
+
 export function prefetchFeaturedProperties() {
   if (featuredPropertiesPromise) return;
-  featuredPropertiesPromise = (async () => {
-    try {
-      const mixProps = await propertyRepo.getFeaturedMix();
-      if (mixProps.length > 0) {
-        const items = mixProps.slice(0, 10);
-        try { localStorage.setItem(LS_KEY, JSON.stringify(items)); } catch {}
-        return items;
-      }
-      const recentResult = await propertyRepo.search({
-        transactionType: 'SALE' as any,
-        page: 0,
-        size: 10,
-        sort: 'createdAt,desc',
-      } as any);
-      const items = (recentResult.properties || []).slice(0, 10);
-      try { localStorage.setItem(LS_KEY, JSON.stringify(items)); } catch {}
-      return items;
-    } catch {
-      throw new Error('Error al cargar propiedades destacadas');
-    }
-  })();
+  featuredPropertiesPromise = loadPopularProperties().catch(() => {
+    throw new Error('Error al cargar propiedades destacadas');
+  });
 }
 
 export function useFeaturedProperties() {
@@ -52,21 +82,7 @@ export function useFeaturedProperties() {
       if (featuredPropertiesPromise) {
         return featuredPropertiesPromise;
       }
-      const mixProps = await propertyRepo.getFeaturedMix();
-      if (mixProps.length > 0) {
-        const items = mixProps.slice(0, 10);
-        try { localStorage.setItem(LS_KEY, JSON.stringify(items)); } catch {}
-        return items;
-      }
-      const recentResult = await propertyRepo.search({
-        transactionType: 'SALE' as any,
-        page: 0,
-        size: 10,
-        sort: 'createdAt,desc',
-      } as any);
-      const items = (recentResult.properties || []).slice(0, 10);
-      try { localStorage.setItem(LS_KEY, JSON.stringify(items)); } catch {}
-      return items;
+      return loadPopularProperties();
     },
     initialData: cached,
     staleTime: STALE_TIME,

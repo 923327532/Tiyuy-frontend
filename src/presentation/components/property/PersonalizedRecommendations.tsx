@@ -125,28 +125,21 @@ export function PersonalizedRecommendations({
       <style>{`
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .rec-card { width: calc(50% - 10px); flex-shrink: 0; }
-
-        @media (min-width: 640px) { .rec-card { width: calc((100% - 20px) / 2); } }
-        @media (min-width: 768px) { .rec-card { width: calc((100% - 2 * 24px) / 3); } }
-        @media (min-width: 1024px) { .rec-card { width: calc((100% - 3 * 24px) / 4); } }
-        @media (min-width: 1280px) { .rec-card { width: calc((100% - 4 * 24px) / 5); } }
-        @media (min-width: 1536px) { .rec-card { width: calc((100% - 5 * 24px) / 6); } }
-        @media (min-width: 1800px) { .rec-card { width: calc((100% - 6 * 24px) / 7); } }
       `}</style>
 
       <h2 className="text-lg sm:text-2xl font-semibold text-[var(--text-primary)] mb-4">{title}</h2>
 
+      {/* NOTA: ancho fijo por card para evitar que PropertyCard (min-w-[200px] en sm+)
+          desborde su contenedor y las cards se sobrepongan en columnas angostas. */}
       <div className="flex overflow-x-auto gap-3 sm:gap-4 md:gap-4 hide-scrollbar pb-4">
         {recommendations.map((property) => (
-          <div key={property.id} className="rec-card">
+          <div key={property.id} className="w-[160px] sm:w-[240px] flex-shrink-0">
             <PropertyCard property={property} />
           </div>
         ))}
         
         {/* Tarjeta Ver todo */}
-        <div className="rec-card">
+        <div className="w-[160px] sm:w-[240px] flex-shrink-0">
           <Link
             href="/properties"
             className="flex flex-col items-center justify-center h-full min-h-[160px] sm:min-h-[320px] w-full bg-[var(--bg-secondary)] hover:bg-[var(--bg-tertiary)]/70 rounded-[14px] sm:rounded-2xl border border-[var(--border-color)] transition-all hover:shadow-sm group"

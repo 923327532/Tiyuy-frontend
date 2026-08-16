@@ -184,36 +184,73 @@ export function PropertyCard({ property }: PropertyCardProps) {
         <div className="w-full h-px bg-[var(--border-color)] my-1.5" />
 
         <div className="flex items-center gap-2 w-full text-[11px] text-[var(--text-secondary)] h-[16px]">
-          {property.bedrooms && (
-            <div className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M3 7v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7" />
-                <path d="M21 7H3" />
-                <path d="M3 11h18" />
-                <path d="M7 15h2" />
-                <path d="M15 15h2" />
-              </svg>
-              <span>{property.bedrooms}</span>
-            </div>
-          )}
-          {property.bathrooms && (
-            <div className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 12h16a1 1 0 0 1 1 1v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3a1 1 0 0 1 1-1z" />
-                <path d="M6 12V5a2 2 0 0 1 2-2h3v2" />
-              </svg>
-              <span>{property.bathrooms}</span>
-            </div>
-          )}
-          {property.totalArea && (
-            <div className="flex items-center gap-1.5">
-              <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <line x1="3" y1="9" x2="21" y2="9" />
-                <line x1="9" y1="21" x2="9" y2="9" />
-              </svg>
-              <span>{property.totalArea} m²</span>
-            </div>
+          {property.type === 'ROOM' ? (
+            <>
+              {property.totalArea != null && Number(property.totalArea) > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="21" x2="9" y2="9" />
+                  </svg>
+                  <span>{property.totalArea} m²</span>
+                </div>
+              )}
+              {property.roomDetails && typeof property.roomDetails.hasPrivateBathroom === 'boolean' && (
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 12h16a1 1 0 0 1 1 1v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3a1 1 0 0 1 1-1z" />
+                    <path d="M6 12V5a2 2 0 0 1 2-2h3v2" />
+                  </svg>
+                  <span>{property.roomDetails.hasPrivateBathroom ? 'Baño propio' : 'Baño compartido'}</span>
+                </div>
+              )}
+              {property.roomDetails && property.roomDetails.totalCapacity != null && property.roomDetails.totalCapacity > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  <span>Máx. {property.roomDetails.totalCapacity} pers.</span>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {property.bedrooms != null && property.bedrooms > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 7v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7" />
+                    <path d="M21 7H3" />
+                    <path d="M3 11h18" />
+                    <path d="M7 15h2" />
+                    <path d="M15 15h2" />
+                  </svg>
+                  <span>{property.bedrooms}</span>
+                </div>
+              )}
+              {property.bathrooms != null && property.bathrooms > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 12h16a1 1 0 0 1 1 1v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3a1 1 0 0 1 1-1z" />
+                    <path d="M6 12V5a2 2 0 0 1 2-2h3v2" />
+                  </svg>
+                  <span>{property.bathrooms}</span>
+                </div>
+              )}
+              {property.totalArea != null && Number(property.totalArea) > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="21" x2="9" y2="9" />
+                  </svg>
+                  <span>{property.totalArea} m²</span>
+                </div>
+              )}
+            </>
           )}
         </div>
 
