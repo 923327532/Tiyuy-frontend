@@ -45,6 +45,8 @@ export interface SubscriptionPlan {
   discountPctYearly?: number;
   agencyDiscountedPrice?: number;
   hasAgencyDiscount?: boolean;
+  userPlanStatus?: string;
+  userPlanStatusLabel?: string;
 }
 
 export type BillingCycle = 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | 'LIFETIME';

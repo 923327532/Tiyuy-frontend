@@ -619,12 +619,18 @@ function PlansPageContent() {
                       const normalizedBackendTier = (backendTier && oldToNew[backendTier]) || backendTier;
                       // El FREE plan siempre está "activo" para nuevos usuarios o cuando la suscripción activa es FREE
                       const isFreeActive = planTierCode === 'FREE' && (!activeSubscription || normalizedSubTier === 'FREE');
+                      // Estado calculado por el backend por plan (ACTIVE | RENEW_REQUIRED | AVAILABLE).
+                      // Es la fuente de verdad cuando el plan venció/agotó y ya no hay suscripción activa.
+                      const planStatus = (plan as any).userPlanStatus as string | undefined;
+                      const isRenewRequired = planStatus === 'RENEW_REQUIRED';
+                      const isBackendActive = planStatus === 'ACTIVE';
                       // Comparar contra subscriptionTier (que tiene el valor real de la BD como "CUSTOM", "BASIC", etc.)
                       // y también contra backendTier por compatibilidad
-                      const isActive = isFreeActive || (activeSubscription 
+                      const isActive = isBackendActive || isRenewRequired || isFreeActive || (activeSubscription 
                         ? (normalizedSubTier === planTierCode || normalizedBackendTier === plan.id || normalizedBackendTier === planTierCode)
                         : false);
-                      const isExhausted = isPlanExhausted(plan);
+                      const isExhausted = isPlanExhausted(plan) || isRenewRequired;
+                      const canRenew = canRenewPlan(plan) || isRenewRequired;
                       const intelligentDiscount = detectIntelligentDiscount(plan);
                       let finalDiscountCode = '';
                       let finalDiscountPercentage = 0;
@@ -661,7 +667,7 @@ function PlansPageContent() {
                             isExhausted={isExhausted}
                             isExpired={isPlanExpired(plan)}
                             isExhaustedByLimit={isPlanExhaustedByLimit(plan)}
-                            canRenew={canRenewPlan(plan)}
+                            canRenew={canRenew}
                             discountPercentage={finalDiscountPercentage}
                             hasDiscount={hasAnyDiscount}
                             selectedBillingCycle={selectedBillingCycles[plan.id] || 'MONTHLY'}

@@ -36,6 +36,8 @@ export interface SubscriptionPlanDTO {
   isFeatured: boolean;
   agencyDiscountedPrice?: number;
   hasAgencyDiscount?: boolean;
+  userPlanStatus?: string;
+  userPlanStatusLabel?: string;
 }
 
 export interface ActiveSubscriptionDTO {

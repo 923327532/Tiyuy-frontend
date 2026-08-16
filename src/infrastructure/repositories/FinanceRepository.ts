@@ -80,6 +80,35 @@ export class FinanceRepository implements IFinanceRepository {
     }
   }
 
+  async getPublicationStats(): Promise<{
+    hasActiveSubscription: boolean;
+    canPublish: boolean;
+    publicationsUsed: number;
+    publicationsLimit: number;
+    publicationsRemaining: number;
+    planStatus: string;
+    planStatusLabel: string;
+    message?: string;
+  } | null> {
+    try {
+      const response = await apiClient.get<any>('/properties/my-properties/stats');
+      const d = response.data;
+      if (!d) return null;
+      return {
+        hasActiveSubscription: !!d.hasActiveSubscription,
+        canPublish: !!d.canPublish,
+        publicationsUsed: Number(d.publicationsUsed ?? 0),
+        publicationsLimit: Number(d.publicationsLimit ?? 0),
+        publicationsRemaining: Number(d.publicationsRemaining ?? 0),
+        planStatus: d.planStatus || 'NO_PLAN',
+        planStatusLabel: d.planStatusLabel || 'Sin plan activo',
+        message: d.message,
+      };
+    } catch (error) {
+      return null;
+    }
+  }
+
   async hasUserUsedFreePlan(userId: number): Promise<boolean> {
     const response = await apiClient.get(
       `${ENDPOINTS.FINANCE.SUBSCRIPTIONS.FREE_PLAN_USED}?userId=${userId}`
@@ -93,6 +122,8 @@ export class FinanceRepository implements IFinanceRepository {
       ...item,
       agencyDiscountedPrice: item.agencyDiscountedPrice,
       hasAgencyDiscount: item.hasAgencyDiscount,
+      userPlanStatus: item.userPlanStatus,
+      userPlanStatusLabel: item.userPlanStatusLabel,
     }));
   }
 

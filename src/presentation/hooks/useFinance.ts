@@ -23,13 +23,33 @@ export function useWalletTransactions(page = 0, size = 20) {
 }
 
 export function useActiveSubscription() {
+  // Solo consultar la suscripción si hay sesión iniciada.
+  // Para visitantes anónimos el backend responde 403 (isAuthenticated), así que
+  // evitamos disparar la petición y devolvemos null por defecto.
+  const isAuthenticated = typeof window !== 'undefined' && !!authStorage.getToken();
+
   return useQuery({
     queryKey: ['subscription', 'active'],
     queryFn: () => financeRepo.getActiveSubscription(),
+    enabled: isAuthenticated,
     staleTime: 0, // Siempre considerar los datos como obsoletos
     refetchOnMount: true, // Siempre refrescar al montar
     refetchOnWindowFocus: true, // Refrescar cuando la ventana gana foco
     refetchInterval: 15000, // Refrescar cada 15s mientras la página esté visible
+  });
+}
+
+export function usePublicationStats() {
+  const isAuthenticated = typeof window !== 'undefined' && !!authStorage.getToken();
+
+  return useQuery({
+    queryKey: ['properties', 'stats'],
+    queryFn: () => financeRepo.getPublicationStats(),
+    enabled: isAuthenticated,
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000,
   });
 }
 

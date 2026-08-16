@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { PropertyForm } from '@/presentation/components/property/PropertyForm/PropertyForm';
 import { useAuthStore } from '@/presentation/store/authStore';
 import { useMyProperties } from '@/presentation/hooks/useProperties';
-import { useActiveSubscription } from '@/presentation/hooks/useFinance';
+import { useActiveSubscription, usePublicationStats } from '@/presentation/hooks/useFinance';
 import { ChevronLeft, Check, ChevronRight } from 'lucide-react';
 import { AdminRestrictionGuard } from '@/presentation/components/guards/AdminRestrictionGuard';
 
@@ -20,12 +20,17 @@ export default function NuevaPropiedadPage() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuthStore();
   const { data: subscription } = useActiveSubscription();
+  const { data: publicationStats } = usePublicationStats();
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const maxPublications = subscription?.plan?.maxPublications ?? 0;
-  const remainingPublications = subscription?.remainingPublications ?? maxPublications;
-  const canPublish = remainingPublications > 0;
+  // Usar las estadísticas del backend (calcula canPublish correctamente,
+  // incluido el plan FREE para quien nunca publicó). Fallback a la suscripción.
+  const hasActiveSubscription = !!subscription;
+  const maxPublications = publicationStats?.publicationsLimit ?? subscription?.plan?.maxPublications ?? 0;
+  const remainingPublications = publicationStats?.publicationsRemaining ?? subscription?.remainingPublications ?? maxPublications;
+  const canPublish = publicationStats?.canPublish ?? (hasActiveSubscription ? remainingPublications > 0 : true);
+  const planStatus = publicationStats?.planStatus ?? (hasActiveSubscription ? 'ACTIVE' : 'FREE_AVAILABLE');
 
   useEffect(() => {
     if (!isAuthenticated) router.push('/login');
@@ -89,11 +94,15 @@ export default function NuevaPropiedadPage() {
               className={`text-xs font-semibold px-2 sm:px-3 py-1.5 rounded-full ${
                 canPublish 
                   ? 'bg-brand/10 text-brand dark:bg-brand/20 dark:text-brand-light' 
+                  : planStatus === 'RENEW_REQUIRED'
+                  ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                   : 'bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400'
               }`}
             >
               <span className="hidden sm:inline">{canPublish
                 ? `${remainingPublications}/${maxPublications} publicaciones disponibles`
+                : planStatus === 'RENEW_REQUIRED'
+                ? 'Renovar plan'
                 : 'Límite alcanzado'}</span>
               <span className="sm:hidden">{canPublish ? `${remainingPublications}` : '0'}</span>
             </span>
