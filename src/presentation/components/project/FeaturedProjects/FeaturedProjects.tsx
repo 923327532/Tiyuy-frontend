@@ -124,7 +124,7 @@ export function FeaturedProjects() {
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .carousel-card { width: calc(50% - 10px); flex-shrink: 0; }
+        .carousel-card { width: calc(50% - 6px); flex-shrink: 0; }
 
         @media (min-width: 640px) { .carousel-card { width: calc((100% - 20px) / 2); } }
         @media (min-width: 768px) { .carousel-card { width: calc((100% - 2 * 24px) / 3); } }
@@ -166,7 +166,7 @@ export function FeaturedProjects() {
 
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-auto gap-1.5 sm:gap-2 md:gap-3 hide-scrollbar snap-x snap-mandatory scroll-smooth pb-4"
+          className="flex overflow-x-auto gap-3 hide-scrollbar snap-x snap-mandatory scroll-smooth pb-4"
         >
           {items.map((item: any) => (
             <div key={item.id} className="carousel-card flex-shrink-0 snap-start">
