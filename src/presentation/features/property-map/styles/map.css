@@ -12,10 +12,8 @@
 }
 
 /* ─── Tile Layer ─── */
-/* CartoDB Positron con ajuste suave de contraste */
-.leaflet-tile-pane {
-  filter: saturate(0.9) brightness(1.02);
-}
+/* Basemap Esri World Street Map (raster). Sin filtros: ya aporta
+   suficiente contraste para que las calles secundarias destaquen. */
 
 /* ─── Zoom Controls ─── */
 .leaflet-control-zoom {

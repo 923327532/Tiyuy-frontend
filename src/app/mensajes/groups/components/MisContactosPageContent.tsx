@@ -3,13 +3,13 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Icon } from '@iconify/react'
 import { useAuthStore } from '@/presentation/store/authStore';
-import { useGetChats, useSendMessage, useMarkChatAsRead, useToggleFavoriteChat, useGetChatMessages, useGetActiveStatusPosts, useGetGroups } from '@/presentation/hooks/useContacts';
+import { useGetChats, useSendMessage, useMarkChatAsRead, useToggleFavoriteChat, useGetChatMessages, useGetActiveStatusPosts, useGetGroups, useEditMessage, useDeleteMessage } from '@/presentation/hooks/useContacts';
 import { useQueryClient } from '@tanstack/react-query';
 import { useWebSocket } from '@/presentation/hooks/useWebSocket';
 import { IC, formatLastSeen, formatDateSeparator, apiCall } from '../../page';
 import { toast } from '@/presentation/store/toastStore';
 import EmojiPicker from 'emoji-picker-react';
-import { MessageSquare, Lock, Globe, ArrowLeft } from 'lucide-react';
+import { MessageSquare, Lock, Globe, ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import { Sidebar } from '../../components/Sidebar';
 import { ChatsPanel, Avatar } from '../../chats/components/ChatsPanel';
 import EstadosPanel from '../../states/page';
@@ -50,6 +50,7 @@ export function MisContactosPageContent() {
     const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
     const [selectedImagePreview, setSelectedImagePreview] = useState<string | null>(null);
     const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [editingMessage, setEditingMessage] = useState<any>(null);
     const [viewingImage, setViewingImage] = useState<string | null>(null);
     const [localReactions, setLocalReactions] = useState<{ [key: string]: { [emoji: string]: { count: number, users: string[] } } }>({});
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -58,6 +59,8 @@ export function MisContactosPageContent() {
     const { data: chats } = useGetChats('all');
     const { data: messages, isLoading: loadingMessages, error: messagesError } = useGetChatMessages(selectedChatId!, { enabled: !!selectedChatId });
     const sendMessage = useSendMessage();
+    const editMessage = useEditMessage();
+    const deleteMessageMutation = useDeleteMessage();
     const markAsRead = useMarkChatAsRead();
     const toggleFavorite = useToggleFavoriteChat();
     const queryClient = useQueryClient();
@@ -162,7 +165,17 @@ export function MisContactosPageContent() {
 
     const handleSendMessage = async () => {
         if (!selectedChatId) return;
-        
+
+        // Modo edición: actualizar el mensaje existente (solo texto)
+        if (editingMessage) {
+            if (!newMessage.trim()) return;
+            editMessage.mutate({ chatId: selectedChatId, messageId: editingMessage.id, content: newMessage.trim() });
+            setNewMessage('');
+            setEditingMessage(null);
+            if (replyToMessage) setReplyToMessage(null);
+            return;
+        }
+
         // Si hay imagen seleccionada, subirla primero
         if (selectedImageFile) {
             setIsUploadingImage(true);
@@ -295,6 +308,7 @@ export function MisContactosPageContent() {
                                                 {isPinned && <span className="text-[10px] text-[#075e54] font-semibold block mb-0.5">Fijado</span>}
                                                 <span className="break-words">{msg.content}</span>
                                                 <div className="absolute bottom-1 right-2 flex items-center gap-0.5 pointer-events-none">
+                                                    {msg.edited && <span className="text-[10px] italic" style={{ color: '#667781' }}>editado</span>}
                                                     <span className="text-[10px]" style={{ color: '#667781' }}>{new Date(msg.createdAt).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
                                                     {isMe && <Icon icon="mdi:check-all" className="w-4 h-3 text-[#53bdeb]" />}
                                                 </div>
@@ -312,6 +326,27 @@ export function MisContactosPageContent() {
                             <button className="w-full px-4 py-2.5 text-left text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] flex items-center gap-3 transition-colors" onClick={() => { navigator.clipboard.writeText(contextMenu.msg.content ?? ''); setContextMenu(null); }}><span></span> Copiar</button>
                             <button className="w-full px-4 py-2.5 text-left text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] flex items-center gap-3 transition-colors" onClick={() => { setContextMenu(null); setTimeout(() => setShowReactionPicker({ msg: contextMenu.msg, x: contextMenu.x, y: contextMenu.y - 60 }), 100); }}><span></span> Reaccionar</button>
                             <button className="w-full px-4 py-2.5 text-left text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] flex items-center gap-3 transition-colors" onClick={() => { setPinnedMessage(contextMenu.msg); setContextMenu(null); }}><span></span> {pinnedMessage?.id === contextMenu.msg.id ? 'Ya está fijado' : 'Fijar mensaje'}</button>
+                            {contextMenu.msg.isOwn && contextMenu.msg.type === 'TEXT' && (
+                                <button className="w-full px-4 py-2.5 text-left text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] flex items-center gap-3 transition-colors" onClick={() => {
+                                    setEditingMessage(contextMenu.msg);
+                                    setNewMessage(contextMenu.msg.content ?? '');
+                                    setReplyToMessage(null);
+                                    setSelectedImageFile(null);
+                                    setSelectedImagePreview(null);
+                                    setContextMenu(null);
+                                }}><Pencil className="w-4 h-4" /> Editar</button>
+                            )}
+                            {contextMenu.msg.isOwn && (
+                                <button className="w-full px-4 py-2.5 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors" onClick={() => {
+                                    const msg = contextMenu.msg;
+                                    setContextMenu(null);
+                                    if (pinnedMessage?.id === msg.id) setPinnedMessage(null);
+                                    if (replyToMessage?.id === msg.id) setReplyToMessage(null);
+                                    if (window.confirm('¿Eliminar este mensaje?')) {
+                                        deleteMessageMutation.mutate({ chatId: selectedChatId!, messageId: msg.id });
+                                    }
+                                }}><Trash2 className="w-4 h-4" /> Eliminar</button>
+                            )}
                         </div>
                     )}
                     {/* Input con emojis y subida de imágenes */}
@@ -320,6 +355,15 @@ export function MisContactosPageContent() {
                             <div className="mb-2 p-2 bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] flex items-center justify-between">
                                 <div className="flex-1 min-w-0"><p className="text-xs text-[var(--text-secondary)] font-medium">Respondiendo a {replyToMessage.isOwn ? 'ti mismo' : replyToMessage.senderName?.split(' ')[0] || 'alguien'}</p><p className="text-sm text-[var(--text-primary)] truncate">{replyToMessage.content}</p></div>
                                 <button onClick={() => setReplyToMessage(null)} className="ml-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] text-xl leading-none">×</button>
+                            </div>
+                        )}
+                        {editingMessage && (
+                            <div className="mb-2 p-2 bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] flex items-center justify-between">
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium text-[var(--brand-primary)]">✏️ Editando mensaje</p>
+                                    <p className="text-sm text-[var(--text-secondary)] truncate">{editingMessage.content}</p>
+                                </div>
+                                <button onClick={() => { setEditingMessage(null); setNewMessage(''); }} className="ml-2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] text-xl leading-none">×</button>
                             </div>
                         )}
                         {/* Preview de imagen seleccionada (como WhatsApp) */}
@@ -340,24 +384,26 @@ export function MisContactosPageContent() {
                                 className="w-9 h-9 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] rounded-full transition-colors flex-shrink-0" title="Emojis">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
                             </button>
-                            <label className="w-9 h-9 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] rounded-full transition-colors cursor-pointer flex-shrink-0" title="Adjuntar imagen">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                <input type="file" accept="image/*" className="hidden" onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                        setSelectedImageFile(file);
-                                        setSelectedImagePreview(URL.createObjectURL(file));
-                                    }
-                                    e.target.value = '';
-                                }} />
-                            </label>
+                            {!editingMessage && (
+                                <label className="w-9 h-9 flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] rounded-full transition-colors cursor-pointer flex-shrink-0" title="Adjuntar imagen">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                            setSelectedImageFile(file);
+                                            setSelectedImagePreview(URL.createObjectURL(file));
+                                        }
+                                        e.target.value = '';
+                                    }} />
+                                </label>
+                            )}
                             <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                                placeholder={replyToMessage ? "Escribe una respuesta..." : "Escribe un mensaje..."}
+                                placeholder={editingMessage ? "Edita tu mensaje..." : replyToMessage ? "Escribe una respuesta..." : "Escribe un mensaje..."}
                                 className="flex-1 px-4 py-2.5 bg-[var(--bg-card)] rounded-full text-sm focus:outline-none shadow-sm border-0" />
-                            <button onClick={handleSendMessage} disabled={(!newMessage.trim() && !selectedImageFile) || sendMessage.isPending || isUploadingImage}
+                            <button onClick={handleSendMessage} disabled={(editingMessage ? !newMessage.trim() : (!newMessage.trim() && !selectedImageFile)) || sendMessage.isPending || isUploadingImage || editMessage.isPending}
                                 className="w-9 h-9 rounded-full bg-[var(--brand-primary)] text-white flex items-center justify-center hover:opacity-90 transition-colors disabled:opacity-50 shadow-sm flex-shrink-0">
-                                {isUploadingImage ? <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <IC.Send />}</button>
+                                {editingMessage ? <Icon icon="mdi:check" className="w-5 h-5" /> : isUploadingImage ? <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin rounded-full" /> : <IC.Send />}</button>
                         </div>
                         {showEmojiPicker && (
                             <div className="absolute bottom-full left-0 mb-1 z-50 shadow-xl rounded-xl overflow-hidden border border-[var(--border-color)]" onClick={(e) => e.stopPropagation()}>

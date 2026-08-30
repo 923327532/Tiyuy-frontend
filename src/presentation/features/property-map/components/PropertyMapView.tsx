@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { MapItem, MapSearchResult, MapCoverageType } from '@/core/domain/entities/MapTypes';
 import { createPriceMarkerHtml, createClusterMarkerHtml, calculateMapCenter, calculateZoom, formatPrice } from '../utils/mapUtils';
+import { addOpenFreeMapLayer } from '@/presentation/components/shared/Map/openFreeMapLayer';
 import '../styles/map.css';
 
 // Importar estilos CSS de Leaflet (necesario para que los tiles se rendericen correctamente)
@@ -72,13 +73,7 @@ export function PropertyMapView({
       attributionControl: false,
     });
 
-    // Tile layer - CartoDB Positron (el más parecido a Google Maps Light)
-    // Fondo gris claro, calles blancas, texto gris oscuro, sin amarillo
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 20,
-      subdomains: 'abcd',
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    }).addTo(map);
+    addOpenFreeMapLayer(map);
 
     // Zoom controls personalizados
     L.control
@@ -89,8 +84,6 @@ export function PropertyMapView({
 
     mapRef.current = map;
 
-    // Usar ResizeObserver para invalidar el tamaño del mapa cuando el contenedor cambie de tamaño
-    // Esto es crítico para mapas dentro de modales que aparecen dinámicamente
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserverRef.current = new ResizeObserver(() => {
         if (mapRef.current) {
@@ -186,8 +179,8 @@ export function PropertyMapView({
         icon: L.divIcon({
           html: markerHtml,
           className: 'custom-price-marker',
-          iconSize: L.point(0, 0),
-          iconAnchor: L.point(60, 15),
+          iconSize: L.point(44, 44),
+          iconAnchor: L.point(22, 22),
         }),
       });
 
@@ -290,8 +283,8 @@ export function PropertyMapView({
         L.divIcon({
           html: markerHtml,
           className: 'custom-price-marker',
-          iconSize: L.point(0, 0),
-          iconAnchor: L.point(60, 15),
+          iconSize: L.point(44, 44),
+          iconAnchor: L.point(22, 22),
         })
       );
     });

@@ -1,23 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { addOpenFreeMapLayer } from './openFreeMapLayer';
 
-// Fix Leaflet default icon issue (DEBE ir antes de cualquier uso de L)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
-
-// ═══════════════════════════════════════════════════════════════════
-// CARGA DE CSS: Doble estrategia para producción
-// ═══════════════════════════════════════════════════════════════════
-// 1. Importación directa del módulo (funciona en dev, a veces falla en prod)
-// 2. Inyección de link CDN como respaldo (garantizado en prod)
-// ═══════════════════════════════════════════════════════════════════
 
 // Intento #1: Importar CSS vía módulo (puede ser tree-shakeado en prod)
 try {
@@ -140,6 +133,18 @@ function MapReadyHandler({ onMapReady }: { onMapReady?: (map: L.Map) => void }) 
   return null;
 }
 
+function OpenFreeMapBasemap() {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map) return;
+    // Añade el basemap raster una sola vez por instancia del mapa.
+    addOpenFreeMapLayer(map);
+  }, [map]);
+
+  return null;
+}
+
 export function LeafletMap({
   children,
   center = [-12.0464, -77.0428],
@@ -156,10 +161,7 @@ export function LeafletMap({
       zoomControl={true}
       scrollWheelZoom={true}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-      />
+      <OpenFreeMapBasemap />
       <MapBoundsUpdater bounds={bounds} />
       <MapReadyHandler onMapReady={onMapReady} />
       {children}

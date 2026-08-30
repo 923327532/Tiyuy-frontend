@@ -211,6 +211,70 @@ export function useSendMessage() {
   });
 }
 
+export function useEditMessage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ chatId, messageId, content }: { chatId: number; messageId: number; content: string }) =>
+      apiCall(`/contacts/extended/chats/${chatId}/messages/${messageId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content }),
+      }),
+    onSuccess: (_data, { chatId }) => {
+      queryClient.invalidateQueries({ queryKey: ['chat-messages', chatId] });
+      queryClient.invalidateQueries({ queryKey: ['chat-messages-infinite', chatId] });
+      queryClient.invalidateQueries({ queryKey: ['chats'] });
+      toast.success('Mensaje editado');
+    },
+    onError: () => { toast.error('Error al editar mensaje'); },
+  });
+}
+
+export function useDeleteMessage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ chatId, messageId }: { chatId: number; messageId: number }) => {
+      let token = null;
+      if (typeof window !== 'undefined') {
+        try {
+          const { useAuthStore } = require('@/presentation/store/authStore');
+          const authStore = useAuthStore.getState();
+          token = authStore.token || localStorage.getItem('tiyuy-auth-token') || localStorage.getItem('token');
+        } catch {
+          token = localStorage.getItem('tiyuy-auth-token') || localStorage.getItem('token');
+        }
+      }
+      const res = await fetch(`/api/contacts/extended/chats/${chatId}/messages/${messageId}`, {
+        method: 'DELETE',
+        headers: { ...(token && { 'Authorization': `Bearer ${token}` }) },
+      });
+      if (!res.ok) {
+        let errorText = '';
+        try { errorText = await res.text(); } catch {}
+        throw new Error(`Error ${res.status}: ${res.statusText} - ${errorText}`);
+      }
+      return res;
+    },
+    onMutate: async ({ chatId, messageId }) => {
+      await queryClient.cancelQueries({ queryKey: ['chat-messages', chatId] });
+      const previousMessages = queryClient.getQueryData(['chat-messages', chatId]);
+      queryClient.setQueryData(['chat-messages', chatId], (old: any) =>
+        (Array.isArray(old) ? old : []).filter((m: any) => String(m.id) !== String(messageId)));
+      return { previousMessages, chatId };
+    },
+    onSuccess: (_res, { chatId }) => {
+      queryClient.invalidateQueries({ queryKey: ['chat-messages', chatId] });
+      queryClient.invalidateQueries({ queryKey: ['chat-messages-infinite', chatId] });
+      queryClient.invalidateQueries({ queryKey: ['chats'] });
+      toast.success('Mensaje eliminado');
+    },
+    onError: (error: any, _vars, context: any) => {
+      if (context?.previousMessages !== undefined) queryClient.setQueryData(['chat-messages', context.chatId], context.previousMessages);
+      toast.error('Error al eliminar mensaje');
+    },
+  });
+}
+
 export function useMarkChatAsRead() {
   const queryClient = useQueryClient();
   return useMutation({
