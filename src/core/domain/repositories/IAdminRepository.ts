@@ -13,6 +13,7 @@ import {
   FinanceStats,
   FinanceHistoryDto,
   UserListItem,
+  InternationalUserListItem,
   ChangeUserRoleRequest,
   DiscountCode,
   CreateDiscountCodeRequest,
@@ -80,6 +81,11 @@ export interface IAdminRepository {
   toggleUserStatus(userId: number, enabled: boolean, reason?: string): Promise<void>;
   changeUserRole(userId: number, request: ChangeUserRoleRequest): Promise<void>;
   verifyUserEmail(userId: number): Promise<void>;
+
+  // Usuarios internacionales (sección "Extranjeros")
+  getInternationalUsers(params?: PaginationParams): Promise<PaginatedResponse<InternationalUserListItem>>;
+  approveInternationalUser(userId: number): Promise<InternationalUserListItem>;
+  rejectInternationalUser(userId: number, reason?: string): Promise<InternationalUserListItem>;
 
   // Discount Codes
   getAllDiscountCodes(params: PaginationParams): Promise<PaginatedResponse<DiscountCode>>;

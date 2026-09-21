@@ -336,6 +336,36 @@ export const useVerifyUserPhone = () => {
   });
 };
 
+// ── Usuarios internacionales (sección "Extranjeros") ───────────────────────
+export const useInternationalUsers = (params: PaginationParams = { page: 0, size: 20 }) => {
+  return useQuery({
+    queryKey: [ADMIN_QUERY_KEY, 'international', params],
+    queryFn: () => adminRepository.getInternationalUsers(params),
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useApproveInternationalUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: number) => adminRepository.approveInternationalUser(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'international'] });
+    },
+  });
+};
+
+export const useRejectInternationalUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, reason }: { userId: number; reason?: string }) =>
+      adminRepository.rejectInternationalUser(userId, reason),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'international'] });
+    },
+  });
+};
+
 export const useUserProperties = (userId: number | null) => {
   return useQuery({
     queryKey: [ADMIN_QUERY_KEY, 'users', userId, 'properties'],

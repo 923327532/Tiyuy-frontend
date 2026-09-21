@@ -40,6 +40,7 @@ export interface CopilotShowResultsAction {
   type: 'SHOW_RESULTS';
   payload: {
     message: string;
+    viewAllUrl?: string;
   };
 }
 

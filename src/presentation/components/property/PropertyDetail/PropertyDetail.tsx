@@ -13,8 +13,9 @@ import { ShareButton } from '../../shared/ShareButton/ShareButton';
 import { SimilarProperties } from '../SimilarProperties';
 import { PersonalizedRecommendations } from '../PersonalizedRecommendations';
 import { FeaturePropertyButton } from './FeaturePropertyButton';
-import { Star, MapPin, FileText, Calendar } from 'lucide-react';
+import { MapPin, FileText, Calendar, ChevronRight } from 'lucide-react';
 import { StarRating } from './StarRating';
+import { AdvertiserDetailModal } from './AdvertiserDetailModal';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { authStorage } from '@/infrastructure/storage/auth-storage';
@@ -80,6 +81,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
   }, [property.id]);
 
   const [rating, setRating] = useState<{ averageRating: number; totalRatings: number } | null>(null);
+  const [showAdvertiserModal, setShowAdvertiserModal] = useState(false);
 
   useEffect(() => {
     const fetchRating = async () => {
@@ -244,19 +246,37 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
 
             {/* 6. ANUNCIANTE + ESTADÍSTICAS + CALIFICAR — solo móvil (DEBE IR ANTES DE SIMILARES) */}
             <div className="lg:hidden space-y-4">
-              {/* Anunciante */}
-              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4">Anunciante</h3>
+              {/* Anunciante — clic para ver perfil completo (móvil) */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowAdvertiserModal(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setShowAdvertiserModal(true);
+                  }
+                }}
+                className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6 cursor-pointer hover:border-[var(--brand-primary)] transition-all"
+              >
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4 flex items-center justify-between">
+                  Anunciante
+                  <span className="text-[11px] font-semibold text-[var(--brand-primary)] flex items-center gap-0.5">
+                    Ver perfil <ChevronRight className="w-3 h-3" />
+                  </span>
+                </h3>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
-                    {property.owner.name.charAt(0).toUpperCase()}
+                    {(property.owner.name || 'A').charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">Ver propiedades activas</p>
                   </div>
                   {(property.owner as any).phone && (
                     <a
                       href={`tel:${(property.owner as any).phone}`}
+                      onClick={(e) => e.stopPropagation()}
                       className="text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 font-bold rounded-lg px-3 py-2 whitespace-nowrap transition-colors"
                     >
                       Llamar
@@ -280,23 +300,6 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     </div>
                   ))}
                 </div>
-
-                {rating && rating.totalRatings > 0 && (
-                  <div className="mt-3 pt-3 border-t border-[var(--border-color)]">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-[var(--text-tertiary)]'}`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm font-bold text-[var(--text-primary)]">{rating.averageRating.toFixed(1)}</span>
-                      <span className="text-xs text-[var(--text-tertiary)]">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
-                    </div>
-                  </div>
-                )}
 
                 <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                   <Calendar className="w-3 h-3 flex-shrink-0" />
@@ -344,19 +347,37 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 </div>
               </div>
 
-              {/* Agente */}
-              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4">Anunciante</h3>
+              {/* Anunciante — clic para ver perfil completo */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowAdvertiserModal(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setShowAdvertiserModal(true);
+                  }
+                }}
+                className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6 cursor-pointer hover:border-[var(--brand-primary)] hover:shadow-md transition-all"
+              >
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4 flex items-center justify-between">
+                  Anunciante
+                  <span className="text-[11px] font-semibold text-[var(--brand-primary)] flex items-center gap-0.5">
+                    Ver perfil <ChevronRight className="w-3 h-3" />
+                  </span>
+                </h3>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
-                    {property.owner.name.charAt(0).toUpperCase()}
+                    {(property.owner.name || 'A').charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">Ver propiedades activas</p>
                   </div>
                   {(property.owner as any).phone && (
                     <a
                       href={`tel:${(property.owner as any).phone}`}
+                      onClick={(e) => e.stopPropagation()}
                       className="text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 font-bold rounded-lg px-3 py-2 whitespace-nowrap transition-colors"
                     >
                       Llamar
@@ -381,23 +402,6 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   ))}
                 </div>
 
-                {rating && rating.totalRatings > 0 && (
-                  <div className="mt-3 pt-3 border-t border-[var(--border-color)]">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-[var(--text-tertiary)]'}`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm font-bold text-[var(--text-primary)]">{rating.averageRating.toFixed(1)}</span>
-                      <span className="text-xs text-[var(--text-tertiary)]">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
-                    </div>
-                  </div>
-                )}
-
                 <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                   <Calendar className="w-3 h-3 flex-shrink-0" />
                   {property.publishedAt || property.createdAt
@@ -421,6 +425,12 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
         </div>
         </div>
       </div>
+
+      <AdvertiserDetailModal
+        ownerId={property.owner.id}
+        isOpen={showAdvertiserModal}
+        onClose={() => setShowAdvertiserModal(false)}
+      />
     </div>
   );
 }

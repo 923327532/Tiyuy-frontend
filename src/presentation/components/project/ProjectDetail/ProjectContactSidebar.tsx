@@ -6,11 +6,12 @@ import { useCRMInteraction } from '@/presentation/hooks/useCRMInteraction';
 import { useAuthStore } from '@/presentation/store/authStore';
 import { Input } from '@/presentation/components/ui';
 import { ShareButton } from '../../shared/ShareButton/ShareButton';
-import { Star, AlertCircle, Calendar, MessageCircle, Heart, LogIn, UserPlus, AlertTriangle } from 'lucide-react';
+import { AlertCircle, Calendar, MessageCircle, Heart, LogIn, UserPlus, AlertTriangle, ChevronRight } from 'lucide-react';
 import { Icon } from '@iconify/react';
 import { axiosClient } from '@/infrastructure/api/axios-client';
 import { toast } from '@/presentation/store/toastStore';
 import { useRouter } from 'next/navigation';
+import { DeveloperDetailModal } from './DeveloperDetailModal';
 
 interface ProjectContactSidebarProps {
   project: ProjectFull;
@@ -23,26 +24,10 @@ export function ProjectContactSidebar({ project, units, currency }: ProjectConta
   const { trackContactForm, trackWhatsAppClick, isLoading } = useCRMInteraction();
   const router = useRouter();
 
-  const [rating, setRating] = useState<{ averageRating: number; totalRatings: number } | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-
-  // Cargar rating
-  useEffect(() => {
-    const fetchRating = async () => {
-      try {
-        const res = await fetch(`/api/projects/${project.id}/rating`);
-        if (res.ok) {
-          const data = await res.json();
-          setRating(data);
-        }
-      } catch {
-        // Silently fail
-      }
-    };
-    fetchRating();
-  }, [project.id]);
+  const [showDeveloperModal, setShowDeveloperModal] = useState(false);
 
   // Cargar estado de favorito
   useEffect(() => {
@@ -453,20 +438,34 @@ export function ProjectContactSidebar({ project, units, currency }: ProjectConta
         )}
       </div>
 
-      {/* ── DESARROLLADOR ── */}
+      {/* ── DESARROLLADOR — clic para ver perfil completo ── */}
       {project.developer?.companyName && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setShowDeveloperModal(true)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setShowDeveloperModal(true);
+            }
+          }}
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 cursor-pointer hover:border-[var(--brand-primary)] hover:shadow-md transition-all"
+        >
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
               {project.developer.companyName.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-gray-900 text-sm truncate">{project.developer.companyName}</p>
-              <p className="text-xs text-gray-500">Desarrollador</p>
+              <p className="text-xs text-blue-600 font-semibold flex items-center gap-0.5">
+                Desarrollador · Ver perfil <ChevronRight className="w-3 h-3" />
+              </p>
             </div>
             {project.developer.phone && (
               <a
                 href={`tel:${project.developer.phone}`}
+                onClick={(e) => e.stopPropagation()}
                 className="text-xs text-blue-600 hover:text-blue-700 font-semibold border border-blue-200 rounded-lg px-2.5 py-1.5 whitespace-nowrap transition-colors"
               >
                 Ver teléfono
@@ -494,24 +493,6 @@ export function ProjectContactSidebar({ project, units, currency }: ProjectConta
             </div>
           ))}
         </div>
-
-        {/* Rating promedio */}
-        {rating && rating.totalRatings > 0 && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <div className="flex items-center justify-center gap-2">
-              <div className="flex items-center gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm font-bold text-gray-900">{rating.averageRating.toFixed(1)}</span>
-              <span className="text-xs text-gray-400">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
-            </div>
-          </div>
-        )}
 
         {publishedDate && (
           <p className="mt-3 text-xs text-gray-400 flex items-center gap-1">
@@ -556,6 +537,12 @@ export function ProjectContactSidebar({ project, units, currency }: ProjectConta
           </div>
         </div>
       )}
+      {/* Modal de detalle del desarrollador */}
+      <DeveloperDetailModal
+        developerId={project.developer?.id || 0}
+        isOpen={showDeveloperModal}
+        onClose={() => setShowDeveloperModal(false)}
+      />
     </div>
   );
 }
