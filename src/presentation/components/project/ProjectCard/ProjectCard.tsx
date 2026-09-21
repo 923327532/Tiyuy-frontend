@@ -62,6 +62,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
     fetchRating();
   }, [project.id]);
 
+  // En producción cargar imágenes directo de CloudFront/S3 (más rápido)
+  // En desarrollo usar proxy para evitar CORS
+  const getImageUrl = (url: string | undefined | null) => {
+    if (!url) return '';
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      return `/api/images/proxy?url=${encodeURIComponent(url)}`;
+    }
+    return url;
+  };
+
   const formatPrice = (price: number, currency: string) => {
     const symbol = currency === 'USD' ? '$' : 'S/';
     return `${symbol} ${price.toLocaleString('es-PE')}`;
@@ -114,7 +124,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <Link href={`/projects/${getProjectSlug(project)}`} className="relative w-full overflow-hidden rounded-t-2xl" style={{ aspectRatio: '4 / 3' }}>
         {project.coverImageUrl ? (
           <LazyImage
-            src={`/api/images/proxy?url=${encodeURIComponent(project.coverImageUrl)}`}
+            src={getImageUrl(project.coverImageUrl)}
             alt={project.name || ''}
             className="w-full h-full group-hover:scale-[1.03] transition-transform duration-300"
           />
