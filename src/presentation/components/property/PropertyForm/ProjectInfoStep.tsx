@@ -97,13 +97,6 @@ export function ProjectInfoStep({ formData, onChange, validationErrors }: Projec
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-1">Información del Proyecto</h3>
-        <p className="text-sm text-[var(--text-secondary)]">
-          Describe tu proyecto inmobiliario y especifica la fase actual. Los campos con (*) son obligatorios.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Tipo de Propiedad *</label>

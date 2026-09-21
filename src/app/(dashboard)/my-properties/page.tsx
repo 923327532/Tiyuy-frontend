@@ -5,15 +5,18 @@ import { useActiveSubscription } from '@/presentation/hooks/useFinance';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ProtectedRoute } from '@/presentation/components/auth/ProtectedRoute';
-import { useAuthStore } from '@/presentation/store/authStore';
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { UpgradePlanModal } from '@/presentation/components/modals/UpgradePlanModal';
 import { PlanExpiredModal } from '@/presentation/components/modals/PlanExpiredModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { PropertyRepository } from '@/infrastructure/repositories/PropertyRepository';
-import { Eye, FolderOpen, History, Home, ImageIcon, ImageOff, MapPin, Plus, RefreshCw, Search, Star } from 'lucide-react';;
+import { Eye, FolderOpen, History, Home, ImageOff, MapPin, Plus, RefreshCw, Search, Star } from 'lucide-react';
+import { PropertySummary } from '@/core/domain/entities/Property';
+
+type PropertyListItem = PropertySummary & {
+  media?: Array<{ url: string; isCover?: boolean }>;
+};
 
 export default function MyPropertiesPage() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -23,8 +26,6 @@ export default function MyPropertiesPage() {
   const publishMutation = usePublishProperty();
   const unpublishMutation = useUnpublishProperty();
   const { data: activeSubscription, refetch: refetchSubscription } = useActiveSubscription();
-  const { user } = useAuthStore();
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState<'ALL' | 'PUBLISHED' | 'DRAFT' | 'RENTED' | 'SOLD' | 'PAUSED' | 'INACTIVE'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: number | null; title: string }>({
@@ -39,7 +40,8 @@ export default function MyPropertiesPage() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showPlanExpiredModal, setShowPlanExpiredModal] = useState(false);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
-  const [previousPlan, setPreviousPlan] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<number | null>(null);
+  const previousPlanRef = useRef<string | null>(null);
   const queryClient = useQueryClient();
 
   // Detect plan change
@@ -48,8 +50,8 @@ export default function MyPropertiesPage() {
       const currentPlan = activeSubscription.plan.name;
       
       // If there is a previous plan and it is different from the current one
-      if (previousPlan && previousPlan !== currentPlan) {
-        setShowWelcomeMessage(true);
+      if (previousPlanRef.current && previousPlanRef.current !== currentPlan) {
+        setTimeout(() => setShowWelcomeMessage(true), 0);
         
         // Hide message after 5 seconds
         const timer = setTimeout(() => {
@@ -60,9 +62,9 @@ export default function MyPropertiesPage() {
       }
       
       // Save current plan as previous for future comparisons
-      setPreviousPlan(currentPlan);
+      previousPlanRef.current = currentPlan;
     }
-  }, [activeSubscription, previousPlan]);
+  }, [activeSubscription]);
 
   // Force data reload when component mounts
   useEffect(() => {
@@ -96,19 +98,18 @@ export default function MyPropertiesPage() {
     return () => clearInterval(interval);
   }, [refetch, refetchSubscription]);
 
-  const properties = data?.properties || [];
+  const properties = useMemo<PropertyListItem[]>(() => data?.properties || [], [data?.properties]);
   const totalPages = data?.pagination?.totalPages || 0;
-  const totalElements = data?.pagination?.totalElements || 0;
 
   const normalizedProperties = useMemo(() => {
-    return (properties as any[]).map((p) => {
+    return properties.map((p) => {
       const status = normalizeStatus(p?.status);
       return { ...p, status };
     });
   }, [properties]);
 
   const publishedCount = useMemo(() => {
-    return normalizedProperties.filter((p: any) => p.status === 'PUBLISHED').length;
+    return normalizedProperties.filter((p) => p.status === 'PUBLISHED').length;
   }, [normalizedProperties]);
 
   // Enhanced logic with FREE plan permanent blocking
@@ -138,9 +139,9 @@ export default function MyPropertiesPage() {
       INACTIVE: 0,
     };
 
-    for (const p of normalizedProperties as any[]) {
+    for (const p of normalizedProperties) {
       const status = p.status as string;
-      if ((base as any)[status] !== undefined) (base as any)[status] += 1;
+      if (status in base) base[status as keyof typeof base] += 1;
     }
 
     return base;
@@ -154,7 +155,7 @@ export default function MyPropertiesPage() {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return normalizedProperties;
 
-    return (normalizedProperties as any[]).filter((p) => {
+    return normalizedProperties.filter((p) => {
       const title = String(p?.title || '').toLowerCase();
       const district = String(p?.district || '').toLowerCase();
       const province = String(p?.province || '').toLowerCase();
@@ -164,19 +165,10 @@ export default function MyPropertiesPage() {
 
   const filteredProperties = useMemo(() => {
     if (activeTab === 'ALL') return searchedProperties;
-    return searchedProperties.filter((p: any) => p.status === activeTab);
+    return searchedProperties.filter((p) => p.status === activeTab);
   }, [searchedProperties, activeTab]);
 
-  const handleEdit = (id: unknown) => {
-    const parsedId = typeof id === 'number' ? id : Number(id);
-    if (!parsedId || Number.isNaN(parsedId)) {
-      toast.error('No se pudo abrir edicion: falta ID de propiedad');
-      return;
-    }
-    router.push(`/my-properties/${parsedId}/edit`);
-  };
-
-  const handleDeleteClick = (id: number, title: string, status: string) => {
+  const handleDeleteClick = (id: number, title: string) => {
     setDeleteModal({ isOpen: true, id, title });
   };
 
@@ -191,7 +183,7 @@ export default function MyPropertiesPage() {
         toast.success('Propiedad pausada (pasó a borrador)');
         setPauseModal({ isOpen: false, id: null });
         refetch();
-      } catch (e) {
+      } catch {
         toast.error('Error al pausar');
         setPauseModal({ isOpen: false, id: null });
       }
@@ -219,10 +211,15 @@ export default function MyPropertiesPage() {
       setShowPlanExpiredModal(true);
       return;
     }
+
+    setPublishingId(parsedId);
     
     publishMutation.mutate(parsedId, {
-      onError: (error: any) => {
-        const status = error?.response?.status;
+      onSettled: () => {
+        setPublishingId(null);
+      },
+      onError: (error: unknown) => {
+        const status = (error as { response?: { status?: number } })?.response?.status;
         if (status === 402) {
           setShowPlanExpiredModal(true);
         }
@@ -268,7 +265,7 @@ export default function MyPropertiesPage() {
       // Refresh properties
       refetch();
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error featuring property:', error);
       
       // Handle specific errors
@@ -498,12 +495,14 @@ export default function MyPropertiesPage() {
         {!isLoading && properties.length > 0 && (
           <>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filteredProperties.map((property: any) => (
+              {filteredProperties.map((property: PropertyListItem) => (
                 <div key={property.id} className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col group">
                   {/* Imagen */}
                   <div className="relative h-44 bg-[var(--bg-secondary)] overflow-hidden">
                     {property.coverPhotoUrl ? (
-                    <img
+                    <Image
+                      fill
+                      unoptimized
                       src={`/api/images/proxy?url=${encodeURIComponent(property.coverPhotoUrl)}`}
                       alt={property.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -515,8 +514,10 @@ export default function MyPropertiesPage() {
                       }}
                     />
                   ) : property.media && property.media.length > 0 ? (
-                    <img
-                      src={`/api/images/proxy?url=${encodeURIComponent(property.media.find((m: any) => m.isCover)?.url || property.media[0].url)}`}
+                    <Image
+                      fill
+                      unoptimized
+                      src={`/api/images/proxy?url=${encodeURIComponent(property.media.find((m) => m.isCover)?.url || property.media[0].url)}`}
                       alt={property.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
@@ -600,10 +601,10 @@ export default function MyPropertiesPage() {
                       {(property.status === 'DRAFT' || property.status === 'PAUSED') && (
                         <button
                           onClick={() => handlePublish(property.id)}
-                          disabled={publishMutation.isPending}
+                          disabled={publishingId === property.id}
                           className="w-full py-1.5 bg-[var(--brand-primary)] text-white text-[11px] font-semibold rounded-md hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-1 shadow-sm"
                         >
-                          {publishMutation.isPending ? 'Procesando...' : (property.status === 'DRAFT' ? 'Publicar Ahora' : 'Reactivar')}
+                          {publishingId === property.id ? 'Procesando...' : (property.status === 'DRAFT' ? 'Publicar Ahora' : 'Reactivar')}
                         </button>
                       )}
 
@@ -776,7 +777,7 @@ export default function MyPropertiesPage() {
           <div className="bg-[var(--bg-card)] rounded-2xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
             <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">Eliminar propiedad</h3>
             <p className="text-sm text-[var(--text-secondary)] mb-6">
-              ¿Estás seguro de eliminar la propiedad <span className="font-semibold text-[var(--text-primary)]">"{deleteModal.title}"</span>? Esta acción no se puede deshacer.
+              ¿Estás seguro de eliminar la propiedad <span className="font-semibold text-[var(--text-primary)]">&quot;{deleteModal.title}&quot;</span>? Esta acción no se puede deshacer.
             </p>
             <div className="flex items-center justify-end gap-3">
               <button
@@ -809,39 +810,6 @@ function normalizeStatus(status: unknown): 'PUBLISHED' | 'DRAFT' | 'RENTED' | 'S
   if (normalized === 'PAUSED') return 'PAUSED';
   if (normalized === 'INACTIVE') return 'INACTIVE';
   return 'DRAFT';
-}
-
-function StatusBadge({ status, lifecycleStatus, remainingGraceDays }: { status: string; lifecycleStatus?: string; remainingGraceDays?: number }) {
-  const badges: Record<string, { bg: string; text: string; label: string }> = {
-    DRAFT: { bg: 'bg-gray-500', text: 'text-white', label: 'Borrador' },
-    PUBLISHED: { bg: 'bg-green-500', text: 'text-white', label: 'Publicada' },
-    PAUSED: { bg: 'bg-amber-500', text: 'text-white', label: 'Pausada' },
-    INACTIVE: { bg: 'bg-yellow-500', text: 'text-white', label: 'Inactiva' },
-    SOLD: { bg: 'bg-red-500', text: 'text-white', label: 'Vendida' },
-    RENTED: { bg: 'bg-blue-500', text: 'text-white', label: 'Alquilada' },
-  };
-
-  const badge = badges[status] || badges.DRAFT;
-
-  // Show grace period info if applicable
-  if (lifecycleStatus === 'GRACE_PERIOD' && remainingGraceDays !== undefined && remainingGraceDays > 0) {
-    return (
-      <div className="flex flex-col gap-1">
-        <span className={`${badge.bg} ${badge.text} text-xs font-bold px-2 py-1 rounded`}>
-          {badge.label}
-        </span>
-        <span className="bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded">
-          {remainingGraceDays} dias para renovar
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <span className={`${badge.bg} ${badge.text} text-xs font-bold px-2 py-1 rounded`}>
-      {badge.label}
-    </span>
-  );
 }
 
 function PropertyCardSkeleton() {

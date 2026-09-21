@@ -2,9 +2,9 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Plus } from 'lucide-react';
 import { ProtectedRoute } from '@/presentation/components/auth/ProtectedRoute';
-import { useAuthStore } from '@/presentation/store/authStore';
 import { useProjects } from '@/presentation/hooks/useProjects';
 import { useActiveSubscription } from '@/presentation/hooks/useFinance';
 import { TrialGuard } from '@/presentation/components/guards/TrialGuard/TrialGuard';
@@ -12,19 +12,20 @@ import { TrialWarningBanner } from '@/presentation/components/guards/TrialGuard/
 import { PlanExpiredModal } from '@/presentation/components/modals/PlanExpiredModal';
 import { toast } from '@/presentation/store/toastStore';
 import { Footer } from '@/presentation/components/layout/Footer/Footer';
+import { Project } from '@/core/domain/entities/Project';
 
 export default function MyProjectsPage() {
-  const { user } = useAuthStore();
   const { myProjects, publishProject, featureProject, deleteProject } = useProjects();
   const { data: activeSubscription } = useActiveSubscription();
   const [activeTab, setActiveTab] = useState<'ALL' | 'DRAFT' | 'PUBLISHED' | 'PAUSED' | 'COMPLETED'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [showPlanExpiredModal, setShowPlanExpiredModal] = useState(false);
+  const [publishingId, setPublishingId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 12;
 
   // Query para obtener proyectos
-  const { data: projectsData, isLoading, refetch } = myProjects(currentPage, pageSize);
+  const { data: projectsData, isLoading } = myProjects(currentPage, pageSize);
 
   // Mutations
   const publishMutation = publishProject();
@@ -33,7 +34,7 @@ export default function MyProjectsPage() {
 
   // Calculate if user can publish
   const publishedProjectsCount = useMemo(() => {
-    return (projectsData?.content || []).filter((p: any) => p.status === 'PUBLISHED').length;
+    return (projectsData?.content || []).filter((p: Project) => p.status === 'PUBLISHED').length;
   }, [projectsData]);
 
   const canPublish = useMemo(() => {
@@ -54,11 +55,15 @@ export default function MyProjectsPage() {
       setShowPlanExpiredModal(true);
       return;
     }
+
+    setPublishingId(projectId);
     try {
       await publishMutation.mutateAsync(projectId);
       toast.success('Proyecto publicado exitosamente!');
-    } catch (error: any) {
-      toast.error(error.message || 'Error al publicar proyecto');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Error al publicar proyecto');
+    } finally {
+      setPublishingId(null);
     }
   };
 
@@ -68,8 +73,8 @@ export default function MyProjectsPage() {
     try {
       await featureMutation.mutateAsync({ projectId, featured: true });
       toast.success('Proyecto destacado exitosamente!');
-    } catch (error: any) {
-      toast.error(error.message || 'Error al destacar proyecto');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Error al destacar proyecto');
     }
   };
 
@@ -82,14 +87,14 @@ export default function MyProjectsPage() {
     try {
       await deleteMutation.mutateAsync(projectId);
       toast.success('Proyecto eliminado exitosamente');
-    } catch (error: any) {
-      toast.error(error.message || 'Error al eliminar proyecto');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'Error al eliminar proyecto');
     }
   };
 
   const projects = projectsData?.content || [];
   const totalPages = projectsData?.totalPages || 0;
-  const filteredProjects = projects.filter((project: any) => {
+  const filteredProjects = projects.filter((project: Project) => {
     const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          project.description.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -203,7 +208,7 @@ export default function MyProjectsPage() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-[var(--text-secondary)]">Publicados</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">
-                    {projects.filter((p: any) => p.status === 'PUBLISHED').length}
+                    {projects.filter((p: Project) => p.status === 'PUBLISHED').length}
                   </p>
                 </div>
               </div>
@@ -217,7 +222,7 @@ export default function MyProjectsPage() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-[var(--text-secondary)]">Unidades Vendidas</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">
-                    {projects.reduce((total: number, p: any) => total + (p.soldUnits || 0), 0)}
+                    {projects.reduce((total: number, p: Project) => total + (p.soldUnits || 0), 0)}
                   </p>
                 </div>
               </div>
@@ -231,7 +236,7 @@ export default function MyProjectsPage() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-[var(--text-secondary)]">En Construccion</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">
-                    {projects.filter((p: any) => p.phase === 'SALE').length}
+                    {projects.filter((p: Project) => p.phase === 'SALE').length}
                   </p>
                 </div>
               </div>
@@ -259,14 +264,14 @@ export default function MyProjectsPage() {
               <div className="flex space-x-6 sm:space-x-8 px-4 min-w-max">
                 {[
                   { key: 'ALL', label: 'Todos', count: projects.length },
-                  { key: 'DRAFT', label: 'Borradores', count: projects.filter((p: any) => p.status === 'DRAFT').length },
-                  { key: 'PUBLISHED', label: 'Publicados', count: projects.filter((p: any) => p.status === 'PUBLISHED').length },
-                  { key: 'PAUSED', label: 'Pausados', count: projects.filter((p: any) => p.status === 'PAUSED').length },
-                  { key: 'COMPLETED', label: 'Completados', count: projects.filter((p: any) => p.status === 'COMPLETED').length },
+                  { key: 'DRAFT', label: 'Borradores', count: projects.filter((p: Project) => p.status === 'DRAFT').length },
+                  { key: 'PUBLISHED', label: 'Publicados', count: projects.filter((p: Project) => p.status === 'PUBLISHED').length },
+                  { key: 'PAUSED', label: 'Pausados', count: projects.filter((p: Project) => p.status === 'PAUSED').length },
+                  { key: 'COMPLETED', label: 'Completados', count: projects.filter((p: Project) => p.status === 'COMPLETED').length },
                 ].map((tab) => (
                   <button
                     key={tab.key}
-                    onClick={() => setActiveTab(tab.key as any)}
+                    onClick={() => setActiveTab(tab.key as 'ALL' | 'DRAFT' | 'PUBLISHED' | 'PAUSED' | 'COMPLETED')}
                     className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                       activeTab === tab.key
                         ? 'border-purple-600 text-purple-600'
@@ -305,12 +310,14 @@ export default function MyProjectsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filteredProjects.map((project: any) => (
+              {filteredProjects.map((project: Project) => (
                 <div key={project.id} className="bg-[var(--bg-card)] rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                   {/* Project Image */}
                   <div className="aspect-video bg-[var(--bg-tertiary)] relative">
                     {project.coverImageUrl ? (
-                      <img
+                      <Image
+                        fill
+                        unoptimized
                         src={`/api/images/proxy?url=${encodeURIComponent(project.coverImageUrl)}`}
                         alt={project.name}
                         className="w-full h-full object-cover"
@@ -399,19 +406,19 @@ export default function MyProjectsPage() {
                         {project.status === 'DRAFT' && (
                           <button
                             onClick={() => handlePublish(project.id)}
-                            disabled={publishMutation.isPending}
+                            disabled={publishingId === project.id}
                             className="flex-1 text-center px-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
                           >
-                            {publishMutation.isPending ? '...' : 'Publicar'}
+                            {publishingId === project.id ? '...' : 'Publicar'}
                           </button>
                         )}
                         {project.status === 'PAUSED' && (
                           <button
                             onClick={() => handlePublish(project.id)}
-                            disabled={publishMutation.isPending}
+                            disabled={publishingId === project.id}
                             className="flex-1 text-center px-2 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
                           >
-                            {publishMutation.isPending ? '...' : 'Reactivar'}
+                            {publishingId === project.id ? '...' : 'Reactivar'}
                           </button>
                         )}
                         {project.status === 'PUBLISHED' && !project.isFeatured && (
