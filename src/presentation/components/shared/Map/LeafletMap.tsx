@@ -1,16 +1,41 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
-// Fix Leaflet default icon issue
+// Fix Leaflet default icon issue (DEBE ir antes de cualquier uso de L)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
+
+// ═══════════════════════════════════════════════════════════════════
+// CARGA DE CSS: Doble estrategia para producción
+// ═══════════════════════════════════════════════════════════════════
+// 1. Importación directa del módulo (funciona en dev, a veces falla en prod)
+// 2. Inyección de link CDN como respaldo (garantizado en prod)
+// ═══════════════════════════════════════════════════════════════════
+
+// Intento #1: Importar CSS vía módulo (puede ser tree-shakeado en prod)
+try {
+  require('leaflet/dist/leaflet.css');
+} catch (_e) {
+  // Fallback silencioso
+}
+
+// Intento #2: Inyectar CDN link como respaldo (si no está ya en el DOM)
+if (typeof document !== 'undefined' && !document.getElementById('leaflet-css-cdn')) {
+  const link = document.createElement('link');
+  link.id = 'leaflet-css-cdn';
+  link.rel = 'stylesheet';
+  link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+  link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+  link.crossOrigin = 'anonymous';
+  document.head.appendChild(link);
+}
 
 interface Bounds {
   minLat: number;
@@ -55,29 +80,61 @@ function MapReadyHandler({ onMapReady }: { onMapReady?: (map: L.Map) => void }) 
       onMapReady(map);
     }
 
-    // Invalidar tamaño del mapa después de montarse para asegurar
-    // que los tiles se rendericen correctamente
+    // ═══════════════════════════════════════════════════════════════
+    // ESTRATEGIA ROBUSTA DE INVALIDACIÓN PARA PRODUCCIÓN
+    // ═══════════════════════════════════════════════════════════════
+    // En producción, el contenedor puede tardar en tener tamaño real
+    // por la hidratación de Next.js, CSS, imágenes, etc.
+    // Necesitamos invalidar en múltiples momentos con tiempos largos.
+    // ═══════════════════════════════════════════════════════════════
+
     const invalidate = () => {
-      map.invalidateSize(true);
+      try {
+        if (map && map.getContainer()) {
+          const container = map.getContainer();
+          // Solo invalidar si el contenedor tiene tamaño visible
+          if (container.clientWidth > 0 && container.clientHeight > 0) {
+            map.invalidateSize(true);
+          }
+        }
+      } catch (_e) {
+        // Ignorar errores silenciosamente
+      }
     };
 
-    // Múltiples invalidaciones para cubrir diferentes momentos del renderizado
+    // Fase 1: Invalidaciones tempranas (requestAnimationFrame ya cubre el primer paint)
     requestAnimationFrame(() => invalidate());
-    setTimeout(() => invalidate(), 100);
-    setTimeout(() => invalidate(), 300);
 
-    // Configurar ResizeObserver para invalidar cuando el contenedor cambie de tamaño
-    if (typeof ResizeObserver !== 'undefined' && map.getContainer()) {
-      const container = map.getContainer();
-      const observer = new ResizeObserver(() => {
-        map.invalidateSize(true);
-      });
-      observer.observe(container);
+    // Fase 2: Invalidaciones progresivas para cubrir carga asíncrona
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const delays = [100, 300, 500, 1000, 2000, 3000];
+    delays.forEach((delay) => {
+      timers.push(setTimeout(() => invalidate(), delay));
+    });
 
-      return () => {
-        observer.disconnect();
-      };
+    // Fase 3: ResizeObserver para detectar cambios de tamaño en tiempo real
+    if (typeof ResizeObserver !== 'undefined') {
+      try {
+        const container = map.getContainer();
+        if (container) {
+          const observer = new ResizeObserver(() => {
+            invalidate();
+          });
+          observer.observe(container);
+
+          return () => {
+            observer.disconnect();
+            timers.forEach(clearTimeout);
+          };
+        }
+      } catch (_e) {
+        // Ignorar errores de ResizeObserver
+      }
     }
+
+    return () => {
+      timers.forEach(clearTimeout);
+    };
   }, [map, onMapReady]);
 
   return null;

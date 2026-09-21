@@ -30,7 +30,7 @@ export class PropertyRepository implements IPropertyRepository {
     const properties: MapPropertySummary[] = (data.properties || []).map((p: any) => ({
       id: p.id,
       title: p.title || '',
-      slug: p.slug || '',
+      slug: p.slug || String(p.id),
       price: p.price ? Number(p.price) : 0,
       currency: (p.currency || 'PEN') as Currency,
       type: (p.type || 'APARTMENT') as PropertyType,
@@ -81,24 +81,6 @@ export class PropertyRepository implements IPropertyRepository {
       },
     });
 
-    console.log('Respuesta del backend:', {
-      totalElements: response.data.totalElements,
-      first: response.data.first,
-      content: response.data.content?.length || 0
-    });
-
-    // Log detallado de las propiedades recibidas
-    if (response.data.content && response.data.content.length > 0) {
-      console.log('Primeras 3 propiedades:', response.data.content.slice(0, 3).map((p: any) => ({
-        id: p.id,
-        title: p.title,
-        transactionType: p.transactionType,
-        type: p.type,
-        price: p.price
-      })));
-    } else {
-      console.log('No se recibieron propiedades en la respuesta');
-    }
 
     return {
       properties: response.data.content.map(PropertyMapper.toSummary),
@@ -119,8 +101,6 @@ export class PropertyRepository implements IPropertyRepository {
       return this.getById(maybeId);
     }
 
-    // Buscar directamente por slug sin extraer ID
-    console.log('Buscando por slug directamente:', slug);
     const response = await axiosClient.get(ENDPOINTS.PROPERTIES.BY_SLUG(slug));
     
     const dto = response.data?.property ? response.data.property : response.data;
@@ -152,6 +132,10 @@ async getById(id: number): Promise<Property> {
   async publish(id: number): Promise<PropertySummary> {
     const response = await axiosClient.patch(ENDPOINTS.PROPERTIES.PUBLISH(id));
     return PropertyMapper.toSummary(response.data);
+  }
+
+  async unpublish(id: number): Promise<void> {
+    await axiosClient.patch(ENDPOINTS.PROPERTIES.UNPUBLISH(id));
   }
 
   async delete(id: number): Promise<void> {
@@ -218,14 +202,21 @@ async getById(id: number): Promise<Property> {
         timeout: 120000,
       });
 
-      // La respuesta es un objeto con filas (rows), cada fila tiene items
-      // Extraemos todas las propiedades de todas las filas
+      // La respuesta es un objeto con filas (rows), cada fila tiene items.
+      // Cada item es un FeaturedPropertyItem plano (NO tiene `property` anidado).
+      // Lo mapeamos directo a PropertySummary con PropertyMapper.toSummary
+      // para propagar `publishedAt` y `createdAt`.
       if (response.data?.rows && Array.isArray(response.data.rows)) {
         const allProperties: PropertySummary[] = [];
         for (const row of response.data.rows) {
           if (row.items && Array.isArray(row.items)) {
             for (const item of row.items) {
-              if (item.property) {
+              // Caso 1: item plano (FeaturedPropertyItem)
+              if (item && item.id && !item.property) {
+                allProperties.push(PropertyMapper.toSummary(item));
+              }
+              // Caso 2: item anidado (compatibilidad)
+              else if (item && item.property) {
                 allProperties.push(PropertyMapper.toSummary(item.property));
               }
             }

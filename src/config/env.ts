@@ -15,9 +15,9 @@
 // ============================================
 export const env = {
   // --- URLs ---
-  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  appUrl: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  apiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://api.tiyuy.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tiyuy.com',
+  appUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://www.tiyuy.com',
   siteName: process.env.NEXT_PUBLIC_SITE_NAME || 'TIYUY',
 
   // --- WebSocket ---
@@ -27,6 +27,7 @@ export const env = {
   // --- APIs Externas ---
   googlePlacesKey: process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY || '',
   mpPublicKey: process.env.NEXT_PUBLIC_MP_PUBLIC_KEY || '',
+  culqiPublicKey: process.env.NEXT_PUBLIC_CULQI_PUBLIC_KEY || '',
   vapidPublicKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || '',
 
   // --- Entorno ---
@@ -38,6 +39,11 @@ export const env = {
 // SERVIDOR (API Routes de Next.js) - NO tienen NEXT_PUBLIC_
 // ============================================
 export const serverEnv = {
-  backendUrl: process.env.BACKEND_URL || 'http://localhost:8080',
+  backendUrl: process.env.BACKEND_URL || 'https://api.tiyuy.com',
   brevoApiKey: process.env.BREVO_API_KEY || '',
+  // AI Copilot Agent - LLM endpoint URL for server-side API routes
+  // When changing providers, update LLM_API_URL and LLM_MODEL in env
+  llmApiUrl: process.env.LLM_API_URL || 'https://api.deepseek.com/v1/chat/completions',
+  llmApiKey: process.env.LLM_API_KEY || '',
+  llmModel: process.env.LLM_MODEL || 'deepseek-chat',
 } as const;

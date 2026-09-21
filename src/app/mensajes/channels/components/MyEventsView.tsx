@@ -132,7 +132,7 @@ export default function MisEventosView({ user, onEventSelect, onCreateEvent }: M
           {canCreateEvent && onCreateEvent && (
             <button
               onClick={onCreateEvent}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r brand text-white rounded-xl font-medium hover:from-blue-700 hover:to-teal-700 transition-colors mx-auto"
+              className="flex items-center gap-2 px-6 py-3 bg-brand text-white rounded-xl font-medium hover:bg-brand-dark transition-colors mx-auto"
             >
               <Calendar className="w-5 h-5" />
               Crear evento
@@ -159,7 +159,7 @@ export default function MisEventosView({ user, onEventSelect, onCreateEvent }: M
           {canCreateEvent && (
             <button
               onClick={() => setShowCreateEventModal(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r brand text-white rounded-lg font-medium hover:from-blue-700 hover:to-teal-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
             >
               <Calendar className="w-4 h-4" />
               Crear Evento
@@ -253,7 +253,7 @@ export default function MisEventosView({ user, onEventSelect, onCreateEvent }: M
             {/* Event Header */}
             <div className="flex items-start gap-4">
               {/* Event Type Icon */}
-              <div className="w-12 h-12 bg-gradient-to-br brand rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-xl">{getEventEmoji(event.eventType)}</span>
               </div>
 

@@ -8,9 +8,10 @@ interface PlanCardProps {
   onEdit: () => void;
   onManageDiscounts: () => void;
   onToggle: () => void;
+  onDelete?: () => void;
 }
 
-export const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit, onManageDiscounts, onToggle }) => {
+export const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit, onManageDiscounts, onToggle, onDelete }) => {
   const cycleMap = {
     'MONTHLY': 'Mensual',
     'QUARTERLY': 'Trimestral', 
@@ -80,7 +81,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit, onManageDiscou
         >
           <span>Configurar</span>
         </button>
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-3 gap-1.5">
           <button
             onClick={onManageDiscounts}
             className="py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-all text-[9px] font-bold active:scale-[0.98]"
@@ -97,6 +98,14 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit, onManageDiscou
           >
             {plan.isActive ? 'Desactivar' : 'Activar'}
           </button>
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              className="py-2 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-all text-[9px] font-bold active:scale-[0.98]"
+            >
+              Eliminar
+            </button>
+          )}
         </div>
       </div>
     </div>

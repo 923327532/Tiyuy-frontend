@@ -134,6 +134,76 @@ function useUpdateEmail() {
   });
 }
 
+// Dropdown personalizado para zona horaria
+function StyledTimezoneDropdown({ value, onChange, options }: {
+  value: string;
+  onChange: (val: string) => void;
+  options: { value: string; label: string }[];
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const selectedLabel = options.find(o => o.value === value)?.label || 'Seleccionar...';
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full px-4 py-3 border border-[var(--border-color)] rounded-xl text-sm text-[var(--text-secondary)] bg-[var(--bg-tertiary)] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent flex items-center justify-between cursor-pointer transition-all"
+      >
+        <span>{selectedLabel}</span>
+        <svg className={`w-4 h-4 text-[var(--text-secondary)] transition-transform ${open ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute z-20 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-lg overflow-hidden max-h-60 overflow-y-auto">
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              className={`w-full px-4 py-3 text-sm text-left transition-colors cursor-pointer flex items-center gap-3 ${
+                value === opt.value
+                  ? 'bg-teal-50 text-teal-700 font-semibold'
+                  : 'text-[var(--text-secondary)] hover:bg-teal-50/50 hover:text-teal-700'
+              }`}
+              onClick={() => {
+                onChange(opt.value);
+                setOpen(false);
+              }}
+            >
+              <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                value === opt.value
+                  ? 'border-teal-500 bg-teal-500'
+                  : 'border-[var(--border-color)] bg-[var(--bg-card)]'
+              }`}>
+                {value === opt.value && (
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </span>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const { user: authUser } = useAuthStore();
   const { data: currentUser, isLoading: isLoadingUser } = useCurrentUser();
@@ -304,7 +374,7 @@ export default function DashboardPage() {
       <div className={`${themeClasses} ${fontSizeClass} min-h-full transition-colors duration-300`} style={mainContentStyle}>
         {isLoadingUser && (
           <div className="flex items-center justify-center h-64">
-            <div className="flex items-center gap-3 text-gray-500">
+            <div className="flex items-center gap-3 text-[var(--text-secondary)]">
               <div className="w-6 h-6 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
               <span>Cargando...</span>
             </div>
@@ -314,25 +384,25 @@ export default function DashboardPage() {
         {!isLoadingUser && (
           <div className="p-8 max-w-6xl mx-auto space-y-8 dark:text-white">
             {isMobile && (
-              <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
+              <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] p-4 shadow-sm">
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-3 text-gray-700 hover:bg-gray-200 transition-colors"
+                    className="inline-flex items-center justify-center rounded-xl border border-[var(--border-color)] bg-[var(--bg-tertiary)] p-3 text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] transition-colors"
                     title="Abrir menú"
                   >
                     <SlidersHorizontal className="w-5 h-5" />
                   </button>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">Opciones del perfil</p>
-                    <p className="text-xs text-gray-500">Abre el menú de navegación desde aquí</p>
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">Opciones del perfil</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Abre el menú de navegación desde aquí</p>
                   </div>
                 </div>
               </div>
             )}
             {/* Profile Photo and Identity */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><User className="w-5 h-5" /> Identidad</h2>
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2"><User className="w-5 h-5" /> Identidad</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="flex items-start gap-6">
@@ -352,19 +422,19 @@ export default function DashboardPage() {
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploadPhoto.isPending}
-                      className="absolute -bottom-1 -right-1 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-teal-600 hover:bg-teal-50 transition-colors border border-gray-200 disabled:opacity-50"
+                      className="absolute -bottom-1 -right-1 w-8 h-8 bg-[var(--bg-card)] rounded-full shadow-lg flex items-center justify-center text-teal-600 hover:bg-teal-50 transition-colors border border-[var(--border-color)] disabled:opacity-50"
                     >
                       <Camera className="w-4 h-4" />
                     </button>
                     <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload}/>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Foto de Perfil</h3>
-                    <p className="text-sm text-gray-500 mb-3">JPG, PNG. Maximo 2MB.</p>
+                    <h3 className="font-semibold text-[var(--text-primary)]">Foto de Perfil</h3>
+                    <p className="text-sm text-[var(--text-secondary)] mb-3">JPG, PNG. Maximo 2MB.</p>
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploadPhoto.isPending}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors disabled:opacity-50"
+                      className="px-4 py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-lg text-sm font-medium hover:bg-[var(--bg-tertiary)] transition-colors disabled:opacity-50"
                     >
                       {uploadPhoto.isPending ? 'Subiendo...' : 'Cambiar Foto'}
                     </button>
@@ -372,24 +442,24 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
                     <CheckCircle className="w-4 h-4" /> Verificacion
                     {user?.isVerified && (
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">Verificado</span>
+                      <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400 text-xs rounded-full font-medium">Verificado</span>
                     )}
                   </h3>
                   
                   <div className="space-y-3">
-                    <div className="bg-gray-50 px-4 py-3 rounded-xl border border-gray-200">
-                      <label className="block text-xs text-gray-500 mb-1">Numero de Documento</label>
+                    <div className="bg-[var(--bg-tertiary)] px-4 py-3 rounded-xl border border-[var(--border-color)]">
+                      <label className="block text-xs text-[var(--text-secondary)] mb-1">Numero de Documento</label>
                       <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded">DNI</span>
-                        <span className="font-semibold text-gray-900">{user?.dni || 'No disponible'}</span>
+                        <span className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 text-xs font-medium rounded">DNI</span>
+                        <span className="font-semibold text-[var(--text-primary)]">{user?.dni || 'No disponible'}</span>
                       </div>
-                      <p className="text-xs text-gray-400 mt-2">Tu DNI esta vinculado a tu cuenta</p>
+                      <p className="text-xs text-[var(--text-muted)] mt-2">Tu DNI esta vinculado a tu cuenta</p>
                     </div>
                     
-                    <p className="text-xs text-gray-500">La verificacion de identidad mejora la confianza en tu cuenta.</p>
+                    <p className="text-xs text-[var(--text-secondary)]">La verificacion de identidad mejora la confianza en tu cuenta.</p>
                   </div>
                 </div>
               </div>
@@ -402,9 +472,9 @@ export default function DashboardPage() {
 
             {/* Proyectos y Desarrollos - SOLO para DEVELOPER */}
             {isDeveloper && (
-              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-gray-200 dark:border-zinc-800 p-6 transition-colors">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-zinc-100 mb-6 flex items-center gap-2">
-                  <FolderGit className="w-5 h-5 text-gray-700 dark:text-zinc-300" /> 
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6 transition-colors">
+                <h2 className="text-lg font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2">
+                  <FolderGit className="w-5 h-5 text-[var(--text-secondary)]" /> 
                   Proyectos y Desarrollos
                 </h2>
                 
@@ -412,14 +482,14 @@ export default function DashboardPage() {
                   {/* Tarjeta: Mis Proyectos */}
                   <Link 
                     href="/my-projects" 
-                    className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-950/30 border border-transparent dark:border-green-900/50 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors"
+                    className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-900/30 border border-transparent rounded-xl hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
                   >
-                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/50 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-800/50 rounded-xl flex items-center justify-center">
                       <FolderGit className="w-6 h-6 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-zinc-100">Mis Proyectos</h3>
-                      <p className="text-sm text-gray-600 dark:text-zinc-400">Desarrollos activos</p>
+                      <h3 className="font-semibold text-[var(--text-primary)]">Mis Proyectos</h3>
+                      <p className="text-sm text-[var(--text-secondary)]">Desarrollos activos</p>
                     </div>
                     <span className="ml-auto text-green-600 dark:text-green-400 font-bold">→</span>
                   </Link>
@@ -427,14 +497,14 @@ export default function DashboardPage() {
                   {/* Tarjeta: Nuevo Proyecto */}
                   <Link 
                     href="/dashboard/projects/new" 
-                    className="flex items-center gap-4 p-4 bg-purple-50 dark:bg-purple-950/30 border border-transparent dark:border-purple-900/50 rounded-xl hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors"
+                    className="flex items-center gap-4 p-4 bg-purple-50 dark:bg-purple-900/30 border border-transparent rounded-xl hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors"
                   >
-                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/50 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-800/50 rounded-xl flex items-center justify-center">
                       <PlusCircle className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-zinc-100">Nuevo Proyecto</h3>
-                      <p className="text-sm text-gray-600 dark:text-zinc-400">Crear desarrollo</p>
+                      <h3 className="font-semibold text-[var(--text-primary)]">Nuevo Proyecto</h3>
+                      <p className="text-sm text-[var(--text-secondary)]">Crear desarrollo</p>
                     </div>
                     <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">→</span>
                   </Link>
@@ -444,53 +514,53 @@ export default function DashboardPage() {
 
             {/* Personalizacion Visual */}
             {canViewCRM && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><Palette className="w-5 h-5" /> Personalizacion Visual</h2>
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2"><Palette className="w-5 h-5" /> Personalizacion Visual</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4">Tema</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Tema</h3>
                   <div className="space-y-2">
                     <button
                       onClick={() => setTheme('light')}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                        theme === 'light' ? 'bg-teal-50 border-2 border-teal-500' : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                        theme === 'light' ? 'bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
                       }`}
                     >
                       <Sun className="w-6 h-6 text-orange-500" />
                       <div className="text-left">
-                        <p className="font-medium text-gray-900">Claro</p>
-                        <p className="text-xs text-gray-500">Interfaz clara y luminosa</p>
+                        <p className="font-medium text-[var(--text-primary)]">Claro</p>
+                        <p className="text-xs text-[var(--text-secondary)]">Interfaz clara y luminosa</p>
                       </div>
                     </button>
                     <button
                       onClick={() => setTheme('dark')}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                        theme === 'dark' ? 'bg-teal-50 border-2 border-teal-500' : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                        theme === 'dark' ? 'bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
                       }`}
                     >
                       <Moon className="w-6 h-6 text-indigo-500" />
                       <div className="text-left">
-                        <p className="font-medium text-gray-900">Oscuro</p>
-                        <p className="text-xs text-gray-500">Interfaz oscura para reducir fatiga visual</p>
+                        <p className="font-medium text-[var(--text-primary)]">Oscuro</p>
+                        <p className="text-xs text-[var(--text-secondary)]">Interfaz oscura para reducir fatiga visual</p>
                       </div>
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4">Color de Fondo CRM</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Color de Fondo CRM</h3>
                   <div className="grid grid-cols-3 gap-2">
                     {crmColors.map((color) => (
                       <button
                         key={color.value}
                         onClick={() => setCrmBackground(color.value)}
                         className={`aspect-square rounded-xl ${color.class} border-2 transition-all flex flex-col items-center justify-center gap-1 ${
-                          crmBackground === color.value ? 'border-teal-500 ring-2 ring-teal-200' : 'border-gray-200 hover:border-gray-300'
+                          crmBackground === color.value ? 'border-teal-500 ring-2 ring-teal-200' : 'border-[var(--border-color)] hover:border-[var(--border-color)]'
                         }`}
                       >
                         {crmBackground === color.value && <span className="text-teal-600 text-lg">✓</span>}
-                        <span className="text-xs text-gray-600 text-center leading-tight">{color.name}</span>
+                        <span className="text-xs text-[var(--text-secondary)] text-center leading-tight">{color.name}</span>
                       </button>
                     ))}
                   </div>
@@ -503,80 +573,76 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4">Tamaño de Fuente</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Tamaño de Fuente</h3>
                   <div className="space-y-2">
                     {(['small', 'normal', 'large'] as const).map((size) => (
                       <button
                         key={size}
                         onClick={() => setFontSize(size)}
                         className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                          fontSize === size ? 'bg-teal-50 border-2 border-teal-500' : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                          fontSize === size ? 'bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
                         }`}
                       >
-                        <span className={`${size === 'small' ? 'text-sm' : size === 'normal' ? 'text-base' : 'text-lg'} font-bold text-gray-700`}>Aa</span>
-                      <span className="font-medium text-gray-900 capitalize flex items-center gap-2">
+                        <span className={`${size === 'small' ? 'text-sm' : size === 'normal' ? 'text-base' : 'text-lg'} font-bold text-[var(--text-secondary)]`}>Aa</span>
+                      <span className="font-medium text-[var(--text-primary)] capitalize flex items-center gap-2">
                         <Type className="w-4 h-4" />
                         {size === 'small' ? 'Pequeno' : size === 'normal' ? 'Normal' : 'Grande'}
                       </span>
                       </button>
                     ))}
                   </div>
-                  <p className="text-xs text-gray-500 mt-3">Ajusta el tamaño del texto para mayor comodidad.</p>
+                  <p className="text-xs text-[var(--text-secondary)] mt-3">Ajusta el tamaño del texto para mayor comodidad.</p>
                 </div>
               </div>
             </div>
             )}
 
             {/* Localizacion */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><Globe className="w-5 h-5" /> Ubicacion</h2>
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2"><Globe className="w-5 h-5" /> Ubicacion</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4">Zona Horaria</h3>
-                  <div className="space-y-4">
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Zona Horaria</h3>
+              <div className="space-y-4">
                     <div>
-                      <label className="text-sm text-gray-600 mb-1 block font-medium">Zona Horaria</label>
-                      <select
+                      <label className="text-sm text-[var(--text-secondary)] mb-1 block font-medium">Zona Horaria</label>
+                      <StyledTimezoneDropdown
                         value={timezone}
-                        onChange={(e) => setTimezone(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-                      >
-                        {timezones.map((tz) => (
-                          <option key={tz.value} value={tz.value}>{tz.label}</option>
-                        ))}
-                      </select>
+                        onChange={setTimezone}
+                        options={timezones}
+                      />
                     </div>
-                    <p className="text-xs text-gray-500">Se usara para mostrar fechas y horas correctamente.</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Se usara para mostrar fechas y horas correctamente.</p>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-4">Ubicacion</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Ubicacion</h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
-                        <label className="text-sm text-gray-600 mb-1 block font-medium">Pais</label>
+                        <label className="text-sm text-[var(--text-secondary)] mb-1 block font-medium">Pais</label>
                         <input
                           type="text"
                           value={country}
                           onChange={(e) => setCountry(e.target.value)}
                           placeholder="Ej: Peru"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="text-sm text-gray-600 mb-1 block font-medium">Ciudad</label>
+                        <label className="text-sm text-[var(--text-secondary)] mb-1 block font-medium">Ciudad</label>
                         <input
                           type="text"
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
                           placeholder="Ej: Lima"
-                          className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                          className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                         />
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500">Tu ubicacion ayuda a personalizar la experiencia.</p>
+                    <p className="text-xs text-[var(--text-secondary)]">Tu ubicacion ayuda a personalizar la experiencia.</p>
                   </div>
                 </div>
               </div>
@@ -585,25 +651,25 @@ export default function DashboardPage() {
 
 
             {/* Seguridad */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2"><Lock className="w-5 h-5" /> Seguridad</h2>
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2"><Lock className="w-5 h-5" /> Seguridad</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 mb-4">Datos de la Cuenta</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Datos de la Cuenta</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm text-gray-600 mb-1 block">Nombre</label>
-                      <input type="text" value={user?.firstName || ''} readOnly className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-600"/>
+                      <label className="text-sm text-[var(--text-secondary)] mb-1 block">Nombre</label>
+                      <input type="text" value={user?.firstName || ''} readOnly className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"/>
                     </div>
                     <div>
-                      <label className="text-sm text-gray-600 mb-1 block">Apellido</label>
-                      <input type="text" value={user?.lastName || ''} readOnly className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-600"/>
+                      <label className="text-sm text-[var(--text-secondary)] mb-1 block">Apellido</label>
+                      <input type="text" value={user?.lastName || ''} readOnly className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)]"/>
                     </div>
                   </div>
                   
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Email</label>
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Email</label>
                     <div className="flex gap-2">
                       <input 
                         type="email" 
@@ -612,8 +678,8 @@ export default function DashboardPage() {
                         readOnly={!isEditingEmail}
                         className={`flex-1 px-4 py-3 rounded-xl border outline-none transition-all ${
                           isEditingEmail 
-                            ? 'border-teal-500 ring-2 ring-teal-200 bg-white' 
-                            : 'border-gray-200 bg-gray-50 text-gray-600'
+                            ? 'border-teal-500 ring-2 ring-teal-200 bg-[var(--bg-card)] text-[var(--text-primary)]' 
+                            : 'border-[var(--border-color)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
                         }`}
                       />
                       {isEditingEmail ? (
@@ -627,54 +693,54 @@ export default function DashboardPage() {
                       ) : (
                         <button
                           onClick={() => setIsEditingEmail(true)}
-                          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                          className="px-4 py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-xl font-medium hover:bg-[var(--bg-tertiary)] transition-colors"
                         >
                           Cambiar
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-gray-400 mt-1">El email es tu identificador unico en Tiyuy.</p>
+                    <p className="text-xs text-[var(--text-muted)] mt-1">El email es tu identificador unico en Tiyuy.</p>
                   </div>
                   
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Rol</label>
-                    <input type="text" value={user?.role || ''} readOnly className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-600 capitalize"/>
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Rol</label>
+                    <input type="text" value={user?.role || ''} readOnly className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)] capitalize"/>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 mb-4">Cambiar Contrasena</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Cambiar Contrasena</h3>
                   
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Contrasena Actual</label>
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Contrasena Actual</label>
                     <input
                       type="password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="Ingresa tu contrasena actual"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Nueva Contrasena</label>
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Nueva Contrasena</label>
                     <input
                       type="password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Minimo 6 caracteres"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Confirmar Contrasena</label>
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Confirmar Contrasena</label>
                     <input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Repite la nueva contrasena"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                     />
                   </div>
 

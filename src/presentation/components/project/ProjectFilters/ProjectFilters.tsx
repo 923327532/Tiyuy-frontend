@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { SlidersHorizontal, X } from 'lucide-react';
 
 interface ProjectFiltersProps {
@@ -173,13 +174,15 @@ export function ProjectFilters({ initialFilters, onFilterChange, projectType }: 
 
   return (
     <>
-      {/* Botón móvil */}
-      <button
-        onClick={() => setIsMobileOpen(true)}
-        className="lg:hidden fixed bottom-6 right-6 z-40 bg-brand text-white p-4 rounded-full shadow-lg hover:opacity-90 transition-opacity"
-      >
-        <SlidersHorizontal className="w-5 h-5" />
-      </button>
+      {/* Botón móvil - se oculta cuando el modal está abierto */}
+      {!isMobileOpen && (
+        <button
+          onClick={() => setIsMobileOpen(true)}
+          className="lg:hidden fixed bottom-4 right-4 z-40 bg-brand text-white p-2.5 rounded-full shadow-lg hover:opacity-90 transition-opacity"
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+        </button>
+      )}
 
       {/* Sidebar desktop */}
       <div className="hidden lg:block bg-white rounded-xl border border-gray-200 p-5">
@@ -194,11 +197,12 @@ export function ProjectFilters({ initialFilters, onFilterChange, projectType }: 
         {filterContent}
       </div>
 
-      {/* Modal móvil */}
+      {/* Modal móvil - z-index extremadamente alto para superponerse a cualquier card */}
       {isMobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setIsMobileOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white shadow-xl overflow-y-auto">
+        <div className="fixed inset-0 z-[9999]">
+          {/* Quitamos lg:hidden para asegurar que funcione incluso si hay conflictos de responsive */}
+          <div className="fixed inset-0 bg-black/60" onClick={() => setIsMobileOpen(false)} />
+          <div className="fixed right-0 top-0 bottom-0 w-full max-w-sm bg-white shadow-2xl overflow-y-auto z-[99999]">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-5 py-4 flex items-center justify-between z-10">
               <h2 className="text-lg font-bold text-gray-900">Filtros</h2>
               <button onClick={() => setIsMobileOpen(false)} className="p-1 hover:bg-gray-100 rounded-lg">

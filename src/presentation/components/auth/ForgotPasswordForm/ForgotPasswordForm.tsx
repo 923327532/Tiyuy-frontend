@@ -56,11 +56,12 @@ export const ForgotPasswordForm: React.FC = () => {
             </p>
           </div>
 
-          <Link href="/login" passHref legacyBehavior>
-            <Button variant="outline" size="md" fullWidth className="cursor-pointer py-2 text-sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver al Login
-            </Button>
+          <Link
+            href="/login"
+            className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Volver al Login
           </Link>
         </div>
       </div>

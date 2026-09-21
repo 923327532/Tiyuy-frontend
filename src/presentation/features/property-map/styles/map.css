@@ -167,20 +167,42 @@
   margin-bottom: 20px;
 }
 
+/* Popup - estilos unificados SIN duplicados */
 .leaflet-popup-content-wrapper {
   border-radius: 16px !important;
   padding: 0 !important;
-  overflow: hidden;
+  overflow: hidden !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18) !important;
   border: none !important;
+  max-width: 260px !important;
+  width: 240px !important;
 }
 
 .leaflet-popup-content {
   margin: 0 !important;
   padding: 0 !important;
-  min-width: 220px;
-  max-width: 260px;
+  width: 240px !important;
+  min-width: 200px !important;
+  max-width: 260px !important;
+  overflow: hidden !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Forzar que todos los hijos del popup no se desborden */
+.leaflet-popup-content > div,
+.leaflet-popup-content * {
+  overflow: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Imagen dentro del popup - dimensiones fijas forzadas */
+.leaflet-popup-content img {
+  width: 100% !important;
+  height: 120px !important;
+  max-width: 100% !important;
+  max-height: 120px !important;
+  object-fit: cover !important;
+  display: block !important;
 }
 
 .leaflet-popup-tip {
@@ -453,6 +475,7 @@
   .leaflet-popup-content {
     min-width: 180px;
     max-width: 220px;
+    width: 220px !important;
   }
 }
 

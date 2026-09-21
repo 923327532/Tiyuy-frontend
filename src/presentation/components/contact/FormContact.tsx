@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, ChangeEvent, FormEvent, useEffect, useRef } from 'react';
 import { Check, ChevronDown, ArrowRight, Loader2 } from 'lucide-react';
 
 interface FormData {
@@ -17,6 +17,24 @@ interface FormErrors {
     messageText?: string;
 }
 
+function useScrollReveal(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, visible };
+}
+
 export default function FormContact() {
     const [formData, setFormData] = useState<FormData>({
         fullName: '',
@@ -28,6 +46,7 @@ export default function FormContact() {
     const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [submitSuccess, setSubmitSuccess] = useState<boolean>(false);
+    const { ref, visible } = useScrollReveal(0.12);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
@@ -95,10 +114,13 @@ export default function FormContact() {
     };
 
     return (
-        <section className="py-8 sm:py-16">
-            <section className="bg-[var(--bg-card)] rounded-2xl border-gray-200 dark:border-gray-800 overflow-hidden shadow-md transition-colors duration-300">
+        <div ref={ref}>
+          <section className={`py-8 sm:py-16 transition-all duration-700 ease-out ${
+            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}>
+            <section className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] overflow-visible md:overflow-hidden shadow-md transition-colors duration-300">
 
-            <div className="p-6 sm:p-10  border-gray-200 dark:border-gray-800 bg-[var(--brand-primary)]/[0.02] text-center">
+            <div className="p-6 sm:p-10 border-b border-[var(--border-color)] bg-[var(--brand-primary)]/[0.02] text-center">
                 <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)] mb-2">
                     Asesoría
                 </p>
@@ -145,7 +167,7 @@ export default function FormContact() {
                                     className={`w-full bg-[var(--bg-primary)] border-2 shadow-sm ${
                                         errors.fullName 
                                             ? 'border-red-500 focus:ring-red-500/10' 
-                                            : 'border-gray-300 dark:border-gray-700 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
+                                            : 'border-[var(--border-color)] hover:border-[var(--brand-primary)]/30 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
                                     } focus:ring-2 focus:outline-none px-4 py-3 rounded-xl text-[var(--text-primary)] placeholder-[var(--text-secondary)]/40 text-sm font-medium transition-all disabled:opacity-50`}
                                 />
                                 {errors.fullName && (
@@ -169,7 +191,7 @@ export default function FormContact() {
                                     className={`w-full bg-[var(--bg-primary)] border-2 shadow-sm ${
                                         errors.emailAddress 
                                             ? 'border-red-500 focus:ring-red-500/10' 
-                                            : 'border-gray-300 dark:border-gray-700 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
+                                            : 'border-[var(--border-color)] hover:border-[var(--brand-primary)]/30 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
                                     } focus:ring-2 focus:outline-none px-4 py-3 rounded-xl text-[var(--text-primary)] placeholder-[var(--text-secondary)]/40 text-sm font-medium transition-all disabled:opacity-50`}
                                 />
                                 {errors.emailAddress && (
@@ -193,7 +215,7 @@ export default function FormContact() {
                                     className={`w-full bg-[var(--bg-primary)] border-2 shadow-sm ${
                                         errors.procedureType 
                                             ? 'border-red-500 focus:ring-red-500/10' 
-                                            : 'border-gray-300 dark:border-gray-700 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
+                                            : 'border-[var(--border-color)] hover:border-[var(--brand-primary)]/30 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
                                     } focus:ring-2 focus:outline-none px-4 py-3 rounded-xl text-[var(--text-primary)] text-sm font-medium appearance-none cursor-pointer transition-all disabled:opacity-50`}
                                 >
                                     <option value="" className="text-[var(--text-secondary)]">Selecciona una opción</option>
@@ -225,7 +247,7 @@ export default function FormContact() {
                                 className={`w-full bg-[var(--bg-primary)] border-2 shadow-sm ${
                                     errors.messageText 
                                         ? 'border-red-500 focus:ring-red-500/10' 
-                                        : 'border-gray-300 dark:border-gray-700 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
+                                        : 'border-[var(--border-color)] hover:border-[var(--brand-primary)]/30 focus:border-[var(--brand-primary)] focus:ring-[var(--brand-primary)]/10'
                                 } focus:ring-2 focus:outline-none px-4 py-3 rounded-xl text-[var(--text-primary)] placeholder-[var(--text-secondary)]/40 text-sm font-medium resize-none transition-all disabled:opacity-50`}
                             />
                             {errors.messageText && (
@@ -259,5 +281,6 @@ export default function FormContact() {
             </div>
             </section>
         </section>
+      </div>
     );
-};
+}

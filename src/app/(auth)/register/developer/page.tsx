@@ -19,7 +19,7 @@ export default function RegisterDeveloperPage() {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
             style={{ backgroundImage: "url('/assets/images/registro/usuario.jpg')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/60 to-gray-900/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
           
           <div className="relative z-10 text-center lg:text-left text-white max-w-md w-full">
             <div className="inline-flex items-center gap-2 bg-amber-500/20 backdrop-blur-sm border border-amber-400/30 px-3 py-1.5 rounded-full text-xs font-semibold text-amber-300 mb-6 justify-center mx-auto lg:mx-0">

@@ -20,22 +20,22 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const inputClasses = [
       'w-full px-5 py-3.5 rounded-xl border transition-all duration-200 text-base',
-      'placeholder:text-gray-400 placeholder:text-sm',
+      'placeholder:text-[var(--text-tertiary)] placeholder:text-sm',
       leftIcon ? 'pl-10' : '',
       rightIcon ? 'pr-10' : '',
       error
-        ? 'border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-red-50 text-gray-900'
+        ? 'border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-red-50 text-[var(--text-primary)]'
         : readOnly
-          ? 'border-gray-200 bg-gray-50 text-gray-700 cursor-default focus:outline-none'
-          : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 text-gray-700',
-      'disabled:bg-gray-100 disabled:cursor-not-allowed',
+          ? 'border-[var(--border-color)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)] cursor-default focus:outline-none'
+          : 'border-[var(--border-color)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent bg-[var(--bg-secondary)] text-[var(--text-primary)]',
+      'disabled:bg-[var(--bg-tertiary)] disabled:cursor-not-allowed',
       cleanClassName,
     ].filter(Boolean).join(' ');
 
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -43,7 +43,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]">
               {leftIcon}
             </div>
           )}
@@ -56,7 +56,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]">
               {rightIcon}
             </div>
           )}
@@ -67,7 +67,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         ) : null}
 
         {helperText && !error && (
-          <p className="mt-1 text-sm text-gray-500">{helperText}</p>
+          <p className="mt-1 text-sm text-[var(--text-tertiary)]">{helperText}</p>
         )}
       </div>
     );

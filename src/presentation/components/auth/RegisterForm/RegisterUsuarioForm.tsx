@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, Mail, User, Phone, Lock, Hash } from 'lucide-react';
+import { Eye, EyeOff, Mail, User, Phone, Lock, Hash, FileText } from 'lucide-react';
 import { Icon } from '@iconify/react';
 import { useAuth } from '@/presentation/hooks';
 import { useGoogleAuth, GoogleUserData } from '@/presentation/hooks/useGoogleAuth';
 import { useUserValidation } from '@/presentation/hooks/useUserValidation';
-import { Button, Input } from '@/presentation/components/ui';
+import { Button, Input, Select } from '@/presentation/components/ui';
 import { DniInput } from '@/presentation/components/kyc';
 import { AuthErrorBanner, PasswordStrengthIndicator } from '@/presentation/components/auth/shared';
 import { AuthRepository } from '@/infrastructure/repositories/AuthRepository';
@@ -17,6 +17,44 @@ const MIN_PASSWORD_LENGTH = 8;
 const STEP_LABELS = ['Cuenta', 'Identidad', 'Confirmar'];
 const TOTAL_STEPS = 3;
 
+// ── Documento internacional ────────────────────────────────────────────────
+type DocumentType = 'PERU_DNI' | 'INTERNATIONAL';
+type InternationalDocType = 'PASSPORT' | 'NATIONAL_ID' | 'RESIDENCE_PERMIT';
+
+// UNA SOLA opción de documento extranjero: "Documento internacional".
+// La lista de países es solo para elegir el país emisor del documento.
+const ISSUING_COUNTRIES = [
+  'Argentina',
+  'Bolivia',
+  'Brasil',
+  'Canadá',
+  'Chile',
+  'China',
+  'Colombia',
+  'Ecuador',
+  'España',
+  'Estados Unidos',
+  'Francia',
+  'Italia',
+  'México',
+  'Paraguay',
+  'Uruguay',
+  'Venezuela',
+];
+
+const INTERNATIONAL_DOC_TYPE_OPTIONS: { value: InternationalDocType; label: string }[] = [
+  { value: 'PASSPORT', label: 'Pasaporte' },
+  { value: 'NATIONAL_ID', label: 'Documento nacional de identidad' },
+  { value: 'RESIDENCE_PERMIT', label: 'Documento de residencia' },
+];
+
+// Los documentos extranjeros pueden tener longitudes y caracteres variados.
+// Solo se exige un formato razonable; NO se aplican reglas del DNI peruano.
+const INTERNATIONAL_DOC_NUMBER_PATTERN = /^[A-Za-z0-9-]{3,50}$/;
+
+const internationalDocTypeLabel = (value: string): string =>
+  INTERNATIONAL_DOC_TYPE_OPTIONS.find((o) => o.value === value)?.label || value;
+
 export const RegisterUsuarioForm: React.FC = () => {
   const { register, isLoading, error, clearError } = useAuth();
   const { signInWithGoogle, loading: googleLoading, error: googleError } = useGoogleAuth();
@@ -24,6 +62,7 @@ export const RegisterUsuarioForm: React.FC = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [googleData, setGoogleData] = useState<GoogleUserData | null>(null);
+  const [documentType, setDocumentType] = useState<DocumentType>('PERU_DNI');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -32,12 +71,17 @@ export const RegisterUsuarioForm: React.FC = () => {
     lastName: '',
     dni: '',
     phone: '',
+    issuingCountry: '',
+    internationalDocumentType: '',
+    internationalDocumentNumber: '',
   });
   const [isDniValidated, setIsDniValidated] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [emailExists, setEmailExists] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem('googleRegistrationData');
@@ -88,13 +132,35 @@ export const RegisterUsuarioForm: React.FC = () => {
     }
 
     if (step === 2) {
-      if (!formData.dni || formData.dni.length !== 8) newErrors.dni = 'El DNI debe tener 8 dígitos';
-      if (!isDniValidated) newErrors.dni = 'Debes validar tu DNI primero';
-      if (!formData.firstName) newErrors.firstName = 'El nombre es obligatorio';
-      if (!formData.lastName) newErrors.lastName = 'Los apellidos son obligatorios';
-      const phoneRegex = /^9\d{8}$/;
-      if (!formData.phone) newErrors.phone = 'El teléfono es obligatorio';
-      else if (!phoneRegex.test(formData.phone.trim())) newErrors.phone = 'Teléfono inválido: 9 dígitos empezando con 9';
+      if (documentType === 'INTERNATIONAL') {
+        // Flujo internacional: solo obligatoriedad y formato razonable.
+        // NO se ejecuta la validación peruana de DNI.
+        if (!formData.issuingCountry) newErrors.issuingCountry = 'Selecciona tu país emisor';
+        if (!formData.internationalDocumentType) newErrors.internationalDocumentType = 'Selecciona el tipo de documento';
+        if (!formData.internationalDocumentNumber) newErrors.internationalDocumentNumber = 'El número de documento es obligatorio';
+        else if (!INTERNATIONAL_DOC_NUMBER_PATTERN.test(formData.internationalDocumentNumber.trim())) {
+          newErrors.internationalDocumentNumber = 'Número inválido: solo letras, números y guiones (3 a 50 caracteres)';
+        }
+        if (!formData.firstName) newErrors.firstName = 'El nombre es obligatorio';
+        if (!formData.lastName) newErrors.lastName = 'Los apellidos son obligatorios';
+        const phoneRegex = /^9\d{8}$/;
+        if (!formData.phone) newErrors.phone = 'El teléfono es obligatorio';
+        else if (!phoneRegex.test(formData.phone.trim())) newErrors.phone = 'Teléfono inválido: 9 dígitos empezando con 9';
+      } else {
+        // Flujo DNI Perú: lógica actual EXACTA.
+        if (!formData.dni || formData.dni.length !== 8) newErrors.dni = 'El DNI debe tener 8 dígitos';
+        if (!isDniValidated) newErrors.dni = 'Debes validar tu DNI primero';
+        if (!formData.firstName) newErrors.firstName = 'El nombre es obligatorio';
+        if (!formData.lastName) newErrors.lastName = 'Los apellidos son obligatorios';
+        const phoneRegex = /^9\d{8}$/;
+        if (!formData.phone) newErrors.phone = 'El teléfono es obligatorio';
+        else if (!phoneRegex.test(formData.phone.trim())) newErrors.phone = 'Teléfono inválido: 9 dígitos empezando con 9';
+      }
+    }
+
+    if (step === 3) {
+      if (!acceptedPrivacy) newErrors.privacy = 'Debes aceptar el tratamiento de tus datos personales';
+      if (!acceptedTerms) newErrors.terms = 'Debes aceptar los términos y condiciones';
     }
 
     setErrors(newErrors);
@@ -112,20 +178,39 @@ export const RegisterUsuarioForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateStep(3)) return;
     const email = googleData ? googleData.email : formData.email;
     const password = googleData ? crypto.randomUUID() : formData.password;
     const firstName = googleData ? (formData.firstName || googleData.firstName) : formData.firstName;
     const lastName = googleData ? (formData.lastName || googleData.lastName) : formData.lastName;
 
-    await register({
+    const basePayload = {
       email,
       password,
       phone: formData.phone,
       firstName,
       lastName,
-      dni: formData.dni,
-      role: 'USER',
-    });
+      role: 'USER' as const,
+    };
+
+    if (documentType === 'INTERNATIONAL') {
+      // Documento internacional: NO se envía DNI y no se ejecuta la validación peruana.
+      // La verificación de identidad quedará en estado PENDING en el backend.
+      await register({
+        ...basePayload,
+        documentType: 'INTERNATIONAL',
+        issuingCountry: formData.issuingCountry,
+        internationalDocumentType: formData.internationalDocumentType as InternationalDocType,
+        internationalDocumentNumber: formData.internationalDocumentNumber,
+      });
+    } else {
+      // DNI Perú: payload actual EXACTO.
+      await register({
+        ...basePayload,
+        documentType: 'PERU_DNI',
+        dni: formData.dni,
+      });
+    }
   };
 
   const handleDniValidated = (dniData: { fullName?: string }) => {
@@ -140,12 +225,35 @@ export const RegisterUsuarioForm: React.FC = () => {
     const { name, value } = e.target;
     if (name === 'phone') {
       setFormData((prev) => ({ ...prev, [name]: value.replace(/\D/g, '').slice(0, 9) }));
+    } else if (name === 'internationalDocumentNumber') {
+      // Documento internacional: se permiten letras, números y guiones.
+      setFormData((prev) => ({ ...prev, [name]: value.toUpperCase().replace(/[^A-Za-z0-9-]/g, '').slice(0, 50) }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
     if (name !== 'email' && errors[name]) {
       setErrors((prev) => { const n = { ...prev }; delete n[name]; return n; });
     }
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => { const n = { ...prev }; delete n[name]; return n; });
+    }
+  };
+
+  const handleDocumentTypeChange = (type: DocumentType) => {
+    setDocumentType(type);
+    // Limpiar errores del tipo de documento que ya no se está usando
+    setErrors((prev) => {
+      const n = { ...prev };
+      delete n.dni;
+      delete n.issuingCountry;
+      delete n.internationalDocumentType;
+      delete n.internationalDocumentNumber;
+      return n;
+    });
   };
 
   const handleGoogleSignIn = async () => {
@@ -162,6 +270,9 @@ export const RegisterUsuarioForm: React.FC = () => {
           lastName: googleUserData.lastName,
           dni: '',
           phone: '',
+          issuingCountry: '',
+          internationalDocumentType: '',
+          internationalDocumentNumber: '',
         });
         setCurrentStep(2);
       }
@@ -274,7 +385,11 @@ export const RegisterUsuarioForm: React.FC = () => {
           <div className="space-y-4">
             <div className="text-center mb-4">
               <h3 className="text-base font-semibold text-gray-800">Verifica tu identidad</h3>
-              <p className="text-xs text-gray-500">Tu DNI para validar tus datos personales</p>
+              <p className="text-xs text-gray-500">
+                {documentType === 'INTERNATIONAL'
+                  ? 'Tus datos de identidad para completar tu registro'
+                  : 'Tu DNI para validar tus datos personales'}
+              </p>
               {googleData && (
                 <div className="mt-2 inline-flex items-center gap-1.5 bg-green-50 border border-green-100 text-green-700 text-[11px] font-medium px-2.5 py-1 rounded-full">
                   <Icon icon="logos:google-icon" className="w-3 h-3 shrink-0" />
@@ -283,19 +398,97 @@ export const RegisterUsuarioForm: React.FC = () => {
               )}
             </div>
 
-            <DniInput
-              value={formData.dni}
-              onChange={(val) => {
-                setFormData((prev) => ({ ...prev, dni: val }));
-                if (errors.dni) setErrors((prev) => { const n = { ...prev }; delete n.dni; return n; });
-              }}
-              onValidated={handleDniValidated}
-              leftIcon={<Hash className="w-4 h-4 text-gray-400" />}
-              placeholder="Ingresa tu DNI"
-              required
-              disabled={isDniValidated}
-              externalError={errors.dni}
-            />
+            {/* Selector compacto de tipo de documento */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Tipo de documento</label>
+              <div className="grid grid-cols-2 gap-1 p-1 rounded-xl border border-gray-200 bg-gray-100">
+                <button
+                  type="button"
+                  onClick={() => handleDocumentTypeChange('PERU_DNI')}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                    documentType === 'PERU_DNI'
+                      ? 'bg-[var(--brand-primary)] text-white shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'
+                  }`}
+                >
+                  DNI — Perú
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDocumentTypeChange('INTERNATIONAL')}
+                  className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                    documentType === 'INTERNATIONAL'
+                      ? 'bg-[var(--brand-primary)] text-white shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-white/60'
+                  }`}
+                >
+                  Documento internacional
+                </button>
+              </div>
+            </div>
+
+            {/* ── FLUJO DNI PERÚ: comportamiento EXACTO actual ── */}
+            {documentType === 'PERU_DNI' && (
+              <DniInput
+                value={formData.dni}
+                onChange={(val) => {
+                  setFormData((prev) => ({ ...prev, dni: val }));
+                  if (errors.dni) setErrors((prev) => { const n = { ...prev }; delete n.dni; return n; });
+                }}
+                onValidated={handleDniValidated}
+                leftIcon={<Hash className="w-4 h-4 text-gray-400" />}
+                placeholder="Ingresa tu DNI"
+                required
+                disabled={isDniValidated}
+                externalError={errors.dni}
+              />
+            )}
+
+            {/* ── FLUJO DOCUMENTO INTERNACIONAL: solo información mínima ── */}
+            {documentType === 'INTERNATIONAL' && (
+              <>
+                <Select
+                  label="País emisor"
+                  required
+                  value={formData.issuingCountry}
+                  onChange={(v) => handleSelectChange('issuingCountry', v)}
+                  options={ISSUING_COUNTRIES.map((country) => ({ value: country, label: country }))}
+                  placeholder="Selecciona tu país"
+                  error={errors.issuingCountry}
+                  className="text-sm py-2"
+                />
+
+                <Select
+                  label="Tipo de documento internacional"
+                  required
+                  value={formData.internationalDocumentType}
+                  onChange={(v) => handleSelectChange('internationalDocumentType', v)}
+                  options={INTERNATIONAL_DOC_TYPE_OPTIONS}
+                  placeholder="Selecciona el tipo de documento"
+                  error={errors.internationalDocumentType}
+                  className="text-sm py-2"
+                />
+
+                <Input
+                  name="internationalDocumentNumber"
+                  label="Número de documento"
+                  leftIcon={<FileText className="w-4 h-4 text-gray-400" />}
+                  value={formData.internationalDocumentNumber}
+                  onChange={handleChange}
+                  error={errors.internationalDocumentNumber}
+                  placeholder="Ingresa tu número de documento"
+                  maxLength={50}
+                  className="text-sm focus:scale-100 placeholder:text-gray-400 py-2"
+                />
+
+                {/* Sin simular una validación: el estado queda PENDING hasta integrar el proveedor KYC */}
+                <div className="rounded-lg bg-blue-50 border border-blue-100 px-3 py-2.5">
+                  <p className="text-xs text-blue-700">
+                    Tu identidad será verificada de forma segura. Te notificaremos el resultado de la verificación.
+                  </p>
+                </div>
+              </>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <Input
@@ -306,7 +499,7 @@ export const RegisterUsuarioForm: React.FC = () => {
                 onChange={handleChange}
                 error={errors.firstName}
                 placeholder="Tus nombres"
-                readOnly={!isDniValidated}
+                readOnly={documentType === 'PERU_DNI' && !isDniValidated}
                 className="text-sm focus:scale-100 placeholder:text-gray-400 py-2"
               />
               <Input
@@ -317,7 +510,7 @@ export const RegisterUsuarioForm: React.FC = () => {
                 onChange={handleChange}
                 error={errors.lastName}
                 placeholder="Tus apellidos"
-                readOnly={!isDniValidated}
+                readOnly={documentType === 'PERU_DNI' && !isDniValidated}
                 className="text-sm focus:scale-100 placeholder:text-gray-400 py-2"
               />
             </div>
@@ -370,13 +563,69 @@ export const RegisterUsuarioForm: React.FC = () => {
                 <span className="font-medium text-gray-700">{formData.firstName} {formData.lastName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-400">DNI</span>
-                <span className="font-medium text-gray-700">{formData.dni}</span>
+                <span className="text-gray-400">{documentType === 'INTERNATIONAL' ? 'País' : 'DNI'}</span>
+                <span className="font-medium text-gray-700 truncate max-w-[180px]">
+                  {documentType === 'INTERNATIONAL' ? formData.issuingCountry : formData.dni}
+                </span>
               </div>
+              {documentType === 'INTERNATIONAL' && (
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Documento</span>
+                  <span className="font-medium text-gray-700 truncate max-w-[180px]">
+                    {internationalDocTypeLabel(formData.internationalDocumentType)} · {formData.internationalDocumentNumber}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-400">Teléfono</span>
                 <span className="font-medium text-gray-700">{formData.phone}</span>
               </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptedPrivacy}
+                  onChange={(e) => {
+                    setAcceptedPrivacy(e.target.checked);
+                    if (e.target.checked && errors.privacy) {
+                      setErrors((prev) => { const n = { ...prev }; delete n.privacy; return n; });
+                    }
+                  }}
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-xs text-gray-600">
+                  Acepto el tratamiento de mis datos personales conforme a la{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Política de Privacidad</a>{' '}
+                  de TIYUY
+                </span>
+              </label>
+              {errors.privacy && (
+                <p className="text-xs text-red-600 ml-7" role="alert">{errors.privacy}</p>
+              )}
+
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => {
+                    setAcceptedTerms(e.target.checked);
+                    if (e.target.checked && errors.terms) {
+                      setErrors((prev) => { const n = { ...prev }; delete n.terms; return n; });
+                    }
+                  }}
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-xs text-gray-600">
+                  Acepto los{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Términos y Condiciones</a>{' '}
+                  de TIYUY
+                </span>
+              </label>
+              {errors.terms && (
+                <p className="text-xs text-red-600 ml-7" role="alert">{errors.terms}</p>
+              )}
             </div>
 
             <div className="flex gap-2 pt-1">

@@ -113,9 +113,16 @@ export default function SeguridadPage() {
 
   const createMutation = useCreateSupportTicket();
 
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleSelectCategory = (category: string) => {
     setSelectedCategory(category);
     setStep('form');
+    scrollToTop();
   };
 
   const handleSubmit = async () => {
@@ -146,6 +153,7 @@ export default function SeguridadPage() {
       }
       await createMutation.mutateAsync(request);
       setStep('success');
+      scrollToTop();
     } catch {
       setError('Error al enviar el reporte. Intenta de nuevo.');
     }
@@ -158,6 +166,7 @@ export default function SeguridadPage() {
     } else if (step === 'category') {
       setStep('info');
     }
+    scrollToTop();
   };
 
   const resetForm = () => {

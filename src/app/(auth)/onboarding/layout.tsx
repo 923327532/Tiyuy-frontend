@@ -10,7 +10,7 @@ export default function OnboardingLayout({
   const { currentStep, totalSteps, progress } = useOnboarding();
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
+    <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Stepper header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -21,7 +21,7 @@ export default function OnboardingLayout({
             {Math.round(progress)}% completado
           </span>
         </div>
-        
+
         {/* Progress bar */}
         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
@@ -31,15 +31,15 @@ export default function OnboardingLayout({
         </div>
 
         {/* Steps labels */}
-        <div className="grid grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
           <div className={`text-center ${currentStep >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className="text-sm font-medium">Bienvenida</div>
+            <div className="text-xs sm:text-sm font-medium">Bienvenida</div>
           </div>
           <div className={`text-center ${currentStep >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className="text-sm font-medium">Verificación KYC</div>
+            <div className="text-xs sm:text-sm font-medium">Verificación KYC</div>
           </div>
           <div className={`text-center ${currentStep >= 3 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className="text-sm font-medium">Configuración</div>
+            <div className="text-xs sm:text-sm font-medium">Configuración</div>
           </div>
         </div>
       </div>

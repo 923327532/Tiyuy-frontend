@@ -109,7 +109,7 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
     transactionType: 'RENT' as const,
     sort: 'createdAt,desc',
     page: resolvedSearchParams.page ? Number(resolvedSearchParams.page) : 0,
-    size: 9, // Cambiado de 20 a 9 para mostrar 3x3 grid
+    size: 15, // 5 columnas x 3 filas = 15 propiedades por página
     type: propertyType as any,
     ...(isAllPeru ? {} : isMainProvince ? { province: district } : { district }),
     ...(isFiltered
@@ -176,9 +176,9 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
 
             <div className="lg:col-span-3">
               <div className="mb-4 flex items-center justify-between">
-                <h1 className="text-lg font-semibold text-gray-900">
+                <h1 className="text-lg font-semibold text-[var(--text-primary)]">
                   {propertyTypeLabel} en {district}
-                  <span className="ml-2 text-sm font-normal text-gray-500">
+                  <span className="ml-2 text-sm font-normal text-[var(--text-muted)]">
                     ({result.pagination.totalElements} propiedades)
                   </span>
                 </h1>

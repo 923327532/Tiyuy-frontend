@@ -106,7 +106,7 @@ export default function InmobiliariasPage() {
   const maxRiser = Math.max(...zoneTrend.map(z => Math.abs(z.changePct)), 1);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg-secondary)]">
       {/* Hero */}
       <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
@@ -140,26 +140,26 @@ export default function InmobiliariasPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12 sm:space-y-16">
         {/* Métricas rápidas */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <p className="text-3xl font-bold text-gray-900">{radar?.totalDevelopers || '—'}</p>
-            <p className="text-sm text-gray-500 mt-1">Empresas que confían</p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-light)] p-5">
+            <p className="text-3xl font-bold text-[var(--text-primary)]">{radar?.totalDevelopers || '—'}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Empresas que confían</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <p className="text-3xl font-bold text-gray-900">{totalPublished > 0 ? totalPublished : '—'}</p>
-            <p className="text-sm text-gray-500 mt-1">Propiedades publicadas</p>
+          <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-light)] p-5">
+            <p className="text-3xl font-bold text-[var(--text-primary)]">{totalPublished > 0 ? totalPublished : '—'}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Propiedades publicadas</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <p className="text-3xl font-bold text-gray-900">{totalViews > 0 ? formatCompact(totalViews) : '—'}</p>
-            <p className="text-sm text-gray-500 mt-1">Vistas totales</p>
+          <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-light)] p-5">
+            <p className="text-3xl font-bold text-[var(--text-primary)]">{totalViews > 0 ? formatCompact(totalViews) : '—'}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Vistas totales</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <p className="text-3xl font-bold text-gray-900">{totalContacts > 0 ? formatCompact(totalContacts) : '—'}</p>
-            <p className="text-sm text-gray-500 mt-1">Contactos generados</p>
+          <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-light)] p-5">
+            <p className="text-3xl font-bold text-[var(--text-primary)]">{totalContacts > 0 ? formatCompact(totalContacts) : '—'}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Contactos generados</p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-5">
-            <p className="text-3xl font-bold text-gray-900">{radar?.totalProjects || '—'}</p>
-            <p className="text-sm text-gray-500 mt-1">Proyectos activos</p>
+          <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-light)] p-5">
+            <p className="text-3xl font-bold text-[var(--text-primary)]">{radar?.totalProjects || '—'}</p>
+            <p className="text-sm text-[var(--text-secondary)] mt-1">Proyectos activos</p>
           </div>
         </div>
 
@@ -167,11 +167,11 @@ export default function InmobiliariasPage() {
         {!loading && radar && (
           <div className="space-y-8">
             {/* 1. Tendencia de publicaciones por zona */}
-            <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7">
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-light)]/80 shadow-sm p-7">
               <div className="flex items-start justify-between mb-6">
                 <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Zonas con mayor crecimiento</h3>
-                  <p className="text-sm text-gray-400">
+                  <h3 className="text-lg font-semibold text-[var(--text-primary)] tracking-tight">Zonas con mayor crecimiento</h3>
+                  <p className="text-sm text-[var(--text-muted)]">
                     {topRiser
                       ? `${topRiser.district} lidera con ${topRiser.changePct > 0 ? '+' : ''}${topRiser.changePct.toFixed(1)}% de variación en precio`
                       : 'Variación de precio por distrito'}
@@ -182,7 +182,7 @@ export default function InmobiliariasPage() {
                 </div>
               </div>
               {zoneTrend.length === 0 ? (
-                <p className="text-sm text-gray-400 py-4">No hay datos suficientes</p>
+                <p className="text-sm text-[var(--text-muted)] py-4">No hay datos suficientes</p>
               ) : (
                 <div className="space-y-3">
                   {zoneTrend.map((z, i) => {
@@ -190,15 +190,15 @@ export default function InmobiliariasPage() {
                     const isPositive = z.changePct >= 0;
                     return (
                       <div key={z.district} className="flex items-center gap-3">
-                        <span className="w-6 text-xs font-semibold text-gray-400 text-right">{i + 1}</span>
+                        <span className="w-6 text-xs font-semibold text-[var(--text-muted)] text-right">{i + 1}</span>
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium text-gray-900">{z.district}</span>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{z.district}</span>
                             <span className={`text-xs font-bold ${isPositive ? 'text-emerald-600' : 'text-red-600'}`}>
                               {isPositive ? '+' : ''}{z.changePct.toFixed(1)}%
                             </span>
                           </div>
-                          <div className="w-full bg-gray-100 rounded-full h-2">
+                          <div className="w-full bg-[var(--bg-tertiary)] rounded-full h-2">
                             <div className={`h-2 rounded-full ${isPositive ? 'bg-emerald-500' : 'bg-red-400'}`}
                               style={{ width: `${Math.min(barW, 100)}%` }} />
                           </div>
@@ -206,7 +206,7 @@ export default function InmobiliariasPage() {
                       </div>
                     );
                   })}
-                  <p className="text-xs text-gray-400 pt-2">
+                  <p className="text-xs text-[var(--text-muted)] pt-2">
                     {zoneTrend.filter(z => z.changePct > 0).length} zonas en crecimiento y {zoneTrend.filter(z => z.changePct < 0).length} con ajuste a la baja
                   </p>
                 </div>
@@ -214,11 +214,11 @@ export default function InmobiliariasPage() {
             </div>
 
             {/* 2. Oferta disponible por tipo */}
-            <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7">
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-light)]/80 shadow-sm p-7">
               <div className="flex items-start justify-between mb-6">
                 <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Oferta por tipo de propiedad</h3>
-                  <p className="text-sm text-gray-400">
+                  <h3 className="text-lg font-semibold text-[var(--text-primary)] tracking-tight">Oferta por tipo de propiedad</h3>
+                  <p className="text-sm text-[var(--text-muted)]">
                     {dominantType
                       ? `${dominantType.label} representa la mayor oferta con ${dominantType.count} publicaciones`
                       : 'Distribución de la oferta actual'}
@@ -229,7 +229,7 @@ export default function InmobiliariasPage() {
                 </div>
               </div>
               {typeData.length === 0 ? (
-                <p className="text-sm text-gray-400 py-4">No hay datos suficientes</p>
+                <p className="text-sm text-[var(--text-muted)] py-4">No hay datos suficientes</p>
               ) : (
                 <div className="space-y-4">
                   {typeData.map((t) => {
@@ -238,10 +238,10 @@ export default function InmobiliariasPage() {
                       <div key={t.label} className="flex items-center gap-3">
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium text-gray-900">{t.label}</span>
-                            <span className="text-sm font-semibold text-gray-700">{t.count}</span>
+                            <span className="text-sm font-medium text-[var(--text-primary)]">{t.label}</span>
+                            <span className="text-sm font-semibold text-[var(--text-secondary)]">{t.count}</span>
                           </div>
-                          <div className="w-full bg-gray-100 rounded-full h-2.5">
+                          <div className="w-full bg-[var(--bg-tertiary)] rounded-full h-2.5">
                             <div className="h-2.5 rounded-full bg-brand" style={{ width: `${Math.min(pct, 100)}%` }} />
                           </div>
                         </div>
@@ -253,11 +253,11 @@ export default function InmobiliariasPage() {
             </div>
 
             {/* 3. Zonas con mayor movimiento */}
-            <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7">
+            <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-light)]/80 shadow-sm p-7">
               <div className="flex items-start justify-between mb-6">
                 <div className="space-y-1">
-                  <h3 className="text-lg font-semibold text-gray-900 tracking-tight">Zonas con mayor movimiento</h3>
-                  <p className="text-sm text-gray-400">
+                  <h3 className="text-lg font-semibold text-[var(--text-primary)] tracking-tight">Zonas con mayor movimiento</h3>
+                  <p className="text-sm text-[var(--text-muted)]">
                     {hottestZone
                       ? `${hottestZone.district} lidera en actividad con ${hottestZone.heatScore} pts de heat score`
                       : 'Ranking de distritos más activos'}
@@ -268,26 +268,26 @@ export default function InmobiliariasPage() {
                 </div>
               </div>
               {hotZones.length === 0 ? (
-                <p className="text-sm text-gray-400 py-4">No hay datos suficientes</p>
+                <p className="text-sm text-[var(--text-muted)] py-4">No hay datos suficientes</p>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-b border-gray-100">
-                        <th className="text-left py-3 px-3 font-semibold text-gray-500 text-xs uppercase">#</th>
-                        <th className="text-left py-3 px-3 font-semibold text-gray-500 text-xs uppercase">Distrito</th>
-                        <th className="text-right py-3 px-3 font-semibold text-gray-500 text-xs uppercase">Vistas</th>
-                        <th className="text-right py-3 px-3 font-semibold text-gray-500 text-xs uppercase">Contactos</th>
-                        <th className="text-right py-3 px-3 font-semibold text-gray-500 text-xs uppercase">Heat</th>
+                      <tr className="border-b border-[var(--border-light)]">
+                        <th className="text-left py-3 px-3 font-semibold text-[var(--text-secondary)] text-xs uppercase">#</th>
+                        <th className="text-left py-3 px-3 font-semibold text-[var(--text-secondary)] text-xs uppercase">Distrito</th>
+                        <th className="text-right py-3 px-3 font-semibold text-[var(--text-secondary)] text-xs uppercase">Vistas</th>
+                        <th className="text-right py-3 px-3 font-semibold text-[var(--text-secondary)] text-xs uppercase">Contactos</th>
+                        <th className="text-right py-3 px-3 font-semibold text-[var(--text-secondary)] text-xs uppercase">Heat</th>
                       </tr>
                     </thead>
                     <tbody>
                       {hotZones.map((z, i) => (
-                        <tr key={z.district} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                          <td className="py-3 px-3 text-gray-400 font-medium">{i + 1}</td>
-                          <td className="py-3 px-3 font-semibold text-gray-900">{z.district}</td>
-                          <td className="py-3 px-3 text-right text-gray-700">{formatCompact(z.totalViews)}</td>
-                          <td className="py-3 px-3 text-right text-gray-700">{formatCompact(z.totalContacts)}</td>
+                        <tr key={z.district} className="border-b border-[var(--border-light)] hover:bg-[var(--bg-secondary)] transition-colors">
+                          <td className="py-3 px-3 text-[var(--text-muted)] font-medium">{i + 1}</td>
+                          <td className="py-3 px-3 font-semibold text-[var(--text-primary)]">{z.district}</td>
+                          <td className="py-3 px-3 text-right text-[var(--text-secondary)]">{formatCompact(z.totalViews)}</td>
+                          <td className="py-3 px-3 text-right text-[var(--text-secondary)]">{formatCompact(z.totalContacts)}</td>
                           <td className="py-3 px-3 text-right">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${
                               z.heatScore >= 70 ? 'bg-red-50 text-red-700' : z.heatScore >= 40 ? 'bg-orange-50 text-orange-700' : 'bg-yellow-50 text-yellow-700'
@@ -297,7 +297,7 @@ export default function InmobiliariasPage() {
                       ))}
                     </tbody>
                   </table>
-                  <p className="text-xs text-gray-400 pt-3">
+                  <p className="text-xs text-[var(--text-muted)] pt-3">
                     {hotZones.length} distritos concentran la mayor actividad del portal
                   </p>
                 </div>
@@ -309,37 +309,37 @@ export default function InmobiliariasPage() {
         {/* Beneficios */}
         <div>
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">¿Por qué elegir Tiyuy?</h2>
-            <p className="text-gray-400 mt-2 max-w-xl mx-auto">Herramientas profesionales para impulsar tu negocio inmobiliario</p>
+            <h2 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">¿Por qué elegir Tiyuy?</h2>
+            <p className="text-[var(--text-muted)] mt-2 max-w-xl mx-auto">Herramientas profesionales para impulsar tu negocio inmobiliario</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {BENEFITS.map((b, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-md hover:border-gray-200 transition-all">
+              <div key={i} className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-light)] p-6 hover:shadow-md hover:border-[var(--border-color)] transition-all">
                 <div className="w-12 h-12 rounded-xl bg-brand/10 flex items-center justify-center text-brand mb-4">{b.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{b.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{b.desc}</p>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">{b.title}</h3>
+                <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{b.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* FAQ */}
-        <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-8">
+        <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-light)]/80 shadow-sm p-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Preguntas frecuentes</h2>
-            <p className="text-gray-400 text-sm mt-1">Todo lo que necesitas saber para empezar</p>
+            <h2 className="text-2xl font-bold text-[var(--text-primary)]">Preguntas frecuentes</h2>
+            <p className="text-[var(--text-muted)] text-sm mt-1">Todo lo que necesitas saber para empezar</p>
           </div>
           <div className="max-w-3xl mx-auto space-y-3">
             {FAQS.map((faq, i) => (
-              <div key={i} className="border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 transition-all">
+              <div key={i} className="border border-[var(--border-color)] rounded-xl overflow-hidden hover:border-[var(--border-color)] transition-all">
                 <button onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors">
-                  <span className="font-medium text-gray-900 text-sm pr-4">{faq.q}</span>
-                  {expandedFaq === i ? <ChevronUp className="w-4 h-4 text-brand flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />}
+                  className="w-full flex items-center justify-between p-4 text-left hover:bg-[var(--bg-secondary)] transition-colors">
+                  <span className="font-medium text-[var(--text-primary)] text-sm pr-4">{faq.q}</span>
+                  {expandedFaq === i ? <ChevronUp className="w-4 h-4 text-brand flex-shrink-0" /> : <ChevronDown className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />}
                 </button>
                 {expandedFaq === i && (
-                  <div className="px-4 pb-4 border-t border-gray-100 pt-3">
-                    <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+                  <div className="px-4 pb-4 border-t border-[var(--border-light)] pt-3">
+                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -354,7 +354,7 @@ export default function InmobiliariasPage() {
             Comienza a publicar, conectar y cerrar más negocios. Crea tu cuenta profesional hoy.
           </p>
           <Link href="/register"
-            className="inline-flex items-center gap-2 px-8 py-3 bg-white text-brand-dark font-semibold rounded-xl hover:bg-gray-50 transition-all shadow-lg">
+            className="inline-flex items-center gap-2 px-8 py-3 bg-white text-brand-dark font-semibold rounded-xl hover:bg-[var(--bg-secondary)] transition-all shadow-lg">
             <Building2 className="w-4 h-4" />
             Crear cuenta profesional
           </Link>

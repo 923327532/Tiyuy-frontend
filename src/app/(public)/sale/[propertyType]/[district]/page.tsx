@@ -181,15 +181,9 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
 
   const propertyRepo = new PropertyRepository();
 
-  const propertyType = PROPERTY_TYPE_MAP[resolvedParams.propertyType];
+  const propertyType = PROPERTY_TYPE_MAP[resolvedParams.propertyType] || resolvedParams.propertyType;
   const district = toDistrictName(resolvedParams.district);
   
-  console.log('🏘️ District procesado:', {
-    original: resolvedParams.district,
-    procesado: district,
-    propertyType: resolvedParams.propertyType,
-    mappedType: propertyType
-  });
 
   const isFiltered = resolvedSearchParams.filtered === '1';
 
@@ -201,7 +195,7 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
     transactionType: 'SALE' as const,
     sort: 'createdAt,desc',
     page: resolvedSearchParams.page ? Number(resolvedSearchParams.page) : 0,
-    size: 9,
+    size: 15,
     type: propertyType as any,
     ...(isAllPeru ? {} : isMainProvince ? { province: district } : { district }),
     ...(isFiltered
@@ -219,7 +213,7 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
 
   const siteUrl = env.siteUrl;
   const result = await propertyRepo.search(filters);
-  const propertyTypeLabel = PROPERTY_TYPE_LABELS[resolvedParams.propertyType];
+  const propertyTypeLabel = PROPERTY_TYPE_LABELS[resolvedParams.propertyType] || resolvedParams.propertyType;
 
   // Crear searchFn para el mapa (usa el repositorio de propiedades)
   const propertySearchFn = async (mapFilters: MapFilters) => {
@@ -340,7 +334,7 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
         }}
       />
 
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-[var(--bg-secondary)]">
         <div className="px-8 pt-6 pb-8">
 
           {/* ── BARRA DE BÚSQUEDA SUPERIOR ── */}
@@ -355,7 +349,7 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
             <aside className="lg:col-span-1">
               <div className="sticky top-4">
                 <Suspense fallback={
-                  <div className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse h-96" />
+                  <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-4 animate-pulse h-96" />
                 }>
                   <PropertyFiltersClient
                     initialFilters={filters}
@@ -369,9 +363,9 @@ export default async function PropertyCategoryPage({ params, searchParams }: Pro
             <div className="lg:col-span-3">
               {/* Título de resultados */}
               <div className="mb-4 flex items-center justify-between">
-                <h1 className="text-lg font-semibold text-gray-900">
+                <h1 className="text-lg font-semibold text-[var(--text-primary)]">
                   {propertyTypeLabel} en {district}
-                  <span className="ml-2 text-sm font-normal text-gray-500">
+                  <span className="ml-2 text-sm font-normal text-[var(--text-secondary)]">
                     ({result.pagination.totalElements} propiedades)
                   </span>
                 </h1>

@@ -1,14 +1,13 @@
 import type { Metadata } from 'next';
 import { Hind } from 'next/font/google';
 import './globals.css';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { ClientLayout } from './ClientLayout';
 
 const hind = Hind({
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
+  display: 'swap',
+  preload: true,
 });
 
 const baseUrl = 'https://tiyuy.com';
@@ -61,9 +60,9 @@ export const metadata: Metadata = {
       'Plataforma líder de bienes raíces en Perú. Departamentos, casas, terrenos y locales en venta y alquiler.',
     images: [
       {
-        url: '/assets/images/logo.png',
-        width: 512,
-        height: 512,
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
         alt: 'TIYUY - Bienes Raíces',
       },
     ],
@@ -74,7 +73,7 @@ export const metadata: Metadata = {
     title: 'TIYUY - Encuentra tu hogar ideal en Perú',
     description:
       'Plataforma líder de bienes raíces en Perú. Departamentos, casas, terrenos y locales en venta y alquiler.',
-    images: ['/assets/images/logo.png'],
+    images: ['/og-image.png'],
     creator: '@tiyuy',
   },
   alternates: {
@@ -86,8 +85,8 @@ export const metadata: Metadata = {
   category: 'bienes raíces',
   classification: 'Bienes Raíces, Inmobiliaria, Propiedades',
   icons: {
-    icon: '/tiyuy.svg',
-    apple: '/assets/images/logo.png',
+    icon: '/tiyuy.ico',
+    apple: '/tiyuy.svg',
   },
   appleWebApp: {
     capable: true,
@@ -108,7 +107,7 @@ const jsonLd = {
   '@type': 'RealEstateOrganization',
   name: 'TIYUY',
   url: baseUrl,
-  logo: `${baseUrl}/assets/images/logo.png`,
+  logo: `${baseUrl}/tiyuy.svg`,
   description:
     'Plataforma líder de bienes raíces en Perú. Encuentra y publica propiedades en venta y alquiler.',
   address: {
@@ -136,7 +135,15 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <script src="https://sdk.mercadopago.com/js/v2" async />
+        {/* 
+          MercadoPago SDK se carga con 'async' y solo cuando se necesita.
+          remove-before-adding payment pages import dynamicly using next/dynamic 
+        */}
+        <script
+          defer
+          data-mercadopago="sdk"
+          src="https://sdk.mercadopago.com/js/v2"
+        />
       </head>
       <body className={hind.className} suppressHydrationWarning>
         <ClientLayout>{children}</ClientLayout>

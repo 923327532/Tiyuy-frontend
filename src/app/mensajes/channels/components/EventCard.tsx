@@ -43,8 +43,8 @@ export default function EventCard({ event, onEventSelect, onResponse }: EventCar
             onClick={() => onEventSelect(event)}
           >
             <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-br brand rounded-xl flex items-center justify-center mx-auto mb-2">
-                <span className="text-lg font-bold text-brand">
+              <div className="w-12 h-12 bg-brand rounded-xl flex items-center justify-center mx-auto mb-2">
+                <span className="text-lg font-bold text-white">
                   {new Date(event.startDateTime).getDate()}
                 </span>
               </div>

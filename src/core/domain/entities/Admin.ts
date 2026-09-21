@@ -268,6 +268,27 @@ export interface ChangeUserRoleRequest {
   reason?: string;
 }
 
+// Usuario internacional para la sección "Extranjeros" del panel admin.
+// El administrador compara la foto del documento con la selfie y aprueba/rechaza.
+export interface InternationalUserListItem {
+  userId: number;
+  email: string;
+  phone: string;
+  firstName: string;
+  lastName: string;
+  documentType: string; // INTERNATIONAL
+  issuingCountry: string;
+  internationalDocumentType: string; // PASSPORT | NATIONAL_ID | RESIDENCE_PERMIT
+  internationalDocumentNumber: string;
+  documentImageUrl?: string;
+  selfieImageUrl?: string;
+  verificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'MANUAL_REVIEW';
+  verificationResult?: string;
+  verifiedAt?: Date;
+  enabled: boolean;
+  createdAt: Date;
+}
+
 // User properties response from admin endpoint
 export interface UserPropertiesResponse {
   userId: number;

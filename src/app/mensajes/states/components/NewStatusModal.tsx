@@ -2,24 +2,39 @@
 
 import { useCreateStatusPost } from '@/presentation/hooks/useContacts';
 import StatusInput from '@/presentation/components/contacts/StatusInput';
+import { toast } from '@/presentation/store/toastStore';
 import { X } from 'lucide-react';
 
 export default function NewStatusModal({ onClose, userRole }: { onClose: () => void; userRole?: string }) {
     const createStatus = useCreateStatusPost();
 
-    const handleSendStatus = (content: string, textStyle?: string, customColor?: string, location?: string, propertyType?: string) => {
-        createStatus.mutate({
-            content,
-            location: location || undefined,
-            propertyType: propertyType || undefined,
-            isPromoted: false
-        });
-
-        onClose();
+    const handleSendStatus = async (content: string, textStyle?: string, customColor?: string, location?: string, propertyType?: string) => {
+        if (!content.trim()) {
+            toast.error('El contenido del estado no puede estar vacío');
+            return;
+        }
+        if (content.length > 500) {
+            toast.error('El contenido no puede exceder 500 caracteres');
+            return;
+        }
+        try {
+            await createStatus.mutateAsync({
+                content,
+                ...(location ? { location } : {}),
+                ...(propertyType ? { propertyType } : {}),
+                ...(textStyle && textStyle !== 'NORMAL' ? { textStyle } : {}),
+                ...(customColor ? { customColor } : {}),
+                isPromoted: false
+            });
+            onClose();
+        } catch (error: any) {
+            const msg = error?.response?.data?.message || error?.message || 'Error al publicar el estado. Verifica el contenido.';
+            toast.error(msg);
+        }
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-hidden">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">

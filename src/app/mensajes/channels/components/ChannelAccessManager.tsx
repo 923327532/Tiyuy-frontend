@@ -176,7 +176,7 @@ export function ChannelAccessManager({
         </h4>
         {adminUser ? (
           <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-blue-100 shadow-sm">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-semibold">
+            <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-semibold">
               {adminUser.avatar ? (
                 <img src={adminUser.avatar} alt="" className="w-full h-full rounded-full object-cover" />
               ) : (
@@ -240,7 +240,7 @@ export function ChannelAccessManager({
                     key={user.id}
                     className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-white text-sm font-semibold">
+                    <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center text-white text-sm font-semibold">
                       {user.avatar ? (
                         <img src={user.avatar} alt="" className="w-full h-full rounded-full object-cover" />
                       ) : (
@@ -259,7 +259,7 @@ export function ChannelAccessManager({
                     <button
                       onClick={() => handleGrantPermission(user.id)}
                       disabled={grantPermission.isPending}
-                      className="p-2 bg-brand text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="p-2 bg-brand text-white rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                       title="Dar permiso de publicación"
                     >
                       {grantPermission.isPending ? (
@@ -357,7 +357,7 @@ function CollaboratorCard({ collaborator, canManage, onRevoke, isRevoking, isExp
         onClick={onToggle}
         className="flex items-center gap-3 p-3 cursor-pointer"
       >
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-semibold flex-shrink-0">
+        <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-semibold flex-shrink-0">
           {collaborator.userAvatar ? (
             <img 
               src={collaborator.userAvatar} 

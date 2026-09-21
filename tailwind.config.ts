@@ -8,6 +8,15 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/presentation/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    'text-brand',
+    'border-brand',
+    'bg-brand',
+    'bg-brand-light',
+    'text-teal-600',
+    'bg-teal-600',
+    'hover:bg-teal-700',
+  ],
   theme: {
     extend: {
       colors: {

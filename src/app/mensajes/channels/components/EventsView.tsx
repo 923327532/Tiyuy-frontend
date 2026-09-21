@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Home, User, Bell, Plus, MapPin, Calendar, Users, Star, Share2, ChevronDown, Pin, Check, Mail, MoreHorizontal } from 'lucide-react';
+import { Search, Home, User, Bell, Plus, MapPin, Calendar, Users, Star, Share2, ChevronDown, Pin, Check, Mail, MoreHorizontal, Menu, X } from 'lucide-react';
 import { useChannelEvents, useChannelUpcomingEvents, useRespondToEvent, useChannelSubscribers } from '@/presentation/hooks/useContacts';
 import EventCard from './EventCard';
 
@@ -20,6 +20,16 @@ export default function EventsView({
   onEventSelect,
   onCreateEvent 
 }: EventsViewProps) {
+  const [isMobile, setIsMobile] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'upcoming' | 'following' | 'featured'>('upcoming');
   const [showUserEventsDropdown, setShowUserEventsDropdown] = useState(false);
@@ -70,13 +80,37 @@ export default function EventsView({
   const filteredEvents = getFilteredEvents();
 
   return (
-    <div className="flex h-full bg-gray-50">
+    <div className="flex h-full bg-gray-50 relative">
+      {isMobile && showMobileSidebar && (
+        <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowMobileSidebar(false)} />
+      )}
+      {isMobile && (
+        <button
+          onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+          className="fixed top-3 left-3 z-50 p-2 bg-white rounded-lg shadow-md border border-gray-200"
+        >
+          <Menu className="w-5 h-5 text-gray-700" />
+        </button>
+      )}
       {/* SIDEBAR IZQUIERDO */}
-      <div className="w-[280px] bg-white border-r border-gray-200 flex flex-col">
+      <div
+        className={`${
+          isMobile
+            ? `fixed inset-y-0 left-0 z-50 w-[280px] bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${showMobileSidebar ? 'translate-x-0' : '-translate-x-full'}`
+            : 'w-[280px]'
+        } bg-white border-r border-gray-200 flex flex-col`}
+      >
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
-          <h1 className="text-xl font-bold text-gray-900 mb-4">Eventos</h1>
-          
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-bold text-gray-900">Eventos</h1>
+            {isMobile && (
+              <button onClick={() => setShowMobileSidebar(false)} className="p-1 hover:bg-gray-100 rounded-lg">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            )}
+          </div>
+
           {/* Search */}
           <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
             <Search className="w-4 h-4 text-gray-400" />
@@ -133,7 +167,7 @@ export default function EventsView({
           <div className="p-3">
             <button
               onClick={onCreateEvent}
-              className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r brand text-white rounded-lg font-medium hover:from-blue-700 hover:to-teal-700 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2.5 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
             >
               <Plus className="w-4 h-4" />
               Crear nuevo evento
@@ -155,8 +189,8 @@ export default function EventsView({
                   onClick={() => onEventSelect(event)}
                   className="w-full flex items-start gap-2 p-2 hover:bg-gray-50 rounded-lg text-left"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br brand rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-5 h-5 text-brand" />
+                  <div className="w-12 h-12 bg-brand rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Calendar className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-brand mb-1">
@@ -222,7 +256,7 @@ export default function EventsView({
                   onClick={() => setActiveFilter(filter.toLowerCase() as any)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeFilter === filter.toLowerCase()
-                      ? 'bg-gradient-to-r brand text-white'
+                      ? 'bg-brand text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >

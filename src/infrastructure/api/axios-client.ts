@@ -14,12 +14,12 @@ const baseURL =
 
 export const axiosClient = axios.create({
   baseURL,
-  timeout: 60000,
+  timeout: 30000,
 });
 
 export const publicApiClient = axios.create({
   baseURL,
-  timeout: 60000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -39,7 +39,6 @@ axiosClient.interceptors.response.use(
 
     if (shouldRetry) {
       error.config.__retry = true;
-      console.log(' Reintentando request (Render cold start / Network error)...', error.code);
       await new Promise(resolve => setTimeout(resolve, 2000));
       return axiosClient.request(error.config);
     }
@@ -54,7 +53,6 @@ publicApiClient.interceptors.response.use(
   async (error) => {
     if (error.code === 'ECONNABORTED' && error.config && !error.config.__retry) {
       error.config.__retry = true;
-      console.log(' Reintentando request (Render cold start)...');
       return publicApiClient.request(error.config);
     }
 

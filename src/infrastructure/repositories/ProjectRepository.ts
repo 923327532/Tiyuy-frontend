@@ -122,13 +122,11 @@ export class ProjectRepository implements IProjectRepository {
     
     if (filters.district) params.append('district', filters.district);
     if (filters.province) params.append('province', filters.province);
-    if (filters.region) params.append('region', filters.region);
     if (filters.type) params.append('type', filters.type);
     if (filters.phase) params.append('phase', filters.phase);
     if (filters.minPrice) params.append('minPrice', filters.minPrice.toString());
     if (filters.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
     if (filters.isFeatured !== undefined) params.append('isFeatured', filters.isFeatured.toString());
-    if (filters.isVerified !== undefined) params.append('isVerified', filters.isVerified.toString());
     if (filters.page !== undefined) params.append('page', filters.page.toString());
     if (filters.size !== undefined) params.append('size', filters.size.toString());
     if (filters.sort) params.append('sort', filters.sort);

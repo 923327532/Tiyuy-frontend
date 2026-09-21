@@ -356,10 +356,15 @@ export function useUserEvents(userId?: number, page = 0, size = 10) {
   } = useQuery({
     queryKey: ['userEvents', userId, page, size],
     queryFn: async () => {
-      const response = await axiosClient.get(`/contacts/extended/users/events?page=${page}&size=${size}`);
-      return response.data; // Return raw Spring Page structure
+      try {
+        const response = await axiosClient.get(`/contacts/extended/users/events?page=${page}&size=${size}`);
+        return response.data;
+      } catch {
+        return { content: [], totalElements: 0, totalPages: 0, number: page };
+      }
     },
-    enabled: !!userId,
+    enabled: false,
+    retry: false,
   });
 
   const {
@@ -368,8 +373,12 @@ export function useUserEvents(userId?: number, page = 0, size = 10) {
     refetch: refetchUpcomingEvents
   } = useQuery({
     queryKey: ['upcomingEvents', userId],
-    queryFn: () => channelUseCases.getUserUpcomingEvents(userId || 0),
-    enabled: !!userId,
+    queryFn: async () => {
+      try { return await channelUseCases.getUserUpcomingEvents(userId || 0); }
+      catch { return []; }
+    },
+    enabled: false,
+    retry: false,
   });
 
   const {
@@ -378,8 +387,12 @@ export function useUserEvents(userId?: number, page = 0, size = 10) {
     refetch: refetchPastEvents
   } = useQuery({
     queryKey: ['pastEvents', userId],
-    queryFn: () => channelUseCases.getUserPastEvents(userId || 0),
-    enabled: !!userId,
+    queryFn: async () => {
+      try { return await channelUseCases.getUserPastEvents(userId || 0); }
+      catch { return []; }
+    },
+    enabled: false,
+    retry: false,
   });
 
   const {
@@ -388,8 +401,12 @@ export function useUserEvents(userId?: number, page = 0, size = 10) {
     refetch: refetchSavedEvents
   } = useQuery({
     queryKey: ['savedEvents', userId],
-    queryFn: () => channelUseCases.getUserSavedEvents(userId || 0),
-    enabled: !!userId,
+    queryFn: async () => {
+      try { return await channelUseCases.getUserSavedEvents(userId || 0); }
+      catch { return []; }
+    },
+    enabled: false,
+    retry: false,
   });
 
   const saveEventMutation = useMutation({

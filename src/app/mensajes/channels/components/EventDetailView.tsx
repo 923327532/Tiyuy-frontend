@@ -259,7 +259,7 @@ export default function EventDetailView({
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br brand flex items-center justify-center">
+          <div className="w-full h-full bg-brand flex items-center justify-center">
             <Calendar className="w-24 h-24 text-white/50" />
           </div>
         )}
@@ -308,7 +308,7 @@ export default function EventDetailView({
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
                         isRsvped
                           ? 'bg-green-100 text-green-700 border border-green-300'
-                          : 'bg-brand text-white hover:bg-blue-700'
+                          : 'bg-brand text-white hover:opacity-90'
                       }`}
                     >
                       {isRsvped ? <Check className="w-4 h-4" /> : <Calendar className="w-4 h-4" />}
@@ -438,7 +438,7 @@ export default function EventDetailView({
             <div className="bg-white rounded-lg shadow-sm p-4">
               <h3 className="font-semibold text-gray-900 mb-4">Conoce al organizador</h3>
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br brand rounded-full flex items-center justify-center text-white font-bold text-xl">
+                <div className="w-16 h-16 bg-brand rounded-full flex items-center justify-center text-white font-bold text-xl">
                   {event.channelName?.charAt(0).toUpperCase() || 'C'}
                 </div>
                 <div className="flex-1">
@@ -540,7 +540,7 @@ export default function EventDetailView({
                             className="w-10 h-10 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-bold">
+                          <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold">
                             {user.userName?.charAt(0).toUpperCase() || 'U'}
                           </div>
                         )}
@@ -579,7 +579,7 @@ export default function EventDetailView({
                 <div className="space-y-3">
                   {attendees.slice(0, 5).map((attendee: any) => (
                     <div key={attendee.id} className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold">
                         {attendee.userName?.charAt(0).toUpperCase() || 'U'}
                       </div>
                       <div className="flex-1">

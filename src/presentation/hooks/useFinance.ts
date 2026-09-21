@@ -29,6 +29,7 @@ export function useActiveSubscription() {
     staleTime: 0, // Siempre considerar los datos como obsoletos
     refetchOnMount: true, // Siempre refrescar al montar
     refetchOnWindowFocus: true, // Refrescar cuando la ventana gana foco
+    refetchInterval: 15000, // Refrescar cada 15s mientras la página esté visible
   });
 }
 
@@ -79,6 +80,17 @@ export function useSubscribeToPlan() {
       
       toast[type](message);
     },
+  });
+}
+
+export function usePlanPrice(planId: string | number) {
+  const user = authStorage.getUser();
+  
+  return useQuery({
+    queryKey: ['plan', 'price', planId, user?.id],
+    queryFn: () => financeRepo.getPlanPriceForUser(Number(planId)),
+    enabled: !!planId && !!user?.id,
+    staleTime: 30000, // 30s cache
   });
 }
 

@@ -37,7 +37,8 @@ export async function POST(request: NextRequest) {
     // Conectar con el backend real
     try {
       const backendUrl = serverEnv.backendUrl;
-      const response = await fetch(`${backendUrl}/auth/reset-password`, {
+      // El backend SÍ tiene context-path /api (confirmado: POST api.tiyuy.com/api/auth/reset-password → 400)
+      const response = await fetch(`${backendUrl}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

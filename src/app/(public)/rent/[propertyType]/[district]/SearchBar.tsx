@@ -74,14 +74,14 @@ export function SearchBar({ propertyType, district }: { propertyType: string; di
   const selectedLabel = tipos.find(t => t.value === selectedType)?.label || 'Tipo';
 
   return (
-    <div className="w-full max-w-8xl mx-auto bg-white p-4 rounded-xl shadow-md border-2 border-gray-200 mb-6 antialiased text-gray-900">
+    <div className="w-full max-w-8xl mx-auto bg-[var(--bg-card)] p-4 rounded-xl shadow-md border-2 border-[var(--border-color)] mb-6 antialiased text-[var(--text-primary)]">
       <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3 w-full">
 
-        <div className="flex shrink-0 border-2 border-gray-300 rounded-xl overflow-hidden text-sm font-semibold h-12">
+        <div className="flex shrink-0 border-2 border-[var(--border-color)] rounded-xl overflow-hidden text-sm font-semibold h-12">
           <button
             onClick={() => setTransactionType('venta')}
             className={`flex-1 lg:flex-none px-5 py-3 flex items-center justify-center gap-2 transition-colors cursor-pointer ${
-              transactionType === 'venta' ? 'bg-brand text-white font-bold' : 'bg-white text-gray-700 hover:bg-gray-50'
+              transactionType === 'venta' ? 'bg-brand text-white font-bold' : 'bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
             }`}
           >
             {transactionType === 'venta' && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
@@ -89,8 +89,8 @@ export function SearchBar({ propertyType, district }: { propertyType: string; di
           </button>
           <button
             onClick={() => setTransactionType('alquiler')}
-            className={`flex-1 lg:flex-none px-5 py-3 flex items-center justify-center gap-2 border-l-2 border-gray-300 transition-colors cursor-pointer ${
-              transactionType === 'alquiler' ? 'bg-brand text-white font-bold' : 'bg-white text-gray-700 hover:bg-gray-50'
+            className={`flex-1 lg:flex-none px-5 py-3 flex items-center justify-center gap-2 border-l-2 border-[var(--border-color)] transition-colors cursor-pointer ${
+              transactionType === 'alquiler' ? 'bg-brand text-white font-bold' : 'bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
             }`}
           >
             {transactionType === 'alquiler' && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
@@ -101,15 +101,15 @@ export function SearchBar({ propertyType, district }: { propertyType: string; di
         <div className="relative shrink-0 h-12" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full lg:w-auto h-full px-4 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 focus:border-brand focus:ring-2 focus:ring-brand/10 focus:outline-none flex items-center justify-between lg:justify-start gap-4 cursor-pointer transition-colors"
+            className="w-full lg:w-auto h-full px-4 border-2 border-[var(--border-color)] rounded-xl text-sm font-semibold text-[var(--text-secondary)] bg-[var(--bg-card)] hover:bg-[var(--bg-tertiary)] focus:border-brand focus:ring-2 focus:ring-brand/10 focus:outline-none flex items-center justify-between lg:justify-start gap-4 cursor-pointer transition-colors"
           >
             <span className="truncate">{selectedLabel}</span>
-            <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform shrink-0 ${dropdownOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 h-4 text-[var(--text-muted)] transition-transform shrink-0 ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute top-full left-0 mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-lg z-50 w-full lg:min-w-[240px] py-2">
-              <p className="px-4 py-2 text-xs font-bold text-gray-400 uppercase tracking-wider">Tipo de inmueble</p>
+            <div className="absolute top-full left-0 mt-2 bg-[var(--bg-card)] border-2 border-[var(--border-color)] rounded-xl shadow-lg z-50 w-full lg:min-w-[240px] py-2">
+              <p className="px-4 py-2 text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Tipo de inmueble</p>
               <div className="max-h-60 overflow-y-auto">
                 {tipos.map((t) => (
                   <button
@@ -119,25 +119,25 @@ export function SearchBar({ propertyType, district }: { propertyType: string; di
                       localStorage.setItem('selectedPropertyType', t.value);
                       setDropdownOpen(false); 
                     }}
-                    className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-gray-50 transition-colors text-left group cursor-pointer"
+                    className="w-full px-4 py-2.5 flex items-center gap-3 hover:bg-[var(--bg-tertiary)] transition-colors text-left group cursor-pointer"
                   >
                     <span className={`w-4 h-4 border-2 rounded flex items-center justify-center shrink-0 transition-colors ${
-                      selectedType === t.value ? 'bg-brand border-brand' : 'border-gray-300 group-hover:border-gray-400 bg-white'
+                      selectedType === t.value ? 'bg-brand border-brand' : 'border-[var(--border-color)] group-hover:border-[var(--text-muted)] bg-[var(--bg-card)]'
                     }`}>
                       {selectedType === t.value && <Check className="w-3 h-3 text-white" strokeWidth={3.5} />}
                     </span>
-                    <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">{t.label}</span>
+                    <span className="text-sm font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">{t.label}</span>
                   </button>
                 ))}
               </div>
-              <div className="border-t-2 border-gray-100 mt-2 pt-2 px-3 pb-1 flex gap-2">
+              <div className="border-t-2 border-[var(--border-light)] mt-2 pt-2 px-3 pb-1 flex gap-2">
                 <button
                   onClick={() => {
                     setSelectedType('');
                     localStorage.removeItem('selectedPropertyType');
                     setDropdownOpen(false);
                   }}
-                  className="flex-1 py-2 text-xs font-bold text-gray-500 border-2 border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="flex-1 py-2 text-xs font-bold text-[var(--text-muted)] border-2 border-[var(--border-color)] rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors cursor-pointer"
                 >
                   Limpiar
                 </button>

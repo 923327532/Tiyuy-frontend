@@ -34,6 +34,7 @@ export class PaymentRepository implements IPaymentRepository {
         token: request.token,
         amount: request.amount,
         description: request.description,
+        sessionId: request.sessionId, // Para device fingerprint antifraude
       }
     );
 

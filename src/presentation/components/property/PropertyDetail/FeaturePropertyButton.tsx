@@ -117,7 +117,7 @@ export function FeaturePropertyButton({
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+      <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
         {/* Badge del plan actual */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -126,7 +126,7 @@ export function FeaturePropertyButton({
               Plan {planInfo.name}
             </span>
             {!canFeatureProperty && (
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-[var(--text-secondary)]">
                 {planInfo.description}
               </span>
             )}
@@ -137,10 +137,10 @@ export function FeaturePropertyButton({
           <div className="text-3xl mb-3">
             {canFeatureProperty ? '⭐' : '🔒'}
           </div>
-          <h3 className="text-base font-bold text-gray-900 mb-2">
+          <h3 className="text-base font-bold text-[var(--text-primary)] mb-2">
             {canFeatureProperty ? 'Destaca tu propiedad' : 'Mejora tu plan para destacar'}
           </h3>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-[var(--text-secondary)] mb-4">
             {canFeatureProperty 
               ? 'Haz que tu propiedad aparezca en la página principal y reciba más visitas'
               : 'El destacado de propiedades está disponible solo para usuarios con plan PRO'
@@ -152,7 +152,7 @@ export function FeaturePropertyButton({
             className={`w-full px-4 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 ${
               canFeatureProperty
                 ? 'bg-yellow-500 text-white hover:bg-yellow-600 disabled:bg-gray-400 disabled:cursor-not-allowed'
-                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-[var(--bg-tertiary)] text-[var(--text-tertiary)] cursor-not-allowed'
             }`}
           >
             {isLoading ? (
@@ -172,7 +172,7 @@ export function FeaturePropertyButton({
             )}
           </button>
           {!canFeatureProperty && (
-            <p className="text-xs text-gray-500 mt-3">
+            <p className="text-xs text-[var(--text-tertiary)] mt-3">
               <span className="font-semibold">Plan PRO:</span> Destaca tus propiedades y recibe más visitas
             </p>
           )}

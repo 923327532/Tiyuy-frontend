@@ -38,37 +38,28 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      ></div>
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
 
       {/* Modal */}
-      <div
-        className={`
-          relative bg-white rounded-2xl shadow-2xl
-          w-full ${sizes[size]}
-          max-h-[90vh] overflow-y-auto
-          animate-in fade-in zoom-in duration-200
-        `}
-      >
-        {/* Header */}
+      <div className={`
+        relative rounded-t-2xl md:rounded-2xl bg-white dark:bg-gray-800 shadow-2xl flex flex-col overflow-hidden
+        w-full mx-0 md:mx-4 max-h-[calc(100vh-80px)] md:max-h-[85vh] ${sizes[size]}
+        animate-in slide-in-from-bottom md:zoom-in-95 duration-300
+      `} style={{ marginTop: '16px' }}>
+        {/* Header - fixed */}
         {title && (
-          <div className="flex items-center justify-between px-4 py-3 border-b border-green-300 bg-[#00E676] rounded-t-2xl">
-            <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-600 hover:text-gray-900 transition-colors p-1 hover:bg-green-300 rounded-lg"
-            >
+          <div className="flex-none flex items-center justify-between px-4 py-3 border-b border-[#054d44] bg-green-600 md:rounded-t-2xl rounded-t-2xl">
+            <h2 className="text-lg font-semibold text-white">{title}</h2>
+            <button onClick={onClose} className="text-white/80 hover:text-white transition-colors p-1 hover:bg-white/20 rounded-lg">
               <X className="w-5 h-5" />
             </button>
           </div>
         )}
 
-        {/* Content */}
-        <div className="p-4">{children}</div>
+        {/* Content - scrollable */}
+        <div className="flex-1 min-h-0 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

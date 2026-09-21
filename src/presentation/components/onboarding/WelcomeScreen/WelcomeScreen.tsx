@@ -22,7 +22,7 @@ export const BienvenidaScreen: React.FC = () => {
         <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
           <Folder className="w-12 h-12 text-white" />
         </div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-4">
           ¡Bienvenido a TIYUY!
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">

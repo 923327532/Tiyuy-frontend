@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import { AlertTriangle, Loader2, Building, Building2 } from 'lucide-react';
+import { AlertTriangle, Loader2, Building, Building2, MapIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { ProjectRepository } from '@/infrastructure/repositories/ProjectRepository';
 import { ProjectCard } from '@/presentation/components/project/ProjectCard/ProjectCard';
@@ -41,11 +41,22 @@ export default function ProjectsContent() {
   });
 
   const projectRepo = new ProjectRepository();
-  const { searchResult: mapResult, search: searchMap, selectProject: selectMapProject, selectedProjectId: selectedMapId } = useProjectMap();
+  const { searchResult: mapResult, search: searchMap, selectProject: selectMapProject, selectedProjectId: selectedMapId, reset: resetProjectMap } = useProjectMap();
 
-  // Cargar proyectos para el mini mapa (usa el mismo search del modal)
+  // Resetear el store al montar para evitar datos zombies de navegación SPA
+  // y forzar que el mini mapa siempre cargue desde cero
   useEffect(() => {
+    resetProjectMap();
+    setMiniLoading(true);
     searchMap({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Resetear el store al desmontar para que al volver no haya datos zombies
+  useEffect(() => {
+    return () => {
+      resetProjectMap();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -169,7 +180,7 @@ export default function ProjectsContent() {
               </p>
             </div>
 
-            {/* Mini Mapa interactivo */}
+            {/* Mini Mapa interactivo - desktop */}
             <div className="hidden lg:block flex-shrink-0 ml-auto lg:mr-8 xl:mr-16">
               <div
                 onClick={() => setShowMapModal(true)}
@@ -191,14 +202,23 @@ export default function ProjectsContent() {
                     </div>
                   )}
                 </div>
-                {/* Overlay sutil en hover */}
                 <div className="absolute inset-0 rounded-[18px] bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                {/* Badge "Explorar mapa" */}
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0 shadow-sm flex items-center gap-1.5">
                   <Building className="w-3 h-3" />
                   Explorar mapa
                 </div>
               </div>
+            </div>
+
+            {/* Botón mapa en mobile - pequeño */}
+            <div className="lg:hidden">
+              <button
+                onClick={() => setShowMapModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white text-xs font-medium hover:bg-white/30 transition-all"
+              >
+                <MapIcon className="w-3 h-3" />
+                Mapa
+              </button>
             </div>
           </div>
         </div>

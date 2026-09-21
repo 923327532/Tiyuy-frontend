@@ -1,8 +1,3 @@
-/**
- * Admin Plans and Monetization Page
- * Complete subscription and payment management with real backend integration
- */
-
 'use client';
 
 import { useState } from 'react';
@@ -10,7 +5,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   useFinanceStats,
   useSubscriptionPlans,
+  useCreateSubscriptionPlan,
   useUpdateSubscriptionPlan,
+  useDeleteSubscriptionPlan,
   useTogglePlanStatus,
   useAgencyPlanDiscounts,
   useCreateAgencyDiscount
@@ -19,7 +16,7 @@ import { usePermissions } from '@/presentation/hooks/usePermissions';
 import { adminRepository } from '@/infrastructure/repositories/AdminRepository';
 import { Card, CardHeader, CardTitle, CardContent } from '@/presentation/components/ui/Card';
 import { RealtimeFinanceChart } from '@/presentation/components/admin/RealtimeFinanceChart/RealtimeFinanceChart';
-import { TrendingUp, CreditCard, Users, RefreshCw, DollarSign } from 'lucide-react';
+import { TrendingUp, CreditCard, Users, RefreshCw, DollarSign, Plus } from 'lucide-react';
 import {
   FinanceStatsDto,
   SubscriptionPlan,
@@ -29,6 +26,7 @@ import {
 // Componentes y Modales Refactorizados
 import { PlanCard } from '@/presentation/components/admin/PlansModals/PlanCard';
 import { EditPlanModal } from '@/presentation/components/admin/PlansModals/EditPlanModal';
+import { CreatePlanModal } from '@/presentation/components/admin/PlansModals/CreatePlanModal';
 import { DiscountModal } from '@/presentation/components/admin/PlansModals/DiscountModal';
 
 export default function PlansPage() {
@@ -36,6 +34,15 @@ export default function PlansPage() {
   const [isEditPlanModalOpen, setIsEditPlanModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(null);
   const [editForm, setEditForm] = useState<Partial<SubscriptionPlan>>({});
+
+  // Create plan state
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Delete confirmation state
+  const [deleteConfirm, setDeleteConfirm] = useState<{isOpen: boolean; plan: SubscriptionPlan | null}>({
+    isOpen: false,
+    plan: null,
+  });
 
   // Agency discount state
   const [isDiscountModalOpen, setIsDiscountModalOpen] = useState(false);
@@ -56,17 +63,15 @@ export default function PlansPage() {
   const { data: financeStats, isLoading: statsLoading } = useFinanceStats();
   const { data: plans, isLoading: plansLoading } = useSubscriptionPlans();
 
-  // Debug logging para verificar datos
-  console.log('Plans data in component:', plans);
-  console.log('Plans loading:', plansLoading);
-
   const handleRefreshData = () => {
     queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard', 'financeStats'] });
     queryClient.invalidateQueries({ queryKey: ['admin', 'subscriptions', 'plans'] });
   };
 
   // Plan management hooks
+  const createPlanMutation = useCreateSubscriptionPlan();
   const updatePlanMutation = useUpdateSubscriptionPlan();
+  const deletePlanMutation = useDeleteSubscriptionPlan();
   const togglePlanMutation = useTogglePlanStatus();
   const createDiscountMutation = useCreateAgencyDiscount();
 
@@ -89,28 +94,46 @@ export default function PlansPage() {
     setIsEditPlanModalOpen(true);
   };
 
+  // Handle create plan
+  const handleCreatePlan = async (planData: any) => {
+    try {
+      await createPlanMutation.mutateAsync(planData);
+      setIsCreateModalOpen(false);
+    } catch (error) {
+      // Error handled by hook
+    }
+  };
+
   // Handle save plan
   const handleSavePlan = async () => {
     if (!selectedPlan) return;
-    
-    console.log('Updating plan:', selectedPlan.id);
-    console.log('With data:', editForm);
     
     try {
       await updatePlanMutation.mutateAsync({
         planId: selectedPlan.id,
         plan: editForm
       });
-      console.log('Plan updated successfully');
       setIsEditPlanModalOpen(false);
     } catch (error) {
-      console.error('Error updating plan:', error);
+      // Error handled by hook
+    }
+  };
+
+  // Handle delete plan
+  const handleDeletePlan = async () => {
+    if (!deleteConfirm.plan) return;
+    
+    try {
+      await deletePlanMutation.mutateAsync(deleteConfirm.plan.id);
+      setDeleteConfirm({ isOpen: false, plan: null });
+    } catch (error) {
+      // Error handled by hook
     }
   };
 
   // Handle toggle plan status
   const handleTogglePlan = async (planId: number) => {
-    if (confirm('Are you sure you want to toggle this plan status?')) {
+    if (confirm('¿Estás seguro de cambiar el estado de este plan?')) {
       await togglePlanMutation.mutateAsync(planId);
     }
   };
@@ -160,7 +183,6 @@ export default function PlansPage() {
         }
       }
     } catch (error) {
-      console.error('Search failed:', error);
       alert('Error buscando. Verifica el RUC o DNI.');
     } finally {
       setIsSearching(false);
@@ -191,100 +213,6 @@ export default function PlansPage() {
     
     setIsDiscountModalOpen(false);
   };
-
-  // Plan columns
-  const planColumns = [
-    {
-      key: 'name' as keyof SubscriptionPlan,
-      label: 'Plan',
-      sortable: true,
-      render: (value: string, plan: SubscriptionPlan) => (
-        <div>
-          <div className="font-medium text-gray-900">{plan.displayName}</div>
-          <div className="text-sm text-gray-500">{value}</div>
-        </div>
-      )
-    },
-    {
-      key: 'priceInPen' as keyof SubscriptionPlan,
-      label: 'Precio (PEN)',
-      sortable: true,
-      render: (value: number) => (
-        <div className="font-medium text-green-600">S/ {value?.toLocaleString()}</div>
-      )
-    },
-    {
-      key: 'priceInUsd' as keyof SubscriptionPlan,
-      label: 'Precio (USD)',
-      sortable: true,
-      render: (value: number) => (
-        <div className="font-medium text-blue-600">${value?.toLocaleString()}</div>
-      )
-    },
-    {
-      key: 'billingCycle' as keyof SubscriptionPlan,
-      label: 'Facturación',
-      sortable: true,
-      render: (value: string) => {
-        const cycleMap = {
-          'MONTHLY': 'Mensual',
-          'QUARTERLY': 'Trimestral', 
-          'YEARLY': 'Anual',
-          'LIFETIME': 'Vitalicio'
-        };
-        return (
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-            value === 'MONTHLY' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
-          }`}>
-            {cycleMap[value as keyof typeof cycleMap] || value}
-          </span>
-        );
-      }
-    },
-    {
-      key: 'limits' as keyof SubscriptionPlan,
-      label: 'Límites',
-      sortable: false,
-      render: (value: any, item: any) => (
-        <div className="text-sm text-gray-600">
-          <div>{item.publicationsLimit || 0} publicaciones</div>
-          <div>{item.projectsLimit || 0} proyectos</div>
-          <div>{item.photosLimit || 0} fotos</div>
-        </div>
-      )
-    },
-    {
-      key: 'isActive' as keyof SubscriptionPlan,
-      label: 'Estado',
-      sortable: true,
-      render: (value: boolean) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-        }`}>
-          {value ? 'Activo' : 'Inactivo'}
-        </span>
-      )
-    }
-  ];
-
-  // Plan actions
-  const planActions = [
-    {
-      label: 'Editar',
-      onClick: handleEditPlan,
-      variant: 'primary' as const
-    },
-    {
-      label: 'Descuentos',
-      onClick: handleManageDiscounts,
-      variant: 'secondary' as const
-    },
-    {
-      label: 'Activar/Desactivar',
-      onClick: (plan: SubscriptionPlan) => handleTogglePlan(plan.id),
-      variant: 'secondary' as const
-    }
-  ];
 
   return (
     <div className="space-y-6">
@@ -406,6 +334,13 @@ export default function PlansPage() {
             <h3 className="text-lg font-bold text-gray-900">Planes de Suscripción</h3>
             <p className="text-sm text-gray-500">Gestiona los planes de suscripción disponibles</p>
           </div>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all text-sm font-semibold shadow-sm active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            Crear Plan
+          </button>
         </div>
 
         {plansLoading ? (
@@ -427,11 +362,20 @@ export default function PlansPage() {
                 onEdit={() => handleEditPlan(plan)}
                 onManageDiscounts={() => handleManageDiscounts(plan)}
                 onToggle={() => handleTogglePlan(plan.id)}
+                onDelete={() => setDeleteConfirm({ isOpen: true, plan })}
               />
             ))}
           </div>
         )}
       </div>
+
+      {/* Create Plan Modal */}
+      <CreatePlanModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreate={handleCreatePlan}
+        isPending={createPlanMutation.isPending}
+      />
 
       {/* Edit Plan Modal */}
       {isEditPlanModalOpen && selectedPlan && (
@@ -444,6 +388,34 @@ export default function PlansPage() {
           onSave={handleSavePlan}
           isPending={updatePlanMutation.isPending}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm.isOpen && deleteConfirm.plan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-in fade-in zoom-in duration-200">
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Eliminar Plan</h3>
+            <p className="text-sm text-gray-500 mb-6">
+              ¿Estás seguro de eliminar el plan <span className="font-semibold text-gray-700">"{deleteConfirm.plan.displayName}"</span>? Esta acción no se puede deshacer y podría afectar suscripciones existentes.
+            </p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirm({ isOpen: false, plan: null })}
+                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                disabled={deletePlanMutation.isPending}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDeletePlan}
+                disabled={deletePlanMutation.isPending}
+                className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+              >
+                {deletePlanMutation.isPending ? 'Eliminando...' : 'Sí, eliminar'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Discount Modal */}

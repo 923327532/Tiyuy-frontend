@@ -118,22 +118,22 @@ export default function PricePerM2Page() {
   const yS = (v: number) => pad.top + chartH - pad.top - pad.bottom - ((v - chartMin) / (chartMax - chartMin)) * (chartH - pad.top - pad.bottom);
 
   if (loading && !viviendaData && !loteData && !proyectoData) {
-    return <div className="min-h-screen bg-white flex items-center justify-center"><div className="text-center space-y-4"><div className="w-10 h-10 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto" /><p className="text-gray-400 text-sm">Cargando indice...</p></div></div>;
+    return <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center"><div className="text-center space-y-4"><div className="w-10 h-10 border-4 border-[var(--brand-primary)] border-t-transparent rounded-full animate-spin mx-auto" /><p className="text-[var(--text-muted)] text-sm">Cargando indice...</p></div></div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-100">
+    <div className="min-h-screen bg-[var(--bg-secondary)]">
+      <div className="bg-[var(--bg-card)] border-b border-[var(--border-color)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-1.5 bg-brand-light text-brand-dark text-xs font-semibold px-3 py-1 rounded-full tracking-wide uppercase"><BarChart3 className="w-3 h-3" />Datos del Portal</div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Indice Tiyuy</h1>
-              <p className="text-gray-500 text-base max-w-2xl">Precio por metro cuadrado, lotes y proyectos. Datos agregados del inventario de Tiyuy.</p>
+              <div className="inline-flex items-center gap-1.5 bg-[var(--brand-primary-light)] text-[var(--brand-primary)] text-xs font-semibold px-3 py-1 rounded-full tracking-wide uppercase"><BarChart3 className="w-3 h-3" />Datos del Portal</div>
+              <h1 className="text-3xl sm:text-4xl font-bold text-[var(--text-primary)] tracking-tight">Indice Tiyuy</h1>
+              <p className="text-[var(--text-secondary)] text-base max-w-2xl">Precio por metro cuadrado, lotes y proyectos. Datos agregados del inventario de Tiyuy.</p>
             </div>
             <div className="flex items-center gap-3">
-              {lastUpdated && <span className="text-xs text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" />{lastUpdated}</span>}
-              <button onClick={fetchData} className="flex items-center gap-2 px-4 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-dark shadow-sm"><RefreshCw className="w-4 h-4" />Actualizar</button>
+              {lastUpdated && <span className="text-xs text-[var(--text-muted)] flex items-center gap-1"><Clock className="w-3 h-3" />{lastUpdated}</span>}
+              <button onClick={fetchData} className="flex items-center gap-2 px-4 py-2.5 bg-[var(--brand-primary)] text-white text-sm font-medium rounded-xl hover:bg-[var(--brand-primary)]/80 shadow-sm"><RefreshCw className="w-4 h-4" />Actualizar</button>
             </div>
           </div>
         </div>
@@ -149,20 +149,20 @@ export default function PricePerM2Page() {
             { k: 'proyectos' as Vertical, l: 'Proyectos', i: <FolderGit className="w-4 h-4" /> },
           ].map(v => (
             <button key={v.k} onClick={() => setVertical(v.k)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-all flex-shrink-0 cursor-pointer ${vertical === v.k ? 'bg-brand text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>{v.i}{v.l}</button>
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-all flex-shrink-0 cursor-pointer ${vertical === v.k ? 'bg-[var(--brand-primary)] text-white shadow-md' : 'bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] border border-[var(--border-color)]'}`}>{v.i}{v.l}</button>
           ))}
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-5">
+        <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] p-5">
           <div className="flex flex-wrap items-end gap-4">
             {/* Operacion */}
             <div>
-              <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1.5">Operacion</label>
+              <label className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase mb-1.5">Operacion</label>
               <div className="flex gap-1.5">
                 {['SALE','RENT'].map(op => (
                   <button key={op} onClick={() => setTxType(op)}
-                    className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${txType === op ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{op === 'SALE' ? 'Venta' : 'Alquiler'}</button>
+                    className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${txType === op ? 'bg-[var(--brand-primary)] text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'}`}>{op === 'SALE' ? 'Venta' : 'Alquiler'}</button>
                 ))}
               </div>
             </div>
@@ -170,11 +170,11 @@ export default function PricePerM2Page() {
             {/* Tipo */}
             {vertical === 'viviendas' && (
               <div>
-                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1.5">Tipo</label>
+                <label className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase mb-1.5">Tipo</label>
                 <div className="flex gap-1.5">
                   {[{v:'',l:'Todos'},{v:'APARTMENT',l:'Dptos'},{v:'HOUSE',l:'Casas'}].map(t => (
                     <button key={t.v} onClick={() => setPropType(t.v)}
-                      className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${propType === t.v ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{t.l}</button>
+                      className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${propType === t.v ? 'bg-[var(--brand-primary)] text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'}`}>{t.l}</button>
                   ))}
                 </div>
               </div>
@@ -182,25 +182,25 @@ export default function PricePerM2Page() {
 
             {/* Ubicación - BÚSQUEDA LIBRE */}
             <div className="relative min-w-[200px]" ref={suggestRef}>
-              <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1.5">Ciudad / Distrito</label>
+              <label className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase mb-1.5">Ciudad / Distrito</label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)] pointer-events-none" />
                 <input type="text" value={locationText} placeholder="Ej: Lima, Miraflores, San Isidro..."
                   onChange={e => { setLocationText(e.target.value); setShowSuggestions(true); }}
                   onFocus={() => setShowSuggestions(true)}
-                  className="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand" />
+                  className="w-full pl-8 pr-3 py-2 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--brand-primary)] text-[var(--text-primary)]" />
                 {locationText && (
                   <button onClick={() => { setLocationText(''); setShowSuggestions(false); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)]">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
               {showSuggestions && filteredSuggestions.length > 0 && (
-                <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-20 max-h-48 overflow-y-auto">
+                <div className="absolute top-full mt-1 left-0 right-0 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-lg z-20 max-h-48 overflow-y-auto">
                   {filteredSuggestions.map(s => (
                     <button key={s} onClick={() => { setLocationText(s); setShowSuggestions(false); }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 text-gray-700">{s}</button>
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)]">{s}</button>
                   ))}
                 </div>
               )}
@@ -208,11 +208,11 @@ export default function PricePerM2Page() {
 
             {/* Periodo */}
             <div>
-              <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1.5">Periodo</label>
+              <label className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase mb-1.5">Periodo</label>
               <div className="flex gap-1.5">
                 {[{v:undefined,l:'Todo'},{v:1,l:'1m'},{v:3,l:'3m'},{v:6,l:'6m'},{v:12,l:'1a'},{v:24,l:'2a'},{v:60,l:'5a'}].map(t => (
                   <button key={String(t.v)} onClick={() => setPeriodMonths(t.v)}
-                    className={`px-2.5 py-2 text-[11px] font-semibold rounded-lg transition-all cursor-pointer ${periodMonths === t.v ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{t.l}</button>
+                    className={`px-2.5 py-2 text-[11px] font-semibold rounded-lg transition-all cursor-pointer ${periodMonths === t.v ? 'bg-[var(--brand-primary)] text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'}`}>{t.l}</button>
                 ))}
               </div>
             </div>
@@ -220,11 +220,11 @@ export default function PricePerM2Page() {
             {/* Etapa (solo proyectos) */}
             {vertical === 'proyectos' && (
               <div>
-                <label className="block text-[10px] font-semibold text-gray-500 uppercase mb-1.5">Etapa</label>
+                <label className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase mb-1.5">Etapa</label>
                 <div className="flex gap-1.5">
                   {[{v:'',l:'Todas'},{v:'PRE_SALE',l:'Preventa'},{v:'CONSTRUCTION',l:'Construccion'},{v:'DELIVERY',l:'Entrega'},{v:'COMPLETED',l:'Entregado'}].map(t => (
                     <button key={t.v} onClick={() => setProjPhase(t.v)}
-                      className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${projPhase === t.v ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{t.l}</button>
+                      className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${projPhase === t.v ? 'bg-[var(--brand-primary)] text-white' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'}`}>{t.l}</button>
                   ))}
                 </div>
               </div>
@@ -237,8 +237,8 @@ export default function PricePerM2Page() {
         {vertical === 'lotes' && loteData && <LoteView data={loteData} trend={chartTrend} chartMax={chartMax} chartMin={chartMin} xS={xS} yS={yS} tooltipPt={tooltipPt} setTooltipPt={setTooltipPt} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} />}
         {vertical === 'proyectos' && proyectoData && <ProyectoView data={proyectoData} />}
 
-        <div className="text-center py-6 border-t border-gray-100">
-          <p className="text-xs text-gray-400">Datos calculados con informacion agregada del inventario de Tiyuy. Los valores se actualizan en cada consulta.</p>
+        <div className="text-center py-6 border-t border-[var(--border-color)]">
+          <p className="text-xs text-[var(--text-muted)]">Datos calculados con informacion agregada del inventario de Tiyuy. Los valores se actualizan en cada consulta.</p>
         </div>
       </div>
     </div>
@@ -267,37 +267,37 @@ function ViviendaView({ data, trend, chartMax, chartMin, xS, yS, tooltipPt, setT
     <div className="space-y-6">
       {/* Insight header like Urbania */}
       {medianPrice > 0 && (
-        <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7">
+        <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-color)] shadow-sm p-7">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-3 flex-1">
               <div className="flex items-center gap-3">
-                <h2 className="text-lg font-bold text-gray-900 tracking-tight">Indice Tiyuy · {loc || 'Nacional'}</h2>
-                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider bg-gray-50 px-2.5 py-1 rounded-md">
+                <h2 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">Indice Tiyuy · {loc || 'Nacional'}</h2>
+                <span className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider bg-[var(--bg-tertiary)] px-2.5 py-1 rounded-md">
                   {tx === 'SALE' ? 'Venta' : 'Alquiler'}
                 </span>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed max-w-3xl">
+              <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-3xl">
                 {buildInsight()}
               </p>
               <div className="flex flex-wrap gap-4 pt-1">
                 <div>
-                  <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wide">Mediana</span>
-                  <p className="text-xl font-bold text-gray-900">{formatM2(medianPrice)}</p>
+                  <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wide">Mediana</span>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{formatM2(medianPrice)}</p>
                 </div>
                 <div>
-                  <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wide">Variacion mensual</span>
-                  <p className={`text-xl font-bold ${monthlyChange != null && monthlyChange > 0 ? 'text-brand' : monthlyChange != null && monthlyChange < 0 ? 'text-red-600' : 'text-gray-900'}`}>
+                  <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wide">Variacion mensual</span>
+                  <p className={`text-xl font-bold ${monthlyChange != null && monthlyChange > 0 ? 'text-[var(--brand-primary)]' : monthlyChange != null && monthlyChange < 0 ? 'text-red-600' : 'text-[var(--text-primary)]'}`}>
                     {monthlyChange != null ? `${monthlyChange > 0 ? '+' : ''}${monthlyChange.toFixed(1)}%` : '--'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wide">Muestra</span>
-                  <p className="text-xl font-bold text-gray-900">{sampleCount}</p>
+                  <span className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-wide">Muestra</span>
+                  <p className="text-xl font-bold text-[var(--text-primary)]">{sampleCount}</p>
                 </div>
               </div>
             </div>
-            <div className="flex-shrink-0 w-12 h-12 bg-brand-light rounded-2xl flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-brand" />
+            <div className="flex-shrink-0 w-12 h-12 bg-[var(--brand-primary-light)] rounded-2xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-[var(--brand-primary)]" />
             </div>
           </div>
         </div>
@@ -306,18 +306,18 @@ function ViviendaView({ data, trend, chartMax, chartMin, xS, yS, tooltipPt, setT
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiCard label="Mediana m2" value={formatM2(kpis.medianPriceM2)} icon={<TrendingUp className="w-4 h-4" />}
           subtitle={variation.monthlyChangePct !== null ? (
-            <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${variation.monthlyChangePct > 0 ? 'text-brand' : 'text-red-600'}`}>
+            <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${variation.monthlyChangePct > 0 ? 'text-[var(--brand-primary)]' : 'text-red-600'}`}>
               {variation.monthlyChangePct > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
               {Math.abs(variation.monthlyChangePct).toFixed(1)}% vs mes ant.
             </span>
-          ) : <span className="text-xs text-gray-400">Sin variacion</span>} />
-        <KpiCard label="Promedio m2" value={formatM2(kpis.avgPriceM2)} icon={<Building2 className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Media aritmetica</span>} />
+          ) : <span className="text-xs text-[var(--text-muted)]">Sin variacion</span>} />
+        <KpiCard label="Promedio m2" value={formatM2(kpis.avgPriceM2)} icon={<Building2 className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Media aritmetica</span>} />
         <KpiCard label="Variacion anual" value={variation.yearlyChangePct !== null ? (
-          <span className={`inline-flex items-center gap-1 ${variation.yearlyChangePct > 0 ? 'text-brand' : variation.yearlyChangePct < 0 ? 'text-red-600' : 'text-gray-900'}`}>
+          <span className={`inline-flex items-center gap-1 ${variation.yearlyChangePct > 0 ? 'text-[var(--brand-primary)]' : variation.yearlyChangePct < 0 ? 'text-red-600' : 'text-[var(--text-primary)]'}`}>
             {variation.yearlyChangePct > 0 ? '+' : ''}{variation.yearlyChangePct?.toFixed(1)}%
           </span>
-        ) : <span className="text-gray-400 text-base">--</span>} icon={<Calendar className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">vs mismo mes ano anterior</span>} />
-        <KpiCard label="Muestra" value={formatCompact(kpis.sampleCount)} icon={<BarChart3 className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Rango: {formatM2(kpis.minPriceM2)} - {formatM2(kpis.maxPriceM2)}</span>} />
+        ) : <span className="text-[var(--text-muted)] text-base">--</span>} icon={<Calendar className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">vs mismo mes ano anterior</span>} />
+        <KpiCard label="Muestra" value={formatCompact(kpis.sampleCount)} icon={<BarChart3 className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Rango: {formatM2(kpis.minPriceM2)} - {formatM2(kpis.maxPriceM2)}</span>} />
       </div>
       <ChartSection title="Tendencia mensual" subtitle="Precio mediano por m2" data={trend} chartMax={chartMax} chartMin={chartMin} xS={xS} yS={yS} tooltipPt={tooltipPt} setTooltipPt={setTooltipPt} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} />
       <RankingTable title="Ranking de distritos" subtitle="Ordenado de mayor a menor precio mediano por m2"
@@ -334,14 +334,14 @@ function LoteView({ data, trend, chartMax, chartMin, xS, yS, tooltipPt, setToolt
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <KpiCard label="Precio m2 terr." value={formatM2(avgM2Terreno)} icon={<LandPlot className="w-4 h-4" />}
           subtitle={variation.monthlyChangePct !== null ? (
-            <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${variation.monthlyChangePct > 0 ? 'text-brand' : 'text-red-600'}`}>
+            <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${variation.monthlyChangePct > 0 ? 'text-[var(--brand-primary)]' : 'text-red-600'}`}>
               {variation.monthlyChangePct > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
               {Math.abs(variation.monthlyChangePct).toFixed(1)}% vs mes ant.
             </span>
-          ) : <span className="text-xs text-gray-400">Sin variacion</span>} />
-        <KpiCard label="Ticket prom." value={formatPrice(avgTotalPrice)} icon={<DollarSign className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Precio total promedio</span>} />
-        <KpiCard label="Area prom." value={Math.round(avgTotalArea) + ' m2'} icon={<Layers className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Area de terreno promedio</span>} />
-        <KpiCard label="Total" value={formatCompact(totalCount)} icon={<BarChart3 className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">{districts.length} distritos</span>} />
+          ) : <span className="text-xs text-[var(--text-muted)]">Sin variacion</span>} />
+        <KpiCard label="Ticket prom." value={formatPrice(avgTotalPrice)} icon={<DollarSign className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Precio total promedio</span>} />
+        <KpiCard label="Area prom." value={Math.round(avgTotalArea) + ' m2'} icon={<Layers className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Area de terreno promedio</span>} />
+        <KpiCard label="Total" value={formatCompact(totalCount)} icon={<BarChart3 className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">{districts.length} distritos</span>} />
       </div>
       <ChartSection title="Tendencia mensual" subtitle="Precio mediano por m2 de terreno" data={trend} chartMax={chartMax} chartMin={chartMin} xS={xS} yS={yS} tooltipPt={tooltipPt} setTooltipPt={setTooltipPt} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} />
       <RankingTable title="Ranking de distritos" subtitle="Precio por m2 de terreno"
@@ -406,30 +406,30 @@ function ProyectoView({ data }: any) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <KpiCard label="Proyectos" value={totalProjects.toString()} icon={<FolderGit className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Total publicados</span>} />
-        <KpiCard label="Precio desde" value={formatPrice(avgPriceFrom)} icon={<DollarSign className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Precio promedio minimo</span>} />
-        <KpiCard label="Unidades" value={formatCompact(totalAvailable)} icon={<Home className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Stock disponible</span>} />
-        <KpiCard label="Area desde" value={Math.round(avgAreaFrom) + ' m2'} icon={<Layers className="w-4 h-4" />} subtitle={<span className="text-xs text-gray-400">Area promedio minima</span>} />
+        <KpiCard label="Proyectos" value={totalProjects.toString()} icon={<FolderGit className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Total publicados</span>} />
+        <KpiCard label="Precio desde" value={formatPrice(avgPriceFrom)} icon={<DollarSign className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Precio promedio minimo</span>} />
+        <KpiCard label="Unidades" value={formatCompact(totalAvailable)} icon={<Home className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Stock disponible</span>} />
+        <KpiCard label="Area desde" value={Math.round(avgAreaFrom) + ' m2'} icon={<Layers className="w-4 h-4" />} subtitle={<span className="text-xs text-[var(--text-muted)]">Area promedio minima</span>} />
       </div>
 
       {/* Line chart: price evolution */}
-      <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7">
+      <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-color)] shadow-sm p-7">
         <div className="flex items-start justify-between mb-7">
           <div className="space-y-1.5">
-            <h3 className="text-base font-semibold text-gray-900 tracking-tight">Evolución de precios</h3>
-            <p className="text-sm text-gray-400 font-normal">Precio desde por proyecto publicado</p>
+            <h3 className="text-base font-semibold text-[var(--text-primary)] tracking-tight">Evolución de precios</h3>
+            <p className="text-sm text-[var(--text-muted)] font-normal">Precio desde por proyecto publicado</p>
           </div>
-          <div className="flex items-center gap-3 px-3 py-1.5 bg-gray-50/80 rounded-lg">
+          <div className="flex items-center gap-3 px-3 py-1.5 bg-[var(--bg-tertiary)] rounded-lg">
             <span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: lineColor}} />
-            <span className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">Precio</span>
+            <span className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-widest">Precio</span>
           </div>
         </div>
 
         {sortedProjects.length < 2 ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-3"><TrendingUp className="w-6 h-6 text-gray-200" /></div>
-            <p className="text-sm font-medium text-gray-400">Se necesitan al menos 2 proyectos</p>
-            <p className="text-xs text-gray-300 mt-1">Agrega más proyectos para ver la tendencia</p>
+            <div className="w-12 h-12 bg-[var(--bg-tertiary)] rounded-2xl flex items-center justify-center mb-3"><TrendingUp className="w-6 h-6 text-[var(--text-muted)]" /></div>
+            <p className="text-sm font-medium text-[var(--text-muted)]">Se necesitan al menos 2 proyectos</p>
+            <p className="text-xs text-[var(--text-muted)] mt-1">Agrega más proyectos para ver la tendencia</p>
           </div>
         ) : (
           <div className="overflow-x-auto -mx-2">
@@ -472,11 +472,11 @@ function ProyectoView({ data }: any) {
             {tip && hoveredIdx !== null && (
               <div className="fixed z-50 pointer-events-none"
                 style={{ left: tipPos.x, top: tipPos.y - 60, transform: 'translateX(-50%)' }}>
-                <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100/80 px-4 py-3 min-w-[130px]">
-                  <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">{tip.label}</p>
+                <div className="bg-[var(--bg-card)] backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-[var(--border-color)] px-4 py-3 min-w-[130px]">
+                  <p className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-1.5">{tip.label}</p>
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full" style={{backgroundColor: lineColor}} />
-                    <span className="text-sm font-bold text-gray-900">{tip.value}</span>
+                    <span className="text-sm font-bold text-[var(--text-primary)]">{tip.value}</span>
                   </div>
                 </div>
               </div>
@@ -486,22 +486,22 @@ function ProyectoView({ data }: any) {
       </div>
 
       {/* Phase breakdown */}
-      <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7">
+      <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-color)] shadow-sm p-7">
         <div className="flex items-start justify-between mb-6">
           <div className="space-y-1">
-            <h3 className="text-base font-semibold text-gray-900 tracking-tight">Desglose por etapa</h3>
-            <p className="text-sm text-gray-400">Proyectos por etapa de desarrollo</p>
+            <h3 className="text-base font-semibold text-[var(--text-primary)] tracking-tight">Desglose por etapa</h3>
+            <p className="text-sm text-[var(--text-muted)]">Proyectos por etapa de desarrollo</p>
           </div>
         </div>
         {phaseBreakdown.length === 0 ? (
-          <div className="text-center py-8 text-sm text-gray-400">No hay datos</div>
+          <div className="text-center py-8 text-sm text-[var(--text-muted)]">No hay datos</div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {phaseBreakdown.map((p: any) => (
-              <div key={p.phase} className="bg-gray-50 rounded-xl p-4">
-                <p className="text-xs font-semibold text-gray-500 uppercase mb-1">{phaseLabels[p.phase] || p.phase}</p>
-                <p className="text-xl font-bold text-gray-900">{p.count}</p>
-                <p className="text-xs text-gray-400">{formatCompact(p.totalUnits)} uds</p>
+              <div key={p.phase} className="bg-[var(--bg-tertiary)] rounded-xl p-4">
+                <p className="text-xs font-semibold text-[var(--text-muted)] uppercase mb-1">{phaseLabels[p.phase] || p.phase}</p>
+                <p className="text-xl font-bold text-[var(--text-primary)]">{p.count}</p>
+                <p className="text-xs text-[var(--text-muted)]">{formatCompact(p.totalUnits)} uds</p>
               </div>
             ))}
           </div>
@@ -517,9 +517,9 @@ function ProyectoView({ data }: any) {
 
 function KpiCard({ label, value, icon, subtitle }: any) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-lg hover:border-brand-light transition-all">
-      <div className="flex items-center gap-2 text-gray-400 mb-3">{icon}<span className="text-xs font-medium uppercase tracking-wider">{label}</span></div>
-      <div className="text-2xl font-bold text-gray-900 tracking-tight mb-1">{value}</div>
+    <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] p-5 hover:shadow-lg hover:border-[var(--brand-primary-light)] transition-all">
+      <div className="flex items-center gap-2 text-[var(--text-muted)] mb-3">{icon}<span className="text-xs font-medium uppercase tracking-wider">{label}</span></div>
+      <div className="text-2xl font-bold text-[var(--text-primary)] tracking-tight mb-1">{value}</div>
       {subtitle && <div>{subtitle}</div>}
     </div>
   );
@@ -565,34 +565,34 @@ function ChartSection({ title, subtitle, data, chartMax, chartMin, xS, yS, toolt
   const barColors = ['#0d9488','#2563eb','#f97316','#8b5cf6','#ec4899','#14b8a6','#eab308','#6366f1'];
 
   return (
-    <div className="bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7">
+    <div className="bg-[var(--bg-card)] rounded-3xl border border-[var(--border-color)] shadow-sm p-7">
       {/* Header */}
       <div className="flex items-start justify-between mb-7">
         <div className="space-y-1.5">
-          <h3 className="text-base font-semibold text-gray-900 tracking-tight">{title}</h3>
-          <p className="text-sm text-gray-400 font-normal">{subtitle}</p>
+          <h3 className="text-base font-semibold text-[var(--text-primary)] tracking-tight">{title}</h3>
+          <p className="text-sm text-[var(--text-muted)] font-normal">{subtitle}</p>
         </div>
         <div className="flex items-center gap-4">
           {data.length > 0 && (
             <>
-              <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5">
+              <div className="flex items-center gap-1 bg-[var(--bg-tertiary)] rounded-lg p-0.5">
                 <button onClick={() => setChartMode('line')}
-                  className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'line' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>
+                  className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'line' ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}>
                   <TrendingUp className="w-3 h-3 inline mr-1" />Lineal
                 </button>
                 <button onClick={() => setChartMode('bars')}
-                  className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'bars' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>
+                  className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'bars' ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-sm' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}>
                   <BarChart3 className="w-3 h-3 inline mr-1" />Barras
                 </button>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full" style={{backgroundColor: trendColor}} />
-                <span className="text-[11px] font-medium text-gray-500 uppercase tracking-wider">Mediana</span>
+                <span className="text-[11px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">Mediana</span>
               </div>
             </>
           )}
-          <div className="w-8 h-8 bg-brand-light/60 rounded-xl flex items-center justify-center">
-            <TrendingUp className="w-4 h-4 text-brand" />
+          <div className="w-8 h-8 bg-[var(--brand-primary-light)] rounded-xl flex items-center justify-center">
+            <TrendingUp className="w-4 h-4 text-[var(--brand-primary)]" />
           </div>
         </div>
       </div>
@@ -600,11 +600,11 @@ function ChartSection({ title, subtitle, data, chartMax, chartMin, xS, yS, toolt
       {/* Chart */}
       {data.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12">
-          <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-3">
-            <BarChart3 className="w-6 h-6 text-gray-200" />
+          <div className="w-12 h-12 bg-[var(--bg-tertiary)] rounded-2xl flex items-center justify-center mb-3">
+            <BarChart3 className="w-6 h-6 text-[var(--text-muted)]" />
           </div>
-          <p className="text-sm font-medium text-gray-400">No hay datos suficientes</p>
-          <p className="text-xs text-gray-300 mt-1">Intenta con otro filtro o período</p>
+          <p className="text-sm font-medium text-[var(--text-muted)]">No hay datos suficientes</p>
+          <p className="text-xs text-[var(--text-muted)] mt-1">Intenta con otro filtro o período</p>
         </div>
       ) : (
         <div className="overflow-x-auto -mx-2" ref={chartRef}>
@@ -687,18 +687,18 @@ function ChartSection({ title, subtitle, data, chartMax, chartMin, xS, yS, toolt
           {tooltipPt && hoveredIdx !== null && (
             <div className="fixed z-50 pointer-events-none"
               style={{left: tooltipPos.x, top: tooltipPos.y - 72, transform: 'translateX(-50%)'}}>
-              <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100/80 px-4 py-3 min-w-[140px]">
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              <div className="bg-[var(--bg-card)] backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-[var(--border-color)] px-4 py-3 min-w-[140px]">
+                <p className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-2">
                   {monthNames[tooltipPt.month-1]} {tooltipPt.year}
                 </p>
                 <div className="flex items-center gap-2.5 mb-1">
                   <span className="w-2 h-2 rounded-full" style={{backgroundColor: trendColor}} />
-                  <span className="text-[11px] text-gray-400">Mediana</span>
-                  <span className="text-sm font-bold text-gray-900 ml-auto">{formatM2(tooltipPt.medianM2??0)}</span>
+                  <span className="text-[11px] text-[var(--text-muted)]">Mediana</span>
+                  <span className="text-sm font-bold text-[var(--text-primary)] ml-auto">{formatM2(tooltipPt.medianM2??0)}</span>
                 </div>
-                <div className="flex items-center gap-2.5 pt-1.5 border-t border-gray-50">
-                  <span className="text-[10px] text-gray-400">Muestras</span>
-                  <span className="text-xs font-semibold text-gray-700 ml-auto">{tooltipPt.count}</span>
+                <div className="flex items-center gap-2.5 pt-1.5 border-t border-[var(--border-light)]">
+                  <span className="text-[10px] text-[var(--text-muted)]">Muestras</span>
+                  <span className="text-xs font-semibold text-[var(--text-secondary)] ml-auto">{tooltipPt.count}</span>
                 </div>
               </div>
             </div>
@@ -711,21 +711,21 @@ function ChartSection({ title, subtitle, data, chartMax, chartMin, xS, yS, toolt
 
 function RankingTable({ title, subtitle, headers, rows }: any) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
-      <div className="mb-4"><h3 className="font-bold text-gray-900">{title}</h3><p className="text-sm text-gray-400">{subtitle}</p></div>
+    <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] p-5">
+      <div className="mb-4"><h3 className="font-bold text-[var(--text-primary)]">{title}</h3><p className="text-sm text-[var(--text-muted)]">{subtitle}</p></div>
       {rows.length === 0 ? (
-        <div className="text-center py-8"><BarChart3 className="w-8 h-8 text-gray-200 mx-auto mb-2" /><p className="text-sm text-gray-400">No hay datos suficientes</p></div>
+        <div className="text-center py-8"><BarChart3 className="w-8 h-8 text-[var(--text-muted)] mx-auto mb-2" /><p className="text-sm text-[var(--text-muted)]">No hay datos suficientes</p></div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="border-b border-gray-100">{headers.map((h: any,i: number)=><th key={i} className={`py-3 px-3 font-semibold text-gray-900 text-xs uppercase tracking-wider ${i===0||i===1?'text-left':'text-right'}`}>{h}</th>)}</tr></thead>
+            <thead><tr className="border-b border-[var(--border-color)]">{headers.map((h: any,i: number)=><th key={i} className={`py-3 px-3 font-semibold text-[var(--text-primary)] text-xs uppercase tracking-wider ${i===0||i===1?'text-left':'text-right'}`}>{h}</th>)}</tr></thead>
             <tbody>
               {rows.map((row: any,idx: number)=>{
                 const intensity = 1-(idx/Math.max(rows.length-1,1));
                 return (
-                  <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
+                  <tr key={idx} className="border-b border-[var(--border-light)] hover:bg-[var(--bg-tertiary)] transition-colors"
                     style={{backgroundColor:`rgb(${Math.round(220-intensity*100)},${Math.round(240-intensity*60)},${Math.round(220-intensity*80)})`}}>
-                    {row.map((cell: any,i: number)=><td key={i} className={`py-3 px-3 ${i===0?'text-gray-400 font-medium':i===1?'font-semibold text-gray-900':i===2?'font-bold text-gray-900 text-right':'text-gray-700 text-right'}`}>{cell}</td>)}
+                    {row.map((cell: any,i: number)=><td key={i} className={`py-3 px-3 ${i===0?'text-[var(--text-muted)] font-medium':i===1?'font-semibold text-[var(--text-primary)]':i===2?'font-bold text-[var(--text-primary)] text-right':'text-[var(--text-secondary)] text-right'}`}>{cell}</td>)}
                   </tr>
                 );
               })}

@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { BadgeCheck, Clock, AlertCircle, Star, MessageCircle, MessageCircleMore } from 'lucide-react';
+import { BadgeCheck, Clock, AlertCircle, Star, MessageCircle, MessageCircleMore, Calendar } from 'lucide-react';
 import type { Project, ProjectSummary } from '@/core/domain/entities/Project';
 import { LazyImage } from '@/presentation/components/ui/LazyImage/LazyImage';
+import { formatDistanceToNow } from '@/utils/formatters';
 
 interface ProjectCardProps {
   project: Project | ProjectSummary;
@@ -15,9 +16,18 @@ interface RatingData {
   totalRatings: number;
 }
 
-// Get slug from either Project or ProjectSummary
 function getProjectSlug(project: Project | ProjectSummary): string {
   return project.slug ?? String(project.id);
+}
+
+function getPublishedDate(publishedAt?: Date | string): Date | null {
+  if (!publishedAt) return null;
+  const date = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
+  return isNaN(date.getTime()) ? null : date;
+}
+
+function getDaysSince(date: Date): number {
+  return Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 const PROJECT_TYPE_LABELS: Record<string, string> = {
@@ -37,7 +47,6 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const [rating, setRating] = useState<RatingData | null>(null);
   const [commentCount, setCommentCount] = useState<number | null>(null);
 
-  // Cargar rating del proyecto
   useEffect(() => {
     const fetchRating = async () => {
       try {
@@ -68,7 +77,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
     return `${symbol} ${price.toLocaleString('es-PE')}`;
   };
 
-  // Helper to render lifecycle status badge
+  const publishedDate = getPublishedDate(project.publishedAt);
+  const publishedLabel = publishedDate ? formatDistanceToNow(publishedDate, { addSuffix: true }) : null;
+  const isNew = publishedDate ? getDaysSince(publishedDate) <= 7 : false;
+  const publishedDateLabel = publishedDate
+    ? publishedDate.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
+  const publishedText = publishedDateLabel ? `Publicado el ${publishedDateLabel}` : null;
+
   const renderLifecycleBadge = () => {
     const lifecycleStatus = project.lifecycleStatus;
     const remainingDays = project.remainingGraceDays;
@@ -104,87 +120,102 @@ export function ProjectCard({ project }: ProjectCardProps) {
   };
 
   return (
-    <div className="group flex flex-col w-full h-full cursor-pointer">
-      {/* Imagen */}
-      <Link href={`/projects/${getProjectSlug(project)}`} className="relative w-full aspect-square rounded-xl overflow-hidden mb-3">
+    <div className="group flex flex-col w-full h-full min-w-[160px] sm:min-w-[200px] cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl bg-[var(--bg-card)] shadow-[0_8px_30px_var(--shadow-color)] hover:shadow-[0_15px_45px_var(--shadow-color)] hover:-translate-y-1 transition-all duration-300">
+      <Link href={`/projects/${getProjectSlug(project)}`} className="relative w-full overflow-hidden rounded-t-2xl" style={{ aspectRatio: '4 / 3' }}>
         {project.coverImageUrl ? (
           <LazyImage
             src={getImageUrl(project.coverImageUrl)}
             alt={project.name || ''}
-            className="w-full h-full group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full group-hover:scale-[1.03] transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <span className="text-gray-400 text-6xl">🏗️</span>
+          <div className="w-full h-full flex items-center justify-center bg-[var(--bg-tertiary)]">
+            <span className="text-[var(--text-muted)] text-6xl">🏗️</span>
           </div>
         )}
 
-        {/* Overlay gradient - reducido para un look más limpio */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-transparent opacity-50" />
 
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           {project.isFeatured && (
-            <div className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-md">
+            <div className="bg-[#1FA64A] text-white text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-sm tracking-wide">
               Destacado
             </div>
           )}
           {project.isVerified && (
-            <div className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1">
-              <BadgeCheck className="w-3.5 h-3.5 text-blue-500" />
+            <div className="bg-[var(--bg-card)] text-[var(--text-primary)] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-md flex items-center gap-1">
+              <BadgeCheck className="w-3 h-3 text-blue-500" />
               Verificado
+            </div>
+          )}
+          {!project.isFeatured && !project.isVerified && isNew && (
+            <div className="bg-[var(--bg-card)] text-[var(--text-primary)] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-md">
+              Nuevo
             </div>
           )}
         </div>
 
-        {/* Lifecycle status badge */}
         {renderLifecycleBadge()}
       </Link>
 
-      {/* Contenido Minimalista estilo Airbnb */}
-      <Link href={`/projects/${getProjectSlug(project)}`} className="flex flex-col flex-grow mt-1">
-        <div className="flex justify-between items-start gap-2">
-          <h3 className="text-[15px] font-semibold text-gray-900 line-clamp-1">
+      <Link href={`/projects/${getProjectSlug(project)}`} className="flex flex-col flex-grow px-3 pt-2.5 pb-3 w-full min-w-0 overflow-hidden">
+        <div className="flex flex-col flex-1">
+        <div className="flex justify-between items-start gap-1.5 w-full min-w-0">
+          <h3 className="text-[13px] font-semibold text-[var(--text-primary)] leading-snug line-clamp-2 flex-1 min-w-0 h-[34px]">
             {project.name}
           </h3>
-          <div className="flex items-center gap-1 text-[14px] text-gray-900 flex-shrink-0">
-            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-            <span>{rating && rating.averageRating > 0 ? rating.averageRating.toFixed(2) : 'Nuevo'}</span>
+          <div className="flex items-center gap-1 text-[11px] text-[var(--text-secondary)] flex-shrink-0">
+            <span className="text-[#FBBF24] text-xs leading-none">⭐</span>
+            <span className="font-medium">{rating && rating.averageRating > 0 ? rating.averageRating.toFixed(1) : 'Nuevo'}</span>
           </div>
         </div>
 
-        <p className="text-[14px] text-gray-500 line-clamp-1 mt-0.5">
-          {PROJECT_TYPE_LABELS[project.type] || 'Proyecto'} en {project.district}
+        <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 w-full truncate h-[16px] flex items-center gap-1">
+          <svg className="w-3 h-3 text-[#EF4444] flex-shrink-0" viewBox="0 0 24 24" fill="#EF4444" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          {PROJECT_TYPE_LABELS[project.type] || 'Proyecto'} en {project.district || 'Perú'}
         </p>
 
-        <p className="text-[14px] text-gray-500 truncate mt-0.5">
-          {PHASE_LABELS[project.phase] || project.phase}
-          {' · '}
-          {project.availableUnits} unid. disponibles
+        <div className="w-full h-px bg-[var(--border-color)] my-1.5" />
+
+        <p className="text-[11px] text-[var(--text-secondary)] w-full truncate h-[16px]">
+          {PHASE_LABELS[project.phase] || project.phase} · {project.availableUnits} unid. disponibles
         </p>
 
-        <div className="mt-1 flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <span className="text-[15px] font-semibold text-gray-900">
-              {formatPrice(project.priceFrom, project.currency)}
-            </span>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            {/* Botón Contactar estilo WhatsApp - span porque ya está dentro de un Link */}
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-white bg-brand hover:bg-brand-dark px-2.5 py-1 rounded-md transition-colors shadow-sm cursor-default">
-              <MessageCircleMore className="w-3.5 h-3.5" />
-              Contactar
-            </span>
+        <div className="w-full h-px bg-[var(--border-color)] my-1.5" />
 
-            {/* Contador de comentarios pequeño */}
-            {commentCount !== null && commentCount > 0 && (
-              <div className="flex items-center gap-1 text-xs text-gray-400">
-                <MessageCircle className="w-3 h-3" />
-                <span>{commentCount}</span>
-              </div>
-            )}
+        {publishedText && (
+          <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)] mb-1.5">
+            <Calendar className="w-3 h-3 flex-shrink-0" />
+            <span className="font-medium truncate">{isNew ? 'Recién publicado' : publishedText}</span>
           </div>
+        )}
+
+        <div className="flex items-center justify-between w-full h-[22px]">
+          <div className="flex items-baseline gap-1 min-w-0">
+            <span className="text-[15px] font-bold text-[var(--brand-primary)] leading-tight">
+              Desde {formatPrice(project.priceFrom, project.currency)}
+            </span>
+          </div>
+        </div>
+
+        {commentCount !== null && commentCount > 0 && (
+          <div className="flex items-center gap-1 mt-1 text-[11px] text-[var(--text-muted)]">
+            <MessageCircle className="w-3 h-3" />
+            <span>{commentCount} comentarios</span>
+          </div>
+        )}
+        </div>
+
+        <div className="w-full pt-2">
+          <span className="flex items-center justify-center gap-1.5 w-full h-[36px] text-xs font-semibold text-[var(--brand-primary)] bg-[var(--bg-card)] border-2 border-[var(--brand-primary)] rounded-xl hover:bg-[var(--brand-primary)] hover:text-white transition-all duration-250 cursor-default">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Contactar
+          </span>
         </div>
       </Link>
     </div>

@@ -77,7 +77,7 @@ export default function PublicViewPage() {
       <header className="bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/assets/images/logo.png" alt="TIYUY" className="h-8 w-auto" />
+            <img src="/assets/images/logo.svg" alt="TIYUY" className="h-8 w-auto" />
           </Link>
           {!isAuthenticated && (
             <button onClick={() => router.push('/profile-selector')}
@@ -114,11 +114,25 @@ function StatusView({ data, isAuthenticated, router }: any) {
     }
   };
 
-  const styleClasses = data.textStyle === 'NORMAL' ? 'bg-white' :
-    data.textStyle === 'GRADIENT' ? 'bg-gradient-to-br from-teal-500 to-teal-700 text-white' :
-    data.textStyle === 'BOLD' ? 'bg-white border-l-4 border-teal-500' : 'bg-white';
+  const contentLength = data.content?.length || 0;
 
-  const textColor = data.customColor ? { color: data.customColor } : {};
+  const getTextStyleClass = () => {
+    switch (data.textStyle) {
+      case 'BOLD': return 'font-bold';
+      case 'ITALIC': return 'italic';
+      case 'COLORFUL': return 'text-yellow-200';
+      case 'CODE': return 'font-mono';
+      case 'HIGHLIGHT': return 'bg-white/20 px-2 py-1 rounded-lg';
+      default: return 'font-medium';
+    }
+  };
+
+  const getAutoSizeClass = () => {
+    if (contentLength < 30) return 'text-3xl sm:text-4xl';
+    if (contentLength < 80) return 'text-2xl sm:text-3xl';
+    if (contentLength < 150) return 'text-xl sm:text-2xl';
+    return 'text-base sm:text-lg';
+  };
 
   return (
     <div className="space-y-6">
@@ -129,34 +143,43 @@ function StatusView({ data, isAuthenticated, router }: any) {
         <span className="text-gray-600">Publicacion compartida</span>
       </nav>
 
-      {/* Card del estado */}
-      <div className={`rounded-2xl border border-gray-100 shadow-sm p-6 ${styleClasses}`}>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center">
-            <User className="w-6 h-6 text-teal-600" />
+      {/* Card del estado - estilo Facebook */}
+      <div 
+        className="rounded-2xl flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] p-8 sm:p-12 text-center shadow-lg overflow-hidden"
+        style={{ backgroundColor: data.customColor || '#14b8a6' }}
+      >
+        <div className="w-full max-w-lg mx-auto">
+          {/* Avatar + nombre */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+              <User className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold text-white">{data.authorName}</p>
+              <p className="text-xs text-white/70 flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {new Date(data.createdAt).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="font-semibold text-gray-900">{data.authorName}</p>
-            <p className="text-xs text-gray-400 flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              {new Date(data.createdAt).toLocaleDateString('es-PE', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
-            </p>
+
+          {/* Texto del estado con auto-sizing y estilo */}
+          <div className={`text-white leading-relaxed ${getTextStyleClass()} ${getAutoSizeClass()}`}>
+            {data.content}
           </div>
-        </div>
 
-        <p className="text-lg leading-relaxed mb-4" style={textColor}>
-          {data.content}
-        </p>
+          {data.location && (
+            <div className="flex items-center justify-center gap-2 mt-6">
+              <span className="inline-flex items-center gap-1.5 text-xs bg-white/20 text-white px-3 py-1.5 rounded-full backdrop-blur-sm font-medium">
+                <MapPin className="w-3 h-3" />
+                {data.location}
+              </span>
+            </div>
+          )}
 
-        {data.location && (
-          <p className="text-sm text-gray-400 flex items-center gap-1.5 mb-4">
-            <MapPin className="w-4 h-4" />
-            {data.location}
-          </p>
-        )}
-
-        <div className="flex items-center gap-4 text-sm text-gray-400 pt-4 border-t border-gray-50">
-          <span className="flex items-center gap-1"><Eye className="w-4 h-4" />{data.viewCount} vistas</span>
+          <div className="flex items-center justify-center gap-4 text-sm text-white/60 mt-8 pt-6 border-t border-white/20">
+            <span className="flex items-center gap-1"><Eye className="w-4 h-4" />{data.viewCount} vistas</span>
+          </div>
         </div>
       </div>
 

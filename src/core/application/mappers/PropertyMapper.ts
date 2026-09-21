@@ -28,10 +28,19 @@ export class PropertyMapper {
 
     const slug = String(anyDto.slug || anyDto.seo?.slug || '').trim();
     const createdAtRaw = anyDto.createdAt || anyDto.updatedAt;
-    const createdAt = createdAtRaw ? new Date(createdAtRaw) : new Date();
+    const createdAt = createdAtRaw ? new Date(createdAtRaw) : undefined;
+
+    // Detalles de habitación (ROOM) expuestos por el backend
+    const roomDetails = anyDto.roomDetails || null;
 
     return {
       id: dto.id,
+      ...(roomDetails ? {
+        roomDetails: {
+          hasPrivateBathroom: Boolean(roomDetails.hasPrivateBathroom),
+          totalCapacity: roomDetails.totalCapacity != null ? Number(roomDetails.totalCapacity) : undefined,
+        } as any,
+      } : {}),
       title: anyDto.title,
       type: (anyDto.type || 'APARTMENT') as any,
       transactionType: (anyDto.transactionType || 'SALE') as any,
@@ -86,8 +95,11 @@ export class PropertyMapper {
       isFeatured: Boolean(anyDto.isFeatured),
       isVerified: Boolean(anyDto.isVerified),
 
-      createdAt,
-      updatedAt: anyDto.updatedAt ? new Date(anyDto.updatedAt) : createdAt,
+      createdAt: (createdAt ?? undefined) as Date,
+      updatedAt: anyDto.updatedAt ? new Date(anyDto.updatedAt) : (createdAt as Date | undefined),
+      publishedAt: anyDto.publishedAt
+        ? new Date(anyDto.publishedAt)
+        : (createdAt ?? undefined),
 
       isNegotiable: false,
       parkingSpots: Number(anyDto.parkingSpots || 0),
@@ -123,6 +135,11 @@ export class PropertyMapper {
       isFeatured: dto.isFeatured,
       isVerified: false,
       viewsCount: dto.viewsCount,
+      publishedAt: (anyDto as any).publishedAt
+        ? new Date((anyDto as any).publishedAt)
+        : (anyDto as any).createdAt
+          ? new Date((anyDto as any).createdAt)
+          : undefined,
 
       // Lifecycle fields
       lifecycleStatus: (anyDto as any).lifecycleStatus || 'ACTIVE',

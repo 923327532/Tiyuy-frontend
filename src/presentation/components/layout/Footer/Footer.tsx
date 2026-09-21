@@ -36,6 +36,7 @@ const FOOTER_COLUMNS = [
       { label: 'Apoyo a personas con discapacidad', href: '/discapacidad' },
       { label: 'Opciones de cancelación', href: '/cancelacion' },
       { label: 'Libro de Reclamaciones', href: '/libro-de-reclamaciones' },
+      { label: 'Políticas de Cambio o Devoluciones', href: '/politicas-de-cambio' },
 
       { label: 'Centro de Soporte', href: '/soporte' },
     ],
@@ -71,17 +72,18 @@ const SOCIAL_LINKS = [
     hoverBg: 'hover:bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7]',
   },
   {
-    href: 'https://www.facebook.com/tiyuyperu',
+    href: 'https://web.facebook.com/profile.php?id=61592199742048',
     icon: 'fa6-brands:facebook',
     label: 'Facebook',
     hoverBg: 'hover:bg-[#1877F2]',
   },
   {
-    href: 'https://twitter.com/tiyuyperu',
+    href: 'https://x.com/tiyuy6y',
     icon: 'fa6-brands:x-twitter',
     label: 'X (Twitter)',
     hoverBg: 'hover:bg-[#000000]',
   },
+
   {
     href: 'https://www.tiktok.com/@tiyuyperu_oficial',
     icon: 'fa6-brands:tiktok',
@@ -89,17 +91,19 @@ const SOCIAL_LINKS = [
     hoverBg: 'hover:bg-[#000000]',
   },
   {
-    href: 'https://www.youtube.com/@tiyuyperu',
+    href: 'https://www.youtube.com/@TiyuyTiyuy-r8s',
     icon: 'fa6-brands:youtube',
     label: 'YouTube',
     hoverBg: 'hover:bg-[#FF0000]',
   },
+
   {
-    href: 'https://www.linkedin.com/in/tiyuy-peru-4858863b5/',
+    href: 'https://www.linkedin.com/company/143109038/admin/dashboard/',
     icon: 'fa6-brands:linkedin',
     label: 'LinkedIn',
     hoverBg: 'hover:bg-[#0077B5]',
   },
+
 ];
 
 export function Footer() {
@@ -121,7 +125,7 @@ export function Footer() {
                {/* Contenedor del logo */}
                <div className="relative bg-white p-1 rounded-lg shadow-xl flex items-center justify-center transform group-hover/logo:-translate-y-1 transition duration-300">
                  <img
-                   src="/assets/images/logo.png"
+                  src="/assets/images/logo.svg"
                    alt="TIYUY"
                    className="h-12 sm:h-14 w-auto object-contain"
                  />
@@ -181,7 +185,18 @@ export function Footer() {
                       href={link.href}
                       className="text-[14px] text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
                     >
-                      {link.label}
+                      {link.label === 'Libro de Reclamaciones' ? (
+                        <span className="flex items-center gap-2">
+                          {link.label}
+                          <img
+                            src="/assets/images/libro_reclamaciones/libro_reclamaciones.png"
+                            alt=""
+                            className="w-10 h-10 object-contain shrink-0"
+                          />
+                        </span>
+                      ) : (
+                        link.label
+                      )}
                     </Link>
                   </li>
                 ))}
@@ -245,7 +260,7 @@ export function Footer() {
             <span className="hidden sm:inline text-gray-700">|</span>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacidad</Link>
             <span className="hidden sm:inline text-gray-700">|</span>
-            <Link href="/terms" className="hover:text-white transition-colors">Términos legales</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Términos y Condiciones</Link>
             <span className="hidden sm:inline text-gray-700">|</span>
             <Link href="/#mapa" className="hover:text-white transition-colors">Mapa del sitio</Link>
           </div>
@@ -262,6 +277,7 @@ export function Footer() {
           </div>
         </div>
       </div>
+
     </footer>
   );
 }

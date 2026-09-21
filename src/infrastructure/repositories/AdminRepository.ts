@@ -20,6 +20,7 @@ import {
   FinanceHistoryDto,
   UserRegistrationHistory,
   UserListItem,
+  InternationalUserListItem,
   ChangeUserRoleRequest,
   DiscountCode,
   CreateDiscountCodeRequest,
@@ -184,6 +185,31 @@ export class AdminRepository implements IAdminRepository {
 
   async getUserById(userId: number): Promise<UserListItem> {
     const response = await axiosClient.get(`${this.basePath}/users/${userId}`);
+    return response.data;
+  }
+
+  // ── Usuarios internacionales (sección "Extranjeros") ─────────────────────
+  async getInternationalUsers(
+    params?: PaginationParams
+  ): Promise<PaginatedResponse<InternationalUserListItem>> {
+    const queryParams = new URLSearchParams();
+    if (params?.page !== undefined) queryParams.set('page', params.page.toString());
+    if (params?.size !== undefined) queryParams.set('size', params.size.toString());
+    if (params?.sort) queryParams.set('sort', params.sort);
+
+    const response = await axiosClient.get(`${this.basePath}/international?${queryParams.toString()}`);
+    return response.data;
+  }
+
+  async approveInternationalUser(userId: number): Promise<InternationalUserListItem> {
+    const response = await axiosClient.put(`${this.basePath}/international/${userId}/approve`);
+    return response.data;
+  }
+
+  async rejectInternationalUser(userId: number, reason?: string): Promise<InternationalUserListItem> {
+    const queryParams = new URLSearchParams();
+    if (reason) queryParams.set('reason', reason);
+    const response = await axiosClient.put(`${this.basePath}/international/${userId}/reject?${queryParams.toString()}`);
     return response.data;
   }
 

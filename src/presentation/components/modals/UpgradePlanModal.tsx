@@ -19,8 +19,6 @@ interface UpgradePlanModalProps {
 }
 
 export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
-  console.log('DEBUG: UpgradePlanModal se está ejecutando');
-  
   const { data: plans, isLoading } = useAvailablePlans();
   const { data: activeSubscription } = useActiveSubscription();
   const { data: availableDiscountCodes } = useAvailableDeveloperDiscountCodes();
@@ -36,7 +34,7 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
   const userRole = authStorage.getUser()?.role;
   const isAgent = userRole === 'AGENT';
   const isDeveloper = userRole === 'DEVELOPER';
-  // 🔒 SEGURIDAD: Agentes y Developers (inmobiliarias) pueden tener descuentos si tienen agencyId
+  //  SEGURIDAD: Agentes y Developers (inmobiliarias) pueden tener descuentos si tienen agencyId
   const hasAgencyRole = isAgent || isDeveloper;
   const hasDiscountCodes = hasAgencyRole && availableDiscountCodes && availableDiscountCodes.length > 0;
   
@@ -63,17 +61,13 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
   
   // Función para detectar descuentos inteligentes basados en reglas de negocio - PARA AGENTES Y DEVELOPERS CON DESCUENTOS DE AGENCIA
   const detectIntelligentDiscount = (planPrice: number): { code: string; percentage: number } | null => {
-    console.log('Detectando descuento inteligente para precio:', planPrice, 'usuario es agente:', isAgent, 'usuario es developer:', isDeveloper, 'tiene descuentos de agencia:', hasDiscountCodes);
-    
-    // 🔒 CRÍTICO: Solo agentes y developers con descuentos de agencia pueden tener descuentos inteligentes
+    //  CRÍTICO: Solo agentes y developers con descuentos de agencia pueden tener descuentos inteligentes
     if (!hasAgencyRole || !hasDiscountCodes) {
-      console.log('Usuario no es agente/developer o no tiene descuentos de agencia - no se aplican descuentos inteligentes');
       return null;
     }
     
     // Regla: Si el precio es 29, aplicar 20% de descuento
     if (planPrice === 29) {
-      console.log('Descuento inteligente detectado: 20% para precio 29 (agente/developer con descuentos)');
       return {
         code: 'AUTO20',
         percentage: 20
@@ -82,7 +76,6 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
     
     // Regla: Si el precio es 49, aplicar 15% de descuento
     if (planPrice === 49) {
-      console.log('Descuento inteligente detectado: 15% para precio 49 (agente/developer con descuentos)');
       return {
         code: 'AUTO15',
         percentage: 15
@@ -91,14 +84,12 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
     
     // Regla: Si el precio es 99, aplicar 10% de descuento
     if (planPrice === 99) {
-      console.log('Descuento inteligente detectado: 10% para precio 99 (agente/developer con descuentos)');
       return {
         code: 'AUTO10',
         percentage: 10
       };
     }
     
-    console.log('No se detectó descuento inteligente para precio:', planPrice);
     return null;
   };
 
@@ -129,29 +120,19 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
   };
   
   useEffect(() => {
-    console.log('useEffect triggered:', {
-      isAgent,
-      hasDiscountCodes,
-      availableDiscountCodes,
-      availableDiscountCodesLength: availableDiscountCodes?.length || 0
-    });
-    
     if (isAgent && hasDiscountCodes && availableDiscountCodes && availableDiscountCodes.length > 0) {
       // Aplicar automáticamente el primer descuento disponible
       const firstDiscount = availableDiscountCodes[0];
-      console.log('firstDiscount structure:', firstDiscount);
       
       // El código está anidado en discountCode.code
       const discountCodeObj = (firstDiscount as any).discountCode;
       const discountCodeValue = discountCodeObj?.code || discountCodeObj;
       const discountPercentage = discountCodeObj?.discountPercentage || 0;
-      console.log('discountCodeValue:', discountCodeValue, 'percentage:', discountPercentage);
       
       setAutoDiscountCode(discountCodeValue);
       setAutoDiscountPercentage(discountPercentage);
       setDiscountCode(discountCodeValue);
       setIsIntelligentDiscount(false);
-      console.log('Descuento de agente aplicado automáticamente:', discountCodeValue, discountPercentage + '%');
     }
   }, [isAgent, hasDiscountCodes, availableDiscountCodes]);
 
@@ -163,17 +144,15 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
     const checkFreePlanUsage = async () => {
       if (isOpen) {
         try {
-          // Obtener userId del localStorage o contexto de autenticación
           const userData = localStorage.getItem('user');
           if (userData) {
             const user = JSON.parse(userData);
             const userId = user.id;
             const used = await financeRepository.hasUserUsedFreePlan(userId);
             setHasUsedFreePlan(used);
-            console.log('Usuario ya uso plan FREE:', used);
           }
         } catch (error) {
-          console.error('Error checking free plan usage:', error);
+          // Error checking free plan usage
         }
       }
     };
@@ -189,13 +168,9 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
       discountCode: discountCode || undefined,
     }, {
       onSuccess: (subscription) => {
-        // Suscripción creada, ahora abrir MercadoPago
-        console.log('Suscripcion pendiente creada:', subscription);
         openMercadoPagoPayment(plan, subscription.id);
       },
       onError: (error: any) => {
-        console.error('Error creando suscripcion:', error);
-        
         // Si es error 409 (ya tiene suscripción activa), mostrar modal bonito
         if (error?.response?.status === 409) {
           setShowActiveSubscriptionModal(true);
@@ -208,148 +183,79 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
     });
   };
 
-  const openMercadoPagoPayment = (plan: SubscriptionPlan, subscriptionId: string) => {
-    console.log('Abriendo MercadoPago para plan:', plan.name);
-    
-    // Cargar SDK dinámicamente si no está disponible
-    if (!(window as any).MercadoPago) {
-      const script = document.createElement('script');
-      script.src = 'https://sdk.mercadopago.com/js/v2';
-      script.onload = () => {
-        createPreferenceAndCheckout(plan, subscriptionId);
-      };
-      document.head.appendChild(script);
-    } else {
-      createPreferenceAndCheckout(plan, subscriptionId);
-    }
-  };
-
-  const createPreferenceAndCheckout = async (plan: SubscriptionPlan, subscriptionId: string) => {
-    try {
-      const token = authStorage.getToken();
-      
-      console.log('Creando preferencia de MercadoPago...');
-      console.log('Token JWT:', token ? 'Presente' : 'Ausente');
-      console.log('Subscription ID:', subscriptionId);
-      console.log('Plan:', plan.name, '- Precio:', plan.price);
-      
-      const response = await fetch(
-        `/api/finance/mercadopago/create-preference`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            subscriptionId: subscriptionId.toString(),
-            title: `Plan ${plan.name}`,
-            unitPrice: plan.price,
-            frontendUrl: window.location.origin
-          })
-        }
-      );
-
-      console.log('Respuesta status:', response.status, response.statusText);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error creando preferencia:', response.status, errorText);
-        toast.error(`Error ${response.status}: No se pudo crear preferencia de pago`);
+  /**
+   * Obtiene el deviceSessionId de MercadoPago esperando a que security.js termine de cargar.
+   * security.js se carga de forma async en layout.tsx, pero puede no haber terminado
+   * cuando el usuario hace clic en "Suscribirme". Esta función asegura esperar hasta que
+   * MP_DEVICE_SESSION_ID esté disponible.
+   */
+  const getDeviceSessionId = (): Promise<string> => {
+    return new Promise((resolve) => {
+      // Caso 1: Ya está disponible
+      if (typeof window !== 'undefined' && (window as any).MP_DEVICE_SESSION_ID) {
+        resolve((window as any).MP_DEVICE_SESSION_ID);
         return;
       }
 
-      const data = await response.json();
-      console.log('Datos recibidos:', data);
+      // Caso 2: Esperar a que security.js termine de cargar y generar el ID
+      // El security.js de MP inyecta MP_DEVICE_SESSION_ID global cuando termina
+      let attempts = 0;
+      const maxAttempts = 50; // ~5 segundos máximo de espera (50 * 100ms)
       
-      // Usar init_point (producción) primero. sandbox_init_point solo para pruebas.
-      const url = data.init_point || data.initPoint || 
-                  data.sandbox_init_point || data.sandboxInitPoint;
-      
-      console.log('URL de pago:', url);
-
-      if (url) {
-        window.location.href = url;
-      } else {
-        console.error('No se encontro URL. Keys disponibles:', Object.keys(data));
-        toast.error('El servidor no devolvio URL de pago');
-      }
-
-    } catch (error) {
-      console.error('Error en createPreferenceAndCheckout:', error);
-      toast.error('Error al iniciar pago: ' + (error as any).message);
-    }
+      const checkInterval = setInterval(() => {
+        attempts++;
+        if (typeof window !== 'undefined' && (window as any).MP_DEVICE_SESSION_ID) {
+          clearInterval(checkInterval);
+          resolve((window as any).MP_DEVICE_SESSION_ID);
+          return;
+        }
+        // Si no aparece después de los intentos, inyectar security.js manualmente
+        if (attempts >= maxAttempts) {
+          clearInterval(checkInterval);
+          
+          // Inyectar security.js manualmente como fallback
+          const script = document.createElement('script');
+          script.src = 'https://www.mercadopago.com/v2/security.js';
+          script.setAttribute('view', 'checkout');
+          script.async = true;
+          script.onload = () => {
+            // Dar tiempo extra para que MP_DEVICE_SESSION_ID se genere
+            setTimeout(() => {
+              if ((window as any).MP_DEVICE_SESSION_ID) {
+                resolve((window as any).MP_DEVICE_SESSION_ID);
+              } else {
+                resolve(''); // Último recurso: vacío
+              }
+            }, 500);
+          };
+          script.onerror = () => resolve(''); // Si falla, continuar sin deviceSessionId
+          document.head.appendChild(script);
+        }
+      }, 100);
+    });
   };
 
-  const openCheckout = (mp: any, response: any) => {
-    try {
-      if (mp.checkout) {
-        mp.checkout({
-          preference: { id: response.id },
-          autoOpen: true
-        });
-      } else if (mp.checkout && mp.checkout.render) {
-        const checkoutButton = document.createElement('button');
-        checkoutButton.innerHTML = 'Pagar con MercadoPago';
-        checkoutButton.onclick = () => {
-          mp.checkout.render({
-            preference: { id: response.id },
-            container: '.mercadopago-button'
-          });
-        };
-        document.body.appendChild(checkoutButton);
-      } else {
-        // Último recurso: abrir manualmente
-        const checkoutUrl = `https://www.mercadopago.com/checkout/v1/redirect?preference_id=${response.id}`;
-        window.location.href = checkoutUrl;
-      }
-    } catch (error) {
-      console.error('Error abriendo checkout:', error);
-      toast.error('Error al abrir checkout de MercadoPago');
-    }
-  };
-
-  const tryAlternativeMethod = (mp: any, preference: any) => {
-    // Si create falla, intentar con el método antiguo
-    console.log('Intentando método alternativo...');
-    if (mp.checkout && mp.checkout.render) {
-      mp.checkout.render({
-        preference: preference,
-        container: '.mercadopago-button'
-      });
-    } else {
-      // Como último recurso, construir URL manual
-      console.log('Construyendo URL manual como fallback');
-      const manualUrl = `https://www.mercadopago.com/checkout/v1/redirect?preference_id=${Math.random().toString(36).substring(2, 9)}`;
-      window.location.href = manualUrl;
-    }
+  const openMercadoPagoPayment = (plan: SubscriptionPlan, subscriptionId: string) => {
+    const finalPrice = plan.agencyDiscountedPrice || plan.price;
+    window.location.href = `/checkout/${subscriptionId}?amount=${finalPrice}&plan=${encodeURIComponent(plan.name)}`;
   };
 
   // Determinar si el plan FREE está agotado (si el usuario ya lo usó)
   const isPlanExhausted = (plan: SubscriptionPlan) => {
     if (plan.id !== 'FREE') return false;
     
-    console.log('Verificando plan FREE:', {
-      hasUsedFreePlan,
-      activeSubscription,
-      activeSubscriptionPlan: activeSubscription?.plan?.id
-    });
-    
     // Si tiene suscripción activa diferente de FREE, el FREE está agotado
     if (activeSubscription && (activeSubscription as any).tier !== 'FREE') {
-      console.log('Plan FREE agotado: Tiene suscripción activa diferente');
       return true;
     }
     
     // Si tiene suscripción FREE activa pero ya usó todas las publicaciones, está agotado
     if (activeSubscription && (activeSubscription as any).tier === 'FREE' && (activeSubscription as any).publicationsLimit - (activeSubscription as any).publicationsUsed <= 0) {
-      console.log('Plan FREE agotado: Sin publicaciones restantes');
       return true;
     }
     
     // Si el modal se abre, es porque el usuario intenta publicar otra propiedad
     // Esto significa que ya usó su plan gratuito de 1 propiedad
-    console.log('Plan FREE agotado: Modal abierto = usuario ya consumió su plan gratuito');
     return true;
   };
 
@@ -361,19 +267,19 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
       <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50">
         <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
           {/* Header */}
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+          <div className="p-4 sm:p-6 border-b border-gray-200">
+            <div className="flex items-start sm:items-center justify-between gap-3">
+              <div className="min-w-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                   Actualiza tu plan
                 </h2>
-                <p className="text-gray-600 mt-1">
+                <p className="text-sm sm:text-base text-gray-600 mt-1">
                   Elige el plan perfecto para publicar más propiedades y hacer crecer tu negocio inmobiliario.
                 </p>
               </div>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors text-2xl font-bold"
+                className="shrink-0 text-gray-400 hover:text-gray-600 transition-colors text-2xl font-bold"
               >
                 X
               </button>
@@ -489,7 +395,7 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
           setShowInvalidUpgradeModal(false);
         }}
         currentPlan={activeSubscription?.plan?.name}
-        selectedPlan={undefined} // Podríamos pasar el plan seleccionado si lo guardamos
+        selectedPlan={undefined}
       />
     </>
   );

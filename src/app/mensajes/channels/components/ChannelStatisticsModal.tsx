@@ -60,7 +60,7 @@ export function ChannelStatisticsModal({
   return (
     <div className="h-full flex flex-col bg-white">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r brand text-white">
+      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-brand text-white">
         <div className="flex items-center gap-3">
           <BarChart3 className="w-6 h-6" />
           <div>
@@ -216,7 +216,7 @@ export function ChannelStatisticsModal({
                       key={collaborator.id}
                       className="px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors"
                     >
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-semibold">
+                      <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-semibold">
                         {collaborator.userAvatar ? (
                           <img
                             src={collaborator.userAvatar}

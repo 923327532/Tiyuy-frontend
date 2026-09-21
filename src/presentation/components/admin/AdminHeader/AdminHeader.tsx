@@ -13,7 +13,7 @@ import { usePermissions } from '@/presentation/hooks/usePermissions';
 
 import { Button } from '@/presentation/components/ui/Button';
 import { UserAvatar } from '@/presentation/components/shared/UserAvatar';
-import { Bell, Building2, Camera, ChevronDown, HelpCircle, LogOut, Megaphone, Menu, Plus, PlusCircle, Search, Settings, ShieldCheck, Tag, User, LayoutDashboard, Package, Users, DollarSign, Layers, MessageSquare, Activity, UserCircle, Building2 as BuildingIcon, Tag as TagIcon, X } from 'lucide-react';
+import { Bell, Building2, Camera, ChevronDown, Globe2, HelpCircle, LogOut, Megaphone, Menu, Plus, PlusCircle, Search, Settings, ShieldCheck, Tag, User, LayoutDashboard, Package, Users, DollarSign, Layers, MessageSquare, Activity, UserCircle, Building2 as BuildingIcon, Tag as TagIcon, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -39,6 +39,7 @@ export function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
   const searchRoutes = [
     { label: 'Dashboard', href: '/admin', icon: LayoutDashboard, keywords: ['dashboard', 'inicio', 'panel'] },
     { label: 'Usuarios', href: '/admin/users', icon: Users, keywords: ['usuarios', 'users', 'clientes'], permission: 'USERS_VIEW' },
+    { label: 'Extranjeros', href: '/admin/international', icon: Globe2, keywords: ['extranjeros', 'internacional', 'kyc', 'documento'], permission: 'USERS_VIEW' },
     { label: 'Propiedades', href: '/admin/properties', icon: BuildingIcon, keywords: ['propiedades', 'properties', 'inmuebles'], permission: 'PROPERTIES_VIEW' },
     { label: 'Proyectos', href: '/admin/projects', icon: Package, keywords: ['proyectos', 'projects'], permission: 'PROJECTS_VIEW' },
     { label: 'Agentes Independientes', href: '/admin/agents', icon: UserCircle, keywords: ['agentes', 'agents'], permission: 'USERS_VIEW' },
@@ -190,8 +191,8 @@ export function AdminHeader({ onToggleSidebar }: AdminHeaderProps) {
           {/* Tiyuy Logo - hidden on very small screens, visible on sm+ */}
           <Link href="/admin" className="hidden sm:flex items-center hover:opacity-80 transition shrink-0">
             <img 
-              src="/assets/images/logo_s.png" 
-              alt="Tiyuy Logo" 
+              src="/assets/images/logo_s.svg"
+              alt="Tiyuy Logo"
               className="h-10 sm:h-12 md:h-14 w-auto object-contain"
             />
           </Link>

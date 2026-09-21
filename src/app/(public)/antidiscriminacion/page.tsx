@@ -76,8 +76,8 @@ const PROHIBITED_CONDUCTS = [
   },
 ];
 
-const ScaleIllustration = () => (
-  <svg viewBox="0 0 200 200" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+const ScaleIllustration = ({ className = "" }: { className?: string }) => (
+  <svg viewBox="0 0 200 200" className={`w-full h-full ${className}`} fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="100" cy="100" r="90" className="fill-[var(--brand-primary)]/5" />
     <circle cx="100" cy="100" r="70" className="fill-[var(--brand-primary)]/10" />
     <rect x="60" y="40" width="80" height="12" rx="6" className="fill-[var(--brand-primary)]/30" />
@@ -154,52 +154,66 @@ export default function AntidiscriminacionPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
       {/* Hero Section */}
-      <div className="bg-[var(--bg-primary)] border-b border-[var(--border-light)] relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08] dark:opacity-[0.06]"
+      <div className="relative border-b border-[var(--border-light)] overflow-hidden bg-slate-950">
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
             style={{ backgroundImage: "url('/assets/images/hero/hero-2.jpg')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)] via-[var(--bg-primary)]/95 to-[var(--bg-primary)]/80" />
-          <div className="absolute top-0 right-0 w-[800px] h-[400px] bg-gradient-to-l from-[var(--brand-primary)]/8 to-transparent blur-3xl rounded-full" />
-          <div className="absolute bottom-0 left-1/3 w-[400px] h-[200px] bg-gradient-to-r from-[var(--brand-primary)]/5 to-transparent blur-3xl rounded-full" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/40 dark:from-[var(--bg-primary)] dark:via-[var(--bg-primary)]/90 dark:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-slate-950" />
+          <div className="absolute top-0 right-0 w-[600px] h-[400px] bg-[var(--brand-primary)]/10 blur-[140px] rounded-full" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
         </div>
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-16 sm:py-24 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16">
-            <div className="flex-1 max-w-3xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-[var(--brand-primary)]/10 flex items-center justify-center border border-[var(--border-light)]">
-                  <Scale className="w-6 h-6 text-[var(--brand-primary)]" />
-                </div>
-                <span className="text-xs font-bold text-[var(--brand-primary)] uppercase tracking-[0.2em]">Antidiscriminación</span>
+
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 pt-6 sm:pt-10 pb-20 sm:pb-28 relative z-10">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-12 lg:gap-16">
+            
+            <div className="flex-1 max-w-3xl space-y-6 backdrop-blur-[2px] py-4 rounded-3xl">
+              <div className="inline-flex items-center gap-3 px-3.5 py-1.5 bg-white/10 dark:bg-white/5 border border-white/20 dark:border-white/10 backdrop-blur-md rounded-xl shadow-2xl">
+                <Scale className="w-4 h-4 text-white dark:text-[var(--brand-primary)]" />
+                <span className="text-xs font-bold text-white uppercase tracking-widest">
+                  Antidiscriminación
+                </span>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-[var(--text-primary)]">
-                Nuestra política <span className="text-[var(--brand-primary)]">antidiscriminación</span>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] text-white">
+                Nuestra política <br />
+                <span className="text-[var(--brand-primary)] relative inline-block drop-shadow-[0_2px_10px_rgba(0,0,0,0.3)]">
+                  antidiscriminación
+                </span>
               </h1>
-              <p className="text-lg sm:text-xl text-[var(--text-secondary)] mt-4 leading-relaxed font-medium max-w-2xl">
-                Compromiso con la igualdad, el respeto y la inclusión. Construimos una plataforma
+
+              <p className="text-base sm:text-lg text-slate-200 dark:text-[var(--text-secondary)] leading-relaxed font-normal max-w-xl drop-shadow-sm">
+                Compromiso con la igualdad, el respeto y la inclusión. Construimos una plataforma 
                 donde todas las personas son valoradas.
               </p>
-              <div className="flex flex-wrap gap-3 mt-8">
+
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <button
                   onClick={() => setStep('form')}
-                  className="px-6 py-3.5 bg-[var(--brand-primary)] hover:opacity-90 text-white font-bold rounded-xl transition-all shadow-sm inline-flex items-center gap-2"
+                  className="px-8 py-4 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white font-bold rounded-xl transition-all duration-200 shadow-xl shadow-[var(--brand-primary)]/20 flex items-center justify-center gap-2.5 active:scale-[0.98]"
                 >
                   <Flag className="w-4 h-4" />
                   Denunciar ahora
                 </button>
+                
                 <Link
                   href="#faq"
-                  className="px-6 py-3.5 border border-[var(--border-color)] hover:border-[var(--brand-primary)]/30 text-[var(--text-primary)] font-bold rounded-xl transition-all inline-flex items-center gap-2 bg-[var(--bg-card)]"
+                  className="px-8 py-4 border border-white/20 dark:border-[var(--border-color)] bg-white/10 dark:bg-[var(--bg-card)] hover:bg-white/20 text-white dark:text-[var(--text-primary)] font-bold rounded-xl transition-all duration-200 backdrop-blur-md flex items-center justify-center gap-2.5"
                 >
-                  <HelpCircle className="w-4 h-4" />
+                  <HelpCircle className="w-4 h-4 text-slate-300 dark:text-[var(--text-secondary)]" />
                   Ver preguntas frecuentes
                 </Link>
               </div>
             </div>
-            <div className="hidden lg:block w-72 h-72 shrink-0">
-              <ScaleIllustration />
+
+            <div className="hidden lg:flex flex-1 justify-end items-center pointer-events-none">
+              <div className="w-80 h-80 bg-white/5 dark:bg-[var(--bg-card)]/30 backdrop-blur-xl border border-white/10 rounded-[2.5rem] flex items-center justify-center shadow-2xl p-8 transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                <ScaleIllustration className="w-full h-full text-white/90 dark:text-[var(--brand-primary)] drop-shadow-[0_10px_20px_rgba(0,0,0,0.2)]" />
+              </div>
             </div>
+
           </div>
         </div>
       </div>

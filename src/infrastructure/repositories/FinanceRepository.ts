@@ -89,7 +89,11 @@ export class FinanceRepository implements IFinanceRepository {
 
   async getAvailablePlans(): Promise<SubscriptionPlan[]> {
     const response = await apiClient.get<SubscriptionPlanDTO[]>(ENDPOINTS.FINANCE.SUBSCRIPTIONS.PLANS);
-    return response.data;
+    return response.data.map(item => ({
+      ...item,
+      agencyDiscountedPrice: item.agencyDiscountedPrice,
+      hasAgencyDiscount: item.hasAgencyDiscount,
+    }));
   }
 
   async createMercadoPagoPreference(subscriptionId: string, frontendUrl?: string): Promise<any> {
@@ -113,13 +117,14 @@ export class FinanceRepository implements IFinanceRepository {
     const planIdToTier: Record<string, string> = {
       '1': 'FREE',
       '2': 'BASIC',
-      '3': 'PREMIUM',
+      '3': 'PRO',
       '4': 'ENTERPRISE_TRIAL',
-      '5': 'ENTERPRISE'
+      '5': 'ENTERPRISE',
+      '10': 'PLAN LANZAMIENTO'
     };
     
     // Si planId ya es un tier válido, usarlo directamente
-    if (['FREE', 'BASIC', 'PREMIUM', 'ENTERPRISE_TRIAL', 'ENTERPRISE'].includes(planIdStr.toUpperCase())) {
+    if (['FREE', 'BASIC', 'PRO', 'ENTERPRISE_TRIAL', 'ENTERPRISE', 'PLAN LANZAMIENTO'].includes(planIdStr.toUpperCase())) {
       tier = planIdStr.toUpperCase();
     } else if (planIdToTier[planIdStr]) {
       // Si es un ID numérico, convertir al tier correspondiente
@@ -132,7 +137,6 @@ export class FinanceRepository implements IFinanceRepository {
     const body: any = {
       tier: tier,
       paymentMethod,
-      activateImmediately: false, // No activar inmediatamente, esperar notificacion de MercadoPago
     };
     
     if (discountCode) {
@@ -149,6 +153,15 @@ export class FinanceRepository implements IFinanceRepository {
       startsAt: new Date(data.startsAt),
       expiresAt: new Date(data.expiresAt),
       remainingPublications: data.remainingPublications,
+    };
+  }
+
+  async getPlanPriceForUser(planId: number): Promise<{ finalPrice: number; originalPrice: number; currency: string }> {
+    const response = await apiClient.get(`/finance/subscriptions/plans/${planId}/price`);
+    return {
+      finalPrice: Number(response.data.finalPrice),
+      originalPrice: Number(response.data.originalPrice),
+      currency: response.data.currency || 'PEN',
     };
   }
 

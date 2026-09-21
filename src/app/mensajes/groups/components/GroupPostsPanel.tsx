@@ -47,15 +47,6 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
     isDeletingPost 
   } = useGroupPosts(groupId);
 
-  
-  posts?.forEach((post, index) => {
-    console.log(`Post ${index + 1} (ID: ${post.id}):`, {
-      content: post.content,
-      imageUrls: post.imageUrls,
-      imageUrlsLength: post.imageUrls?.length || 0
-    });
-  });
-
   // Smart derived state - after having posts and postsLoading
   const hasPosts = !postsLoading && posts.length > 0;
   const [newPost, setNewPost] = useState('');
@@ -440,9 +431,9 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
       {/* Conditional area: initial buttons or chat line */}
       {!hasPosts && showWelcome && !postsLoading ? (
         // Initial state: "write first post" and "skip" buttons
-        <div className="mx-4 mt-4 rounded-xl shadow-lg border-2 border-blue-300 overflow-hidden">
+        <div className="mx-4 mt-4 rounded-xl shadow-lg border-2 border-green-300 overflow-hidden">
           {/* Header con gradiente llamativo */}
-          <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-6 text-center">
+          <div className="bg-gradient-to-r from-green-600 to-green-800 p-6 text-center">
             <div className="w-20 h-20 mx-auto mb-3 bg-white/20 backdrop-blur rounded-full flex items-center justify-center shadow-inner">
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -459,7 +450,7 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
           <div className="bg-white dark:bg-gray-800 p-4 flex gap-3 justify-center">
             <button
               onClick={handleWriteFirstPost}
-              className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+              className="px-6 py-2.5 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-800 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -495,8 +486,8 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
 
       {/* Modal de creación de posts que cubre toda la pantalla */}
       {showCreateForm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="relative bg-white dark:bg-gray-800 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-700">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm overflow-y-auto">
+          <div className="relative bg-white dark:bg-gray-800 rounded-none md:rounded-lg w-full h-full md:h-auto md:w-full md:max-w-2xl md:max-h-[85vh] overflow-y-auto shadow-2xl border-0 md:border border-gray-200 dark:border-gray-700 md:m-4">
 
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
@@ -689,7 +680,7 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
                 <button
                   onClick={handleCreatePost}
                   disabled={!newPost.trim() && selectedImages.length === 0 || isCreatingPost}
-                  className="px-6 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {isCreatingPost ? (
                     <>
@@ -713,7 +704,7 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
       <div className="flex-1 overflow-y-auto p-4">
         {postsLoading ? (
           <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
           </div>
         ) : filteredPosts.length === 0 ? null : (
           <div className="space-y-4 w-full">
@@ -814,7 +805,7 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
                           </button>
                           <button
                             onClick={() => handleSaveEdit(post)}
-                            className="px-3 py-1 text-sm bg-brand text-white rounded hover:bg-blue-700 transition-colors"
+                            className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
                           >
                             Guardar
                           </button>
@@ -890,7 +881,7 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
                       disabled={isLikingPost}
                       className={`flex-1 py-2 px-3 rounded-lg transition-colors font-medium disabled:opacity-50 ${
                         post.hasUserLiked 
-                          ? 'bg-brand/10 text-brand hover:bg-brand/20' 
+                          ? 'bg-green-50 text-green-600 hover:bg-green-100' 
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
                     >
@@ -945,7 +936,7 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
                       <button
                         onClick={() => handleCommentSubmit(post.id)}
                         disabled={!commentInputs[post.id]?.trim()}
-                        className="px-3 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Enviar
                       </button>
@@ -956,7 +947,7 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
                   <div>
                     <button
                       onClick={() => handleComment(post)}
-                      className="text-sm text-brand hover:text-brand-dark font-medium mb-2"
+                      className="text-sm text-green-600 hover:text-green-700 font-medium mb-2"
                     >
                       {(showComments[post.id] || false) 
                         ? ' Ver menos' 
@@ -1047,10 +1038,10 @@ export function GrupoPostsPanel({ groupId, groupName, currentUserId, currentUser
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setShowShareModal(prev => ({ ...prev, [post.id]: false }))}
-                  className="flex flex-col items-center p-3 bg-brand/20 hover:bg-blue-200 rounded-lg transition-colors"
+                  className="flex flex-col items-center p-3 bg-blue-50 hover:bg-blue-200 rounded-lg transition-colors"
                 >
-                  <Icon icon="mdi:facebook" className="w-6 h-6 text-brand mb-1" />
-                  <span className="text-xs text-brand-dark font-bold">Facebook</span>
+                  <Icon icon="mdi:facebook" className="w-6 h-6 text-blue-600 mb-1" />
+                  <span className="text-xs text-blue-700 font-bold">Facebook</span>
                 </a>
 
                 {/* TikTok */}

@@ -43,6 +43,8 @@ export interface SubscriptionPlan {
   priceYearly?: number;
   discountPctQuarterly?: number;
   discountPctYearly?: number;
+  agencyDiscountedPrice?: number;
+  hasAgencyDiscount?: boolean;
 }
 
 export type BillingCycle = 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | 'LIFETIME';
@@ -79,4 +81,6 @@ export interface PaymentRequest {
   token: string; // Token de MercadoPago
   amount: number;
   description: string;
+  sessionId?: string; // Session ID para device fingerprint antifraude
+  deviceSessionId?: string; // Device session ID de security.js (MP_DEVICE_SESSION_ID)
 }

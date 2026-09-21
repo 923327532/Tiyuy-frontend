@@ -163,7 +163,7 @@ export default function SoportePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-[var(--bg-secondary)] to-[var(--bg-primary)]">
       {/* Hero Header - Color verde de la app */}
       <div className="bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] text-white">
         <div className="max-w-8xl mx-auto px-4 py-16">
@@ -185,11 +185,11 @@ export default function SoportePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Left Column: Informative Text + CTA */}
             <div className="flex flex-col">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 flex flex-col flex-1">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6 sm:p-8 flex flex-col flex-1">
+                <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
                   ¿Cómo podemos ayudarte?
                 </h2>
-                <div className="prose prose-sm text-gray-600 max-w-none flex-1">
+                <div className="prose prose-sm text-[var(--text-secondary)] max-w-none flex-1">
                   <p>
                     Nuestro equipo de soporte está disponible para ayudarte con cualquier incidencia,
                     consulta o inconveniente relacionado con la plataforma. Antes de enviar una solicitud,
@@ -215,7 +215,7 @@ export default function SoportePage() {
                 </div>
 
                 {/* CTA Button - debajo del texto de la izquierda */}
-                <div className="mt-6 pt-6 border-t border-gray-100">
+                <div className="mt-6 pt-6 border-t border-[var(--border-light)]">
                   <button
                     onClick={() => setStep('category')}
                     className="w-full px-6 py-3 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white rounded-xl font-medium transition-all inline-flex items-center justify-center gap-2 shadow-lg shadow-[var(--brand-primary)]/25"
@@ -223,7 +223,7 @@ export default function SoportePage() {
                     <Send className="w-4 h-4" />
                     Reportar Incidencia
                   </button>
-                  <p className="text-xs text-gray-400 mt-3 text-center">
+                  <p className="text-xs text-[var(--text-muted)] mt-3 text-center">
                     Si no encontraste respuesta en las preguntas frecuentes, repórtanos tu caso.
                   </p>
                 </div>
@@ -232,8 +232,8 @@ export default function SoportePage() {
 
             {/* Right Column: FAQ */}
             <div className="flex flex-col">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8 flex flex-col flex-1">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6 sm:p-8 flex flex-col flex-1">
+                <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-6 flex items-center gap-2">
                   <HelpCircle className="w-5 h-5 text-[var(--brand-primary)]" />
                   Preguntas Frecuentes
                 </h2>
@@ -241,22 +241,22 @@ export default function SoportePage() {
                   {FAQS.map((faq, index) => (
                     <div
                       key={index}
-                      className="border border-gray-200 rounded-xl overflow-hidden transition-all hover:border-gray-300"
+                      className="border border-[var(--border-color)] rounded-xl overflow-hidden transition-all hover:border-[var(--border-light)]"
                     >
                       <button
                         onClick={() => toggleFaq(index)}
-                        className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+                        className="w-full flex items-center justify-between p-4 text-left hover:bg-[var(--bg-tertiary)] transition-colors"
                       >
-                        <span className="font-medium text-gray-900 text-sm pr-4">{faq.q}</span>
+                        <span className="font-medium text-[var(--text-primary)] text-sm pr-4">{faq.q}</span>
                         {expandedFaq === index ? (
                           <ChevronUp className="w-4 h-4 text-[var(--brand-primary)] flex-shrink-0" />
                         ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                          <ChevronDown className="w-4 h-4 text-[var(--text-muted)] flex-shrink-0" />
                         )}
                       </button>
                       {expandedFaq === index && (
-                        <div className="px-4 pb-4 border-t border-gray-100 pt-3">
-                          <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+                        <div className="px-4 pb-4 border-t border-[var(--border-light)] pt-3">
+                          <p className="text-sm text-[var(--text-secondary)] leading-relaxed">{faq.a}</p>
                           <button
                             onClick={() => setStep('category')}
                             className="mt-3 text-sm text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] font-medium flex items-center gap-1 transition-colors"
@@ -276,17 +276,17 @@ export default function SoportePage() {
 
         {/* Step: Category Selection */}
         {step === 'category' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">¿Cuál es tu perfil?</h2>
-                <p className="text-sm text-gray-500 mt-1">Selecciona la opción que mejor describa tu situación</p>
+                <h2 className="text-xl font-semibold text-[var(--text-primary)]">¿Cuál es tu perfil?</h2>
+                <p className="text-sm text-[var(--text-tertiary)] mt-1">Selecciona la opción que mejor describa tu situación</p>
               </div>
               <button
                 onClick={handleBack}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                className="p-2 hover:bg-[var(--bg-tertiary)] rounded-xl transition-colors"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-[var(--text-muted)]" />
               </button>
             </div>
 
@@ -295,16 +295,16 @@ export default function SoportePage() {
                 <button
                   key={cat.value}
                   onClick={() => handleSelectCategory(cat.value)}
-                  className="flex items-center gap-4 p-5 rounded-xl border border-gray-200 hover:border-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 transition-all group text-left"
+                  className="flex items-center gap-4 p-5 rounded-xl border border-[var(--border-color)] hover:border-[var(--brand-primary)] hover:bg-[var(--brand-primary)]/5 transition-all group text-left"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gray-100 group-hover:bg-[var(--brand-primary)]/10 flex items-center justify-center text-gray-500 group-hover:text-[var(--brand-primary)] transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-[var(--bg-tertiary)] group-hover:bg-[var(--brand-primary)]/10 flex items-center justify-center text-[var(--text-tertiary)] group-hover:text-[var(--brand-primary)] transition-colors">
                     {cat.icon}
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-900">{cat.label}</p>
-                    <p className="text-sm text-gray-500 mt-0.5">{cat.desc}</p>
+                    <p className="font-semibold text-[var(--text-primary)]">{cat.label}</p>
+                    <p className="text-sm text-[var(--text-tertiary)] mt-0.5">{cat.desc}</p>
                   </div>
-                  <div className="w-7 h-7 rounded-full border-2 border-gray-300 group-hover:border-[var(--brand-primary)] flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-full border-2 border-[var(--border-color)] group-hover:border-[var(--brand-primary)] flex items-center justify-center">
                     <div className="w-3 h-3 rounded-full group-hover:bg-[var(--brand-primary)] transition-colors" />
                   </div>
                 </button>
@@ -315,19 +315,19 @@ export default function SoportePage() {
 
         {/* Step: Form */}
         {step === 'form' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Describe tu incidencia</h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <h2 className="text-xl font-semibold text-[var(--text-primary)]">Describe tu incidencia</h2>
+                <p className="text-sm text-[var(--text-tertiary)] mt-1">
                   {PROFILE_CATEGORIES.find(c => c.value === selectedCategory)?.label}
                 </p>
               </div>
               <button
                 onClick={handleBack}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                className="p-2 hover:bg-[var(--bg-tertiary)] rounded-xl transition-colors"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-[var(--text-muted)]" />
               </button>
             </div>
 
@@ -335,68 +335,68 @@ export default function SoportePage() {
               {/* Guest contact fields - only show if not authenticated */}
               {!isAuthenticated && (
                 <>
-                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                    <p className="text-sm text-amber-800">
+                  <div className="bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 rounded-xl p-4">
+                    <p className="text-sm text-[var(--brand-primary)]">
                       No has iniciado sesión. Proporciona tus datos de contacto para que podamos responderte.
                     </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Nombre <span className="text-gray-400">(opcional)</span>
+                      <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                        Nombre <span className="text-[var(--text-muted)]">(opcional)</span>
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                         <input
                           type="text"
                           value={guestName}
                           onChange={(e) => setGuestName(e.target.value)}
                           placeholder="Tu nombre"
-                          className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all"
+                          className="w-full pl-10 pr-4 py-2.5 border border-[var(--border-color)] rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all bg-[var(--bg-primary)] text-[var(--text-primary)]"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Teléfono <span className="text-gray-400">(opcional)</span>
+                      <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                        Teléfono <span className="text-[var(--text-muted)]">(opcional)</span>
                       </label>
                       <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                         <input
                           type="tel"
                           value={guestPhone}
                           onChange={(e) => setGuestPhone(e.target.value)}
                           placeholder="+51 999 999 999"
-                          className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all"
+                          className="w-full pl-10 pr-4 py-2.5 border border-[var(--border-color)] rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all bg-[var(--bg-primary)] text-[var(--text-primary)]"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
                       Correo electrónico <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
                       <input
                         type="email"
                         value={guestEmail}
                         onChange={(e) => setGuestEmail(e.target.value)}
                         placeholder="tucorreo@ejemplo.com"
-                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 border border-[var(--border-color)] rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all bg-[var(--bg-primary)] text-[var(--text-primary)]"
                       />
                     </div>
                   </div>
 
-                  <hr className="border-gray-200" />
+                  <hr className="border-[var(--border-color)]" />
                 </>
               )}
 
               {/* Severity selector */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">¿Qué tan urgente es?</label>
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">¿Qué tan urgente es?</label>
                 <div className="grid grid-cols-2 gap-2">
                   {SEVERITIES.map((sev) => (
                     <button
@@ -405,7 +405,7 @@ export default function SoportePage() {
                       className={`px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
                         selectedSeverity === sev.value
                           ? `${sev.color} ring-2 ring-offset-1`
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                          : 'border-[var(--border-color)] text-[var(--text-secondary)] hover:border-[var(--border-light)]'
                       }`}
                     >
                       {sev.label}
@@ -416,7 +416,7 @@ export default function SoportePage() {
 
               {/* Subject */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
                   Asunto <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -424,13 +424,13 @@ export default function SoportePage() {
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="Ej: No puedo publicar una propiedad"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all"
+                  className="w-full px-4 py-2.5 border border-[var(--border-color)] rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent transition-all bg-[var(--bg-primary)] text-[var(--text-primary)]"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
                   Descripción <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -438,13 +438,13 @@ export default function SoportePage() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe el problema en detalle. Cuanto más información nos des, más rápido podremos ayudarte. Incluye capturas de pantalla si es posible."
                   rows={5}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent resize-none transition-all"
+                  className="w-full px-4 py-2.5 border border-[var(--border-color)] rounded-xl text-sm focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent resize-none transition-all bg-[var(--bg-primary)] text-[var(--text-primary)]"
                 />
               </div>
 
               {/* Legal Notice */}
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                <p className="text-xs text-gray-500 leading-relaxed">
+              <div className="bg-[var(--bg-tertiary)] rounded-xl p-4 border border-[var(--border-color)]">
+                <p className="text-xs text-[var(--text-tertiary)] leading-relaxed">
                   Al enviar una incidencia, nuestro equipo analizará la información proporcionada y
                   podrá revisar datos relacionados con tu cuenta para resolver el problema. El tiempo
                   de respuesta habitual es de hasta 24 horas hábiles, aunque algunos casos complejos
@@ -459,9 +459,9 @@ export default function SoportePage() {
                   type="checkbox"
                   checked={acceptedTerms}
                   onChange={(e) => setAcceptedTerms(e.target.checked)}
-                  className="mt-0.5 rounded border-gray-300 text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
+                  className="mt-0.5 rounded border-[var(--border-color)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
                 />
-                <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
+                <span className="text-sm text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">
                   Acepto que mi incidencia sea revisada por el equipo de soporte y que se acceda a
                   la información necesaria de mi cuenta para resolver el problema.
                 </span>
@@ -479,14 +479,14 @@ export default function SoportePage() {
               <div className="flex items-center justify-between pt-2">
                 <button
                   onClick={handleBack}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                  className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   ← Cambiar categoría
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={!subject.trim() || !description.trim() || !acceptedTerms || createMutation.isPending}
-                  className="px-6 py-2.5 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
+                  className="px-6 py-2.5 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] disabled:bg-[var(--bg-tertiary)] disabled:cursor-not-allowed text-white rounded-xl text-sm font-medium transition-all flex items-center gap-2"
                 >
                   {createMutation.isPending ? (
                     <>
@@ -507,16 +507,16 @@ export default function SoportePage() {
 
         {/* Step: Success */}
         {step === 'success' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-12 text-center">
-            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="w-10 h-10 text-green-600" />
+          <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-12 text-center">
+            <div className="w-20 h-20 rounded-full bg-[var(--brand-primary-light)] flex items-center justify-center mx-auto mb-6">
+              <CheckCircle2 className="w-10 h-10 text-[var(--brand-primary)]" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">¡Incidencia Reportada!</h2>
-            <p className="text-gray-600 max-w-md mx-auto mb-2">
+            <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-3">¡Incidencia Reportada!</h2>
+            <p className="text-[var(--text-secondary)] max-w-md mx-auto mb-2">
               Hemos recibido tu reporte. Nuestro equipo de soporte lo revisará y te notificaremos
               cuando haya una solución.
             </p>
-            <p className="text-sm text-gray-400 mb-8">
+            <p className="text-sm text-[var(--text-muted)] mb-8">
               Recibirás la respuesta en tu correo y dentro de la plataforma.
             </p>
             <button

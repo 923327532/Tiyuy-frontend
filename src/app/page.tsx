@@ -1,23 +1,53 @@
- 'use client';
+'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
-import { Footer } from '@/presentation/components/layout/Footer/Footer';
-import { FeaturedProperties } from '@/presentation/components/property/FeaturedProperties/FeaturedProperties';
-import { FeaturedProjects } from '@/presentation/components/project/FeaturedProjects/FeaturedProjects';
-import { FilteredProperties } from '@/presentation/components/property/FilteredProperties/FilteredProperties';
 import { LocationSearch } from '@/presentation/components/forms/LocationSearch/LocationSearch';
-import { FeaturedCampaigns } from '@/presentation/components/marketing/FeaturedCampaigns';
 import { usePublicBanners } from '@/presentation/hooks/usePublicBanners';
+import { prefetchFeaturedProperties } from '@/presentation/hooks/useFeaturedProperties';
+import { prefetchFeaturedProjects } from '@/presentation/hooks/useFeaturedProjects';
+import { prefetchFilteredProperties } from '@/presentation/hooks/useFilteredProperties';
+
+// Componentes pesados con lazy loading + Splitting de código para reducir bundle inicial
+const FeaturedProperties = lazy(() => import('@/presentation/components/property/FeaturedProperties/FeaturedProperties').then(m => ({ default: m.FeaturedProperties })));
+const FeaturedProjects = lazy(() => import('@/presentation/components/project/FeaturedProjects/FeaturedProjects').then(m => ({ default: m.FeaturedProjects })));
+const IntelligentPropertySections = lazy(() => import('@/presentation/components/property/IntelligentPropertySections/IntelligentPropertySections').then(m => ({ default: m.IntelligentPropertySections })));
+const FeaturedCampaigns = lazy(() => import('@/presentation/components/marketing/FeaturedCampaigns').then(m => ({ default: m.FeaturedCampaigns })));
+const Footer = lazy(() => import('@/presentation/components/layout/Footer/Footer').then(m => ({ default: m.Footer })));
+
+// Skeleton de cards que coincide exactamente con el layout real
+const CardsSkeleton = () => (
+  <div className="flex overflow-x-auto hide-scrollbar gap-3">
+    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+      <div key={i} className="w-[160px] sm:w-[280px] md:w-[320px] lg:w-[240px] xl:w-[190px] 2xl:w-[220px] flex-shrink-0">
+        <div className="bg-transparent rounded-none border-none overflow-hidden animate-pulse">
+          <div className="w-full aspect-square bg-[var(--bg-tertiary)] rounded-[14px]" />
+          <div className="pt-2 space-y-1.5">
+            <div className="h-3.5 bg-[var(--bg-tertiary)] rounded w-full" />
+            <div className="h-3 bg-[var(--bg-tertiary)] rounded w-2/3" />
+            <div className="h-3 bg-[var(--bg-tertiary)] rounded w-16" />
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+// Fallback para Suspense que ya muestra las cards skeleton (el usuario ve algo inmediato)
+const SectionFallback = ({ height = '300px' }: { height?: string }) => (
+  <div className="py-4" style={{ minHeight: height }}>
+    <CardsSkeleton />
+  </div>
+);
 
 // Fallback images si no hay banners configurados en admin
 const FALLBACK_HERO_IMAGES = [
   '/assets/images/hero/hero-1.jpg',
   '/assets/images/hero/hero-2.jpg',
-  '/assets/images/hero/hero-3.jpg',
-  '/assets/images/hero/hero-4.jpg',
+  '/assets/images/hero/hero-3.webp',
+  '/assets/images/hero/hero-4.webp',
 ];
 
 const links = [
@@ -65,56 +95,127 @@ const quickLinks = [
   },
 ];
 
-/**
- * Intercala imágenes de banners entre las imágenes estáticas del carrusel.
- * Ejemplo: [estática1, banner1, estática2, banner2, estática3, estática4]
- */
-function intercalateImages(staticImages: string[], bannerImages: string[]): string[] {
-  const result: string[] = [];
-  const maxBannersPerSlot = Math.max(1, Math.floor(staticImages.length / bannerImages.length));
-  let bannerIndex = 0;
-  let bannerCountInSlot = 0;
+function CustomSelect({ options, value, onChange, placeholder }: { options: { value: string; label: string }[]; value: string; onChange: (v: string) => void; placeholder: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selected = options.find(o => o.value === value);
 
-  for (let i = 0; i < staticImages.length; i++) {
-    result.push(staticImages[i]);
-    // Insertar un banner después de cada imagen estática (si hay banners disponibles)
-    if (bannerIndex < bannerImages.length) {
-      bannerCountInSlot++;
-      if (bannerCountInSlot >= maxBannersPerSlot || i === staticImages.length - 1) {
-        result.push(bannerImages[bannerIndex]);
-        bannerIndex++;
-        bannerCountInSlot = 0;
-      }
-    }
-  }
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
-  // Si sobran banners, agregarlos al final
-  while (bannerIndex < bannerImages.length) {
-    result.push(bannerImages[bannerIndex]);
-    bannerIndex++;
-  }
-
-  return result;
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-5 py-3.5 border border-[var(--border-color)] rounded-xl bg-[var(--bg-card)] text-base text-[var(--text-primary)] cursor-pointer transition-all hover:border-[var(--border-color)] shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none"
+      >
+        <span className={selected ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}>{selected ? selected.label : placeholder}</span>
+        <svg className={`w-4 h-4 text-[var(--text-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+      </button>
+      {isOpen && (
+        <div className="absolute z-50 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-lg overflow-hidden">
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setIsOpen(false); }}
+              className={`w-full text-left px-5 py-3 text-sm transition-colors hover:bg-brand-light hover:text-brand-dark ${value === opt.value ? 'bg-brand-light text-brand-dark font-semibold' : 'text-[var(--text-primary)]'}`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function HomePage() {
-  // Cargar banners públicos con displayMode INTEGRATED para mezclar con imágenes estáticas
+  // Prefetch inmediato de TODAS las secciones — arranca antes que monten los componentes
+  useEffect(() => {
+    prefetchFeaturedProperties();
+    prefetchFeaturedProjects();
+    prefetchFilteredProperties({ type: 'APARTMENT', transactionType: 'RENT' });
+    prefetchFilteredProperties({ type: 'HOUSE', transactionType: 'SALE' });
+    prefetchFilteredProperties({ type: 'COMMERCIAL' });
+    prefetchFilteredProperties({ type: 'LAND' });
+  }, []);
+
   const { data: sliderBanners = [] } = usePublicBanners('SLIDER');
   const { data: mainBanners = [] } = usePublicBanners('HOME_MAIN');
   const { data: homeBanners = [] } = usePublicBanners('HOME_BANNER');
-  
-  // Unir todos los banners encontrados
-  const allBanners = [...sliderBanners, ...mainBanners, ...homeBanners];
-  
-  // Separar banners INTEGRATED (se mezclan con el carrusel) de SOLO_BANNER (no se muestran en carrusel)
-  const integratedBanners = allBanners.filter(b => b.displayMode === 'INTEGRATED' || !b.displayMode);
-  
-  // Mezclar banners integrados con imágenes estáticas: intercalar
-  const heroImages = integratedBanners.length > 0
-    ? intercalateImages(FALLBACK_HERO_IMAGES, integratedBanners.map(b => b.imageUrl))
-    : FALLBACK_HERO_IMAGES;
+
+  // Memoizar integratedBanners para referencia estable
+  const integratedBanners = useMemo(() => {
+    const all = [...sliderBanners, ...mainBanners, ...homeBanners];
+    return all.filter(b => b.displayMode === 'INTEGRATED' || !b.displayMode);
+  }, [sliderBanners, mainBanners, homeBanners]);
+
+  // Las primeras 2 imágenes SIEMPRE son locales (cargan al instante, sin error en producción).
+  // Las del admin (S3) pasan por el proxy interno /api/images/proxy (mismo mecanismo que las cards)
+  // y van después, para que carguen mientras se muestran las locales.
+  const heroImages = useMemo(() => 
+    integratedBanners.length > 0
+      ? [
+          ...FALLBACK_HERO_IMAGES.slice(0, 2),
+          ...integratedBanners.map(b =>
+            b.imageUrl.startsWith('http')
+              ? `/api/images/proxy?url=${encodeURIComponent(b.imageUrl)}`
+              : b.imageUrl
+          ),
+        ]
+      : FALLBACK_HERO_IMAGES,
+    [integratedBanners]
+  );
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const imagesLoadedRef = useRef(false);
+  const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
+
+  // Precargar todas las imágenes del carrusel (solo una vez) y marcar cuáles están listas
+  useEffect(() => {
+    if (imagesLoadedRef.current) return;
+    imagesLoadedRef.current = true;
+    setLoadedImages(heroImages.map(() => false));
+    heroImages.forEach((src, index) => {
+      const img = new window.Image();
+      img.onload = () => {
+        setLoadedImages(prev => {
+          const next = [...prev];
+          next[index] = true;
+          return next;
+        });
+      };
+      img.onerror = () => {
+        // Si falla, LazyImage mostrará su fallback; no insistir en esperarla
+        setLoadedImages(prev => {
+          const next = [...prev];
+          next[index] = true;
+          return next;
+        });
+      };
+      img.src = src;
+    });
+  }, [heroImages]);
+
+  // Carrusel: avanza cada 5s PERO espera a que la siguiente imagen ya esté cargada.
+  // Así las S3 que tardan no muestran el placeholder vacío al llegar su turno.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => {
+        const next = (prev + 1) % heroImages.length;
+        // Las locales (0-1) siempre están listas; las S3 solo cuando terminaron de precargarse
+        return (next < 2 || loadedImages[next]) ? next : prev;
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages.length, loadedImages]);
   const [activeTab, setActiveTab] = useState<'rent' | 'sale' | 'projects'>('sale');
   const [selectedPropertyType, setSelectedPropertyType] = useState('departamentos');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -124,20 +225,11 @@ export default function HomePage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Slider automático del Hero
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
-
-  // Control e hidratación segura de rutas e historial (Previene errores de servidor en Next.js)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const referrer = document.referrer;
       const currentPath = window.location.pathname;
-      
+
       if (currentPath.includes('/rent/') || referrer.includes('/rent/')) {
         setActiveTab('rent');
       } else if (currentPath.includes('/sale/') || referrer.includes('/sale/')) {
@@ -152,8 +244,6 @@ export default function HomePage() {
       }
     }
   }, [pathname]);
-
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const getPropertyTypes = (tab = activeTab) => {
     switch (tab) {
@@ -176,57 +266,12 @@ export default function HomePage() {
     }
   };
 
-  // Custom dropdown component
-  const CustomSelect = ({ options, value, onChange, placeholder }: { options: { value: string; label: string }[]; value: string; onChange: (v: string) => void; placeholder: string }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
-    const selected = options.find(o => o.value === value);
-    
-    useEffect(() => {
-      const handler = (e: MouseEvent) => {
-        if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false);
-      };
-      document.addEventListener('mousedown', handler);
-      return () => document.removeEventListener('mousedown', handler);
-    }, []);
-
-    return (
-      <div className="relative" ref={ref}>
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-5 py-3.5 border border-gray-200 rounded-xl bg-white text-base text-gray-700 cursor-pointer transition-all hover:border-gray-300 shadow-sm focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none"
-        >
-          <span className={selected ? 'text-gray-700' : 'text-gray-400'}>{selected ? selected.label : placeholder}</span>
-          <svg className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-        </button>
-        {isOpen && (
-          <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                className={`w-full text-left px-5 py-3 text-sm transition-colors hover:bg-brand-light hover:text-brand-dark ${value === opt.value ? 'bg-brand-light text-brand-dark font-semibold' : 'text-gray-700'}`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const handleTabClick = (tab: 'rent' | 'sale' | 'projects') => {
     setActiveTab(tab);
-    
-    // Auto-ajuste para evitar tipos de propiedad huérfanos entre pestañas
     const availableTypes = getPropertyTypes(tab);
     if (!availableTypes.some(t => t.value === selectedPropertyType)) {
       setSelectedPropertyType(availableTypes[0].value);
     }
-
     localStorage.setItem('selectedTab', tab);
     sessionStorage.setItem('lastActiveTab', tab);
   };
@@ -239,28 +284,25 @@ export default function HomePage() {
     const baseUrl = activeTab === 'rent' ? '/rent' : activeTab === 'sale' ? '/sale' : '/projects';
     const location = selectedLocation || 'lima';
     let url = `${baseUrl}/${selectedPropertyType}/${location}`;
-    
+
     const params = new URLSearchParams();
-    
+
     if (activeTab !== 'projects') {
       if ((selectedPropertyType === 'departamentos' || selectedPropertyType === 'casas') && selectedBedrooms) {
         params.append('bedrooms', selectedBedrooms);
       }
-      
       if (selectedPropertyType === 'habitaciones' && selectedBathrooms) {
         params.append('bathrooms', selectedBathrooms);
       }
-      
       if (['oficinas', 'terrenos', 'lotes', 'locales'].includes(selectedPropertyType) && selectedMinArea) {
         params.append('minArea', selectedMinArea);
       }
     }
-    
+
     if (params.toString()) {
       url += `?${params.toString()}`;
     }
-    
-    // Guardar búsqueda para recomendaciones
+
     if (activeTab !== 'projects') {
       localStorage.setItem('lastSearch', JSON.stringify({
         transactionType: activeTab === 'rent' ? 'rent' : 'sale',
@@ -271,7 +313,7 @@ export default function HomePage() {
         minArea: selectedMinArea || '',
       }));
     }
-    
+
     router.push(url);
   };
 
@@ -279,83 +321,66 @@ export default function HomePage() {
     <div className="min-h-screen bg-background text-foreground">
       {/* HERO */}
       <section className="relative">
-        <style>{`
-          .hero-select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            background-size: 12px 8px;
-            padding-right: 38px;
-          }
-          .hero-select::-ms-expand { display: none; }
-          .hero-select option {
-            padding: 8px 12px;
-            background: white;
-            color: #374151;
-          }
-          .hero-input-number::-webkit-inner-spin-button,
-          .hero-input-number::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-          }
-          .hero-input-number[type=number] {
-            -moz-appearance: textfield;
-          }
-        `}</style>
         <div className="relative h-[540px] overflow-hidden">
           {heroImages.map((image, index) => (
             <div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
+              className={`absolute inset-0 transition-opacity duration-1000 pointer-events-none ${
                 index === currentImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <img src={image} alt="" className="w-full h-full object-cover" />
+              {/* Índices 0-1 (locales): SIEMPRE visibles al instante.
+                  Índices 2+ (S3): solo cuando ya están precargadas para nunca mostrar gris. */}
+              {(index < 2 || loadedImages[index]) && (
+                <img
+                  src={image}
+                  alt=""
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
           ))}
-          <div className="absolute inset-0 bg-black/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
         </div>
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-full px-8 xl:px-16">
+          <div className="w-full px-4 sm:px-8 xl:px-16">
             <div className="max-w-[1920px] mx-auto flex justify-center items-center">
               <div className="max-w-[800px] w-full text-center">
-                <h1 className="text-5xl xl:text-6xl font-bold text-white mb-8 drop-shadow-lg">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-6xl font-bold text-white mb-8 drop-shadow-lg">
                   Encuentra tu hogar
                 </h1>
 
-                <div className="bg-white rounded-2xl shadow-xl border border-gray-200/80 dark:border-gray-700/80">
-                  <div className="border-b border-gray-200 rounded-t-2xl bg-white overflow-hidden">
+                <div className="bg-[var(--bg-card)] rounded-2xl shadow-xl border border-[var(--border-color)]">
+                  <div className="border-b border-[var(--border-color)] rounded-t-2xl bg-[var(--bg-card)] overflow-hidden">
                     <div className="flex">
                       <button
                         onClick={() => handleTabClick('rent')}
-                        className={`flex-1 py-4 text-base font-semibold transition-colors bg-white ${
+                        className={`flex-1 py-4 text-base font-semibold transition-colors bg-[var(--bg-card)] ${
                           activeTab === 'rent'
                             ? 'text-brand border-b-2 border-brand'
-                            : 'text-gray-500 hover:text-brand hover:bg-gray-50/50'
+                            : 'text-[var(--text-muted)] hover:text-brand hover:bg-[var(--bg-secondary)]/50'
                         }`}
                       >
                         Alquilar
                       </button>
                       <button
                         onClick={() => handleTabClick('sale')}
-                        className={`flex-1 py-4 text-base font-semibold transition-colors bg-white ${
+                        className={`flex-1 py-4 text-base font-semibold transition-colors bg-[var(--bg-card)] ${
                           activeTab === 'sale'
                             ? 'text-brand border-b-2 border-brand'
-                            : 'text-gray-500 hover:text-brand hover:bg-gray-50/50'
+                            : 'text-[var(--text-muted)] hover:text-brand hover:bg-[var(--bg-secondary)]/50'
                         }`}
                       >
                         Comprar
                       </button>
                       <button
                         onClick={() => handleTabClick('projects')}
-                        className={`flex-1 py-4 text-base font-semibold transition-colors bg-white ${
+                        className={`flex-1 py-4 text-base font-semibold transition-colors bg-[var(--bg-card)] ${
                           activeTab === 'projects'
                             ? 'text-brand border-b-2 border-brand'
-                            : 'text-gray-500 hover:text-brand hover:bg-gray-50/50'
+                            : 'text-[var(--text-muted)] hover:text-brand hover:bg-[var(--bg-secondary)]/50'
                         }`}
                       >
                         Proyectos
@@ -363,7 +388,7 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  <div className="p-6 bg-white rounded-b-2xl">
+                  <div className="p-6 bg-[var(--bg-card)] rounded-b-2xl">
                     <div className="flex flex-col lg:flex-row gap-3 relative z-10">
                       <div className="flex-1">
                         <CustomSelect 
@@ -410,7 +435,7 @@ export default function HomePage() {
                             placeholder="Área mínima (m²)"
                             value={selectedMinArea}
                             onChange={(e) => setSelectedMinArea(e.target.value)}
-                            className="w-full hero-input-number px-5 py-3.5 border border-gray-200 rounded-xl focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none text-base text-gray-700 bg-white transition-all hover:border-gray-300 shadow-sm"
+                            className="w-full hero-input-number px-5 py-3.5 border border-[var(--border-color)] rounded-xl focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none text-base text-[var(--text-primary)] bg-[var(--bg-card)] transition-all hover:border-[var(--border-color)] shadow-sm"
                           />
                         </div>
                       ) : null}
@@ -424,7 +449,7 @@ export default function HomePage() {
 
                       <button
                         onClick={handleSearch}
-                        className="bg-brand text-white px-10 py-3.5 rounded-xl font-bold text-base hover:bg-brand-hover transition-colors whitespace-nowrap w-full lg:w-[180px] shadow-md hover:shadow-lg cursor-pointer"
+                        className="bg-[#16A34A] text-white px-10 py-3.5 rounded-xl font-bold text-base hover:bg-[#15803D] transition-colors whitespace-nowrap w-full lg:w-[180px] shadow-md hover:shadow-lg cursor-pointer"
                       >
                         Buscar
                       </button>
@@ -438,7 +463,7 @@ export default function HomePage() {
       </section>
 
       <section className="bg-[var(--bg-primary)]">
-        <div className="w-full px-8 xl:px-16">
+        <div className="w-full px-4 sm:px-8 xl:px-16">
           <div className="max-w-[1920px] mx-auto">
             <div className="flex gap-6 sm:gap-8 overflow-x-auto scrollbar-none">
               {links.map(({ href, label }) => {
@@ -463,12 +488,12 @@ export default function HomePage() {
       </section>
 
       <section className="py-2 sm:py-3 bg-[var(--bg-primary)]">
-        <div className="w-full px-8 xl:px-16">
+        <div className="w-full px-4 sm:px-8 xl:px-16">
           <div className="max-w-[1920px] mx-auto">
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {quickLinks.map(({ href, icon, title, description, actionText }) => (
                 <Link key={href} href={href} className="block group h-full">
-                  <div className="flex flex-col h-full bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-200 hover:border-brand/30 group-hover:scale-[1.02] transition-all duration-300">
+                  <div className="flex flex-col h-full bg-[var(--bg-card)] rounded-xl p-4 sm:p-5 shadow-sm border border-[var(--border-color)] hover:border-brand/30 group-hover:scale-[1.02] transition-all duration-300">
                     <div className="flex-grow">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[var(--brand-primary-light)] rounded-xl flex items-center justify-center mb-3 group-hover:bg-[var(--brand-primary-light-hover)] transition-colors">
                         <Icon icon={icon} className="w-5 h-5 sm:w-6 sm:h-6 text-brand" />
@@ -494,66 +519,34 @@ export default function HomePage() {
 
       <section className="py-2 sm:py-3 bg-background">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <FeaturedProperties />
+          <Suspense fallback={<SectionFallback height="300px" />}>
+            <FeaturedProperties />
+          </Suspense>
         </div>
       </section>
 
-      {/* DEPARTAMENTOS EN ALQUILER */}
-      <section className="py-2 sm:py-3 bg-background">
+      <section className="py-1 sm:py-1 bg-background">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <FilteredProperties 
-            title="Departamentos para alquilar" 
-            viewAllLink="/rent/departamentos/lima" 
-            filter={{ type: 'APARTMENT', transactionType: 'RENT' }} 
-          />
+          <Suspense fallback={<SectionFallback height="400px" />}>
+            <IntelligentPropertySections />
+          </Suspense>
         </div>
       </section>
 
-      {/* CASAS EN VENTA */}
-      <section className="py-2 sm:py-3 bg-background">
+      <section className="py-1 sm:py-1 bg-background">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <FilteredProperties 
-            title="Casas disponibles para compra" 
-            viewAllLink="/sale/casas/lima" 
-            filter={{ type: 'HOUSE', transactionType: 'SALE' }} 
-          />
+          <Suspense fallback={<SectionFallback height="300px" />}>
+            <FeaturedProjects />
+          </Suspense>
         </div>
       </section>
 
-      {/* PROYECTOS INMOBILIARIOS */}
-      <section className="py-2 sm:py-3 bg-background">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <FeaturedProjects />
-        </div>
-      </section>
-
-      {/* OFICINAS Y LOCALES */}
-      <section className="py-2 sm:py-3 bg-background">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <FilteredProperties 
-            title="Espacios para tu negocio" 
-            viewAllLink="/sale/oficinas/lima" 
-            filter={{ type: 'COMMERCIAL' }} 
-          />
-        </div>
-      </section>
-
-      {/* TERRENOS */}
-      <section className="py-2 sm:py-3 bg-background">
-        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16">
-          <FilteredProperties 
-            title="Terrenos y lotes de inversión" 
-            viewAllLink="/sale/terrenos/lima" 
-            filter={{ type: 'LAND' }} 
-          />
-        </div>
-      </section>
-
-      {/* CAMPAÑAS DE MARKETING DESTACADAS */}
-      <FeaturedCampaigns />
+      <Suspense fallback={<SectionFallback height="200px" />}>
+        <FeaturedCampaigns />
+      </Suspense>
 
       <section className="py-2 sm:py-3 bg-background">
-        <div className="w-full px-8 xl:px-16">
+        <div className="w-full px-4 sm:px-8 xl:px-16">
           <div className="max-w-[1920px] mx-auto">
             <h2 className="text-2xl font-bold text-foreground mb-6">
               Búsquedas populares en Perú
@@ -575,7 +568,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <Footer />
+      <Suspense fallback={<div style={{ height: '200px' }} />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

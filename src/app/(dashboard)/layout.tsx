@@ -1,9 +1,12 @@
+'use client';
+
 import React from 'react';
+import { InternationalVerificationGate } from '@/presentation/components/auth/InternationalVerificationGate';
 
 export default function DashboardGroupLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return <InternationalVerificationGate>{children}</InternationalVerificationGate>;
 }

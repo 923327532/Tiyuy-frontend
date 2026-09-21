@@ -408,8 +408,19 @@ export default function DeveloperMarketingPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [showCreateCampaign, setShowCreateCampaign] = useState(false);
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<PromotionCampaign | null>(null);
   const [deletingId, setDeletingId] = useState<{ id: number; name: string } | null>(null);
+  
+  const statusOptions = [
+    { value: 'all', label: 'Todos', icon: true, dotColor: '#6b7280' },
+    { value: 'DRAFT', label: 'Borradores', icon: true, dotColor: '#9ca3af' },
+    { value: 'ACTIVE', label: 'Activas', icon: true, dotColor: '#10b981' },
+    { value: 'PENDING_APPROVAL', label: 'Pendientes', icon: true, dotColor: '#f59e0b' },
+    { value: 'SCHEDULED', label: 'Programadas', icon: true, dotColor: '#3b82f6' },
+    { value: 'EXPIRED', label: 'Expiradas', icon: true, dotColor: '#ef4444' },
+    { value: 'INACTIVE', label: 'Inactivas', icon: true, dotColor: '#d1d5db' },
+  ];
 
   // ── Derived ──
   const isLoading = isLoadingStats || isLoadingCampaigns || isLoadingPlan;
@@ -727,29 +738,47 @@ export default function DeveloperMarketingPage() {
               )}
             </div>
             {/* Filtros */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <div className="relative flex-1 min-w-0">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Buscar campaña..."
-                  className="pl-9 pr-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 w-48"
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
-              >
-                <option value="all">Todos</option>
-                <option value="DRAFT">Borradores</option>
-                <option value="ACTIVE">Activas</option>
-                <option value="PENDING_APPROVAL">Pendientes</option>
-                <option value="SCHEDULED">Programadas</option>
-                <option value="EXPIRED">Expiradas</option>
-                <option value="INACTIVE">Inactivas</option>
-              </select>
+              <div className="relative w-full sm:w-auto">
+                <button
+                  onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+                  className="w-full sm:w-auto px-3 py-2 rounded-xl border border-gray-200 text-sm bg-white flex items-center gap-2 hover:border-gray-300 transition-colors text-left"
+                >
+                  <Filter className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span className="flex-1 text-gray-700">
+                    {statusFilter === 'all' ? 'Estado' : statusOptions.find(o => o.value === statusFilter)?.label || statusFilter}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform ${showStatusDropdown ? 'rotate-180' : ''}`} />
+                </button>
+                {showStatusDropdown && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowStatusDropdown(false)} />
+                    <div className="absolute right-0 top-full mt-1 w-full min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                      {statusOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => { setStatusFilter(opt.value); setShowStatusDropdown(false); }}
+                          className={`w-full px-3 py-2.5 text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2 ${
+                            statusFilter === opt.value ? 'bg-emerald-50 text-emerald-700 font-medium' : 'text-gray-700'
+                          }`}
+                        >
+                          {opt.icon && <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: opt.dotColor }} />}
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@ import { authStorage } from '@/infrastructure/storage/auth-storage';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { AdminHeader } from '@/presentation/components/admin/AdminHeader/AdminHeader';
-import { Activity, Bell, Building, Building2, DollarSign, FileText, Layers, LayoutDashboard, LogOut, Megaphone, MessageSquare, Package, ShieldAlert, ShieldCheck, Tag, TriangleAlert, UserCircle, Users } from 'lucide-react';
+import { Activity, Bell, Building, Building2, DollarSign, FileText, Globe2, Image as ImageIcon, Layers, LayoutDashboard, LogOut, Megaphone, MessageSquare, Package, ShieldAlert, ShieldCheck, Tag, TriangleAlert, UserCircle, Users } from 'lucide-react';
 
 
 interface GitHubShellProps {
@@ -58,6 +58,7 @@ const NAV_SECTIONS: NavSectionWithPermission[] = [
     title: 'USUARIOS',
     items: [
       { label: 'Usuarios', href: '/admin/users', icon: Users, requiredPermission: 'USERS_VIEW' },
+      { label: 'Extranjeros', href: '/admin/international', icon: Globe2, requiredPermission: 'USERS_VIEW' },
     ],
   },
   {
@@ -81,6 +82,7 @@ const NAV_SECTIONS: NavSectionWithPermission[] = [
       { label: 'Planes', href: '/admin/plans', icon: Layers, requiredPermission: 'FINANCE_VIEW' },
       { label: 'Descuentos', href: '/admin/discounts', icon: Tag, requiredPermission: 'DISCOUNTS_CREATE' },
       { label: 'Campanas', href: '/admin/campaigns', icon: Megaphone, requiredPermission: 'COMMUNICATIONS_MANAGE' },
+      { label: 'Banners', href: '/admin/campaigns/banners', icon: ImageIcon, requiredPermission: 'COMMUNICATIONS_MANAGE' },
       { label: 'Finanzas', href: '/admin/finance', icon: DollarSign, requiredPermission: 'FINANCE_VIEW' },
     ],
   },
@@ -135,7 +137,7 @@ function SidebarItem({
         flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-150
         ${active
           ? 'bg-white/15 text-white font-medium'
-          : 'text-gray-400 hover:text-white hover:bg-white/10'
+          : 'text-[var(--text-muted)] hover:text-white hover:bg-white/10'
         }
         ${collapsed ? 'justify-center px-2' : ''}
       `}
@@ -186,7 +188,7 @@ function Sidebar({
         <div key={si} className={si > 0 ? 'pt-3' : ''}>
           {section.title && !collapsed && (
             <div className="px-3 pb-1">
-              <span className="text-[10px] font-semibold tracking-widest text-gray-500 uppercase">
+              <span className="text-[10px] font-semibold tracking-widest text-[var(--text-muted)] uppercase">
                 {section.title}
               </span>
             </div>
@@ -215,7 +217,7 @@ function Sidebar({
       <div className={collapsed ? 'border-t border-white/10 my-2' : 'pt-3'}>
         {!collapsed && (
           <div className="px-3 pb-1">
-            <span className="text-[10px] font-semibold tracking-widest text-gray-500 uppercase">
+            <span className="text-[10px] font-semibold tracking-widest text-[var(--text-muted)] uppercase">
               SESION
             </span>
           </div>
@@ -226,7 +228,7 @@ function Sidebar({
           title={collapsed ? 'Cerrar sesión' : undefined}
           className={`
             flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-150 w-full
-            text-gray-400 hover:text-red-400 hover:bg-red-900/30
+            text-[var(--text-muted)] hover:text-red-400 hover:bg-red-900/30
             ${collapsed ? 'justify-center px-2' : ''}
           `}
         >
@@ -241,13 +243,13 @@ function Sidebar({
           <div className="fixed inset-0 bg-black/50" onClick={() => setShowLogoutModal(false)} />
           <div className="relative bg-[#1e2a3a] rounded-xl shadow-2xl w-full max-w-sm p-6 border border-white/10">
             <h3 className="text-lg font-semibold text-white mb-2">Cerrar sesión</h3>
-            <p className="text-sm text-gray-400 mb-6">
+            <p className="text-sm text-[var(--text-muted)] mb-6">
               ¿Estás seguro de que quieres cerrar sesión?
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="px-4 py-2 text-sm text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition"
+                className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition"
               >
                 Cancelar
               </button>
@@ -271,6 +273,22 @@ export function GitHubShell({ children }: GitHubShellProps) {
   const { adminProfile, isLoading, error } = useAdminProfile();
   const { setAdminProfile } = useAuthStore();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Cierra el drawer mobile al navegar a otra sección
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  const handleToggleSidebar = () => {
+    const isDesktop = typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches;
+    if (isDesktop) {
+      setCollapsed((v) => !v);
+    } else {
+      setMobileOpen((v) => !v);
+    }
+  };
 
   useEffect(() => {
     if (adminProfile) {
@@ -289,10 +307,10 @@ export function GitHubShell({ children }: GitHubShellProps) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-secondary)]">
         <div className="text-center">
           <Spinner size="lg" />
-          <p className="mt-4 text-gray-600 text-sm">Cargando perfil de administrador...</p>
+          <p className="mt-4 text-[var(--text-secondary)] text-sm">Cargando perfil de administrador...</p>
         </div>
       </div>
     );
@@ -300,14 +318,14 @@ export function GitHubShell({ children }: GitHubShellProps) {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-secondary)]">
         <Card className="max-w-md mx-auto p-6">
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
               <TriangleAlert className="w-8 h-8 text-red-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Error de Perfil Admin</h2>
-            <p className="text-gray-600 mb-4 text-sm">
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Error de Perfil Admin</h2>
+            <p className="text-[var(--text-secondary)] mb-4 text-sm">
               No se pudo cargar el perfil de administrador. Por favor recarga la pagina.
             </p>
             <button
@@ -324,14 +342,14 @@ export function GitHubShell({ children }: GitHubShellProps) {
 
   if (!adminProfile) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-secondary)]">
         <Card className="max-w-md mx-auto p-6">
           <div className="text-center">
             <div className="w-16 h-16 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center">
               <ShieldAlert className="w-8 h-8 text-yellow-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Acceso Restringido</h2>
-            <p className="text-gray-600 mb-4 text-sm">
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Acceso Restringido</h2>
+            <p className="text-[var(--text-secondary)] mb-4 text-sm">
               No tienes privilegios de administrador o tu cuenta no esta activa.
             </p>
             <Link
@@ -347,20 +365,31 @@ export function GitHubShell({ children }: GitHubShellProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <AdminHeader onToggleSidebar={() => setCollapsed((v) => !v)} />
+    <div className="min-h-screen flex flex-col bg-[var(--bg-secondary)]">
+      <AdminHeader onToggleSidebar={handleToggleSidebar} />
 
-      <div className="flex h-[calc(100vh-56px)] overflow-hidden">
+      <div className="flex h-[calc(100vh-56px)] overflow-hidden relative">
+        {mobileOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-black/50 md:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+
         <aside
           className={`
-            h-full bg-[#1a2030] shrink-0 transition-all duration-200 ease-in-out overflow-y-auto
-            ${collapsed ? 'w-[60px]' : 'w-[240px]'}
+            fixed inset-y-0 left-0 top-14 z-40 h-[calc(100vh-56px)] w-[240px]
+            bg-[#1a2030] overflow-y-auto transition-transform duration-200 ease-in-out
+            ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}
+            md:static md:top-0 md:z-auto md:h-full md:shrink-0 md:translate-x-0
+            md:transition-[width] md:duration-200 md:ease-in-out
+            ${collapsed ? 'md:w-[60px]' : 'md:w-[240px]'}
           `}
         >
           <Sidebar collapsed={collapsed} />
         </aside>
 
-        <main className="flex-1 h-full overflow-y-auto bg-gray-50 p-6">
+        <main className="flex-1 h-full overflow-y-auto bg-[var(--bg-secondary)] p-3 sm:p-4 md:p-6">
           {children}
         </main>
       </div>

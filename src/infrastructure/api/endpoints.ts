@@ -22,6 +22,7 @@ export const ENDPOINTS = {
     BY_SLUG: (slug: string) => `/properties/slug/${slug}`,
     MY_PROPERTIES: '/properties/my-properties',
     PUBLISH: (id: number) => `/properties/${id}/publish`,
+    UNPUBLISH: (id: number) => `/properties/${id}/unpublish`,
     FEATURE: (id: number) => `/properties/${id}/feature`,
     PHOTOS: (propertyId: number) => `/properties/${propertyId}/photos`,
     DELETE_PHOTO: (mediaId: number) => `/properties/photos/${mediaId}`,

@@ -51,22 +51,22 @@ export function InteractiveActivityChart({ metrics }: InteractiveActivityChartPr
     if (!active || !payload?.length) return null;
     const d = payload[0].payload;
     return (
-      <div className="bg-white rounded-xl shadow-2xl border border-gray-100 px-4 py-3 min-w-[160px]">
+      <div className="bg-[var(--bg-card)] rounded-xl shadow-2xl border border-[var(--border-color)] px-4 py-3 min-w-[160px]">
         <div className="flex items-center gap-2 mb-1">
           <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.fill }} />
-          <span className="text-sm font-bold text-gray-900">{d.name}</span>
+          <span className="text-sm font-bold text-[var(--text-primary)]">{d.name}</span>
         </div>
-        <p className="text-2xl font-black text-gray-900">{d.value}</p>
+        <p className="text-2xl font-black text-[var(--text-primary)]">{d.value}</p>
       </div>
     );
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+    <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-5 border-b border-gray-50">
-        <h2 className="text-base font-bold text-gray-900">Analytics Predictivo</h2>
-        <p className="text-xs text-gray-400 mt-1">Pasa el mouse sobre los puntos para ver detalles</p>
+      <div className="sm:px-6 px-4 py-5 border-b border-[var(--border-light)]">
+        <h2 className="text-base font-bold text-[var(--text-primary)]">Analytics Predictivo</h2>
+        <p className="text-xs text-[var(--text-muted)] mt-1">Pasa el mouse sobre los puntos para ver detalles</p>
       </div>
 
       {/* Chart */}
@@ -129,12 +129,12 @@ export function InteractiveActivityChart({ metrics }: InteractiveActivityChartPr
       </div>
 
       {/* Footer - línea horizontal con dots tipo timeline */}
-      <div className="px-6 py-5 border-t border-gray-50">
+      <div className="sm:px-6 px-4 py-5 border-t border-[var(--border-light)]">
         <div className="relative">
           {/* Línea base horizontal */}
-          <div className="absolute top-[7px] left-0 right-0 h-px bg-gray-200" />
+          <div className="absolute top-[7px] left-0 right-0 h-px bg-[var(--border-color)]" />
           
-          <div className="relative flex justify-between">
+          <div className="relative flex justify-between gap-1">
             {chartData.map((d) => {
               const isHovered = hoveredKey === d.name;
               return (
@@ -146,13 +146,13 @@ export function InteractiveActivityChart({ metrics }: InteractiveActivityChartPr
                   style={{ transform: isHovered ? 'translateY(-2px)' : 'none' }}
                 >
                   <div
-                    className={`w-[15px] h-[15px] rounded-full border-[3px] border-white shadow-sm transition-all duration-200 ${
+                    className={`w-[15px] h-[15px] rounded-full border-[3px] border-[var(--bg-card)] shadow-sm transition-all duration-200 ${
                       isHovered ? 'scale-125 shadow-md' : ''
                     }`}
                     style={{ backgroundColor: d.fill }}
                   />
                   <span className={`text-[10px] mt-2 font-semibold whitespace-nowrap transition-colors duration-200 ${
-                    isHovered ? 'text-gray-900' : 'text-gray-400'
+                    isHovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'
                   }`}>
                     {d.name}
                   </span>

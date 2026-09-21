@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect, useRef } from 'react';
 import { Briefcase, Building, Home, Info, Key, Move, ShoppingBag, Tag } from 'lucide-react';
 
 
@@ -26,6 +27,52 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
     RENT: 'Alquiler',
   };
 
+  // Custom currency selector component
+  function CurrencySelector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+    const options = [
+      { value: 'PEN', label: 'S/ PEN' },
+      { value: 'USD', label: '$ USD' },
+    ];
+    const selected = options.find(o => o.value === value);
+
+    useEffect(() => {
+      const handler = (e: MouseEvent) => {
+        if (ref.current && !ref.current.contains(e.target as Node)) setIsOpen(false);
+      };
+      document.addEventListener('mousedown', handler);
+      return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
+    return (
+      <div className="relative sm:w-40" ref={ref}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex items-center justify-between px-4 py-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-card)] text-sm text-[var(--text-primary)] cursor-pointer transition-all hover:border-[var(--brand-primary)] shadow-sm font-medium"
+        >
+          <span>{selected?.label || 'S/ PEN'}</span>
+          <svg className={`w-4 h-4 text-[var(--text-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+        </button>
+        {isOpen && (
+          <div className="absolute z-50 mt-1 w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg overflow-hidden">
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => { onChange(opt.value); setIsOpen(false); }}
+                className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-[var(--brand-primary-light)] hover:text-[var(--brand-primary)] ${value === opt.value ? 'bg-[var(--brand-primary-light)] text-[var(--brand-primary)] font-semibold' : 'text-[var(--text-primary)]'}`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <style>{`
@@ -36,11 +83,11 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           flex: 1;
           padding: 14px 20px;
           border-radius: 12px;
-          border: 1.5px solid #e2e8f0;
-          background: #fff;
+          border: 1.5px solid var(--border-color);
+          background: var(--bg-card);
           font-weight: 600;
           font-size: 14px;
-          color: #64748b;
+          color: var(--text-secondary);
           cursor: pointer;
           transition: all 0.2s ease;
           display: flex;
@@ -50,53 +97,61 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .transaction-btn:hover {
-          border-color: #00a63e;
-          color: #00a63e;
-          background: #f0fdf4;
+          border-color: var(--brand-primary);
+          color: var(--brand-primary);
+          background: var(--brand-primary-light);
         }
         .transaction-btn.active {
-          border-color: #00a63e;
-          background: #00a63e;
+          border-color: var(--brand-primary);
+          background: var(--brand-primary);
           color: #fff;
           box-shadow: 0 4px 14px rgba(0,166,62,0.3);
         }
 
         .type-btn {
-          padding: 16px 12px;
+          padding: 12px 6px;
           border-radius: 12px;
-          border: 1.5px solid #e2e8f0;
-          background: #fff;
+          border: 1.5px solid var(--border-color);
+          background: var(--bg-card);
           font-weight: 600;
+
           font-size: 13px;
-          color: #64748b;
+          color: var(--text-secondary);
           cursor: pointer;
           transition: all 0.2s ease;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 8px;
+          gap: 4px;
           font-family: 'Plus Jakarta Sans', sans-serif;
           width: 100%;
         }
+        @media (min-width: 640px) {
+          .type-btn {
+            padding: 16px 12px;
+            font-size: 13px;
+            gap: 8px;
+          }
+        }
         .type-btn:hover {
-          border-color: #00a63e;
-          color: #00a63e;
-          background: #f0fdf4;
+          border-color: var(--brand-primary);
+          color: var(--brand-primary);
+          background: var(--brand-primary-light);
         }
-        .type-btn:hover svg { color: #00a63e; }
+        .type-btn:hover svg { color: var(--brand-primary); }
         .type-btn.active {
-          border-color: #00a63e;
-          background: #f0fdf4;
-          color: #004d1a;
+          border-color: var(--brand-primary);
+          background: var(--brand-primary-light);
+          color: rgba(0,0,0,0.8);
         }
-        .type-btn.active svg { color: #00a63e; }
+        .type-btn.active svg { color: var(--brand-primary); }
 
         .field-label {
           font-size: 11px;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.12em;
-          color: #94a3b8;
+          color: var(--text-muted);
           margin-bottom: 10px;
           display: block;
           font-family: 'Plus Jakarta Sans', sans-serif;
@@ -105,29 +160,29 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
         .form-input {
           width: 100%;
           padding: 13px 16px;
-          border: 1.5px solid #e2e8f0;
+          border: 1.5px solid var(--input-border);
           border-radius: 10px;
           font-size: 14px;
-          color: #1e293b;
-          background: #fafffe;
+          color: var(--text-primary);
+          background: var(--bg-card);
           transition: all 0.2s ease;
           outline: none;
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .form-input::placeholder { color: #94a3b8; }
+        .form-input::placeholder { color: var(--text-muted); }
         .form-input:focus {
-          border-color: #00a63e;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(0,166,62,0.08);
+          border-color: var(--brand-primary);
+          background: var(--bg-card);
+          box-shadow: 0 0 0 3px var(--brand-primary-light);
         }
 
         .form-select {
           padding: 13px 16px;
-          border: 1.5px solid #e2e8f0;
+          border: 1.5px solid var(--input-border);
           border-radius: 10px;
           font-size: 14px;
-          color: #1e293b;
-          background: #fafffe;
+          color: var(--text-primary);
+          background: var(--bg-card);
           transition: all 0.2s ease;
           outline: none;
           cursor: pointer;
@@ -135,15 +190,15 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
         .form-select:focus {
-          border-color: #00a63e;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(0,166,62,0.08);
+          border-color: var(--brand-primary);
+          background: var(--bg-card);
+          box-shadow: 0 0 0 3px var(--brand-primary-light);
         }
 
         .section-divider {
           width: 28px;
           height: 2.5px;
-          background: #00a63e;
+          background: var(--brand-primary);
           border-radius: 2px;
           margin-bottom: 14px;
         }
@@ -182,7 +237,7 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
         <div>
           <div className="section-divider" />
           <label className="field-label">Tipo de propiedad</label>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
             {PROPERTY_TYPES.map((type) => (
               <button
                 key={type.value}
@@ -190,7 +245,7 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
                 onClick={() => onChange('type', type.value)}
                 className={`type-btn ${isActive('type', type.value) ? 'active' : ''}`}
               >
-                <span style={{ color: isActive('type', type.value) ? '#00a63e' : '#94a3b8', transition: 'color 0.2s' }}>
+                <span style={{ color: isActive('type', type.value) ? 'var(--brand-primary)' : 'var(--text-muted)', transition: 'color 0.2s' }}>
                   {type.icon}
                 </span>
                 <span>{type.label}</span>
@@ -207,17 +262,10 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           <div className="section-divider" />
           <label className="field-label">Precio</label>
           <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative sm:w-40">
-              <select
+              <CurrencySelector
                 value={formData.currency}
-                onChange={(e) => onChange('currency', e.target.value)}
-                className="form-select pr-8 w-full"
-                style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\")", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center', backgroundSize: '14px' }}
-              >
-                <option value="PEN">S/ PEN</option>
-                <option value="USD">$ USD</option>
-              </select>
-            </div>
+                onChange={(v) => onChange('currency', v)}
+              />
             <input
               type="number"
               value={formData.price || ''}

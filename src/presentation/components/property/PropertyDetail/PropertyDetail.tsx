@@ -13,8 +13,9 @@ import { ShareButton } from '../../shared/ShareButton/ShareButton';
 import { SimilarProperties } from '../SimilarProperties';
 import { PersonalizedRecommendations } from '../PersonalizedRecommendations';
 import { FeaturePropertyButton } from './FeaturePropertyButton';
-import { Star, MapPin, FileText, Calendar } from 'lucide-react';
+import { MapPin, FileText, Calendar, ChevronRight } from 'lucide-react';
 import { StarRating } from './StarRating';
+import { AdvertiserDetailModal } from './AdvertiserDetailModal';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { authStorage } from '@/infrastructure/storage/auth-storage';
@@ -39,18 +40,18 @@ const TRANSACTION_TYPE_LABELS: Record<string, string> = {
 
 function DescriptionSection({ description }: { description: string }) {
   const [expanded, setExpanded] = useState(false);
-  const words = description.split(/\s+/);
-  const isLong = words.length > 50;
-  const truncated = isLong ? words.slice(0, 50).join(' ') + '...' : description;
+  const truncated = description.slice(0, 100);
+  const isLong = description.length > 100;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+    <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+      <h2 className="text-base font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
         <FileText className="w-4 h-4 text-teal-600 flex-shrink-0" />
         Descripción de la propiedad
       </h2>
-      <div className="text-gray-700 leading-relaxed text-sm whitespace-pre-wrap">
+      <div className="text-[var(--text-primary)] leading-relaxed text-sm whitespace-pre-wrap">
         {expanded ? description : truncated}
+        {description.length > 100 && !expanded && <span className="text-[var(--text-tertiary)]">...</span>}
       </div>
       {isLong && (
         <button
@@ -80,6 +81,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
   }, [property.id]);
 
   const [rating, setRating] = useState<{ averageRating: number; totalRatings: number } | null>(null);
+  const [showAdvertiserModal, setShowAdvertiserModal] = useState(false);
 
   useEffect(() => {
     const fetchRating = async () => {
@@ -111,7 +113,7 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
   ].filter(Boolean).join(', ');
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg-secondary)]">
 
       <div className="w-full px-8 xl:px-16 py-6">
         <div className="max-w-[1920px] mx-auto">
@@ -129,19 +131,19 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             </div>
 
             {/* 1. GALERÍA */}
-            <div className="rounded-2xl overflow-hidden bg-white shadow-sm -mt-2">
+            <div className="rounded-2xl overflow-hidden bg-[var(--bg-card)] shadow-[0_1px_2px_var(--shadow-color)] -mt-2">
               <PropertyGallery media={property.media} coverPhotoUrl={property.coverPhotoUrl} />
             </div>
 
             {/* 2. TIPO · PRECIO · TÍTULO · DIRECCIÓN · STATS */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-4">
                     <span className="bg-blue-50 text-blue-700 border border-blue-100 text-xs font-extrabold px-3 py-1.5 rounded-lg uppercase tracking-wide">
                       {propertyTypeLabel}
                     </span>
-                    <span className="bg-gray-100 text-gray-600 border border-gray-200 text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wide">
+                    <span className="bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border border-[var(--border-color)] text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wide">
                       {transactionLabel}
                     </span>
                     {property.isNegotiable && (
@@ -151,27 +153,27 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     )}
                   </div>
 
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight mb-4">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] leading-tight mb-4 break-words">
                     {property.title}
                   </h1>
 
                   <div className="flex items-baseline gap-3 flex-wrap mb-4">
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight">
                       {formatPrice(property.price, property.currency)}
                       {property.transactionType === 'RENT' && (
-                        <span className="text-lg font-medium text-gray-500 ml-1">/ mes</span>
+                        <span className="text-lg font-medium text-[var(--text-secondary)] ml-1">/ mes</span>
                       )}
                     </h2>
                     {property.pricePerSqm && (
-                      <span className="text-sm text-gray-500 font-medium bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                      <span className="text-sm text-[var(--text-secondary)] font-medium bg-[var(--bg-secondary)] px-2 py-1 rounded-md border border-[var(--border-color)]">
                         {formatPrice(property.pricePerSqm, property.currency)} / m²
                       </span>
                     )}
                   </div>
 
                   {locationLine && (
-                    <p className="text-base text-gray-500 flex items-center gap-2 font-medium">
-                      <MapPin className="w-5 h-5 text-gray-400" />
+                    <p className="text-base text-[var(--text-secondary)] flex items-center gap-2 font-medium">
+                      <MapPin className="w-5 h-5 text-[var(--text-tertiary)]" />
                       {locationLine}
                     </p>
                   )}
@@ -192,15 +194,22 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                     }}
                   />
                   {rating && rating.totalRatings > 0 && (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-[var(--text-secondary)]">
                       {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})
                     </span>
                   )}
+                  <span className="text-xs text-[var(--text-tertiary)]">
+                    {property.publishedAt || property.createdAt
+                      ? `Publicado el ${new Date(property.publishedAt || property.createdAt!).toLocaleDateString('es-PE', {
+                          day: 'numeric', month: 'long', year: 'numeric',
+                        })}`
+                      : 'Publicado'}
+                  </span>
                 </div>
               </div>
 
               {/* Stats — UNA SOLA VEZ aquí */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
                 <PropertyQuickInfo property={property} />
               </div>
             </div>
@@ -212,8 +221,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             
             {/* Si no hay descripción */}
             {!property.description && (
-              <div className="bg-gray-50 border border-dashed border-gray-200 rounded-3xl p-8 text-center flex flex-col items-center justify-center">
-                 <p className="text-gray-400 font-medium">El anunciante no ha proporcionado una descripción detallada.</p>
+              <div className="bg-[var(--bg-secondary)] border border-dashed border-[var(--border-color)] rounded-3xl p-8 text-center flex flex-col items-center justify-center">
+                 <p className="text-[var(--text-tertiary)] font-medium">El anunciante no ha proporcionado una descripción detallada.</p>
               </div>
             )}
 
@@ -222,9 +231,9 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
 
             {/* 5. CONTACTA AL ANUNCIANTE — solo móvil */}
             <div className="lg:hidden space-y-4">
-              <div className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden">
-                <div className="px-6 pt-6 pb-4 border-b border-gray-50">
-                  <h3 className="text-lg font-bold text-gray-900">Contacta al anunciante</h3>
+              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_4px_6px_var(--shadow-color)] border border-[var(--border-color)] overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-[var(--border-light)]">
+                  <h3 className="text-lg font-bold text-[var(--text-primary)]">Contacta al anunciante</h3>
                 </div>
                 <div className="px-6 py-4">
                   <ContactForm propertyId={property.id} ownerId={property.owner.id} />
@@ -235,7 +244,76 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
             </div>
 
-            {/* 6. COMENTARIOS DE LA ZONA */}
+            {/* 6. ANUNCIANTE + ESTADÍSTICAS + CALIFICAR — solo móvil (DEBE IR ANTES DE SIMILARES) */}
+            <div className="lg:hidden space-y-4">
+              {/* Anunciante — clic para ver perfil completo (móvil) */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowAdvertiserModal(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setShowAdvertiserModal(true);
+                  }
+                }}
+                className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6 cursor-pointer hover:border-[var(--brand-primary)] transition-all"
+              >
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4 flex items-center justify-between">
+                  Anunciante
+                  <span className="text-[11px] font-semibold text-[var(--brand-primary)] flex items-center gap-0.5">
+                    Ver perfil <ChevronRight className="w-3 h-3" />
+                  </span>
+                </h3>
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
+                    {(property.owner.name || 'A').charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">Ver propiedades activas</p>
+                  </div>
+                  {(property.owner as any).phone && (
+                    <a
+                      href={`tel:${(property.owner as any).phone}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 font-bold rounded-lg px-3 py-2 whitespace-nowrap transition-colors"
+                    >
+                      Llamar
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Estadísticas */}
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Estadísticas</h3>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  {[
+                    { v: property.viewsCount    ?? 0, l: 'Visitas'   },
+                    { v: property.favoritesCount ?? 0, l: 'Favoritos' },
+                    { v: property.contactsCount  ?? 0, l: 'Contactos' },
+                  ].map(({ v, l }) => (
+                    <div key={l} className="bg-[var(--bg-secondary)] rounded-xl p-3">
+                      <div className="text-xl font-bold text-[var(--text-primary)]">{v}</div>
+                      <div className="text-xs text-[var(--text-secondary)] mt-0.5">{l}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
+                  <Calendar className="w-3 h-3 flex-shrink-0" />
+                  {property.publishedAt || property.createdAt
+                    ? `Publicado el ${new Date(property.publishedAt || property.createdAt!).toLocaleDateString('es-PE', {
+                        day: 'numeric', month: 'long', year: 'numeric',
+                      })}`
+                    : 'Publicado'}
+                </p>
+              </div>
+
+            </div>
+
+            {/* 7. COMENTARIOS DE LA ZONA */}
             <PropertyComments propertyId={property.id} location={property.location} />
 
             {/* 7. SIMILARES */}
@@ -252,13 +330,14 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               currentType={property.type}
             />
           </div>
-          <div className="lg:col-span-3">
+          {/* Sidebar — oculta en móvil (se muestra en columna principal con lg:hidden) */}
+          <div className="hidden lg:block lg:col-span-3">
             <div className="sticky top-4 space-y-4">
 
-              {/* Contactar — oculto en móvil (se muestra en columna principal) */}
-              <div className="hidden lg:block bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden">
-                <div className="px-6 pt-6 pb-4 border-b border-gray-50">
-                  <h3 className="text-lg font-bold text-gray-900">Contacta al anunciante</h3>
+              {/* Contactar */}
+              <div className="bg-[var(--bg-card)] rounded-3xl shadow-[0_4px_6px_var(--shadow-color)] border border-[var(--border-color)] overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-[var(--border-light)]">
+                  <h3 className="text-lg font-bold text-[var(--text-primary)]">Contacta al anunciante</h3>
                 </div>
                 <div className="px-6 py-4">
                   <ContactForm propertyId={property.id} ownerId={property.owner.id} />
@@ -268,20 +347,37 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                 </div>
               </div>
 
-              {/* Agente */}
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Anunciante</h3>
+              {/* Anunciante — clic para ver perfil completo */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowAdvertiserModal(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setShowAdvertiserModal(true);
+                  }
+                }}
+                className="bg-[var(--bg-card)] rounded-3xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6 cursor-pointer hover:border-[var(--brand-primary)] hover:shadow-md transition-all"
+              >
+                <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)] mb-4 flex items-center justify-between">
+                  Anunciante
+                  <span className="text-[11px] font-semibold text-[var(--brand-primary)] flex items-center gap-0.5">
+                    Ver perfil <ChevronRight className="w-3 h-3" />
+                  </span>
+                </h3>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
-                    {property.owner.name.charAt(0).toUpperCase()}
+                    {(property.owner.name || 'A').charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-gray-900 text-base truncate">{property.owner.name}</p>
-                    <p className="text-sm text-gray-500">{property.owner.role}</p>
+                    <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
+                    <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">Ver propiedades activas</p>
                   </div>
                   {(property.owner as any).phone && (
                     <a
                       href={`tel:${(property.owner as any).phone}`}
+                      onClick={(e) => e.stopPropagation()}
                       className="text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 font-bold rounded-lg px-3 py-2 whitespace-nowrap transition-colors"
                     >
                       Llamar
@@ -291,70 +387,29 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
               </div>
 
               {/* Estadísticas */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-3">Estadísticas</h3>
+              <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--text-tertiary)] mb-3">Estadísticas</h3>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   {[
                     { v: property.viewsCount    ?? 0, l: 'Visitas'   },
                     { v: property.favoritesCount ?? 0, l: 'Favoritos' },
                     { v: property.contactsCount  ?? 0, l: 'Contactos' },
                   ].map(({ v, l }) => (
-                    <div key={l} className="bg-gray-50 rounded-xl p-3">
-                      <div className="text-xl font-bold text-gray-900">{v}</div>
-                      <div className="text-xs text-gray-500 mt-0.5">{l}</div>
+                    <div key={l} className="bg-[var(--bg-secondary)] rounded-xl p-3">
+                      <div className="text-xl font-bold text-[var(--text-primary)]">{v}</div>
+                      <div className="text-xs text-[var(--text-secondary)] mt-0.5">{l}</div>
                     </div>
                   ))}
                 </div>
 
-                {rating && rating.totalRatings > 0 && (
-                  <div className="mt-3 pt-3 border-t border-gray-100">
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 ${i < Math.round(rating.averageRating) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm font-bold text-gray-900">{rating.averageRating.toFixed(1)}</span>
-                      <span className="text-xs text-gray-400">({rating.totalRatings} {rating.totalRatings === 1 ? 'reseña' : 'reseñas'})</span>
-                    </div>
-                  </div>
-                )}
-
-                <p className="mt-3 text-xs text-gray-400 flex items-center gap-1">
+                <p className="mt-3 text-xs text-[var(--text-tertiary)] flex items-center gap-1">
                   <Calendar className="w-3 h-3 flex-shrink-0" />
-                  Publicado el {new Date(property.createdAt).toLocaleDateString('es-PE', {
-                    day: 'numeric', month: 'long', year: 'numeric',
-                  })}
+                  {property.publishedAt || property.createdAt
+                    ? `Publicado el ${new Date(property.publishedAt || property.createdAt!).toLocaleDateString('es-PE', {
+                        day: 'numeric', month: 'long', year: 'numeric',
+                      })}`
+                    : 'Publicado'}
                 </p>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-3">Calificar propiedad</h3>
-                <div className="flex flex-col items-center gap-2">
-                  <StarRating
-                    propertyId={property.id}
-                    size="md"
-                    showValue
-                    averageRating={rating?.averageRating || 0}
-                    totalRatings={rating?.totalRatings || 0}
-                    onRatingSaved={() => {
-                      fetch(`/api/properties/${property.id}/rating`).then(res => {
-                        if (res.ok) res.json().then(data => setRating(data));
-                      }).catch(() => {});
-                    }}
-                  />
-                  {rating && rating.totalRatings > 0 && (
-                    <p className="text-xs text-gray-400">
-                      Promedio: {rating.averageRating.toFixed(1)} ({rating.totalRatings} {rating.totalRatings === 1 ? 'voto' : 'votos'})
-                    </p>
-                  )}
-                  {(!rating || rating.totalRatings === 0) && (
-                    <p className="text-xs text-gray-400">Sé el primero en calificar</p>
-                  )}
-                </div>
               </div>
 
               <FeaturePropertyButton 
@@ -370,6 +425,12 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
         </div>
         </div>
       </div>
+
+      <AdvertiserDetailModal
+        ownerId={property.owner.id}
+        isOpen={showAdvertiserModal}
+        onClose={() => setShowAdvertiserModal(false)}
+      />
     </div>
   );
 }

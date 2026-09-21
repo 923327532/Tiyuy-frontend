@@ -27,7 +27,8 @@ import {
   AlertTriangle,
   CheckCircle,
   Bell,
-  Activity
+  Activity,
+  Globe2
 } from 'lucide-react';
 import { usePermissions } from '@/presentation/hooks/usePermissions';
 import Link from 'next/link';
@@ -112,6 +113,13 @@ export function GitHubSidebar() {
           label: 'Usuarios Regulares',
           icon: <Users className="w-4 h-4" />,
           path: '/admin/users',
+          requiredPermissions: ['USERS_VIEW']
+        },
+        {
+          id: 'international-users',
+          label: 'Extranjeros',
+          icon: <Globe2 className="w-4 h-4" />,
+          path: '/admin/international',
           requiredPermissions: ['USERS_VIEW']
         },
         {
@@ -492,7 +500,7 @@ export function GitHubSidebar() {
           {isExpanded && (
             <div className="flex items-center gap-3">
               <img
-                src="/assets/images/logo.png"
+                src="/assets/images/logo.svg"
                 alt="TIYUY"
                 className="h-8 w-auto object-contain"
               />

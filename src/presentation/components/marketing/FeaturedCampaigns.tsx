@@ -39,10 +39,10 @@ export function FeaturedCampaigns() {
       <section className="py-8 sm:py-16 bg-background border-b border-[var(--border-light)]">
         <div className="w-full max-w-[1920px] mx-auto px-8 xl:px-16">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 w-72 bg-gray-200 rounded-lg" />
+            <div className="h-8 w-72 bg-[var(--bg-tertiary)] rounded-lg" />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-[340px] bg-gray-200 rounded-[18px]" />
+                <div key={i} className="h-[340px] bg-[var(--bg-tertiary)] rounded-[18px]" />
               ))}
             </div>
           </div>

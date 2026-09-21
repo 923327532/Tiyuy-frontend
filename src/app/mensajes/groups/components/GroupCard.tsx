@@ -26,7 +26,7 @@ export function GrupoCard({ grupo, currentUserId }: GrupoCardProps) {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return 'text-green-600';
+      case 'ACTIVE': return 'text-gray-600';
       case 'INACTIVE': return 'text-gray-500';
       case 'ARCHIVED': return 'text-orange-500';
       default: return 'text-gray-500';
@@ -43,7 +43,7 @@ export function GrupoCard({ grupo, currentUserId }: GrupoCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow duration-200">
+    <div className="bg-white rounded-xl shadow-sm border border-brand/30 p-6 hover:shadow-md transition-shadow duration-200">
       {/* Header del grupo */}
       <div className="flex items-start gap-4 mb-4">
         {/* Icono del grupo */}
@@ -76,7 +76,7 @@ export function GrupoCard({ grupo, currentUserId }: GrupoCardProps) {
         </div>
         
         <div className="text-center">
-          <div className="flex items-center justify-center text-green-600 mb-1">
+          <div className="flex items-center justify-center text-gray-600 mb-1">
             <MessageCircle className="w-4 h-4" />
           </div>
           <div className="text-lg font-semibold text-gray-900">{grupo.postCount}</div>
@@ -112,7 +112,7 @@ export function GrupoCard({ grupo, currentUserId }: GrupoCardProps) {
         className={`w-full py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 ${
           grupo.isUserMember
             ? 'bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50'
-            : 'bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50'
+            : 'bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50'
         }`}
       >
         {isJoining || isLeaving ? (

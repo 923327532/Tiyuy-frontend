@@ -173,10 +173,10 @@ export const LoginForm: React.FC = () => {
 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">
+          <h1 className="text-4xl font-bold text-[var(--brand-primary)] mb-3">
             Bienvenido
           </h1>
-          <p className="text-gray-600">Inicia sesión en tu cuenta</p>
+          <p className="text-[var(--text-secondary)]">Inicia sesión en tu cuenta</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
@@ -221,11 +221,11 @@ export const LoginForm: React.FC = () => {
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                className="w-4 h-4 rounded border-[var(--border-color)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)] cursor-pointer"
               />
-              <span className="text-gray-600">Recordarme</span>
+              <span className="text-[var(--text-secondary)]">Recordarme</span>
             </label>
-            <Link href="/recover-password" className="text-blue-600 hover:text-blue-700 font-medium cursor-pointer">
+            <Link href="/recover-password" className="text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] font-medium cursor-pointer">
               ¿Olvidé mi contraseña?
             </Link>
           </div>
@@ -236,10 +236,10 @@ export const LoginForm: React.FC = () => {
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-[var(--border-color)]" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-gray-50 text-gray-500">O continúa con</span>
+              <span className="px-4 bg-[var(--bg-primary)] text-[var(--text-tertiary)]">O continúa con</span>
             </div>
           </div>
 
@@ -256,11 +256,11 @@ export const LoginForm: React.FC = () => {
             {googleLoading ? 'Conectando...' : 'Google'}
           </Button>
 
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-sm text-[var(--text-secondary)]">
             ¿No tienes cuenta?{' '}
             <Link
               href="/profile-selector"
-              className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
+              className="text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] font-semibold cursor-pointer"
             >
               Regístrate aquí
             </Link>

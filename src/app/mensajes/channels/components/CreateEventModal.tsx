@@ -28,7 +28,54 @@ const VISIBILITY_TYPES = [
 ] as const;
 
 const MAX_IMAGES = 5;
-// Usar axiosClient centralizado - no se necesita API_BASE_URL
+
+// ─── CUSTOM SELECT ───
+function CustomSelect({ label, value, options, onChange, required }: {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (v: string) => void;
+  required?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const selectedLabel = options.find(o => o.value === value)?.label || 'Seleccionar';
+
+  return (
+    <div ref={ref} className="relative">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <button type="button" onClick={() => setOpen(!open)}
+        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-left flex items-center justify-between cursor-pointer hover:border-gray-400 transition-colors">
+        <span>{selectedLabel}</span>
+        <svg className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden">
+          {options.map((opt) => (
+            <button key={opt.value} type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`w-full px-3 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${value === opt.value ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-700 dark:text-gray-200'}`}>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess }: CreateEventModalProps) {
   const queryClient = useQueryClient();
@@ -187,8 +234,9 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
       setSelectedImages([]);
       imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
       setImagePreviewUrls([]);
-    } catch (error) {
-      console.error('Error creating event:', error);
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || 'Error al crear el evento. Verifica los datos ingresados.';
+      toast.error(msg);
     }
   };
 
@@ -405,8 +453,9 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
   };
 
  return (
-  <Modal isOpen={isOpen} onClose={onClose} title="Crear Nuevo Evento" size="lg">
-    <form onSubmit={handleSubmit} className="space-y-6">
+  <Modal isOpen={isOpen} onClose={onClose} title="Crear Nuevo Evento" size="md">
+    <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+      <div className="flex-1 overflow-y-auto space-y-6 px-1">
       {/* Información Básica */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -445,40 +494,21 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
           {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Tipo de Evento <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={formData.eventType}
-              onChange={(e) => handleInputChange('eventType', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white"
-            >
-              {EVENT_TYPES.map(type => (
-                <option key={type.value} value={type.value} className="bg-white text-gray-900 dark:bg-gray-800 dark:text-white">
-                  {type.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Visibilidad <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={formData.visibility}
-              onChange={(e) => handleInputChange('visibility', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white"
-            >
-              {VISIBILITY_TYPES.map(type => (
-                <option key={type.value} value={type.value} className="bg-white text-gray-900 dark:bg-gray-800 dark:text-white">
-                  {type.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <CustomSelect
+            label="Tipo de Evento"
+            value={formData.eventType}
+            options={EVENT_TYPES.map(t => ({ value: t.value, label: t.label }))}
+            onChange={(v) => handleInputChange('eventType', v)}
+            required
+          />
+          <CustomSelect
+            label="Visibilidad"
+            value={formData.visibility}
+            options={VISIBILITY_TYPES.map(t => ({ value: t.value, label: t.label }))}
+            onChange={(v) => handleInputChange('visibility', v)}
+            required
+          />
         </div>
       </div>
 
@@ -536,40 +566,24 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
         />
       </div>
 
-      {/* Fechas y Horas */}
+      {/* Fechas y Horas - una debajo de otra en mobile */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Fechas y Horas</h3>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Fecha y Hora de Inicio <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="datetime-local"
-              value={formData.startDateTime}
-              onChange={(e) => handleInputChange('startDateTime', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${
-                errors.startDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              }`}
-            />
-            {errors.startDateTime && <p className="text-red-500 text-xs mt-1">{errors.startDateTime}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Fecha y Hora de Fin
-            </label>
-            <input
-              type="datetime-local"
-              value={formData.endDateTime}
-              onChange={(e) => handleInputChange('endDateTime', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${
-                errors.endDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              }`}
-            />
-            {errors.endDateTime && <p className="text-red-500 text-xs mt-1">{errors.endDateTime}</p>}
-          </div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Fechas</h3>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Fecha y Hora de Inicio <span className="text-red-500">*</span>
+          </label>
+          <input type="datetime-local" value={formData.startDateTime}
+            onChange={(e) => handleInputChange('startDateTime', e.target.value)}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${errors.startDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`} />
+          {errors.startDateTime && <p className="text-red-500 text-xs mt-1">{errors.startDateTime}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha y Hora de Fin</label>
+          <input type="datetime-local" value={formData.endDateTime}
+            onChange={(e) => handleInputChange('endDateTime', e.target.value)}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${errors.endDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`} />
+          {errors.endDateTime && <p className="text-red-500 text-xs mt-1">{errors.endDateTime}</p>}
         </div>
       </div>
 
@@ -688,30 +702,21 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
           {errors.maxAttendees && <p className="text-red-500 text-xs mt-1">{errors.maxAttendees}</p>}
         </div>
       </div>
+      </div>
 
-      {/* Botones */}
-      <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}
-        >
+      {/* Botones */}  
+      <div className="flex-none flex gap-2 pt-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <button type="button" onClick={onClose}
+          className="flex-1 px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}>
           Cancelar
         </button>
-        <button
-          type="submit"
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}
-        >
+        <button type="submit"
+          className="flex-1 px-2 py-2 text-sm bg-blue-600 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}>
           {createEventMutation.isPending || uploadEventImagesMutation.isPending ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin" />
-              {uploadEventImagesMutation.isPending ? 'Subiendo imágenes...' : 'Creando...'}
-            </div>
-          ) : (
-            'Crear Evento'
-          )}
+            <div className="flex items-center justify-center gap-1"><div className="w-3 h-3 border-2 border-white border-t-transparent animate-spin" /> {uploadEventImagesMutation.isPending ? 'Subiendo...' : 'Creando...'}</div>
+          ) : 'Crear Evento'}
         </button>
       </div>
     </form>

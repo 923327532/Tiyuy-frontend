@@ -19,7 +19,7 @@ export const ConfigScreen: React.FC = () => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Configuración Inicial
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">

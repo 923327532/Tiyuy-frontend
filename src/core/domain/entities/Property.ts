@@ -45,6 +45,31 @@ export interface PropertyOwner {
   role: string;
 }
 
+// Perfil público del anunciante (al hacer clic en el anunciante de una propiedad)
+export interface AdvertiserPublicProfile {
+  userId: number;
+  name: string;
+  email: string;
+  phone: string;
+  photoUrl?: string;
+  role?: string;
+  memberSince?: string;  // Cuándo se unió a Tiyuy
+  totalPublished: number;
+  properties: AdvertiserProperty[];
+}
+
+export interface AdvertiserProperty {
+  id: number;
+  slug?: string;
+  title?: string;
+  type: string;
+  transactionType: string;
+  price: number;
+  currency?: string;
+  district?: string;
+  coverPhotoUrl?: string;
+}
+
 export interface PropertySEO {
   slug: string;
   seoTitle: string;
@@ -114,8 +139,8 @@ export interface Property {
   canReactivate?: boolean;
   
   // Fechas
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   publishedAt?: Date;
 }
 
@@ -137,6 +162,7 @@ export interface PropertySummary {
   isFeatured: boolean;
   isVerified: boolean;
   viewsCount: number;
+  publishedAt?: Date | string;
   // Lifecycle fields for subscription management
   lifecycleStatus?: PropertyLifecycleStatus;
   remainingGraceDays?: number;

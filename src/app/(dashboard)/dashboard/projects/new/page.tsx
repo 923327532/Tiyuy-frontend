@@ -26,15 +26,15 @@ export default function NuevoProyectoPage() {
   return (
     <ProtectedRoute>
       <TrialGuard>
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-[var(--bg-secondary)] py-8">
           <div className="max-w-7xl mx-auto px-8 xl:px-16">
             <TrialWarningBanner />
 
             {/* Hero (simple) */}
             <div className="mb-8">
               <div className="py-6">
-                <h1 className="text-3xl font-bold text-slate-900">Nuevo Proyecto</h1>
-                <p className="mt-2 text-base text-slate-600">Completa la información del proyecto en pasos sencillos. Puedes guardar borrador y completar más tarde.</p>
+                <h1 className="text-3xl font-bold text-[var(--text-primary)]">Nuevo Proyecto</h1>
+                <p className="mt-2 text-base text-[var(--text-secondary)]">Completa la información del proyecto en pasos sencillos. Puedes guardar borrador y completar más tarde.</p>
               </div>
             </div>
 
@@ -43,7 +43,7 @@ export default function NuevoProyectoPage() {
               <div className="relative">
                 {/* Background track */}
                 <div className="absolute left-0 right-0 top-6 hidden md:block">
-                  <div style={{ height: 6, backgroundColor: tiyuyColors.gray[100], borderRadius: 9999 }} />
+                  <div style={{ height: 6, backgroundColor: 'var(--bg-tertiary)', borderRadius: 9999 }} />
                 </div>
 
                 {/* Filled progress */}
@@ -51,7 +51,7 @@ export default function NuevoProyectoPage() {
                   <div
                     style={{
                       height: 6,
-                      backgroundColor: tiyuyColors.brand.DEFAULT,
+                      backgroundColor: 'var(--brand-primary)',
                       borderRadius: 9999,
                       width: `${((currentStep - 1) / (PROJECT_STEPS.length - 1)) * 100}%`,
                       transition: 'width 300ms ease',
@@ -65,7 +65,9 @@ export default function NuevoProyectoPage() {
                     const Icon = [Info, MapPin, Layers, Calendar, ImageIcon][step.number - 1];
                     const isCompleted = currentStep > step.number;
                     const isActive = currentStep === step.number;
-                    const circleStyle: React.CSSProperties = isActive || isCompleted ? { backgroundColor: tiyuyColors.brand.DEFAULT, color: tiyuyColors.text.inverse, boxShadow: '0 6px 18px rgba(74,154,62,0.12)' } : { backgroundColor: tiyuyColors.gray[100], color: tiyuyColors.text.secondary };
+                    const circleStyle: React.CSSProperties = isActive || isCompleted 
+                      ? { backgroundColor: 'var(--brand-primary)', color: 'white', boxShadow: '0 6px 18px rgba(74,154,62,0.12)' } 
+                      : { backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' };
 
                     return (
                       <React.Fragment key={step.number}>
@@ -77,8 +79,8 @@ export default function NuevoProyectoPage() {
 
                         {index < PROJECT_STEPS.length - 1 && (
                           <div className="flex-1 px-3">
-                            <div className="hidden md:block" style={{ height: 6, borderRadius: 9999, backgroundColor: currentStep > step.number ? tiyuyColors.brand.DEFAULT : tiyuyColors.gray[100], transition: 'background-color 200ms' }} />
-                            <div className="md:hidden" style={{ height: 2, borderRadius: 9999, backgroundColor: currentStep > step.number ? tiyuyColors.brand.DEFAULT : tiyuyColors.gray[100], transition: 'background-color 200ms' }} />
+                            <div className="hidden md:block" style={{ height: 6, borderRadius: 9999, backgroundColor: currentStep > step.number ? 'var(--brand-primary)' : 'var(--bg-tertiary)', transition: 'background-color 200ms' }} />
+                            <div className="md:hidden" style={{ height: 2, borderRadius: 9999, backgroundColor: currentStep > step.number ? 'var(--brand-primary)' : 'var(--bg-tertiary)', transition: 'background-color 200ms' }} />
                           </div>
                         )}
                       </React.Fragment>
@@ -91,8 +93,8 @@ export default function NuevoProyectoPage() {
                   {PROJECT_STEPS.map((step, index) => (
                     <React.Fragment key={`label-${step.number}`}>
                       <div style={{ width: 48 }} className="text-center">
-                        <p className={`text-sm ${currentStep === step.number ? 'font-semibold' : 'font-medium'} hidden md:block`} style={{ color: currentStep === step.number ? tiyuyColors.text.primary : tiyuyColors.text.secondary }}>{step.title}</p>
-                        <p className={`text-xs mt-0.5 hidden md:block`} style={{ color: tiyuyColors.text.secondary }}>{step.description}</p>
+                        <p className={`text-sm ${currentStep === step.number ? 'font-semibold' : 'font-medium'} hidden md:block`} style={{ color: currentStep === step.number ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{step.title}</p>
+                        <p className={`text-xs mt-0.5 hidden md:block`} style={{ color: 'var(--text-tertiary)' }}>{step.description}</p>
                       </div>
 
                       {index < PROJECT_STEPS.length - 1 && (
@@ -105,11 +107,12 @@ export default function NuevoProyectoPage() {
             </div>
 
             {/* Form */}
-            <div className="bg-white rounded-lg shadow-lg p-3 sm:p-6">
+            <div className="bg-[var(--bg-card)] rounded-lg shadow-lg p-3 sm:p-6">
               <PropertyForm mode="create" formType="project" onStepChange={setCurrentStep} />
             </div>
           </div>
         </div>
+
       </TrialGuard>
     </ProtectedRoute>
   );

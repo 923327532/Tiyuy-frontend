@@ -29,7 +29,7 @@ export function BulkActionsBar({
   if (selectedCount === 0) return null;
 
   return (
-    <div className="fixed bottom-0 sm:bottom-6 left-0 sm:left-1/2 right-0 sm:right-auto sm:-translate-x-1/2 z-50 bg-white rounded-none sm:rounded-xl shadow-xl border-t sm:border border-gray-200 px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 sm:min-w-[600px]">
+    <div className="fixed bottom-0 sm:bottom-6 left-0 sm:left-1/2 right-0 sm:right-auto sm:-translate-x-1/2 z-50 bg-white rounded-none sm:rounded-xl shadow-xl border-t sm:border border-gray-200 px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 sm:min-w-[500px] sm:max-w-[95vw] lg:min-w-[600px]">
       <div className="flex items-center justify-between sm:justify-start gap-3 border-b sm:border-b-0 sm:border-r border-gray-200 pb-2 sm:pb-0 sm:pr-4">
         <span className="text-xs sm:text-sm font-medium text-gray-900">
           {selectedCount} seleccionado{selectedCount > 1 ? 's' : ''}

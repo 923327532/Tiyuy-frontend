@@ -48,8 +48,8 @@ const NavItem = ({ href, icon, iconActive, label, show = true, collapsed, isMobi
       }}
       className={`group relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${
         active
-          ? 'bg-teal-50 text-teal-700 font-medium'
-          : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+          ? 'bg-[var(--brand-primary-light)] text-[var(--brand-primary)] font-medium'
+          : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]'
       }`}
       title={collapsed ? label : undefined}
     >
@@ -123,7 +123,7 @@ export default function DashboardLayout({
 
   return (
     <DashboardSidebarContext.Provider value={{ sidebarOpen, setSidebarOpen, isMobile }}>
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-[var(--bg-secondary)]">
         {isMobile && sidebarOpen && !hideSidebar && (
           <div
             className="fixed inset-0 bg-black/30 z-40 lg:hidden"
@@ -133,7 +133,7 @@ export default function DashboardLayout({
 
         {!hideSidebar && (
           <aside
-            className={`bg-white border-r border-gray-200 min-h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out ${
+            className={`bg-[var(--bg-card)] border-r border-[var(--border-color)] min-h-screen flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out ${
               isMobile
                 ? `fixed inset-y-0 left-0 z-50 w-64 transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} shadow-xl lg:hidden`
                 : collapsed
@@ -144,7 +144,7 @@ export default function DashboardLayout({
             <div className="px-3 pt-2 pb-1">
               <button
                 onClick={() => setCollapsed(!collapsed)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-all duration-300 w-full"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all duration-300 w-full"
                 title={collapsed ? 'Expandir menú' : 'Colapsar menú'}
               >
                 {collapsed ? <PanelLeft className="w-5 h-5 flex-shrink-0" /> : <PanelLeftClose className="w-5 h-5 flex-shrink-0" />}
@@ -230,9 +230,9 @@ export default function DashboardLayout({
                 setSidebarOpen={setSidebarOpen}
               />
 
-              <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="mt-6 pt-6 border-t border-[var(--border-color)]">
                 {!collapsed && (
-                  <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Configuración</p>
+                  <p className="px-4 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-2">Configuración</p>
                 )}
                 <NavItem
                   href="/dashboard"
@@ -246,26 +246,26 @@ export default function DashboardLayout({
               </div>
             </nav>
 
-            <div className="p-3 border-t border-gray-200 relative" ref={dropdownRef}>
+            <div className="p-3 border-t border-[var(--border-color)] relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-all"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[var(--bg-tertiary)] transition-all"
                 title={collapsed ? user?.email || 'Usuario' : undefined}
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                   {user?.email?.[0]?.toUpperCase() || 'U'}
                 </div>
                 <div className={`flex-1 text-left min-w-0 transition-all duration-200 overflow-hidden ${collapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
-                  <p className="text-sm font-medium text-gray-900 truncate">{user?.email || 'Usuario'}</p>
-                  <p className="text-xs text-gray-400 truncate">{userRole}</p>
+                  <p className="text-sm font-medium text-[var(--text-primary)] truncate">{user?.email || 'Usuario'}</p>
+                  <p className="text-xs text-[var(--text-muted)] truncate">{userRole}</p>
                 </div>
                 {!collapsed && (
-                  <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform flex-shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 text-[var(--text-muted)] transition-transform flex-shrink-0 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 )}
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute bottom-16 left-3 right-3 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                <div className="absolute bottom-16 left-3 right-3 bg-[var(--bg-card)] rounded-xl shadow-lg border border-[var(--border-color)] py-2 z-50">
                   <button
                     onClick={() => { logout(); setIsDropdownOpen(false); }}
                     className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-all"

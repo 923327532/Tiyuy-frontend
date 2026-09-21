@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { BadgeCheck, Star, AlertCircle, Clock, MessageCircle, MessageCircleMore } from 'lucide-react';
+import { BadgeCheck, Star, AlertCircle, Clock, MessageCircle, MessageCircleMore, Calendar } from 'lucide-react';
 import type { Property, PropertySummary } from '@/core/domain/entities/Property';
 import { FavoriteButton } from '@/presentation/components/shared/FavoriteButton';
 import { LazyImage } from '@/presentation/components/ui/LazyImage/LazyImage';
+import { formatDistanceToNow } from '@/utils/formatters';
 
 interface PropertyCardProps {
   property: Property | PropertySummary;
@@ -27,11 +28,20 @@ function getPropertySlug(property: Property | PropertySummary): string {
   return property.slug ?? String(property.id);
 }
 
+function getPublishedDate(publishedAt?: Date | string): Date | null {
+  if (!publishedAt) return null;
+  const date = typeof publishedAt === 'string' ? new Date(publishedAt) : publishedAt;
+  return isNaN(date.getTime()) ? null : date;
+}
+
+function getDaysSince(date: Date): number {
+  return Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
+}
+
 export function PropertyCard({ property }: PropertyCardProps) {
   const commentCount: number | null = null;
   const [rating, setRating] = useState<RatingData | null>(null);
 
-  // Cargar rating de la propiedad
   useEffect(() => {
     const fetchRating = async () => {
       try {
@@ -76,6 +86,14 @@ export function PropertyCard({ property }: PropertyCardProps) {
     return `${symbol} ${price.toLocaleString('es-PE')}`;
   };
 
+  const publishedDate = getPublishedDate(property.publishedAt);
+  const publishedLabel = publishedDate ? formatDistanceToNow(publishedDate, { addSuffix: true }) : null;
+  const isNew = publishedDate ? getDaysSince(publishedDate) <= 7 : false;
+  const publishedDateLabel = publishedDate
+    ? publishedDate.toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' })
+    : null;
+  const publishedText = publishedDateLabel ? `Publicado el ${publishedDateLabel}` : null;
+
   const renderLifecycleBadge = () => {
     const lifecycleStatus = property.lifecycleStatus;
     const remainingDays = property.remainingGraceDays;
@@ -111,38 +129,45 @@ export function PropertyCard({ property }: PropertyCardProps) {
   };
 
   return (
-    <div className="group flex flex-col w-full h-full cursor-pointer overflow-hidden">
-      <Link href={`/property/${getPropertySlug(property)}`} className="relative w-full aspect-square rounded-xl overflow-hidden mb-2.5 block">
+    <div className="group flex flex-col w-full h-full min-w-[160px] sm:min-w-[200px] cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl bg-[var(--bg-card)] shadow-[0_8px_30px_var(--shadow-color)] hover:shadow-[0_15px_45px_var(--shadow-color)] hover:-translate-y-1 transition-all duration-300">
+      <Link href={`/property/${getPropertySlug(property)}`} className="relative w-full overflow-hidden rounded-t-2xl" style={{ aspectRatio: '4 / 3' }}>
         {property.coverPhotoUrl ? (
           <LazyImage
             src={getImageUrl(property.coverPhotoUrl)}
             alt={property.title || ''}
-            className="w-full h-full group-hover:scale-105 transition-transform duration-500"
+            width={400}
+            height={300}
+            className="w-full h-full group-hover:scale-[1.03] transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <span className="text-gray-400 text-5xl">🏠</span>
+          <div className="w-full h-full flex items-center justify-center bg-[var(--bg-tertiary)]">
+            <span className="text-[var(--text-muted)] text-5xl">🏠</span>
           </div>
         )}
 
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-transparent opacity-50" />
 
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10">
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           {property.isFeatured && (
-            <div className="bg-white text-gray-900 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full shadow-md">
+            <div className="bg-[#1FA64A] text-white text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-sm tracking-wide">
               Destacado
             </div>
           )}
           {property.isVerified && (
-            <div className="bg-white text-gray-900 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
-              <BadgeCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-500" />
+            <div className="bg-[var(--bg-card)] text-[var(--text-primary)] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-md flex items-center gap-1">
+              <BadgeCheck className="w-3 h-3 text-blue-500" />
               Verificado
+            </div>
+          )}
+          {!property.isFeatured && !property.isVerified && isNew && (
+            <div className="bg-[var(--bg-card)] text-[var(--text-primary)] text-[11px] font-bold px-3.5 py-1.5 rounded-full shadow-md">
+              Nuevo
             </div>
           )}
         </div>
 
-        <div className="absolute top-2.5 right-2.5 z-10">
-          <div className="hover:scale-110 transition-transform drop-shadow-md scale-90 sm:scale-100">
+        <div className="absolute top-3 right-3 z-10">
+          <div className="hover:scale-105 transition-transform duration-200">
             <FavoriteButton propertyId={property.id} />
           </div>
         </div>
@@ -150,51 +175,100 @@ export function PropertyCard({ property }: PropertyCardProps) {
         {renderLifecycleBadge()}
       </Link>
 
-      <Link href={`/property/${getPropertySlug(property)}`} className="flex flex-col flex-grow mt-0.5 w-full min-w-0 overflow-hidden">
+      <Link href={`/property/${getPropertySlug(property)}`} className="flex flex-col flex-grow px-3 pt-2.5 pb-3 w-full min-w-0 overflow-hidden">
+        <div className="flex flex-col flex-1">
         <div className="flex justify-between items-start gap-1.5 w-full min-w-0">
-          <h3 className="text-[14px] sm:text-[15px] font-semibold text-gray-900 truncate flex-1 min-w-0">
+          <h3 className="text-[13px] font-semibold text-[var(--text-primary)] leading-snug line-clamp-2 flex-1 min-w-0 h-[34px]">
             {PROPERTY_TYPE_LABELS[property.type] || 'Propiedad'} en {'location' in property ? property.location?.district : property.district || 'Ubicación'}
           </h3>
-          <div className="flex items-center gap-0.5 sm:gap-1 text-[13px] sm:text-[14px] text-gray-900 flex-shrink-0 min-w-fit pl-0.5">
-            <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 text-amber-400 fill-amber-400" />
-            <span className="whitespace-nowrap select-none">
+        </div>
+
+        <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 w-full truncate h-[16px] flex items-center gap-1">
+          <svg className="w-3 h-3 text-[#EF4444] flex-shrink-0" viewBox="0 0 24 24" fill="#EF4444" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          {'location' in property ? `${property.location?.district || ''}, ${property.location?.province || property.location?.region || 'Perú'}` : property.district || 'Perú'}
+        </p>
+
+        <div className="w-full h-px bg-[var(--border-color)] my-1.5" />
+
+        <div className="flex items-center gap-2 w-full text-[11px] text-[var(--text-secondary)] h-[16px]">
+          {property.bedrooms && (
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 7v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7" />
+                <path d="M21 7H3" />
+                <path d="M3 11h18" />
+                <path d="M7 15h2" />
+                <path d="M15 15h2" />
+              </svg>
+              <span>{property.bedrooms}</span>
+            </div>
+          )}
+          {property.bathrooms && (
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12h16a1 1 0 0 1 1 1v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3a1 1 0 0 1 1-1z" />
+                <path d="M6 12V5a2 2 0 0 1 2-2h3v2" />
+              </svg>
+              <span>{property.bathrooms}</span>
+            </div>
+          )}
+          {property.totalArea && (
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <line x1="3" y1="9" x2="21" y2="9" />
+                <line x1="9" y1="21" x2="9" y2="9" />
+              </svg>
+              <span>{property.totalArea} m²</span>
+            </div>
+          )}
+        </div>
+
+        <div className="w-full h-px bg-[var(--border-color)] my-1.5" />
+
+        {publishedText && (
+          <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)] mb-1.5">
+            <Calendar className="w-3 h-3 flex-shrink-0" />
+            <span className="font-medium truncate">{isNew ? 'Recién publicado' : publishedText}</span>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between w-full h-[22px]">
+          <div className="flex items-baseline gap-1 min-w-0">
+            <span className="text-[15px] font-bold text-[var(--brand-primary)] leading-tight">
+              {formatPrice(property.price, property.currency)}
+            </span>
+            <span className="text-[11px] text-[var(--brand-primary)] font-semibold whitespace-nowrap">
+              {property.transactionType === 'RENT' ? '/mes' : ''}
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-1 text-[11px] text-[var(--text-secondary)] flex-shrink-0">
+            <span className="text-[#FBBF24] text-xs leading-none">⭐</span>
+            <span className="font-medium">
               {rating && rating.averageRating > 0 ? rating.averageRating.toFixed(1) : 'Nuevo'}
             </span>
           </div>
         </div>
 
-        <p className="text-[13px] sm:text-[14px] text-gray-500 truncate mt-0.5 w-full">
-          {[
-            property.bedrooms && `${property.bedrooms} camas`,
-            property.bathrooms && `${property.bathrooms} baños`,
-            property.totalArea && `${property.totalArea} m²`
-          ].filter(Boolean).join(' · ')}
-        </p>
-
-        <div className="mt-0.5 flex items-center justify-between w-full">
-          <div className="flex items-center gap-1 min-w-0">
-            <span className="text-[14px] sm:text-[15px] font-semibold text-gray-900 truncate">
-              {formatPrice(property.price, property.currency)}
-            </span>
-            <span className="text-[14px] sm:text-[15px] text-gray-900 whitespace-nowrap">
-              {property.transactionType === 'RENT' ? ' / mes' : ''}
-            </span>
+        {commentCount !== null && commentCount > 0 && (
+          <div className="flex items-center gap-1 mt-2 text-xs text-[var(--text-muted)]">
+            <MessageCircle className="w-3 h-3" />
+            <span>{commentCount} comentarios</span>
           </div>
-          
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {/* Botón Contactar estilo WhatsApp - usa span porque ya está dentro de un Link */}
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-white bg-brand hover:bg-brand-dark px-2.5 py-1 rounded-md transition-colors shadow-sm cursor-default">
-              <MessageCircleMore className="w-3.5 h-3.5" />
-              Contactar
-            </span>
+        )}
+        </div>
 
-            {commentCount !== null && commentCount > 0 && (
-              <div className="flex items-center gap-1 text-[11px] text-gray-400">
-                <MessageCircle className="w-2.5 h-2.5" />
-                <span>{commentCount}</span>
-              </div>
-            )}
-          </div>
+        <div className="w-full pt-2">
+          <span className="flex items-center justify-center gap-1.5 w-full h-[36px] text-xs font-semibold text-[var(--brand-primary)] bg-[var(--bg-card)] border-2 border-[var(--brand-primary)] rounded-xl hover:bg-[var(--brand-primary)] hover:text-white transition-all duration-250 cursor-default">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            Contactar
+          </span>
         </div>
       </Link>
     </div>

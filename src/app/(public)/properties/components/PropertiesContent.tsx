@@ -24,10 +24,21 @@ export default function PropertiesContent() {
   const [miniLoading, setMiniLoading] = useState(true);
 
   const propertyRepo = new PropertyRepository();
-  const { searchResult: mapResult, search: searchMap, selectProperty: selectMapProperty, selectedPropertyId: selectedMapPropertyId } = usePropertyMap();
+  const { searchResult: mapResult, search: searchMap, selectProperty: selectMapProperty, selectedPropertyId: selectedMapPropertyId, reset: resetPropertyMap } = usePropertyMap();
 
+  // Resetear el store al montar para evitar datos zombies de navegación SPA
   useEffect(() => {
+    resetPropertyMap();
+    setMiniLoading(true);
     searchMap({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Resetear el store al desmontar para que al volver no haya datos zombies
+  useEffect(() => {
+    return () => {
+      resetPropertyMap();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -54,7 +65,7 @@ export default function PropertiesContent() {
     pageSize: 18,
     threshold: 400,
     deps: [],
-    maxInfinitePages: 1,
+    maxInfinitePages: 4,
   });
 
   const rentScroll = useInfiniteScroll<PropertySummary>({
@@ -62,7 +73,7 @@ export default function PropertiesContent() {
     pageSize: 18,
     threshold: 400,
     deps: [],
-    maxInfinitePages: 1,
+    maxInfinitePages: 4,
   });
 
   return (
@@ -90,7 +101,7 @@ export default function PropertiesContent() {
         </div>
         
         <div className="relative z-10 max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-12 sm:py-20 lg:py-24">
-          <div className="flex items-center gap-8 lg:gap-16">
+          <div className="flex items-center justify-between gap-8">
             <div className="flex-1 max-w-2xl">
               <div className="inline-flex items-center gap-2 bg-brand/20 backdrop-blur-sm text-white text-xs sm:text-sm font-semibold px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full mb-4 sm:mb-6 border border-white/20">
                 <Icon icon="mdi:home" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand" />
@@ -106,13 +117,13 @@ export default function PropertiesContent() {
               </p>
             </div>
 
-            {/* Mini mapa */}
-            <div className="hidden lg:block flex-shrink-0 ml-auto lg:mr-8 xl:mr-16">
+            {/* Mini mapa - visible también en mobile como botón */}
+            <div className="flex-shrink-0">
               <div
                 onClick={() => setShowMapModal(true)}
-                className="block relative group animate-pulse-soft cursor-pointer"
+                className="block relative group cursor-pointer"
               >
-                <div className="w-[300px] xl:w-[360px] h-[220px] xl:h-[250px] rounded-[18px] overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-2 border-white/20 transition-all duration-500 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group-hover:border-brand/40">
+                <div className="w-24 h-24 lg:w-[300px] xl:w-[360px] lg:h-[220px] xl:h-[250px] rounded-xl lg:rounded-[18px] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.3)] lg:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-2 border-white/20 transition-all duration-500 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] group-hover:border-brand/40">
                   {!miniLoading && miniProperties.length > 0 && (
                     <MiniPropertyMap
                       properties={miniProperties}
@@ -127,10 +138,11 @@ export default function PropertiesContent() {
                     </div>
                   )}
                 </div>
-                <div className="absolute inset-0 rounded-[18px] bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0 shadow-sm flex items-center gap-1.5">
-                  <Building className="w-3 h-3" />
-                  Explorar mapa
+                <div className="absolute inset-0 rounded-xl lg:rounded-[18px] bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm text-gray-800 text-[10px] lg:text-xs font-semibold px-2 py-1 lg:px-3 lg:py-1.5 rounded-full shadow-sm flex items-center gap-1">
+                  <Building className="w-2.5 h-2.5 lg:w-3 lg:h-3" />
+                  <span className="hidden lg:inline">Explorar mapa</span>
+                  <span className="lg:hidden">Mapa</span>
                 </div>
               </div>
             </div>
@@ -159,7 +171,7 @@ export default function PropertiesContent() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-white rounded-lg border border-brand/20 hover:border-brand/60 shadow-sm hover:shadow text-gray-600 hover:text-brand-dark text-xs sm:text-sm font-medium transition-all duration-200"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-[var(--bg-card)] rounded-lg border border-brand/20 hover:border-brand/60 shadow-sm hover:shadow text-[var(--text-secondary)] hover:text-brand-dark text-xs sm:text-sm font-medium transition-all duration-200"
               >
                 <span className="text-brand">{item.icon}</span>
                 <span>{item.label}</span>
@@ -210,10 +222,10 @@ function PropertyGridSection({ scroll }: { scroll: any }) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-6">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
           <div key={i} className="animate-pulse">
-            <div className="w-full aspect-square bg-gray-200 rounded-[14px] mb-2" />
+            <div className="w-full aspect-square bg-[var(--bg-tertiary)] rounded-[14px] mb-2" />
             <div className="space-y-1.5">
-              <div className="h-3.5 bg-gray-200 rounded w-3/4" />
-              <div className="h-3 bg-gray-200 rounded w-1/2" />
+              <div className="h-3.5 bg-[var(--bg-tertiary)] rounded w-3/4" />
+              <div className="h-3 bg-[var(--bg-tertiary)] rounded w-1/2" />
             </div>
           </div>
         ))}

@@ -38,7 +38,7 @@ export function UsersHeaderStats({ activeUsers, pendingUsers, totalUsers }: User
         {/* Logo Tiyuy arriba a la derecha */}
         <div className="absolute top-3 right-4 opacity-25">
           <img
-            src="/assets/images/logo.png"
+            src="/assets/images/logo.svg"
             alt="Tiyuy"
             className="w-20 h-auto object-contain"
           />

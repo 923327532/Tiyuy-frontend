@@ -37,7 +37,7 @@ export function PropertyGallery({ media, coverPhotoUrl }: PropertyGalleryProps) 
   return (
     <div className="space-y-4">
       {/* Imagen principal */}
-      <div className="relative w-full h-96 md:h-[500px] bg-gray-200 rounded-lg overflow-hidden">
+      <div className="relative w-full h-64 sm:h-96 md:h-[500px] bg-gray-200 rounded-lg overflow-hidden">
         {images[selectedIndex]?.url ? (
           <img
             src={getProxyUrl(images[selectedIndex].url)}
@@ -84,7 +84,7 @@ export function PropertyGallery({ media, coverPhotoUrl }: PropertyGalleryProps) 
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
           {images.slice(0, 5).map((img: any, index: number) => (
             <button
               key={img.id}

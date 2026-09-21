@@ -35,7 +35,7 @@ export class AuthRepository implements IAuthRepository {
       
       if (status === 401) {
         if (data?.message?.toLowerCase().includes('contraseña') || data?.message?.toLowerCase().includes('password')) {
-          throw new Error('La contraseña es incorrecta. Por favor, inténtalo de nuevo.');
+          throw new Error('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
         } else if (data?.message?.toLowerCase().includes('correo') || data?.message?.toLowerCase().includes('email')) {
           throw new Error('El correo electrónico no está registrado.');
         } else {
@@ -61,58 +61,66 @@ export class AuthRepository implements IAuthRepository {
 
   async register(registerData: RegisterData): Promise<AuthResponse> {
     try {
-      const response = await axiosClient.post<AuthResponse>(
+      // Usamos publicApiClient para registro (sin token JWT) igual que en login
+      // axiosClient tiene un interceptor que puede bloquear si hay un token expirado en localStorage
+      const response = await publicApiClient.post<AuthResponse>(
         AUTH_ENDPOINTS.REGISTER,
         registerData
       );
       return response.data;
     } catch (error: any) {
-      // Manejar error 409 - Email ya registrado
-      if (error.response?.status === 409) {
-        throw new Error('Este email ya esta registrado. Intenta iniciar sesion.');
+      // Extraer mensaje y código del backend
+      const data = error.response?.data;
+      const status = error.response?.status;
+
+      // Manejar error 409 - Conflictos de datos duplicados
+      if (status === 409) {
+        // Intentar extraer el mensaje del backend (viene en data.message)
+        if (data?.message) {
+          // Agregar contexto amigable según el código de error
+          const code = data?.code || '';
+          let friendlyMessage = data.message;
+          
+          if (code === 'EMAIL_ALREADY_EXISTS') {
+            friendlyMessage = 'Este correo electrónico ya está registrado. ¿Quieres iniciar sesión?';
+          } else if (code === 'PHONE_ALREADY_EXISTS') {
+            friendlyMessage = 'Este número de teléfono ya está registrado en otra cuenta.';
+          } else if (code === 'DNI_ALREADY_EXISTS') {
+            friendlyMessage = 'Este DNI ya está registrado en otra cuenta.';
+          } else if (code === 'RUC_ALREADY_EXISTS') {
+            friendlyMessage = 'Este RUC ya está registrado en otra cuenta.';
+          }
+          
+          throw new Error(friendlyMessage);
+        }
+        throw new Error('Estos datos ya están registrados. Verifica tus datos o inicia sesión.');
       }
-      
-      // Manejar diferentes tipos de error del backend
-      if (error.response?.data) {
-        const errorData = error.response.data;
-        
-        if (typeof errorData === 'string') {
-          throw new Error(errorData);
+
+      // Manejar error 400 - Validación
+      if (status === 400) {
+        if (data?.message) {
+          throw new Error(data.message);
         }
-        
-        if (errorData.message) {
-          throw new Error(errorData.message);
-        }
-        
-        if (errorData.error) {
-          throw new Error(errorData.error);
-        }
-        
-        if (Array.isArray(errorData)) {
-          throw new Error(errorData.join(', '));
-        }
-        
-        if (typeof errorData === 'object' && errorData !== null) {
-          const errors = Object.values(errorData).join(', ');
-          throw new Error(errors);
-        }
+        throw new Error('Datos inválidos. Revisa todos los campos.');
       }
-      
-      // Error de red o sin respuesta
+
+      // Manejar diferentes tipos de respuesta del backend
+      if (data) {
+        if (typeof data === 'string') throw new Error(data);
+        if (data.message) throw new Error(data.message);
+        if (data.error) throw new Error(data.error);
+        if (Array.isArray(data)) throw new Error(data.join(', '));
+      }
+
+      // Error de red
       if (error.code === 'ECONNABORTED') {
-        throw new Error('Tiempo de espera agotado. Intentalo nuevamente');
+        throw new Error('El servidor no responde. Intenta nuevamente.');
       }
-      
       if (error.code === 'ERR_NETWORK') {
-        throw new Error('Error de conexion. Verifica tu internet');
+        throw new Error('Error de conexión. Verifica tu internet.');
       }
       
-      // Error 400 generico
-      if (error.response?.status === 400) {
-        throw new Error('Datos invalidos. Revisa todos los campos');
-      }
-      
-      throw new Error('Error al registrar usuario');
+      throw new Error('Error al registrar. Intenta nuevamente.');
     }
   }
 

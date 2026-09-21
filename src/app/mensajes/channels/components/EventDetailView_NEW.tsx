@@ -79,7 +79,7 @@ export default function EventDetailView({
       {/* Content */}
       <div className="p-6">
         {/* Event Cover */}
-        <div className="relative h-48 bg-gradient-to-br brand rounded-xl mb-6 overflow-hidden">
+        <div className="relative h-48 bg-brand rounded-xl mb-6 overflow-hidden">
           {event.coverImageUrl ? (
             <img 
               src={event.coverImageUrl} 
@@ -88,7 +88,7 @@ export default function EventDetailView({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Calendar className="w-16 h-16 text-brand" />
+              <Calendar className="w-16 h-16 text-white" />
             </div>
           )}
         </div>
@@ -158,7 +158,7 @@ export default function EventDetailView({
             <div className="space-y-2">
               {attendees.map((attendee: any) => (
                 <div key={attendee.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-bold">
+                  <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold">
                     {attendee.firstName?.charAt(0).toUpperCase() || 'U'}
                   </div>
                   <div className="flex-1">
@@ -189,7 +189,7 @@ export default function EventDetailView({
               className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-colors ${
                 isRsvped
                   ? 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'
-                  : 'bg-brand text-white hover:bg-blue-700'
+                  : 'bg-brand text-white hover:opacity-90'
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {rsvpMutation.isPending || cancelRsvpMutation.isPending ? (

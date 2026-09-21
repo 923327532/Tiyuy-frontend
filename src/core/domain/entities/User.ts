@@ -24,6 +24,13 @@ export interface User {
   avatar?: string;  // Avatar URL (opcional)
   // Verificación de identidad
   isVerified?: boolean;
+  // Tipo de documento del registro: PERU_DNI | INTERNATIONAL
+  documentType?: 'PERU_DNI' | 'INTERNATIONAL';
+  // Estado de verificación KYC: PENDING | VERIFIED | REJECTED | MANUAL_REVIEW
+  verificationStatus?: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'MANUAL_REVIEW';
+  // Fotos del KYC internacional (subidas a S3)
+  documentImageUrl?: string;
+  selfieImageUrl?: string;
 }
 
 // No necesitamos UserProfile separado, ya está incluido en User
@@ -39,7 +46,13 @@ export interface RegisterData {
   password: string;
   firstName: string;
   lastName: string;
-  dni: string;
+  dni?: string;
+  // Tipo de documento del registro: PERU_DNI (por defecto) | INTERNATIONAL
+  documentType?: 'PERU_DNI' | 'INTERNATIONAL';
+  // Datos del documento internacional (solo si documentType = 'INTERNATIONAL')
+  issuingCountry?: string;
+  internationalDocumentType?: 'PASSPORT' | 'NATIONAL_ID' | 'RESIDENCE_PERMIT';
+  internationalDocumentNumber?: string;
   ruc?: string;
   fullName?: string;
   city?: string;
@@ -55,6 +68,10 @@ export interface AuthResponse {
   role: UserRole;
   firstName: string;
   lastName: string;
+  // Tipo de documento del registro: PERU_DNI | INTERNATIONAL
+  documentType?: 'PERU_DNI' | 'INTERNATIONAL';
+  // Estado de verificación KYC: PENDING | VERIFIED | REJECTED | MANUAL_REVIEW
+  verificationStatus?: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'MANUAL_REVIEW';
   // Admin specific fields (only present when role is ADMIN)
   adminRoleType?: AdminRoleType;
   permissions?: string[];

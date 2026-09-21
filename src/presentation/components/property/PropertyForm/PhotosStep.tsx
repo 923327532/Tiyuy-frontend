@@ -157,10 +157,10 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
     <div className="space-y-8">
       {/* ── ÁREA DE SUBIDA ── */}
       <section>
-        <h2 className="text-lg font-bold text-gray-900 mb-1">
+        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
           Fotos de tu propiedad
         </h2>
-        <p className="text-sm text-gray-400 mb-6">
+        <p className="text-sm text-[var(--text-muted)] mb-6">
           Las propiedades con fotos reciben hasta 5x más visitas
         </p>
 
@@ -168,8 +168,8 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
         <div
           className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all ${
             isDragging 
-              ? 'border-green-500 bg-green-50' 
-              : 'border-gray-300 hover:border-gray-400'
+              ? 'border-[var(--brand-primary)] bg-[var(--brand-primary-light)]' 
+              : 'border-[var(--input-border)] hover:border-[var(--text-muted)]'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -177,15 +177,15 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
         >
           {/* Icono de cámara */}
           <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
-              <Camera className="w-10 h-10 text-gray-400" />
+            <div className="w-20 h-20 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center">
+              <Camera className="w-10 h-10 text-[var(--text-muted)]" />
             </div>
           </div>
 
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">
             Subir fotos de tu propiedad
           </h3>
-          <p className="text-gray-600 mb-8">
+          <p className="text-[var(--text-secondary)] mb-8">
             Arrastra y suelta imágenes aquí, o haz clic para seleccionar
           </p>
 
@@ -204,10 +204,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-lg transition-all"
-              style={{ backgroundColor: '#00a63e' }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#009135')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00a63e')}
+              className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-lg transition-all bg-[var(--brand-primary)] hover:opacity-90"
             >
               <CloudUpload className="w-5 h-5" />
               Seleccionar archivos
@@ -216,14 +213,14 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
             <button
               type="button"
               onClick={startCamera}
-              className="flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-gray-400 transition-all"
+              className="flex items-center gap-2 px-6 py-3 bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] font-semibold rounded-lg hover:border-[var(--text-muted)] transition-all"
             >
               <Camera className="w-5 h-5" />
               Tomar foto
             </button>
           </div>
 
-          <p className="text-sm text-gray-400 mt-6">
+          <p className="text-sm text-[var(--text-muted)] mt-6">
             Máximo 10 fotos • JPG, PNG • Máx 5MB cada una
           </p>
         </div>
@@ -232,12 +229,12 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
       {/* ── PREVIEWS ── */}
       {previewUrls.length > 0 && (
         <section>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
             Fotos seleccionadas ({previewUrls.length}/10)
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {previewUrls.map((url, index) => (
-              <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-200">
+              <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-[var(--bg-secondary)]">
                 <Image
                   src={url}
                   alt={`Preview ${index + 1}`}
@@ -251,7 +248,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
                   <X className="w-4 h-4" />
                 </button>
                 {index === 0 && (
-                  <div className="absolute bottom-2 left-2 text-white text-xs px-2 py-1 rounded" style={{ backgroundColor: '#00a63e' }}>
+                  <div className="absolute bottom-2 left-2 text-white text-xs px-2 py-1 rounded bg-[var(--brand-primary)]">
                     Portada
                   </div>
                 )}
@@ -262,10 +259,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
           <button
             onClick={handleUpload}
             disabled={uploadMutation.isPending || !propertyId}
-            className="w-full mt-6 py-3 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#00a63e' }}
-            onMouseEnter={e => !uploadMutation.isPending && propertyId && (e.currentTarget.style.backgroundColor = '#009135')}
-            onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#00a63e')}
+            className="w-full mt-6 py-3 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--brand-primary)] hover:opacity-90"
           >
             {uploadMutation.isPending ? (
               <div className="flex items-center justify-center gap-2">
@@ -281,7 +275,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
 
       {/* ── CONSEJOS ── */}
       <section>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           Consejos para mejores fotos
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -292,11 +286,11 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
             { icon: '🏠', title: 'Todas las áreas', desc: 'Incluye todas las habitaciones' }
           ].map((tip, index) => (
             <div key={index} className="text-center">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-2">
+              <div className="w-12 h-12 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center mx-auto mb-2">
                 <span className="text-2xl">{tip.icon}</span>
               </div>
-              <h4 className="font-semibold text-gray-900 text-sm">{tip.title}</h4>
-              <p className="text-xs text-gray-600 mt-1">{tip.desc}</p>
+              <h4 className="font-semibold text-[var(--text-primary)] text-sm">{tip.title}</h4>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">{tip.desc}</p>
             </div>
           ))}
         </div>
@@ -305,12 +299,12 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
       {/* ── MODAL DE CÁMARA ── */}
       {showCamera && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+          <div className="bg-[var(--bg-card)] rounded-lg p-6 max-w-2xl w-full mx-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Tomar foto</h3>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">Tomar foto</h3>
               <button
                 onClick={stopCamera}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -330,14 +324,13 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
             <div className="flex justify-center gap-4">
               <button
                 onClick={stopCamera}
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-6 py-2 border border-[var(--border-color)] text-[var(--text-secondary)] rounded-lg hover:bg-[var(--bg-secondary)]"
               >
                 Cancelar
               </button>
               <button
                 onClick={capturePhoto}
-                className="px-6 py-2 text-white rounded-lg"
-                style={{ backgroundColor: '#00a63e' }}
+                className="px-6 py-2 text-white rounded-lg bg-[var(--brand-primary)] hover:opacity-90"
               >
                 <Camera className="w-5 h-5 inline mr-2" />
                 Capturar
@@ -349,9 +342,9 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
 
       {/* ── ALERTA SI NO HAY PROPERTY ID ── */}
       {!propertyId && (
-        <div className="rounded-lg p-4 flex items-start gap-3" style={{ backgroundColor: '#fef3c7', border: '1px solid #fbbf24' }}>
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <div className="text-sm" style={{ color: '#92400e' }}>
+        <div className="rounded-lg p-4 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+          <div className="text-sm text-amber-800 dark:text-amber-200">
             <p className="font-semibold">Primero completa los pasos anteriores</p>
             <p className="opacity-80">Para poder subir fotos, primero debes guardar la información básica, ubicación y características de la propiedad.</p>
           </div>

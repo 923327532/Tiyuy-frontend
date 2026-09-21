@@ -19,7 +19,7 @@ export default function RegisterUsuarioPage() {
             className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hover:scale-105"
             style={{ backgroundImage: "url('/assets/images/registro/usuario.jpg')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/60 to-gray-900/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
           
           <div className="relative z-10 text-center lg:text-left text-white max-w-md w-full">
             <h1 className="text-4xl lg:text-5xl font-extrabold mb-4 tracking-tight drop-shadow-sm">

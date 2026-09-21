@@ -112,7 +112,7 @@ export function PropertyMapView({
             <Popup>
               <div 
                 className="w-[220px] cursor-pointer"
-                onClick={() => window.location.href = `/sale/${property.type?.toLowerCase()}/${property.slug || property.id}`}
+                onClick={() => window.location.href = `/property/${property.slug || property.id}`}
               >
                 {/* Imagen */}
                 {property.mainPhotoUrl && (
@@ -140,8 +140,8 @@ export function PropertyMapView({
                   S/ {property.price?.toLocaleString('es-PE')}
                 </p>
 
-                {/* Título */}
-                <p className="text-xs text-gray-600 mt-0.5 line-clamp-1">{property.title}</p>
+                {/* Título (sin "| Wasyn") */}
+                <p className="text-xs text-gray-600 mt-0.5 line-clamp-1">{property.title?.replace(/\s*\|\s*Wasyn\s*$/i, '').trim() || property.title}</p>
 
                 {/* Ubicación */}
                 <p className="text-[11px] text-gray-400 mt-0.5">
@@ -183,6 +183,16 @@ export function PropertyMapView({
       >
         {markers}
       </LeafletMap>
+      
+      {/* Mobile: contador de propiedades en la parte inferior */}
+      {properties.length > 0 && (
+        <div className="md:hidden absolute bottom-4 left-4 right-4 z-20">
+          <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg px-4 py-2.5 flex items-center justify-center gap-2">
+            <span className="text-sm font-bold text-gray-900">{properties.length}</span>
+            <span className="text-sm text-gray-500">propiedades encontradas</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
