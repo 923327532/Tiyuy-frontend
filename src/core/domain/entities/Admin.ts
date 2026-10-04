@@ -99,11 +99,25 @@ export interface DeveloperResponse {
   companyName: string;
   ruc?: string;
   phone?: string;
+  managerName?: string;
+  city?: string;
+  address?: string;
+  totalProjects?: number;
+  totalAgents?: number;
   enabled: boolean;
   status: string;
-  totalAgents: number;
   createdAt: Date;
   lastLoginAt?: Date;
+}
+
+export interface DeveloperDiscountTarget {
+  id: number;
+  name: string;
+  ruc?: string;
+  email?: string;
+  managerName?: string;
+  currentPlan?: string;
+  revenue30Days?: number;
 }
 
 // Search filter for developers
@@ -1331,4 +1345,3 @@ export interface UpdateSupportTicketStatusRequest {
   status: TicketStatus;
   adminNotes?: string;
 }
-

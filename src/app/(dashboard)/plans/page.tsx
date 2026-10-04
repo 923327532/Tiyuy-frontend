@@ -407,6 +407,11 @@ function PlansPageContent() {
       discountCode: discountCode || undefined,
     }, {
       onSuccess: (subscription) => {
+        if ((subscription as any).status === 'ACTIVE') {
+          window.location.href = `/plans?payment=success&subscription_id=${subscription.id}`;
+          return;
+        }
+
         const finalPrice = getDiscountedPrice(selectedPlan);
         window.location.href = `/checkout/${subscription.id}?amount=${finalPrice}&plan=${encodeURIComponent(selectedPlan.name)}`;
       },

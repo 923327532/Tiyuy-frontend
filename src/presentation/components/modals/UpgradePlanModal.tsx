@@ -168,6 +168,11 @@ export function UpgradePlanModal({ isOpen, onClose }: UpgradePlanModalProps) {
       discountCode: discountCode || undefined,
     }, {
       onSuccess: (subscription) => {
+        if ((subscription as any).status === 'ACTIVE') {
+          window.location.href = `/plans?payment=success&subscription_id=${subscription.id}`;
+          return;
+        }
+
         openMercadoPagoPayment(plan, subscription.id);
       },
       onError: (error: any) => {

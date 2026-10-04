@@ -19,6 +19,16 @@ export function useDevelopers(filter?: InmobiliariaFilter) {
   });
 }
 
+export function useDeveloperDiscountTargets(search: string) {
+  const normalizedSearch = search.trim();
+
+  return useQuery({
+    queryKey: [DEVELOPERS_QUERY_KEY, 'discount-targets', normalizedSearch],
+    queryFn: () => adminRepository.searchDeveloperDiscountTargets(normalizedSearch),
+    enabled: normalizedSearch.length > 0,
+  });
+}
+
 export function useDeveloperById(id: number) {
   return useQuery({
     queryKey: [DEVELOPERS_QUERY_KEY, 'detail', id],

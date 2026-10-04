@@ -1231,6 +1231,16 @@ export const useUpdateBanner = () => {
   });
 };
 
+export const useToggleBanner = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => adminRepository.toggleBanner(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'marketing', 'banners'] });
+    },
+  });
+};
+
 export const useDeleteBanner = () => {
   const queryClient = useQueryClient();
   return useMutation({

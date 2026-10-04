@@ -21,11 +21,11 @@ import {
   useCreateAgentPlanDiscount,
 } from '@/presentation/hooks/useAdmin';
 import {
-  useDevelopers,
+  useDeveloperDiscountTargets,
   useCreateDeveloperDiscountCode,
   useApplyDirectDiscount,
 } from '@/presentation/hooks/admin/useDevelopers';
-import { AgentListItem, InmobiliariaWithStats, CreateInmobiliariaDiscountRequest, ApplyDirectDiscountRequest } from '@/core/domain/entities/Admin';
+import { AgentListItem, DeveloperDiscountTarget, CreateInmobiliariaDiscountRequest, ApplyDirectDiscountRequest } from '@/core/domain/entities/Admin';
 import { CreateAgentDiscountRequest, AssignDiscountToAgentRequest } from '@/core/domain/entities/AgentDiscount';
 
 // Reutilizar componentes existentes de agentes
@@ -36,7 +36,7 @@ import PlanDiscountModal from '@/app/(dashboard)/admin/agents/discounts/componen
 // Reutilizar componentes existentes de inmobiliarias
 import ApplyDirectDiscountModal from '@/app/(dashboard)/admin/agencies/components/ApplyDirectDiscountModal';
 import CreateAgencyDiscountModal from '@/app/(dashboard)/admin/agencies/components/CreateAgencyDiscountModal';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, X } from 'lucide-react';
 
 // ==================== Types ====================
 
@@ -214,7 +214,7 @@ interface AgentDiscountContentProps {
 const PLANS = [
   { code: 'ENTERPRISE', name: 'Plan Empresarial', price: 'S/399', color: 'bg-teal-600' },
   { code: 'ENTERPRISE_TRIAL', name: 'Prueba Empresarial', price: 'S/299', color: 'bg-teal-500' },
-  { code: 'PREMIUM', name: 'Plan Pro', price: 'S/99', color: 'bg-blue-600' },
+  { code: 'PRO', name: 'Plan Pro', price: 'S/99', color: 'bg-blue-600' },
   { code: 'BASIC', name: 'Plan Basico', price: 'S/29', color: 'bg-orange-500' },
   { code: 'FREE', name: 'Plan Gratis', price: 'S/0', color: 'bg-gray-500' }
 ];
@@ -453,12 +453,13 @@ function AgentDiscountContent({ onClose }: AgentDiscountContentProps) {
 // ==================== Agency Discount Content (sin Modal propio) ====================
 
 interface AgencyDiscountContentProps {
+  isOpen: boolean;
   onClose: () => void;
 }
 
-function AgencyDiscountContent({ onClose }: AgencyDiscountContentProps) {
+function AgencyDiscountContent({ isOpen, onClose }: AgencyDiscountContentProps) {
   const [agencySearchQuery, setAgencySearchQuery] = useState('');
-  const [selectedAgency, setSelectedAgency] = useState<InmobiliariaWithStats | null>(null);
+  const [selectedAgency, setSelectedAgency] = useState<DeveloperDiscountTarget | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [mode, setMode] = useState<'select' | 'create' | 'direct'>('select');
   const [newDiscount, setNewDiscount] = useState({ code: '', discountPercentage: '', startDate: '', endDate: '', usageLimit: '' });
@@ -471,20 +472,15 @@ function AgencyDiscountContent({ onClose }: AgencyDiscountContentProps) {
     expiresAt: '',
   });
 
-  const { data: agenciesData } = useDevelopers();
-  const allAgencies: InmobiliariaWithStats[] = agenciesData?.content || [];
+  const {
+    data: agenciesData,
+    isLoading: isSearchingAgencies,
+    isError: hasAgencySearchError,
+  } = useDeveloperDiscountTargets(agencySearchQuery);
+  const agencies = agenciesData?.content || [];
 
   const createDiscountMutation = useCreateDeveloperDiscountCode();
   const applyDirectMutation = useApplyDirectDiscount();
-
-  const filteredAgencies = useMemo(() => {
-    if (!agencySearchQuery.trim()) return [];
-    const q = agencySearchQuery.toLowerCase();
-    return allAgencies.filter((a: InmobiliariaWithStats) =>
-      (a.name || '').toLowerCase().includes(q) ||
-      (a.ruc || '').toLowerCase().includes(q)
-    ).slice(0, 5);
-  }, [allAgencies, agencySearchQuery]);
 
   const handleCreateDiscount = async () => {
     if (!selectedAgency) return;
@@ -530,93 +526,134 @@ function AgencyDiscountContent({ onClose }: AgencyDiscountContentProps) {
     onClose();
   };
 
-  return (
-    <div className="bg-white rounded-2xl p-0 max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col">
-      {/* Header verde */}
-      <div className="bg-[#00E676] px-5 py-4 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-200 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="text-green-800 font-bold text-lg">I</span>
+  return mode === 'select' ? (
+    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+        <div className="bg-gradient-to-r from-violet-700 via-indigo-700 to-blue-700 px-6 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/15 ring-1 ring-white/25 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-xl">I</span>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Descuento para Inmobiliaria</h3>
+                <p className="text-sm text-white/80">Asigna un descuento a una inmobiliaria</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">Descuento para Inmobiliaria</h3>
-              <p className="text-xs text-green-700">Asigna un descuento a una inmobiliaria</p>
-            </div>
+            <button type="button" onClick={onClose} aria-label="Cerrar" className="p-2 text-white/80 hover:text-white hover:bg-white/15 rounded-xl transition-colors">
+              <X className="w-5 h-5" />
+            </button>
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-green-300 rounded-lg transition-colors text-gray-600">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
         </div>
-      </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {mode === 'select' && (
-          <div className="space-y-3">
+        <div className="p-6 space-y-4">
+          <div>
+            <label htmlFor="agency-discount-search" className="block text-sm font-semibold text-gray-700 mb-2">
+              Buscar inmobiliaria
+            </label>
             <div className="relative">
               <input
-                placeholder="Buscar inmobiliaria por nombre o RUC..."
+                id="agency-discount-search"
+                placeholder="Nombre, representante, RUC o correo..."
                 value={agencySearchQuery}
-                onChange={(e) => { setAgencySearchQuery(e.target.value); setShowDropdown(true); }}
+                onChange={(e) => {
+                  setAgencySearchQuery(e.target.value);
+                  setSelectedAgency(null);
+                  setShowDropdown(true);
+                }}
                 onFocus={() => setShowDropdown(true)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-colors"
               />
-              {showDropdown && filteredAgencies.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                  {filteredAgencies.map((agency: InmobiliariaWithStats) => (
+              {showDropdown && agencySearchQuery.trim() && (
+                <div className="mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-56 overflow-y-auto">
+                  {isSearchingAgencies && (
+                    <p className="px-4 py-3 text-sm text-gray-500">Buscando inmobiliarias...</p>
+                  )}
+                  {!isSearchingAgencies && hasAgencySearchError && (
+                    <p className="px-4 py-3 text-sm text-red-600">No se pudo cargar la búsqueda. Intenta nuevamente.</p>
+                  )}
+                  {!isSearchingAgencies && !hasAgencySearchError && agencies.length === 0 && (
+                    <p className="px-4 py-3 text-sm text-gray-500">No se encontraron inmobiliarias con esos datos.</p>
+                  )}
+                  {!isSearchingAgencies && !hasAgencySearchError && agencies.map((agency) => (
                     <button
                       key={agency.id}
-                      onClick={() => { setSelectedAgency(agency); setShowDropdown(false); setAgencySearchQuery(`${agency.name} (${agency.ruc})`); }}
-                      className="w-full px-3 py-2.5 text-left hover:bg-gray-50 border-b border-gray-100 last:border-0 text-sm"
+                      type="button"
+                      onClick={() => {
+                        const target: DeveloperDiscountTarget = {
+                          id: agency.id,
+                          name: agency.companyName || agency.managerName || agency.email,
+                          ruc: agency.ruc,
+                          email: agency.email,
+                          managerName: agency.managerName,
+                        };
+                        setSelectedAgency(target);
+                        setShowDropdown(false);
+                        setAgencySearchQuery(target.name);
+                      }}
+                      className="w-full px-4 py-3 text-left hover:bg-violet-50 border-b border-gray-100 last:border-0 transition-colors"
                     >
-                      <div className="font-medium text-gray-900">{agency.name}</div>
-                      <div className="text-xs text-gray-500">RUC: {agency.ruc}</div>
+                      <div className="font-semibold text-gray-900 text-sm">{agency.companyName || agency.email}</div>
+                      {agency.managerName && <div className="text-xs text-gray-600 mt-0.5">Representante: {agency.managerName}</div>}
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        {[agency.ruc && `RUC: ${agency.ruc}`, agency.email].filter(Boolean).join(' · ')}
+                      </div>
                     </button>
                   ))}
                 </div>
               )}
             </div>
-
-            {selectedAgency && (
-              <div className="bg-violet-50 border border-violet-200 rounded-lg p-3">
-                <p className="text-xs font-medium text-violet-800">Inmobiliaria seleccionada:</p>
-                <p className="text-sm text-violet-700">{selectedAgency.name} (RUC: {selectedAgency.ruc})</p>
-              </div>
-            )}
-
-            {selectedAgency && (
-              <div className="flex flex-col gap-2">
-                <button onClick={() => setMode('create')} className="w-full py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-lg text-sm font-medium shadow-lg shadow-teal-500/30">Crear Código de Descuento</button>
-                <button onClick={() => setMode('direct')} className="w-full py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">Aplicar Descuento Directo</button>
-              </div>
+            {!showDropdown && !agencySearchQuery.trim() && (
+              <p className="mt-2 text-xs text-gray-500">Escribe al menos un dato para buscar.</p>
             )}
           </div>
-        )}
 
-        {mode === 'create' && selectedAgency && (
-          <CreateAgencyDiscountModal
-            isOpen={true}
-            onClose={() => setMode('select')}
-            selectedAgency={selectedAgency}
-            newDiscount={newDiscount}
-            setNewDiscount={setNewDiscount}
-            onCreate={handleCreateDiscount}
-            isPending={createDiscountMutation.isPending}
-          />
-        )}
+          {selectedAgency && (
+            <div className="bg-violet-50 border border-violet-100 rounded-xl p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">Inmobiliaria seleccionada</p>
+              <p className="text-sm font-semibold text-gray-900 mt-1">{selectedAgency.name}</p>
+              <p className="text-xs text-gray-600 mt-0.5">RUC: {selectedAgency.ruc}</p>
+            </div>
+          )}
 
-        {mode === 'direct' && selectedAgency && (
-          <ApplyDirectDiscountModal
-            isOpen={true}
-            onClose={() => setMode('select')}
-            selectedAgency={selectedAgency}
-            directDiscount={directDiscount}
-            setDirectDiscount={setDirectDiscount}
-            onApply={handleApplyDirectDiscount}
-            isPending={applyDirectMutation.isPending}
-          />
-        )}
+          {selectedAgency && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <button onClick={() => setMode('create')} className="w-full py-3 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-sm font-semibold shadow-md shadow-violet-600/20 transition-all">
+                Crear código
+              </button>
+              <button onClick={() => setMode('direct')} className="w-full py-3 px-4 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors text-sm font-semibold">
+                Aplicar descuento directo
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </Modal>
+  ) : (
+    <>
+      {mode === 'create' && selectedAgency && (
+        <CreateAgencyDiscountModal
+          isOpen={isOpen}
+          onClose={() => setMode('select')}
+          selectedAgency={selectedAgency}
+          newDiscount={newDiscount}
+          setNewDiscount={setNewDiscount}
+          onCreate={handleCreateDiscount}
+          isPending={createDiscountMutation.isPending}
+        />
+      )}
+
+      {mode === 'direct' && selectedAgency && (
+        <ApplyDirectDiscountModal
+          isOpen={isOpen}
+          onClose={() => setMode('select')}
+          selectedAgency={selectedAgency}
+          directDiscount={directDiscount}
+          setDirectDiscount={setDirectDiscount}
+          onApply={handleApplyDirectDiscount}
+          isPending={applyDirectMutation.isPending}
+        />
+      )}
+    </>
   );
 }
 
@@ -888,9 +925,9 @@ export default function UniversalDiscountApplier({ onDiscountApplied }: Universa
         <AgentDiscountContent onClose={handleClose} />
       </Modal>
 
-      <Modal isOpen={isAgencyModalOpen} onClose={handleClose}>
-        <AgencyDiscountContent onClose={handleClose} />
-      </Modal>
+      {isAgencyModalOpen && (
+        <AgencyDiscountContent isOpen={isAgencyModalOpen} onClose={handleClose} />
+      )}
 
       <ReusableDiscountModal
         isOpen={activeModal === 'REUSABLE'}

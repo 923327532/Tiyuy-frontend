@@ -176,14 +176,14 @@ export class FinanceRepository implements IFinanceRepository {
     
     const response = await apiClient.post<ActiveSubscriptionDTO>(ENDPOINTS.FINANCE.SUBSCRIPTIONS.SUBSCRIBE, body);
 
-    const data = response.data;
+    const data = response.data as any;
     return {
       id: data.id,
       plan: data.plan,
-      status: data.status as any,
-      startsAt: new Date(data.startsAt),
-      expiresAt: new Date(data.expiresAt),
-      remainingPublications: data.remainingPublications,
+      status: (data.status || (data.isActive ? 'ACTIVE' : 'PENDING')) as any,
+      startsAt: new Date(data.startsAt || data.startDate),
+      expiresAt: new Date(data.expiresAt || data.endDate),
+      remainingPublications: data.remainingPublications ?? ((data.publicationsLimit ?? 0) - (data.publicationsUsed ?? 0)),
     };
   }
 

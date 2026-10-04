@@ -315,7 +315,7 @@ export default function AgentDiscountsPage() {
             {[
               { code: 'ENTERPRISE', name: 'Plan Empresarial', price: 'S/399', color: 'bg-teal-600' },
               { code: 'ENTERPRISE_TRIAL', name: 'Prueba Empresarial', price: 'S/299', color: 'bg-teal-500' },
-              { code: 'PREMIUM', name: 'Plan Pro', price: 'S/99', color: 'bg-blue-600' },
+              { code: 'PRO', name: 'Plan Pro', price: 'S/99', color: 'bg-blue-600' },
               { code: 'BASIC', name: 'Plan Basico', price: 'S/29', color: 'bg-orange-500' },
               { code: 'FREE', name: 'Plan Gratis', price: 'S/0', color: 'bg-gray-500' }
             ].map((plan) => (

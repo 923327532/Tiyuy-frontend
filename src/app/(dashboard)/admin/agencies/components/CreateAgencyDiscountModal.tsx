@@ -1,6 +1,6 @@
 import { Button } from '@/presentation/components/ui/Button';
 import { Modal } from '@/presentation/components/ui/Modal';
-import { InmobiliariaWithStats } from '@/core/domain/entities/Admin';
+import { DeveloperDiscountTarget } from '@/core/domain/entities/Admin';
 import { X } from 'lucide-react';
 
 interface NewDiscount {
@@ -14,7 +14,7 @@ interface NewDiscount {
 interface CreateAgencyDiscountModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedAgency: InmobiliariaWithStats | null;
+  selectedAgency: DeveloperDiscountTarget | null;
   newDiscount: NewDiscount;
   setNewDiscount: (discount: NewDiscount) => void;
   onCreate: () => void;
@@ -31,23 +31,22 @@ export default function CreateAgencyDiscountModal({
   isPending
 }: CreateAgencyDiscountModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <div className="bg-white rounded-2xl p-0 max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col">
-        {/* Header verde */}
-        <div className="bg-[#00E676] px-5 py-4 flex-shrink-0">
+        <div className="bg-gradient-to-r from-violet-700 via-indigo-700 to-blue-700 px-5 py-4 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-200 rounded-xl flex items-center justify-center flex-shrink-0">
-                <span className="text-green-800 font-bold text-lg">C</span>
+              <div className="w-10 h-10 bg-white/15 ring-1 ring-white/25 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-lg">C</span>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-800">Crear Código de Descuento</h3>
-                <p className="text-xs text-green-700">
+                <h3 className="text-lg font-bold text-white">Crear Código de Descuento</h3>
+                <p className="text-xs text-white/80">
                   Para: {selectedAgency?.name} (RUC: {selectedAgency?.ruc})
                 </p>
               </div>
             </div>
-            <button onClick={onClose} className="p-1.5 hover:bg-green-300 rounded-lg transition-colors text-gray-600">
+            <button onClick={onClose} className="p-1.5 hover:bg-white/15 rounded-lg transition-colors text-white/80 hover:text-white">
               <X className="w-5 h-5" />
             </button>
           </div>

@@ -154,6 +154,7 @@ export interface IAdminRepository {
   getBanners(params?: { page?: number; size?: number; location?: string }): Promise<import('@/core/domain/entities/Admin').Banner[]>;
   createBanner(request: import('@/core/domain/entities/Admin').CreateBannerRequest): Promise<import('@/core/domain/entities/Admin').Banner>;
   updateBanner(id: number, request: Partial<import('@/core/domain/entities/Admin').CreateBannerRequest>): Promise<import('@/core/domain/entities/Admin').Banner>;
+  toggleBanner(id: number): Promise<void>;
   deleteBanner(id: number): Promise<void>;
   getFestiveCampaigns(params?: { page?: number; size?: number }): Promise<import('@/core/domain/entities/Admin').FestiveCampaign[]>;
   createFestiveCampaign(request: import('@/core/domain/entities/Admin').CreateFestiveCampaignRequest): Promise<import('@/core/domain/entities/Admin').FestiveCampaign>;

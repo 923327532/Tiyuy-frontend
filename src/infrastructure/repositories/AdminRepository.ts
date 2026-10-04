@@ -889,6 +889,16 @@ export class AdminRepository implements IAdminRepository {
     return response.data;
   }
 
+  async searchDeveloperDiscountTargets(search: string): Promise<PaginatedResponse<DeveloperResponse>> {
+    const searchParams = new URLSearchParams({
+      search,
+      page: '0',
+      size: '10',
+    });
+    const response = await axiosClient.get(`${this.basePath}/developers?${searchParams.toString()}`);
+    return response.data;
+  }
+
   async getDeveloperById(id: number): Promise<InmobiliariaWithStats> {
     const response = await axiosClient.get(`${this.basePath}/developers/${id}`);
     return response.data;
@@ -1241,6 +1251,10 @@ export class AdminRepository implements IAdminRepository {
     return response.data;
   }
 
+  async toggleBanner(id: number): Promise<void> {
+    await axiosClient.post(`/v1/admin/marketing/banners/${id}/toggle`);
+  }
+
   async deleteBanner(id: number): Promise<void> {
     await axiosClient.delete(`/v1/admin/marketing/banners/${id}`);
   }
@@ -1306,5 +1320,3 @@ export class AdminRepository implements IAdminRepository {
 
 // Export singleton instance
 export const adminRepository = new AdminRepository();
-
-
