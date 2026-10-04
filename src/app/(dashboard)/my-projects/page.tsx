@@ -20,6 +20,7 @@ export default function MyProjectsPage() {
   const [activeTab, setActiveTab] = useState<'ALL' | 'DRAFT' | 'PUBLISHED' | 'PAUSED' | 'COMPLETED'>('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [showPlanExpiredModal, setShowPlanExpiredModal] = useState(false);
+  const [planExpiredMessage, setPlanExpiredMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const pageSize = 12;
 
@@ -49,8 +50,9 @@ export default function MyProjectsPage() {
 
 
   // Function to publish project
-  const handlePublish = async (projectId: number) => {
-    if (!canPublish) {
+  const handlePublish = async (projectId: number, status: string) => {
+    if (status === 'DRAFT' && !canPublish) {
+      setPlanExpiredMessage('Has alcanzado el límite de publicaciones de tu plan actual. Revisa los planes disponibles para publicar este proyecto.');
       setShowPlanExpiredModal(true);
       return;
     }
@@ -58,6 +60,13 @@ export default function MyProjectsPage() {
       await publishMutation.mutateAsync(projectId);
       toast.success('Proyecto publicado exitosamente!');
     } catch (error: any) {
+      if (error.message?.includes('suscripción activa')) {
+        setPlanExpiredMessage(status === 'PAUSED'
+          ? 'Para reactivar este proyecto necesitas una suscripción ENTERPRISE. Revisa los planes disponibles para continuar.'
+          : 'No tienes una suscripción activa para publicar este proyecto. Revisa los planes disponibles para continuar.');
+        setShowPlanExpiredModal(true);
+        return;
+      }
       toast.error(error.message || 'Error al publicar proyecto');
     }
   };
@@ -398,7 +407,7 @@ export default function MyProjectsPage() {
                         )}
                         {project.status === 'DRAFT' && (
                           <button
-                            onClick={() => handlePublish(project.id)}
+                            onClick={() => handlePublish(project.id, project.status)}
                             disabled={publishMutation.isPending}
                             className="flex-1 text-center px-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
                           >
@@ -407,7 +416,7 @@ export default function MyProjectsPage() {
                         )}
                         {project.status === 'PAUSED' && (
                           <button
-                            onClick={() => handlePublish(project.id)}
+                            onClick={() => handlePublish(project.id, project.status)}
                             disabled={publishMutation.isPending}
                             className="flex-1 text-center px-2 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
                           >
@@ -501,11 +510,10 @@ export default function MyProjectsPage() {
       <PlanExpiredModal 
         isOpen={showPlanExpiredModal}
         onClose={() => setShowPlanExpiredModal(false)}
+        message={planExpiredMessage}
       />
       <Footer />
     </ProtectedRoute>
     
   );
 }
-
-

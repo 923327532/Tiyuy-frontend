@@ -31,7 +31,7 @@ export function PlanExpiredModal({ isOpen, onClose, message }: PlanExpiredModalP
             {message || 'Has alcanzado el límite de publicaciones de tu plan actual.'}
           </p>
           <p className="text-gray-400 text-xs mb-6">
-            Tu publicación se guardó como borrador. Para publicarla, actualiza tu plan.
+            El proyecto no se modificará. Puedes revisar los planes disponibles para continuar.
           </p>
 
           <div className="space-y-3">

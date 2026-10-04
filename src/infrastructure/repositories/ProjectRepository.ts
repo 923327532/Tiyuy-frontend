@@ -254,8 +254,16 @@ export class ProjectRepository implements IProjectRepository {
    * Publicar proyecto (DRAFT → PUBLISHED)
    */
   async publishProject(projectId: number): Promise<Project> {
-    const response = await apiClient.patch(`/projects/${projectId}/publish`);
-    return response.data;
+    try {
+      const response = await apiClient.patch(`/projects/${projectId}/publish`);
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.status === 402) {
+        throw new Error('No tienes una suscripción activa que permita realizar esta acción.');
+      }
+
+      throw error;
+    }
   }
 
   /**
