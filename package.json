@@ -21,6 +21,7 @@
     "date-fns": "^4.1.0",
     "emoji-picker-react": "^4.19.1",
     "firebase": "^12.12.1",
+    "framer-motion": "^14.11.1",
     "jspdf": "^4.2.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",

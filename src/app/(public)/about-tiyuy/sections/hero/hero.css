@@ -1,0 +1,112 @@
+@keyframes heroSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+@keyframes heroFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-zoom-out {
+  from {
+    transform: scale(1.14);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-veil {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.hero-line {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+  animation: heroSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--line-index, var(--hero-line-index, 0)) * 120ms + 400ms);
+}
+
+.hero-fade {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: heroFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-zoom {
+  animation: hero-zoom-out 2400ms cubic-bezier(0.2, 0.7, 0.1, 1) both;
+}
+
+.hero-veil {
+  animation: hero-veil 1400ms ease-out 100ms both;
+}
+
+.hero-delay-200 { animation-delay: 200ms; }
+.hero-delay-280 { animation-delay: 280ms; }
+.hero-delay-700 { animation-delay: 700ms; }
+.hero-delay-900 { animation-delay: 900ms; }
+.hero-delay-1000 { animation-delay: 1000ms; }
+.hero-delay-1100 { animation-delay: 1100ms; }
+.hero-delay-1200 { animation-delay: 1200ms; }
+.hero-delay-\[1400\] { animation-delay: 1400ms; }
+
+.hero-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.hero-link {
+  background: linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat;
+  transition:
+    background-size 400ms cubic-bezier(0.2, 0.7, 0.1, 1),
+    color 200ms;
+}
+
+.hero-link:hover,
+.hero-link:focus-visible {
+  background-size: 100% 1px;
+}
+
+.about-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+h1, h2, h3, p, a, button, span {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-line,
+  .hero-fade,
+  .hero-zoom,
+  .hero-veil {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-veil {
+    opacity: 0;
+  }
+}

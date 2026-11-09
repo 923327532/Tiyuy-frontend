@@ -1,0 +1,115 @@
+.about-tiyuy {
+  --about-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --about-duration: 800ms;
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark .about-tiyuy {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.about-tiyuy ::selection {
+  background: var(--brand-primary-hover);
+  color: #ffffff;
+}
+
+.about-tiyuy section[id] {
+  scroll-margin-top: 5rem;
+}
+
+.about-reveal {
+  --about-tx: 0px;
+  --about-ty: var(--about-distance, 24px);
+  opacity: 0;
+  transform: translate3d(var(--about-tx), var(--about-ty), 0);
+  transition:
+    opacity var(--about-duration, 800ms) var(--about-ease) var(--about-delay, 0ms),
+    transform var(--about-duration, 800ms) var(--about-ease) var(--about-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.about-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+.about-reveal--down {
+  --about-ty: calc(var(--about-distance, 24px) * -1);
+}
+
+.about-reveal--left {
+  --about-tx: var(--about-distance, 24px);
+  --about-ty: 0px;
+}
+
+.about-reveal--right {
+  --about-tx: calc(var(--about-distance, 24px) * -1);
+  --about-ty: 0px;
+}
+
+.about-reveal--none {
+  opacity: 1;
+  transform: none;
+}
+
+.about-parallax {
+  transform: translate3d(0, var(--about-parallax, 0px), 0) scale(1.1);
+  will-change: transform;
+}
+
+.about-parallax img {
+  object-position: var(--about-object-position, center);
+}
+
+@media (max-width: 767px) {
+  .about-parallax {
+    transform: none;
+  }
+}
+
+.about-timeline-fill {
+  transform: scaleY(var(--about-progress, 0));
+  transform-origin: top;
+  transition: transform 120ms linear;
+}
+
+.about-reading-progress__bar {
+  transform: scaleX(var(--about-reading-progress, 0));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .about-parallax {
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .about-timeline-fill {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .about-tiyuy * {
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (scripting: none) {
+  .about-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
