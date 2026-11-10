@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import {
   ArrowRight,
-  CheckCircle,
   FolderGit,
   Home,
   MapPin,
@@ -19,16 +18,15 @@ export default function AgencyCard({ agency }: Props) {
   return (
     <Link
       href={`/agencies/${agency.slug}`}
-      className="group flex flex-col rounded-2xl border-2 border-[var(--border-color)] bg-[var(--bg-card)] p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:shadow-[0_12px_40px_rgba(74,154,62,0.12)]"
+      className="group relative flex min-h-[286px] flex-col overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 transition-colors duration-200 hover:border-[var(--brand-primary)] hover:bg-[var(--bg-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 sm:p-6 motion-reduce:transition-none"
     >
-      {/* Cabecera de la tarjeta */}
-      <div className="mb-4 flex items-start gap-4">
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] text-xl font-bold text-[var(--text-primary)]">
+      <div className="flex items-start gap-4">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-xl font-semibold text-[var(--brand-primary-hover)]">
           {agency.logoUrl ? (
             <img
               src={agency.logoUrl}
-              alt={`Logo de ${agency.name}`}
-              className="h-full w-full object-cover"
+              alt={`Logo de ${agency.name || 'la agencia'}`}
+              className="h-full w-full object-contain p-2"
               loading="lazy"
             />
           ) : (
@@ -36,76 +34,58 @@ export default function AgencyCard({ agency }: Props) {
           )}
         </div>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <h3 className="truncate text-[15px] font-semibold leading-tight text-[var(--text-primary)] transition-colors group-hover:text-[var(--brand-primary)]">
-              {agency.name}
-            </h3>
-            <CheckCircle
-              aria-hidden="true"
-              className="h-4 w-4 shrink-0 text-[var(--brand-primary)]"
-            />
-          </div>
+        <div className="min-w-0 flex-1 pt-0.5">
+          <h2 className="line-clamp-2 text-[17px] font-semibold leading-snug tracking-[-0.02em] text-[var(--text-primary)] transition-colors group-hover:text-[var(--brand-primary-hover)]">
+            {agency.name || 'Nombre no disponible'}
+          </h2>
 
-          {agency.city && (
-            <p className="mt-0.5 flex items-center gap-1 text-sm text-[var(--text-secondary)]">
-              <MapPin aria-hidden="true" className="h-3.5 w-3.5" />
-              {agency.city}
-            </p>
-          )}
+          <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-[var(--text-secondary)]">
+            <MapPin aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-[var(--brand-primary)]" />
+            {agency.city || 'Ubicación no disponible'}
+          </p>
         </div>
       </div>
 
-      {/* Descripción corta */}
       {agency.shortDescription ? (
-        <p className="mb-5 line-clamp-2 flex-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+        <p className="mt-5 line-clamp-2 min-h-12 flex-1 text-[13px] leading-6 text-[var(--text-secondary)]">
           {agency.shortDescription}
         </p>
       ) : (
-        <div className="flex-1" />
+        <p className="mt-5 min-h-12 flex-1 text-[13px] italic leading-6 text-[var(--text-tertiary)]">
+          Información institucional no disponible.
+        </p>
       )}
 
-      {/* Métricas y pie */}
-      <div className="flex flex-wrap items-center gap-4 border-t border-[var(--border-color)] pt-4 text-sm text-[var(--text-secondary)]">
-        {agency.activeProjectsCount > 0 && (
-          <span className="flex items-center gap-1.5">
-            <FolderGit
-              aria-hidden="true"
-              className="h-4 w-4 text-[var(--brand-primary)]/60"
-            />
-            <span className="font-medium text-[var(--text-primary)]">
-              {agency.activeProjectsCount}
-            </span>{' '}
-            proy.
-          </span>
-        )}
-
-        {agency.activePropertiesCount > 0 && (
-          <span className="flex items-center gap-1.5">
-            <Home
-              aria-hidden="true"
-              className="h-4 w-4 text-[var(--brand-primary)]/60"
-            />
-            <span className="font-medium text-[var(--text-primary)]">
-              {agency.activePropertiesCount}
-            </span>{' '}
-            prop.
-          </span>
-        )}
-
-        <span className="flex items-center gap-1.5">
-          <Users
-            aria-hidden="true"
-            className="h-4 w-4 text-[var(--brand-primary)]/60"
-          />
-          <span className="font-medium text-[var(--text-primary)]">
+      <div className="grid grid-cols-3 border-y border-[var(--border-color)] py-3.5">
+        <div className="pr-2">
+          <p className="flex items-center gap-1.5 text-base font-semibold tabular-nums text-[var(--text-primary)]">
+            <Users aria-hidden="true" className="h-3.5 w-3.5 text-[var(--brand-primary)]" />
             {agency.agentsCount}
-          </span>
-        </span>
+          </p>
+          <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--text-tertiary)]">Agentes</p>
+        </div>
+        <div className="border-l border-[var(--border-color)] px-2">
+          <p className="flex items-center gap-1.5 text-base font-semibold tabular-nums text-[var(--text-primary)]">
+            <FolderGit aria-hidden="true" className="h-3.5 w-3.5 text-[var(--brand-primary)]" />
+            {agency.activeProjectsCount}
+          </p>
+          <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--text-tertiary)]">Proyectos</p>
+        </div>
+        <div className="border-l border-[var(--border-color)] pl-2">
+          <p className="flex items-center gap-1 text-base font-semibold tabular-nums text-[var(--text-primary)]">
+            <Home aria-hidden="true" className="h-3.5 w-3.5 text-[var(--brand-primary)]" />
+            {agency.activePropertiesCount}
+          </p>
+          <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.1em] text-[var(--text-tertiary)]">Inmuebles</p>
+        </div>
+      </div>
 
-        <span className="ml-auto flex items-center gap-1 text-xs font-medium text-[var(--brand-primary)] opacity-0 transition-opacity group-hover:opacity-100">
-          Ver <ArrowRight aria-hidden="true" className="h-3 w-3" />
-        </span>
+      <div className="mt-4 flex items-center justify-between border-t border-[var(--border-light)] pt-4 text-xs font-semibold text-[var(--brand-primary-hover)]">
+        <span>Ver perfil de agencia</span>
+        <ArrowRight
+          aria-hidden="true"
+          className="h-4 w-4 transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+        />
       </div>
     </Link>
   );

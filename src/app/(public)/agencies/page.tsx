@@ -9,8 +9,8 @@ import { LoadingState, EmptyState, ErrorState } from './_components/AgenciesStat
 
 export default function AgenciesPage() {
   const {
-    draft, setDraft, filters, data, loading, error, hasFilters,
-    submitSearch, setCity, setPage, clearFilters, retry,
+    draft, setDraft, cityDraft, setCityDraft, filters, data, loading, error, hasFilters,
+    submitSearch, setPage, clearFilters, retry,
   } = useAgencies();
 
   const total = data?.totalElements ?? 0;
@@ -19,16 +19,47 @@ export default function AgenciesPage() {
     <div className="min-h-screen bg-[var(--bg-secondary)]">
       <AgenciesHero />
 
-      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4 -mt-14 relative z-20">
+      <main id="directorio" className="mx-auto max-w-[1440px] scroll-mt-6 px-5 pb-16 pt-8 sm:px-8 sm:pt-10 lg:px-12">
         <AgenciesFilters
           draft={draft}
           onDraftChange={setDraft}
+          cityDraft={cityDraft}
+          onCityDraftChange={setCityDraft}
           onSubmit={submitSearch}
-          city={filters.city}
-          onCityChange={setCity}
+          loading={loading}
         />
 
-        <div className="mt-12 lg:mt-16">
+        <section aria-labelledby="agency-results-title" className="mt-12 sm:mt-16">
+          <div className="mb-6 flex flex-col gap-3 border-b border-[var(--border-color)] pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-hover)]">
+                Selección TIYUY
+              </p>
+              <h2 id="agency-results-title" className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-[var(--text-primary)] sm:text-3xl">
+                Agencias inmobiliarias
+              </h2>
+            </div>
+            {data && (
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)]" aria-live="polite">
+                  <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-[var(--brand-primary-light)] px-2 text-xs font-bold tabular-nums text-[var(--brand-primary-hover)]">
+                    {total}
+                  </span>
+                  {total === 1 ? 'agencia encontrada' : 'agencias encontradas'}
+                </p>
+                {hasFilters && (
+                  <button
+                    type="button"
+                    onClick={clearFilters}
+                    className="min-h-9 rounded-lg px-2 text-xs font-semibold text-[var(--brand-primary-hover)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]"
+                  >
+                    Limpiar filtros
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
           {error ? (
             <ErrorState onRetry={retry} />
           ) : !data && loading ? (
@@ -36,18 +67,15 @@ export default function AgenciesPage() {
           ) : !data || data.content.length === 0 ? (
             <EmptyState hasFilters={hasFilters} onClear={clearFilters} />
           ) : (
-            <div className={loading ? 'opacity-50 pointer-events-none transition-opacity' : 'transition-opacity'}>
-              <p className="text-sm text-[var(--text-secondary)] mb-8">
-                {total} {total === 1 ? 'inmobiliaria encontrada' : 'inmobiliarias encontradas'}
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div aria-busy={loading} className={loading ? 'pointer-events-none opacity-60 transition-opacity' : 'transition-opacity'}>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
                 {data.content.map((a) => <AgencyCard key={a.id} agency={a} />)}
               </div>
               <AgenciesPagination page={filters.page} totalPages={data.totalPages} onChange={setPage} />
             </div>
           )}
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 }

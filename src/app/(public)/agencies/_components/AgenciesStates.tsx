@@ -15,24 +15,29 @@ export function LoadingState() {
       role="status"
       aria-live="polite"
       aria-label="Cargando inmobiliarias"
-      className="flex min-h-[320px] flex-col items-center justify-center py-20"
+      className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5"
     >
-      <div className="relative flex h-14 w-14 items-center justify-center">
-        <div className="absolute inset-0 rounded-full border-[3px] border-[var(--brand-primary)]/15" />
-        <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-transparent border-t-[var(--brand-primary)]" />
-        <Building2
+      {Array.from({ length: 6 }, (_, index) => (
+        <div
+          key={index}
           aria-hidden="true"
-          className="h-6 w-6 text-[var(--brand-primary)]"
-        />
-      </div>
-
-      <p className="mt-5 text-sm font-semibold text-[var(--text-primary)]">
-        Cargando directorio
-      </p>
-      <p className="mt-1 text-sm text-[var(--text-tertiary)]">
-        Estamos preparando las inmobiliarias disponibles.
-      </p>
-      <span className="sr-only">Por favor, espera.</span>
+          className="min-h-[260px] rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5 sm:p-6"
+        >
+          <div className="flex items-start gap-4">
+            <div className="h-14 w-14 shrink-0 animate-pulse rounded-xl bg-[var(--bg-tertiary)] motion-reduce:animate-none" />
+            <div className="flex-1 space-y-3 pt-1">
+              <div className="h-4 w-3/4 animate-pulse rounded bg-[var(--bg-tertiary)] motion-reduce:animate-none" />
+              <div className="h-3 w-1/3 animate-pulse rounded bg-[var(--bg-tertiary)] motion-reduce:animate-none" />
+            </div>
+          </div>
+          <div className="mt-6 h-9 animate-pulse rounded bg-[var(--bg-tertiary)] motion-reduce:animate-none" />
+          <div className="mt-3 h-3 w-4/5 animate-pulse rounded bg-[var(--bg-tertiary)] motion-reduce:animate-none" />
+          <div className="mt-7 border-t border-[var(--border-light)] pt-4">
+            <div className="h-8 animate-pulse rounded bg-[var(--bg-tertiary)] motion-reduce:animate-none" />
+          </div>
+          <span className="sr-only">Cargando directorio de agencias.</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -41,39 +46,39 @@ export function EmptyState({ hasFilters, onClear }: EmptyStateProps) {
   return (
     <div
       role="status"
-      className="flex min-h-[340px] flex-col items-center justify-center rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-16 text-center"
+      className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-14 text-center"
     >
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--bg-secondary)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--brand-primary-light)]">
         {hasFilters ? (
           <SearchX
             aria-hidden="true"
-            className="h-8 w-8 text-[var(--text-tertiary)]"
+            className="h-6 w-6 text-[var(--brand-primary-hover)]"
           />
         ) : (
           <Building2
             aria-hidden="true"
-            className="h-8 w-8 text-[var(--text-tertiary)]"
+            className="h-6 w-6 text-[var(--brand-primary-hover)]"
           />
         )}
       </div>
 
-      <h3 className="mt-6 text-lg font-semibold tracking-tight text-[var(--text-primary)]">
+      <h3 className="mt-5 text-lg font-semibold tracking-tight text-[var(--text-primary)]">
         {hasFilters
           ? 'No encontramos resultados'
-          : 'Directorio en preparación'}
+          : 'Aún no hay agencias en el directorio'}
       </h3>
 
       <p className="mt-2 max-w-md text-sm leading-6 text-[var(--text-secondary)]">
         {hasFilters
-          ? 'No encontramos inmobiliarias que coincidan con los criterios de búsqueda. Prueba con otro nombre o selecciona una ciudad diferente.'
-          : 'En este momento no hay inmobiliarias registradas para mostrar. Vuelve a consultar más adelante.'}
+          ? 'No hay agencias que coincidan con estos criterios. Revisa el nombre o la ciudad y vuelve a intentarlo.'
+          : 'No hay agencias registradas disponibles para mostrar en este momento.'}
       </p>
 
       {hasFilters && (
         <button
           type="button"
           onClick={onClear}
-          className="mt-6 inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--brand-primary)] px-5 py-2.5 text-sm font-semibold text-[var(--brand-primary)] transition-colors duration-200 hover:bg-[var(--brand-primary)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
+          className="mt-6 inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--border-color)] px-5 py-2.5 text-sm font-semibold text-[var(--brand-primary-hover)] transition-colors hover:bg-[var(--brand-primary-light)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
         >
           Limpiar filtros
         </button>
@@ -86,16 +91,16 @@ export function ErrorState({ onRetry }: ErrorStateProps) {
   return (
     <div
       role="alert"
-      className="flex min-h-[340px] flex-col items-center justify-center rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-16 text-center"
+      className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-14 text-center"
     >
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/30">
+      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--bg-tertiary)]">
         <AlertCircle
           aria-hidden="true"
-          className="h-8 w-8 text-red-600 dark:text-red-400"
+          className="h-6 w-6 text-[var(--text-secondary)]"
         />
       </div>
 
-      <h3 className="mt-6 text-lg font-semibold tracking-tight text-[var(--text-primary)]">
+      <h3 className="mt-5 text-lg font-semibold tracking-tight text-[var(--text-primary)]">
         No pudimos cargar el directorio
       </h3>
 
@@ -106,7 +111,7 @@ export function ErrorState({ onRetry }: ErrorStateProps) {
       <button
         type="button"
         onClick={onRetry}
-        className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary)] px-6 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(74,154,62,0.16)] transition-all duration-200 hover:bg-[var(--brand-primary-hover)] hover:shadow-[0_6px_16px_rgba(74,154,62,0.22)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
+        className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary-hover)] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
       >
         Reintentar
       </button>
