@@ -1,4 +1,3 @@
-
 import {
   ShieldCheck,
   Zap,
@@ -8,14 +7,14 @@ import {
 
 export const HERO_CONFIG = {
   image:
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop',
-  alt: 'Arquitectura residencial contemporánea con iluminación cálida al atardecer',
-  parallaxSpeed: 0.08,
+    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=85&w=2400&auto=format&fit=crop',
+  alt: 'Vivienda contemporánea con arquitectura moderna y luz natural al atardecer',
+  parallaxSpeed: 0.06,
 } as const;
 
 export const HERO_COPY = {
-  chip: 'Sobre TIYUY',
-  location: 'Tecnología inmobiliaria · Perú',
+  chip: 'DOSSIER / 01',
+  location: 'PERÚ · TECNOLOGÍA INMOBILIARIA',
   lines: [
     'Transformamos el',
     'mercado inmobiliario',
@@ -65,9 +64,16 @@ export const HERO_HIGHLIGHTS: readonly HeroHighlight[] = [
 ] as const;
 
 export const HERO_INDEX = [
-  { code: 'A-01', label: 'ADN', href: '#adn' },
-  { code: 'D-02', label: 'Diagnóstico', href: '#diagnostico' },
-  { code: 'O-03', label: 'Origen', href: '#origen' },
-  { code: 'A-04', label: 'Alcance', href: '#alcance' },
-  { code: 'C-05', label: 'Compromiso', href: '#compromiso' },
+  { code: 'A-01', label: 'Manifiesto', href: '#hero' },
+  { code: 'A-02', label: 'ADN', href: '#adn' },
+  { code: 'A-03', label: 'Diagnóstico', href: '#diagnostico' },
+  { code: 'A-04', label: 'Origen', href: '#origen' },
+  { code: 'A-05', label: 'Alcance', href: '#alcance' },
+  { code: 'A-06', label: 'Compromiso', href: '#compromiso' },
+] as const;
+
+export const HERO_STATS = [
+  { value: 'Perú', label: 'Nuestro mercado de origen' },
+  { value: '3', label: 'Perfiles que conectamos' },
+  { value: '1', label: 'Plataforma inmobiliaria' },
 ] as const;

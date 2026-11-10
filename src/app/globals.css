@@ -1,68 +1,114 @@
+@import "../presentation/features/property-map/styles/map.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* @import "../presentation/features/property-map/styles/map.css"; */
 
 :root {
+  color-scheme: light;
+
   --background: #ffffff;
   --foreground: #111827;
+
   --brand-primary: #4A9A3E;
   --brand-primary-hover: #3b7c31;
-  --brand-primary-light: rgba(74, 154, 62, 0.1);
-  --brand-primary-light-hover: rgba(74, 154, 62, 0.2);
-  
-  /* Light mode colors */
+  --brand-primary-light: rgba(74, 154, 62, 0.10);
+  --brand-primary-light-hover: rgba(74, 154, 62, 0.20);
+
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --bg-tertiary: #f3f4f6;
   --bg-card: #ffffff;
+
   --text-primary: #111827;
   --text-secondary: #6b7280;
   --text-tertiary: #9ca3af;
   --text-muted: #9ca3af;
+
   --border-color: #e5e7eb;
   --border-light: #f3f4f6;
   --input-border: #d1d5db;
+
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
 .dark {
+  color-scheme: dark;
+
   --background: #0f172a;
   --foreground: #f9fafb;
-  
+
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
   --bg-card: #1e293b;
+
   --text-primary: #f9fafb;
   --text-secondary: #9ca3af;
   --text-tertiary: #6b7280;
   --text-muted: #6b7280;
+
   --border-color: #334155;
   --border-light: #1e293b;
-  --input-border: #94a3b8;
+  --input-border: #475569;
+
   --shadow-color: rgba(0, 0, 0, 0.3);
+
   --brand-primary-light: rgba(74, 154, 62, 0.2);
   --brand-primary-light-hover: rgba(74, 154, 62, 0.3);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #111827;
-    --brand-primary-light: rgba(74, 154, 62, 0.15);
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 html.dark body {
-  background: #0f172a;
-  color: #f9fafb;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px var(--brand-primary-light);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+html.dark .input {
+  background-color: var(--bg-card);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+}
+
+html.dark .input::placeholder {
+  color: var(--text-muted);
+}
+
+html.dark header.sticky {
+  background-color: var(--bg-secondary);
 }
 
 .scrollbar-hide {
@@ -75,44 +121,15 @@ html.dark body {
   display: none;
 }
 
-.input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  background-color: #ffffff;
-  outline: none;
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-.input:focus {
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-  --tw-ring-color: #61BF53;
-  border-color: transparent;
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-html.dark .input {
-  background-color: #1e293b;
-  border-color: #475569;
-  color: #ffffff;
-}
-html.dark .input::placeholder {
-  color: #9ca3af;
-}
-
-/* === Fix header z-index stacking in dark mode === */
-html.dark header.sticky {
-  background-color: #1e293b !important;
-}
-
-/* === Scrollbar oculto (hero sections, carruseles) === */
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* === Hero section custom select === */
 .hero-select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -123,26 +140,70 @@ html.dark header.sticky {
   background-size: 12px 8px;
   padding-right: 38px;
 }
-.hero-select::-ms-expand { display: none; }
+
+.hero-select::-ms-expand {
+  display: none;
+}
+
 .hero-select option {
   padding: 8px 12px;
-  background: white;
-  color: #374151;
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
+
 .hero-input-number::-webkit-inner-spin-button,
 .hero-input-number::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.hero-input-number[type=number] {
+
+.hero-input-number[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* === Featured carousel responsive widths === */
-.carousel-card { width: 160px; flex-shrink: 0; }
-@media (min-width: 640px) { .carousel-card { width: calc((100% - 20px) / 2); } }
-@media (min-width: 768px) { .carousel-card { width: calc((100% - 2 * 24px) / 3); } }
-@media (min-width: 1024px) { .carousel-card { width: calc((100% - 3 * 24px) / 4); } }
-@media (min-width: 1280px) { .carousel-card { width: calc((100% - 4 * 24px) / 5); } }
-@media (min-width: 1536px) { .carousel-card { width: calc((100% - 5 * 24px) / 6); } }
-@media (min-width: 1800px) { .carousel-card { width: calc((100% - 6 * 24px) / 7); } }
+.carousel-card {
+  width: 160px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .carousel-card {
+    width: calc((100% - 20px) / 2);
+  }
+}
+
+@media (min-width: 768px) {
+  .carousel-card {
+    width: calc((100% - 2 * 24px) / 3);
+  }
+}
+
+@media (min-width: 1024px) {
+  .carousel-card {
+    width: calc((100% - 3 * 24px) / 4);
+  }
+}
+
+@media (min-width: 1280px) {
+  .carousel-card {
+    width: calc((100% - 4 * 24px) / 5);
+  }
+}
+
+@media (min-width: 1536px) {
+  .carousel-card {
+    width: calc((100% - 5 * 24px) / 6);
+  }
+}
+
+@media (min-width: 1800px) {
+  .carousel-card {
+    width: calc((100% - 6 * 24px) / 7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

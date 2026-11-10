@@ -6,11 +6,6 @@
   color: var(--text-primary);
 }
 
-.dark .about-tiyuy {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-}
-
 .about-tiyuy ::selection {
   background: var(--brand-primary-hover);
   color: #ffffff;
@@ -20,14 +15,21 @@
   scroll-margin-top: 5rem;
 }
 
+/* Textura de grano (antes vivía en hero.css) */
+.about-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Reveal al hacer scroll */
 .about-reveal {
   --about-tx: 0px;
   --about-ty: var(--about-distance, 24px);
   opacity: 0;
   transform: translate3d(var(--about-tx), var(--about-ty), 0);
   transition:
-    opacity var(--about-duration, 800ms) var(--about-ease) var(--about-delay, 0ms),
-    transform var(--about-duration, 800ms) var(--about-ease) var(--about-delay, 0ms);
+    opacity var(--about-duration) var(--about-ease) var(--about-delay, 0ms),
+    transform var(--about-duration) var(--about-ease) var(--about-delay, 0ms);
   will-change: opacity, transform;
 }
 
@@ -56,6 +58,7 @@
   transform: none;
 }
 
+/* Parallax */
 .about-parallax {
   transform: translate3d(0, var(--about-parallax, 0px), 0) scale(1.1);
   will-change: transform;
@@ -71,6 +74,7 @@
   }
 }
 
+/* Línea de tiempo y barra de lectura */
 .about-timeline-fill {
   transform: scaleY(var(--about-progress, 0));
   transform-origin: top;
@@ -79,8 +83,10 @@
 
 .about-reading-progress__bar {
   transform: scaleX(var(--about-reading-progress, 0));
+  transform-origin: left;
 }
 
+/* Accesibilidad: menos movimiento */
 @media (prefers-reduced-motion: reduce) {
   .about-reveal {
     opacity: 1 !important;
@@ -94,19 +100,20 @@
   }
 
   .about-timeline-fill {
-    transform: none !important;
+    transform: scaleY(1) !important;
     transition: none !important;
   }
 
-  .about-tiyuy * {
-    scroll-behavior: auto !important;
+  .about-reading-progress__bar {
+    transform: scaleX(1) !important;
   }
 
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
 }
 
+/* Sin JavaScript: todo visible */
 @media (scripting: none) {
   .about-reveal {
     opacity: 1;

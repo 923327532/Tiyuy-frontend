@@ -2,87 +2,78 @@
 
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
-import { type CSSProperties } from 'react';
-import { HERO_COPY, HERO_HIGHLIGHTS } from './hero.data';
+import { HERO_COPY } from './hero.data';
 
 export function HeroContent() {
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-[1080px]">
+      <p className="hero-fade hero-delay-200 mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/75">
+        <span className="h-px w-8 bg-[var(--brand-primary)]" />
+        Tecnología para conectar espacios y personas
+      </p>
+
       <h1
         id="hero-title"
-        className="text-[clamp(2.7rem,min(7.4vw,12.5vh),7.5rem)] font-medium leading-[0.92] tracking-[-0.045em] text-white [text-shadow:0_4px_60px_rgba(0,0,0,0.4)]"
+        className="hero-heading max-w-[1050px] text-balance text-[clamp(3.1rem,7.8vw,7.2rem)] font-semibold leading-[0.94] tracking-[-0.055em] text-white"
       >
-        {HERO_COPY.lines.map((line, index) => (
-          <span key={line} className="block overflow-hidden pb-[0.05em]">
+        {HERO_COPY.lines.map((line, index) => {
+          const isLast = index === HERO_COPY.lines.length - 1;
+          const cleanLine = isLast ? line.replace(/\.$/, '') : line;
+
+          return (
             <span
-              className="hero-line block"
-              style={{ '--hero-line-index': index } as CSSProperties}
+              key={`${line}-${index}`}
+              className="block overflow-hidden pb-[0.08em]"
             >
-              {line === 'peruano.' ? (
-                <span className="text-white/50">{line}</span>
-              ) : (
-                line
-              )}
+              <span
+                className="hero-line inline-block"
+                style={{ animationDelay: `${400 + index * 140}ms` }}
+              >
+                {cleanLine}
+                {isLast && (
+                  <span className="text-[var(--brand-primary)]">.</span>
+                )}
+              </span>
             </span>
-          </span>
-        ))}
+          );
+        })}
       </h1>
 
-      <p className="hero-fade hero-delay-700 mt-8 max-w-xl text-base leading-relaxed text-white/70 md:text-lg md:leading-relaxed">
+      <p className="hero-fade hero-delay-900 mt-7 max-w-[620px] text-base leading-[1.8] text-white/80 md:text-lg">
         {HERO_COPY.description}
       </p>
 
-      <div className="hero-fade hero-delay-900 mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+      <div className="hero-fade hero-delay-1000 mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
         <a
           href={HERO_COPY.primaryCta.href}
-          className="group inline-flex items-center justify-center gap-3 rounded-full bg-white px-7 py-4 text-base font-semibold text-neutral-950 transition-all duration-300 hover:bg-white/90 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+          className="group inline-flex min-h-14 items-center justify-center gap-5 rounded-full bg-[var(--brand-primary)] py-2 pl-7 pr-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-[var(--brand-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#111827] sm:text-base"
         >
           {HERO_COPY.primaryCta.label}
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-950 text-white transition-transform duration-300 group-hover:translate-x-1">
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+            <ArrowRight
+              className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none"
+              aria-hidden="true"
+            />
           </span>
         </a>
 
         <Link
           href={HERO_COPY.secondaryCta.href}
-          className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-4 text-base font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/40 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+          className="group inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/35 px-7 py-3 text-sm font-semibold text-white transition-colors duration-300 hover:border-white/70 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#111827] sm:text-base"
         >
           {HERO_COPY.secondaryCta.label}
+
           <ArrowUpRight
-            className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 motion-reduce:transition-none"
             aria-hidden="true"
           />
         </Link>
       </div>
-    </div>
-  );
-}
 
-export function HeroHighlights() {
-  return (
-    <aside
-      aria-label="Lo que nos hace diferentes"
-      className="hero-fade hero-delay-1100 hidden w-full max-w-sm rounded-3xl border border-white/10 bg-white/5 p-1.5 backdrop-blur-2xl lg:block"
-    >
-      <p className="px-4 pb-2 pt-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-        Lo que nos hace diferentes
+      <p className="hero-fade hero-delay-1200 mt-10 hidden text-[10px] font-medium uppercase tracking-[0.2em] text-white/45 sm:block">
+        Una nueva forma de conectar con el mercado inmobiliario
       </p>
-      <ul className="space-y-1.5">
-        {HERO_HIGHLIGHTS.map(({ icon: Icon, title, description }) => (
-          <li
-            key={title}
-            className="flex items-start gap-4 rounded-2xl bg-white/[0.03] p-4 transition-all duration-300 hover:bg-white/[0.08]"
-          >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white">
-              <Icon className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-white">{title}</p>
-              <p className="mt-1 text-xs leading-snug text-white/60">{description}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </aside>
+    </div>
   );
 }

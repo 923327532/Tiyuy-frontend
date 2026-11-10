@@ -24,7 +24,7 @@ export function ParallaxImage({
   className = '',
   imageClassName = '',
   objectPosition = 'center',
-  quality = 80,
+  quality = 0,
 }: ParallaxImageProps) {
   const ref = useParallax<HTMLDivElement>(speed);
 

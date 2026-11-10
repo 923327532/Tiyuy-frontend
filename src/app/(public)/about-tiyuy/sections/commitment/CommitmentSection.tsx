@@ -1,7 +1,6 @@
-
 'use client';
 
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { Reveal } from '../../hooks/use-scroll-reveal';
 import { ParallaxImage } from '../../ui';
@@ -15,76 +14,105 @@ export function CommitmentSection() {
     <section
       id="compromiso"
       aria-labelledby="commitment-title"
-      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-neutral-900"
+      className="commitment-section relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#111827] text-white"
     >
       <ParallaxImage
         src={IMAGE}
-        alt="Arquitectura residencial contemporánea que representa el futuro de los espacios para vivir"
+        alt="Arquitectura contemporánea con líneas geométricas y luz natural"
         sizes="100vw"
         speed={0.06}
-        className="-z-20 scale-105"
+        className="-z-20"
       />
 
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[linear-gradient(to_bottom,rgba(10,10,10,0.35)_0%,rgba(10,10,10,0.2)_35%,rgba(10,10,10,0.8)_100%)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(17,24,39,0.88)_0%,rgba(17,24,39,0.62)_55%,rgba(17,24,39,0.28)_100%),linear-gradient(0deg,rgba(17,24,39,0.96)_0%,transparent_65%)]"
       />
 
-      <div className="mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-end gap-10 px-5 pb-10 pt-32 sm:px-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16 lg:px-12 lg:pb-14">
-        <Reveal className="max-w-4xl">
+      <div
+        aria-hidden="true"
+        className="absolute left-0 top-0 h-[2px] w-full bg-[var(--brand-primary)]"
+      />
+
+      <div className="relative mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-end px-5 pb-12 pt-32 sm:px-8 lg:px-12 lg:pb-20">
+        <Reveal className="mb-12">
+          <div className="mb-8 flex items-center gap-3">
+            <span className="h-[2px] w-8 bg-[var(--brand-primary)]" />
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
+              C-06 / Nuestro compromiso
+            </p>
+          </div>
+
           <h2
             id="commitment-title"
-            className="text-balance text-[clamp(3rem,8.5vw,9rem)] font-medium leading-[0.92] tracking-[-0.045em] !text-white"
+            className="max-w-5xl text-balance text-[clamp(3.2rem,8vw,8rem)] font-medium leading-[0.94] tracking-[-0.055em] text-white"
           >
-            Construimos nuevas posibilidades para vivir.
+            Construimos nuevas posibilidades
+            <span className="block text-white/65">
+              para vivir<span className="text-[var(--brand-primary)]">.</span>
+            </span>
           </h2>
         </Reveal>
 
-        <Reveal delay={150} className="w-full lg:max-w-md">
-          <div className="rounded-[22px] border border-white/25 bg-white/10 p-6 backdrop-blur-xl sm:p-8">
-            <p className="text-base leading-relaxed text-white/90">
+        <div className="grid gap-12 border-t border-white/25 pt-8 lg:grid-cols-12 lg:gap-10">
+          <Reveal className="lg:col-span-7">
+            <p className="max-w-2xl text-lg leading-relaxed text-white/85 md:text-xl">
               Creemos en un mercado inmobiliario más accesible,
               transparente y conectado. Desde el Perú, desarrollamos
               tecnología que pone a las personas en el centro y busca
               transformar la manera de encontrar y ofrecer espacios para vivir.
             </p>
 
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {commitmentValues.map((value) => (
+            <Link
+              href="/contact"
+              className="group mt-9 inline-flex items-center gap-4 border-b border-white/50 pb-3 text-sm font-semibold text-white transition-colors hover:border-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#111827]"
+            >
+              Conoce TIYUY
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--brand-primary)] text-white transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none">
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </span>
+            </Link>
+          </Reveal>
+
+          <Reveal delay={150} className="lg:col-span-4 lg:col-start-9">
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.18em] text-white/55">
+              Nuestros principios
+            </p>
+
+            <ul className="divide-y divide-white/20 border-y border-white/20">
+              {commitmentValues.map((value, index) => (
                 <li
                   key={value}
-                  className="rounded-full border border-white/30 px-4 py-1.5 text-xs font-medium text-white"
+                  className="flex items-center justify-between gap-4 py-4"
                 >
-                  {value}
+                  <span className="text-sm font-medium text-white/90 sm:text-base">
+                    {value}
+                  </span>
+                  <span className="text-xs tabular-nums text-white/45">
+                    0{index + 1}
+                  </span>
                 </li>
               ))}
             </ul>
-
-            <Link
-              href="/contact"
-              className="group mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-7 py-4 text-base font-semibold text-neutral-950 transition-colors duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
-            >
-              Conoce TIYUY
-              <ArrowRight
-                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transition-none"
-                aria-hidden="true"
-              />
-            </Link>
-          </div>
-        </Reveal>
-      </div>
-
-      <div className="border-t border-white/25 bg-white/10 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between px-5 py-4 text-sm font-medium text-white/80 sm:px-8 lg:px-12">
-          <span>TIYUY · Perú</span>
-          <a
-            href="#hero"
-            className="transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-          >
-            Volver al inicio
-          </a>
+          </Reveal>
         </div>
       </div>
+
+      <footer className="relative border-t border-white/25 bg-[#111827]/75 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-4 px-5 py-5 text-xs font-medium text-white/70 sm:px-8 lg:px-12">
+          <span className="uppercase tracking-[0.16em]">
+            TIYUY · Perú
+          </span>
+
+          <a
+            href="#hero"
+            className="inline-flex items-center gap-2 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-4 focus-visible:ring-offset-[#111827]"
+          >
+            Volver al inicio
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
+      </footer>
     </section>
   );
 }
