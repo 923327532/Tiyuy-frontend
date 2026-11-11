@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Star } from 'lucide-react';
+import Link from 'next/link';
+import { LoaderCircle, Star } from 'lucide-react';
+import AgencyStars from './AgencyStars';
 import type { AgencyRatingSummary } from '../../_hooks/useAgencyDetail';
 
 interface AgencyRatingPanelProps {
+  agencyName: string;
   ratings: AgencyRatingSummary;
   userRating: number;
   userLoggedIn: boolean;
@@ -14,6 +17,7 @@ interface AgencyRatingPanelProps {
 }
 
 export default function AgencyRatingPanel({
+  agencyName,
   ratings,
   userRating,
   userLoggedIn,
@@ -21,86 +25,89 @@ export default function AgencyRatingPanel({
   message,
   onRate,
 }: AgencyRatingPanelProps) {
-  const [hoverRating, setHoverRating] = useState(0);
+  const [hoverScore, setHoverScore] = useState(0);
+  const shownScore = hoverScore || userRating;
+  const hasRatings = ratings.totalRatings > 0;
 
   return (
-    <section className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-6 sm:p-8">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
-            Opiniones
-          </p>
-          <h2 className="mt-1 text-lg font-semibold tracking-tight text-[var(--text-primary)]">
-            Calificar agencia
-          </h2>
-        </div>
-        <div className="flex items-center gap-2">
-          <div
-            className="flex items-center gap-0.5"
-            aria-label={`${ratings.averageRating.toFixed(1)} de 5 estrellas`}
-          >
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                aria-hidden="true"
-                className={`h-4 w-4 ${
-                  star <= Math.round(ratings.averageRating)
-                    ? 'fill-[#bd8a3c] text-[#bd8a3c]'
-                    : 'text-[#d8ddd7]'
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-sm font-semibold tabular-nums text-[var(--text-primary)]">
-            {ratings.averageRating > 0 ? ratings.averageRating.toFixed(1) : '—'}
+    <section aria-labelledby="rate-title" className="pt-2">
+      <div className="flex items-center gap-2">
+        <span aria-hidden="true" className="h-5 w-1 rounded-full bg-[#C25E00]" />
+        <h2 id="rate-title" className="text-lg font-semibold tracking-tight text-stone-900">
+          Valoraciones
+        </h2>
+      </div>
+
+      {/* Score destacado */}
+      <div className="mt-6 flex items-baseline gap-3">
+        <span className="text-5xl font-semibold tabular-nums tracking-tight text-stone-900">
+          {hasRatings ? ratings.averageRating.toFixed(1) : '—'}
+        </span>
+        <div className="flex flex-col">
+          <AgencyStars value={ratings.averageRating} />
+          <span className="mt-1 text-xs text-stone-500">
+            ({ratings.totalRatings} {ratings.totalRatings === 1 ? 'reseña' : 'reseñas'})
           </span>
-          <span className="text-xs text-[var(--text-tertiary)]">({ratings.totalRatings})</span>
         </div>
       </div>
 
-      <div className="mt-5 border-t border-[var(--border-light)] pt-5">
-        <p className="text-sm text-[var(--text-secondary)]">Tu valoración</p>
-        <div className="mt-2 flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              onClick={() => onRate(star)}
-              onMouseEnter={() => setHoverRating(star)}
-              onMouseLeave={() => setHoverRating(0)}
-              onFocus={() => setHoverRating(star)}
-              onBlur={() => setHoverRating(0)}
-              disabled={sending || userRating > 0}
-              aria-label={`Calificar con ${star} ${star === 1 ? 'estrella' : 'estrellas'}`}
-              aria-pressed={userRating === star}
-              className="rounded p-1 transition-colors hover:bg-[var(--bg-tertiary)] disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]"
+      {/* Calificación interactiva */}
+      <div className="mt-6 rounded-2xl border border-stone-200/60 bg-white/60 p-4">
+        <h3 className="text-xs font-semibold text-stone-800">
+          {userRating > 0 ? 'Tu calificación guardada' : `Califica a ${agencyName}`}
+        </h3>
+
+        {userLoggedIn ? (
+          <div className="mt-2 flex flex-col gap-1.5">
+            <div
+              role="radiogroup"
+              aria-label="Calificación de 1 a 5 estrellas"
+              className="flex items-center gap-1"
+              onMouseLeave={() => setHoverScore(0)}
             >
-              <Star
-                aria-hidden="true"
-                className={`h-6 w-6 ${
-                  star <= (hoverRating || userRating)
-                    ? 'fill-[#bd8a3c] text-[#bd8a3c]'
-                    : 'text-[#c7cec7]'
-                }`}
-              />
-            </button>
-          ))}
-          {!userLoggedIn && (
-            <span className="ml-2 text-xs text-[var(--text-tertiary)]">
-              Inicia sesión para calificar
-            </span>
-          )}
-        </div>
-        {message && (
-          <p
-            role="status"
-            className={`mt-2 text-xs ${
-              message.includes('No pudimos') || message.includes('Ya has')
-                ? 'text-red-700'
-                : 'text-[var(--brand-primary-hover)]'
-            }`}
-          >
-            {message}
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  role="radio"
+                  aria-checked={userRating === n}
+                  aria-label={`${n} ${n === 1 ? 'estrella' : 'estrellas'}`}
+                  disabled={sending}
+                  onMouseEnter={() => setHoverScore(n)}
+                  onFocus={() => setHoverScore(n)}
+                  onBlur={() => setHoverScore(0)}
+                  onClick={() => onRate(n)}
+                  className="rounded-lg p-0.5 transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E] disabled:opacity-50 motion-reduce:transition-none"
+                >
+                  <Star
+                    aria-hidden="true"
+                    className={`h-6 w-6 ${
+                      n <= shownScore
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'fill-stone-200 text-stone-300'
+                    }`}
+                  />
+                </button>
+              ))}
+              {sending && (
+                <LoaderCircle
+                  aria-hidden="true"
+                  className="ml-2 h-4 w-4 animate-spin text-stone-400"
+                />
+              )}
+            </div>
+            {message && (
+              <p className="text-xs text-stone-600" role="status" aria-live="polite">
+                {message}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="mt-1.5 text-xs text-stone-500">
+            <Link href="/login" className="font-bold text-[#3b7c31] underline">
+              Inicia sesión
+            </Link>{' '}
+            para calificar a {agencyName}.
           </p>
         )}
       </div>

@@ -141,13 +141,17 @@ export function useAgencyDetail(slug: string) {
 
   const sendLead = useCallback(async (lead: AgencyLead) => {
     if (!agency) return;
+
+    const fail = (error: string) =>
+      setLeadState({ agencyId: agency.id, sending: false, sent: false, error });
+
     if (!lead.name.trim() || !lead.message.trim()) {
-      setLeadState({
-        agencyId: agency.id,
-        sending: false,
-        sent: false,
-        error: 'Completa tu nombre y mensaje.',
-      });
+      fail('Completa tu nombre y mensaje.');
+      return;
+    }
+    // Sin correo ni teléfono, la agencia no tendría cómo responder.
+    if (!lead.email.trim() && !lead.phone.trim()) {
+      fail('Deja un correo o un teléfono para que la agencia pueda responderte.');
       return;
     }
 
@@ -165,12 +169,7 @@ export function useAgencyDetail(slug: string) {
       });
       setLeadState({ agencyId: agency.id, sending: false, sent: true, error: '' });
     } catch {
-      setLeadState({
-        agencyId: agency.id,
-        sending: false,
-        sent: false,
-        error: 'No pudimos enviar tu mensaje. Inténtalo nuevamente.',
-      });
+      fail('No pudimos enviar tu mensaje. Inténtalo nuevamente.');
     }
   }, [agency]);
 
@@ -178,9 +177,19 @@ export function useAgencyDetail(slug: string) {
     if (!agency) return false;
     if (!user) return false;
 
+    const previousScore = userRating;
+
     setRatingSendingFor(agency.id);
     setRatingMessageState({ agencyId: agency.id, message: '' });
     setUserRatingResponse({ score, agencyId: agency.id, user });
+
+    const refreshSummary = async () => {
+      const { data } = await publicApiClient.get<AgencyRatingSummary>(
+        `/interactions/ratings/user/${agency.id}/summary`,
+      );
+      setRatingResponse({ ...data, agencyId: agency.id });
+    };
+
     try {
       await apiClient.post('/interactions/ratings', {
         ratedUserId: agency.id,
@@ -188,10 +197,7 @@ export function useAgencyDetail(slug: string) {
         comment: '',
       });
       setRatingMessageState({ agencyId: agency.id, message: 'Calificación guardada.' });
-      const { data } = await publicApiClient.get<AgencyRatingSummary>(
-        `/interactions/ratings/user/${agency.id}/summary`,
-      );
-      setRatingResponse({ ...data, agencyId: agency.id });
+      await refreshSummary();
       return true;
     } catch (requestError: unknown) {
       const status = axios.isAxiosError(requestError) ? requestError.response?.status : undefined;
@@ -204,16 +210,19 @@ export function useAgencyDetail(slug: string) {
           agencyId: agency.id,
           message: 'Ya has calificado a esta agencia.',
         });
+        // Mostrar la nota que realmente tiene guardada, no la que intentó poner.
         try {
-          const { data } = await publicApiClient.get<AgencyRatingSummary>(
-            `/interactions/ratings/user/${agency.id}/summary`,
+          const { data } = await apiClient.get<CurrentRating>(
+            `/interactions/ratings/my-rating/${agency.id}`,
           );
-          setRatingResponse({ ...data, agencyId: agency.id });
+          setUserRatingResponse({ score: data.score, agencyId: agency.id, user });
         } catch {
-          setRatingMessageState({
-            agencyId: agency.id,
-            message: 'Ya has calificado a esta agencia.',
-          });
+          setUserRatingResponse({ score: previousScore, agencyId: agency.id, user });
+        }
+        try {
+          await refreshSummary();
+        } catch {
+          // El resumen queda como estaba.
         }
       } else {
         setRatingMessageState({
@@ -222,13 +231,14 @@ export function useAgencyDetail(slug: string) {
             ? responseMessage
             : 'No pudimos guardar tu calificación.',
         });
-        setUserRatingResponse({ score: 0, agencyId: agency.id, user });
+        // Volver a la nota anterior en lugar de dejarla en 0.
+        setUserRatingResponse({ score: previousScore, agencyId: agency.id, user });
       }
       return false;
     } finally {
       setRatingSendingFor((current) => current === agency.id ? null : current);
     }
-  }, [agency, user]);
+  }, [agency, user, userRating]);
 
   return {
     agency,

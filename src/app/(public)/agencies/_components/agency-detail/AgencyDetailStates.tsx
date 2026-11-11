@@ -1,67 +1,71 @@
+'use client';
+
 import Link from 'next/link';
-import { AlertCircle } from 'lucide-react';
+import { ArrowLeft, RotateCw } from 'lucide-react';
+
+const BAR = 'rounded-lg bg-stone-200 motion-safe:animate-pulse';
 
 export function AgencyDetailLoadingState() {
   return (
-    <main
-      aria-busy="true"
-      aria-label="Cargando perfil de agencia"
-      className="min-h-screen bg-[var(--bg-secondary)]"
-    >
-      <div className="h-64 animate-pulse bg-[var(--bg-tertiary)] motion-reduce:animate-none sm:h-72" />
-      <div className="mx-auto max-w-7xl space-y-6 px-5 py-8 sm:px-8 lg:px-12">
-        <div className="h-32 animate-pulse rounded-2xl bg-white motion-reduce:animate-none" />
-        <div className="grid gap-5 lg:grid-cols-[1.4fr_0.8fr]">
-          <div className="h-64 animate-pulse rounded-2xl bg-white motion-reduce:animate-none" />
-          <div className="h-64 animate-pulse rounded-2xl bg-white motion-reduce:animate-none" />
+    <div className="min-h-screen bg-[#F4F0EA]" role="status" aria-live="polite" aria-label="Cargando agencia">
+      <div className="border-b border-stone-200/70 bg-[#F3EFEA]">
+        <div className="mx-auto max-w-[1440px] px-5 pb-14 pt-8 sm:px-8 lg:px-12">
+          <div className={`${BAR} h-4 w-36`} />
+          <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
+            <div className={`${BAR} h-24 w-24 rounded-2xl sm:h-28 sm:w-28`} />
+            <div className="w-full max-w-xl space-y-4">
+              <div className={`${BAR} h-12 w-4/5`} />
+              <div className={`${BAR} h-4 w-1/2`} />
+            </div>
+          </div>
         </div>
-        <span className="sr-only">Cargando información de la agencia.</span>
       </div>
-    </main>
+      <div className="mx-auto grid max-w-[1440px] gap-12 px-5 pt-12 sm:px-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-16 lg:px-12">
+        <div className="space-y-3">
+          <div className={`${BAR} h-6 w-48`} />
+          <div className={`${BAR} h-4 w-full max-w-2xl`} />
+          <div className={`${BAR} h-4 w-full max-w-xl`} />
+          <div className={`${BAR} h-4 w-2/3 max-w-lg`} />
+        </div>
+        <div className={`${BAR} h-96 rounded-2xl`} />
+      </div>
+      <span className="sr-only">Cargando agencia...</span>
+    </div>
   );
 }
 
-interface AgencyDetailErrorStateProps {
-  isError: boolean;
-  onRetry: () => void;
-}
-
-export function AgencyDetailErrorState({
-  isError,
-  onRetry,
-}: AgencyDetailErrorStateProps) {
+export function AgencyDetailErrorState({ isError, onRetry }: { isError: boolean; onRetry: () => void }) {
   return (
-    <main className="flex min-h-[70vh] items-center justify-center bg-[var(--bg-secondary)] px-5 py-16">
-      <div className="w-full max-w-lg rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-10 text-center sm:px-10">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-red-50">
-          <AlertCircle aria-hidden="true" className="h-6 w-6 text-red-600" />
-        </div>
-        <h1 className="mt-5 text-xl font-semibold text-[var(--text-primary)]">
-          {isError ? 'No pudimos cargar esta agencia' : 'Agencia no encontrada'}
+    <div className="flex min-h-screen items-center justify-center bg-[#F4F0EA] px-5">
+      <div className="max-w-md text-center" role="alert">
+        <h1 className="text-2xl font-semibold tracking-[-0.03em] text-stone-900 sm:text-3xl">
+          {isError ? 'No pudimos cargar la agencia' : 'No encontramos esta agencia'}
         </h1>
-        <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+        <p className="mt-3 text-sm leading-7 text-stone-600">
           {isError
-            ? 'Hubo un problema al consultar la información. Comprueba tu conexión e inténtalo nuevamente.'
-            : 'No hay información disponible para este perfil.'}
+            ? 'Revisa tu conexión e inténtalo de nuevo.'
+            : 'Puede que el enlace esté mal escrito o que la agencia ya no esté publicada.'}
         </p>
-        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
           {isError && (
             <button
               type="button"
               onClick={onRetry}
-              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary-hover)] px-5 text-sm font-semibold text-white transition-colors hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-[#4A9A3E] px-6 text-sm font-bold text-white transition-all hover:bg-[#3b7c31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E] focus-visible:ring-offset-2"
             >
+              <RotateCw aria-hidden="true" className="h-4 w-4" />
               Reintentar
             </button>
           )}
           <Link
             href="/agencies"
-            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[var(--border-color)] px-5 text-sm font-semibold text-[var(--brand-primary-hover)] transition-colors hover:bg-[var(--bg-tertiary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-stone-300 bg-white px-6 text-sm font-semibold text-stone-700 transition-colors hover:bg-stone-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E]"
           >
-            Volver al directorio
+            <ArrowLeft aria-hidden="true" className="h-4 w-4" />
+            Ver todas las agencias
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

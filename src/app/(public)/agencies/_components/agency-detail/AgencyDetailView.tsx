@@ -1,28 +1,22 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import type { AgencyDetail } from '../types';
 import type { AgencyLead, AgencyRatingSummary } from '../../_hooks/useAgencyDetail';
-import AgencyActivityMetrics from './AgencyActivityMetrics';
-import AgencyAuthModal from './AgencyAuthModal';
 import AgencyContactPanel from './AgencyContactPanel';
 import AgencyDescription from './AgencyDescription';
 import AgencyProfileHeader from './AgencyProfileHeader';
 import AgencyRatingPanel from './AgencyRatingPanel';
 
-interface AgencyDetailViewProps {
+interface Props {
   agency: AgencyDetail;
   userLoggedIn: boolean;
   ratings: AgencyRatingSummary;
   userRating: number;
   ratingSending: boolean;
   ratingMessage: string;
-  onRate: (score: number) => void;
+  onRate: (score: number) => Promise<boolean>;
   leadSending: boolean;
   leadSent: boolean;
   leadError: string;
-  onSendLead: (lead: AgencyLead) => void;
+  onSendLead: (lead: AgencyLead) => Promise<void>;
 }
 
 export default function AgencyDetailView({
@@ -37,56 +31,39 @@ export default function AgencyDetailView({
   leadSent,
   leadError,
   onSendLead,
-}: AgencyDetailViewProps) {
-  const router = useRouter();
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const requireAuthentication = () => setShowAuthModal(true);
-  const continueToAuthentication = () => {
-    setShowAuthModal(false);
-    router.push('/profile-selector');
-  };
-
+}: Props) {
   return (
-    <main className="min-h-screen bg-[var(--bg-secondary)]">
-      <AgencyProfileHeader agency={agency} />
-      <div className="mx-auto max-w-[1440px] px-5 py-7 sm:px-8 sm:py-10 lg:px-12">
-        <AgencyActivityMetrics agency={agency} />
-        <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.8fr)]">
-          <div className="space-y-6">
-            <AgencyDescription description={agency.description} />
+    <div className="min-h-screen bg-[#F4F0EA] font-sans text-stone-800 antialiased">
+      <AgencyProfileHeader agency={agency} ratings={ratings} />
+
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-12">
+          {/* Columna izquierda: información de la agencia y valoraciones */}
+          <div className="space-y-10 lg:col-span-8">
+            <AgencyDescription agency={agency} />
             <AgencyRatingPanel
+              agencyName={agency.name}
               ratings={ratings}
               userRating={userRating}
               userLoggedIn={userLoggedIn}
               sending={ratingSending}
               message={ratingMessage}
-              onRate={(score) => {
-                if (!userLoggedIn) {
-                  requireAuthentication();
-                  return;
-                }
-                onRate(score);
-              }}
+              onRate={onRate}
             />
           </div>
-          <aside>
+
+          {/* Columna derecha: formulario de contacto */}
+          <aside className="space-y-5 lg:col-span-4" aria-label="Contacto de la agencia">
             <AgencyContactPanel
               agency={agency}
-              userLoggedIn={userLoggedIn}
               sending={leadSending}
               sent={leadSent}
               error={leadError}
-              onRequireAuthentication={requireAuthentication}
               onSend={onSendLead}
             />
           </aside>
         </div>
-      </div>
-      <AgencyAuthModal
-        open={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onContinue={continueToAuthentication}
-      />
-    </main>
+      </main>
+    </div>
   );
 }

@@ -24,7 +24,7 @@ function getPages(current: number, total: number): (number | '…')[] {
 }
 
 const ARROW_BUTTON_STYLES =
-  'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] disabled:pointer-events-none disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2';
+  'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-stone-200 bg-white text-stone-500 transition-all duration-200 hover:border-[#4A9A3E] hover:text-[#4A9A3E] disabled:pointer-events-none disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E] focus-visible:ring-offset-2';
 
 export default function AgenciesPagination({
   page,
@@ -59,7 +59,7 @@ export default function AgenciesPagination({
             <span
               key={`ellipsis-${index}`}
               aria-hidden="true"
-              className="flex h-10 w-7 select-none items-center justify-center text-sm text-[var(--text-tertiary)]"
+              className="flex h-10 w-7 select-none items-center justify-center text-sm text-stone-400"
             >
               …
             </span>
@@ -70,15 +70,15 @@ export default function AgenciesPagination({
               onClick={() => onChange(p - 1)}
               aria-label={`Ir a la página ${p}`}
               aria-current={currentPage === p - 1 ? 'page' : undefined}
-              className={`flex h-10 min-w-10 items-center justify-center rounded-xl px-3 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2 ${
+              className={`flex h-10 min-w-10 items-center justify-center rounded-xl px-3 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E] focus-visible:ring-offset-2 ${
                 currentPage === p - 1
-                  ? 'bg-[var(--brand-primary)] text-white shadow-[0_4px_12px_rgba(74,154,62,0.18)]'
-                  : 'border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]'
+                  ? 'bg-[#4A9A3E] text-white shadow-sm'
+                  : 'border border-stone-200 bg-white text-stone-500 hover:border-[#4A9A3E] hover:text-[#4A9A3E]'
               }`}
             >
               {p}
             </button>
-          )
+          ),
         )}
       </div>
 
