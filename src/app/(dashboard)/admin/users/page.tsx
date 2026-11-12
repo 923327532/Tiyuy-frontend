@@ -19,7 +19,7 @@ import { Button } from '@/presentation/components/ui/Button';
 import { AdminBulkOperations } from '@/presentation/components/admin/AdminBulkOperations/AdminBulkOperations';
 import { UsersHeaderStats } from '@/presentation/components/admin/UsersHeaderStats/UsersHeaderStats';
 import { UsersFilters } from '@/presentation/components/admin/UsersFilters/UsersFilters';
-import { UserDetailModal } from '@/presentation/components/admin/UserDetailModal/UserDetailModal';
+import { UserDetailModal } from '@/presentation/components/admin/users/UserDetailModal';
 import { RoleChangeModal } from '@/presentation/components/admin/RoleChangeModal/RoleChangeModal';
 import { UserPropertiesModal } from '@/presentation/components/admin/UserPropertiesModal/UserPropertiesModal';
 import { UserProjectsModal } from '@/presentation/components/admin/UserProjectsModal/UserProjectsModal';

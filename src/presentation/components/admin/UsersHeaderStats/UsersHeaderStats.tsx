@@ -1,137 +1,252 @@
+
 'use client';
 
-import { useAuthStore } from '@/presentation/store/authStore';
-
-/**
- * Users Header Stats Component
- * Banner profesional con métricas de usuarios para el panel superadmin
- */
+import {
+  Activity,
+  Clock3,
+  TrendingDown,
+  TrendingUp,
+  Users,
+} from 'lucide-react';
 
 interface UsersHeaderStatsProps {
   activeUsers: number;
   pendingUsers: number;
   totalUsers?: number;
+  activeTrend?: number;
 }
 
-export function UsersHeaderStats({ activeUsers, pendingUsers, totalUsers }: UsersHeaderStatsProps) {
-  const { user } = useAuthStore();
-  const displayName = user?.firstName || 'Superadmin';
+function formatCurrentDate(): string {
+  const formatted = new Intl.DateTimeFormat('es-PE', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date());
 
-  // Fecha actual formateada
-  const now = new Date();
-  const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-  const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  const dayName = days[now.getDay()];
-  const day = now.getDate();
-  const month = months[now.getMonth()];
-  const year = now.getFullYear();
-  const dateStr = `${dayName} ${day} ${month} ${year}`;
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+function formatNumber(value: number): string {
+  return new Intl.NumberFormat('es-PE').format(value);
+}
+
+function isValidNumber(value: number): boolean {
+  return Number.isFinite(value) && value >= 0;
+}
+
+export function UsersHeaderStats({
+  activeUsers,
+  pendingUsers,
+  totalUsers,
+  activeTrend,
+}: UsersHeaderStatsProps) {
+  const validActive = isValidNumber(activeUsers);
+  const validPending = isValidNumber(pendingUsers);
+  const validTotal =
+    totalUsers !== undefined &&
+    isValidNumber(totalUsers);
+
+  const hasTotal = validTotal && totalUsers > 0;
+  const hasTrend =
+    activeTrend !== undefined &&
+    Number.isFinite(activeTrend);
+
+  const activePercent =
+    hasTotal && validActive
+      ? Math.min(100, Math.round((activeUsers / totalUsers) * 100))
+      : null;
+
+  const hasPending = validPending && pendingUsers > 0;
+  const trendIsPositive = hasTrend && activeTrend >= 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1fr_220px] gap-3 py-4">
-      {/* Banner principal izquierdo */}
-      <div className="relative bg-[#0f2a4a] rounded-xl px-8 py-7 flex flex-col justify-between min-h-[140px] overflow-hidden">
-        {/* Círculos decorativos */}
-        <div className="absolute -right-5 -top-5 w-[180px] h-[180px] rounded-full bg-white/5" />
-        <div className="absolute right-10 -bottom-10 w-[120px] h-[120px] rounded-full bg-white/5" />
+    <section
+      aria-label="Resumen de gestión de usuarios"
+      className="grid grid-cols-1 gap-4 py-4 lg:grid-cols-[1.5fr_1fr]"
+    >
+      {/* Encabezado principal */}
+      <div className="relative isolate flex min-h-[260px] flex-col justify-between overflow-hidden rounded-2xl border border-[#244653] bg-[#102f3b] p-6 text-white sm:p-8">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-1/2 bg-[radial-gradient(ellipse_at_right,_rgba(64,115,125,0.20),_transparent_70%)]"
+        />
 
-        {/* Logo Tiyuy arriba a la derecha */}
-        <div className="absolute top-3 right-4 opacity-25">
-          <img
-            src="/assets/images/logo.svg"
-            alt="Tiyuy"
-            className="w-20 h-auto object-contain"
-          />
-        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/10">
+              <img
+                src="/assets/images/logo.svg"
+                alt="Tiyuy"
+                className="h-5 w-auto brightness-0 invert"
+              />
+            </div>
 
-        <div className="flex-1 flex flex-col justify-center">
-          {/* Texto con efecto LED / Marquee - letra más grande */}
-          <div className="overflow-hidden w-full">
-            <div className="marquee-container">
-              <p className="marquee-text text-white m-0 leading-tight whitespace-nowrap">
-                Gestión de Usuarios · Administra cuentas, roles y permisos desde un solo lugar. ·&nbsp;
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-300">
+                TIYUY
+              </p>
+              <p className="text-xs font-medium text-white">
+                Administración
               </p>
             </div>
           </div>
+
+          <span className="rounded-md border border-white/15 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-200">
+            Usuarios
+          </span>
         </div>
 
-        {/* Fecha centrada */}
-        <div className="flex justify-center mt-3">
-          <span className="text-[12px] text-white/30 tracking-wide">{dateStr}</span>
+        <div className="mt-9">
+          <p className="mb-2 text-xs font-medium text-[#a9c4cc]">
+            Panel de administración
+          </p>
+
+          <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            Gestión de usuarios
+          </h1>
+
+          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
+            Administra cuentas, asignación de roles y procesos de
+            verificación de propietarios, corredores e inmobiliarias.
+          </p>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
+          <div className="flex items-center gap-2 text-xs text-slate-300">
+            <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
+            <time>{formatCurrentDate()}</time>
+          </div>
+
+          <span className="text-[11px] text-slate-400">
+            Control de cuentas y permisos
+          </span>
         </div>
       </div>
 
-      {/* Tarjetas métricas derecha */}
-      <div className="flex flex-col gap-2.5">
-        {/* Tarjeta Activos */}
-        <div className="bg-white border border-black/10 rounded-xl px-4 py-3.5 flex items-center gap-3 flex-1 shadow-sm">
-          <div className="w-9 h-9 rounded-lg bg-[#E6F1FB] text-[#185FA5] flex items-center justify-center flex-shrink-0">
-            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-            </svg>
+      {/* Indicadores */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
+        {/* Usuarios activos */}
+        <article className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors hover:border-slate-300">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
+              <Users
+                className="h-5 w-5 text-emerald-700"
+                aria-hidden="true"
+              />
+            </div>
+
+            {hasTrend && (
+              <span
+                className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-semibold tabular-nums ${
+                  trendIsPositive
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'bg-rose-50 text-rose-700'
+                }`}
+                aria-label={`Variación de usuarios activos: ${activeTrend > 0 ? 'aumento' : activeTrend < 0 ? 'disminución' : 'sin variación'} del ${Math.abs(activeTrend).toFixed(1)} por ciento`}
+              >
+                {trendIsPositive ? (
+                  <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
+                ) : (
+                  <TrendingDown className="h-3.5 w-3.5" aria-hidden="true" />
+                )}
+                {activeTrend > 0 ? '+' : ''}
+                {activeTrend.toFixed(1)}%
+              </span>
+            )}
           </div>
-          <div>
-            <p className="text-[11px] text-gray-400 uppercase tracking-wider m-0 mb-0.5">Activos</p>
-            <p className="text-[22px] font-medium text-gray-900 m-0 leading-none">{activeUsers}</p>
-            <p className="text-[11px] text-gray-400 m-0 mt-0.5">
-              <span className="text-[#0F6E56]">↑ {totalUsers ? Math.round((activeUsers / totalUsers) * 100) : 0}%</span> del total
+
+          <div className="mt-5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Usuarios activos
+            </p>
+
+            <div className="mt-1 flex items-baseline gap-2">
+              <p className="text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">
+                {validActive ? formatNumber(activeUsers) : '—'}
+              </p>
+
+              {hasTotal && (
+                <span className="text-sm text-slate-400">
+                  / {formatNumber(totalUsers)}
+                </span>
+              )}
+            </div>
+
+            {activePercent !== null && (
+              <div className="mt-4">
+                <div
+                  className="h-1.5 overflow-hidden rounded-full bg-slate-100"
+                  role="progressbar"
+                  aria-label="Porcentaje de usuarios activos"
+                  aria-valuenow={activePercent}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                >
+                  <div
+                    className="h-full rounded-full bg-[#26745d] transition-[width] duration-500"
+                    style={{ width: `${activePercent}%` }}
+                  />
+                </div>
+
+                <p className="mt-2 text-xs text-slate-500">
+                  {activePercent}% del total de usuarios
+                </p>
+              </div>
+            )}
+          </div>
+        </article>
+
+        {/* Usuarios pendientes */}
+        <article className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-colors hover:border-slate-300">
+          <div className="flex items-center justify-between gap-3">
+            <div
+              className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                hasPending ? 'bg-amber-50' : 'bg-slate-100'
+              }`}
+            >
+              <Activity
+                className={`h-5 w-5 ${
+                  hasPending ? 'text-amber-700' : 'text-slate-500'
+                }`}
+                aria-hidden="true"
+              />
+            </div>
+
+            <span
+              className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold ${
+                hasPending
+                  ? 'bg-amber-50 text-amber-800'
+                  : 'bg-emerald-50 text-emerald-700'
+              }`}
+            >
+              {validPending
+                ? hasPending
+                  ? 'Requieren revisión'
+                  : 'Al día'
+                : 'No disponible'}
+            </span>
+          </div>
+
+          <div className="mt-5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Pendientes de revisión
+            </p>
+
+            <p className="mt-1 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">
+              {validPending ? formatNumber(pendingUsers) : '—'}
+            </p>
+
+            <p className="mt-2 text-xs text-slate-500">
+              {validPending
+                ? hasPending
+                  ? 'Solicitudes que necesitan atención administrativa.'
+                  : 'No hay solicitudes pendientes de revisión.'
+                : 'No fue posible obtener este indicador.'}
             </p>
           </div>
-        </div>
-
-        {/* Tarjeta Pendientes */}
-        <div className="bg-white border border-black/10 rounded-xl px-4 py-3.5 flex items-center gap-3 flex-1 shadow-sm">
-          <div className="w-9 h-9 rounded-lg bg-[#E1F5EE] text-[#0F6E56] flex items-center justify-center flex-shrink-0">
-            <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-[11px] text-gray-400 uppercase tracking-wider m-0 mb-0.5">Pendientes</p>
-            <p className="text-[22px] font-medium text-gray-900 m-0 leading-none">{pendingUsers}</p>
-            <p className="text-[11px] text-[#854F0B] m-0 mt-0.5">Requieren revisión</p>
-          </div>
-        </div>
+        </article>
       </div>
-
-      {/* Estilos para el efecto LED / Marquee */}
-      <style jsx>{`
-        .marquee-container {
-          width: 100%;
-          overflow: hidden;
-          mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 5%,
-            black 95%,
-            transparent 100%
-          );
-          -webkit-mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 5%,
-            black 95%,
-            transparent 100%
-          );
-        }
-        .marquee-text {
-          display: inline-block;
-          font-family: 'Georgia', 'Times New Roman', serif;
-          font-style: italic;
-          font-weight: 500;
-          font-size: 26px;
-          letter-spacing: 0.03em;
-          animation: marquee 20s linear infinite;
-        }
-        @keyframes marquee {
-          0% {
-            transform: translateX(100%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-      `}</style>
-    </div>
+    </section>
   );
 }

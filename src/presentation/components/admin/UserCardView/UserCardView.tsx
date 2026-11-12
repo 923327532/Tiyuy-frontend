@@ -1,11 +1,23 @@
 'use client';
 
 import { UserListItem } from '@/core/domain/entities/Admin';
-import { Mail, Phone, Calendar, Shield, CheckCircle, XCircle, Eye, Clock, MapPin } from 'lucide-react';
+import {
+  AlertTriangle,
+  Check,
+  Mail,
+  MapPin,
+  Phone,
+  Trash2,
+  UserCheck,
+  UserX,
+} from 'lucide-react';
+import { ROLE_LABELS, ROLE_STYLES } from '../users/userRoleConfig';
 
 /**
- * UserCardView Component
- * Vista de tarjetas elegante para mostrar usuarios en el panel admin
+ * UserCardView
+ * Tarjetas de usuarios para el panel admin. Las acciones siempre están
+ * visibles (antes solo aparecían al pasar el mouse, lo que las hacía
+ * inalcanzables en móvil y con teclado).
  */
 
 interface UserCardViewProps {
@@ -17,6 +29,74 @@ interface UserCardViewProps {
   canDelete?: boolean;
 }
 
+/** Roles que publican: para ellos tiene sentido mostrar su producción. */
+const PUBLISHER_ROLES = new Set(['AGENT', 'DEVELOPER']);
+
+const dateFormatter = new Intl.DateTimeFormat('es-PE', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+});
+const relativeFormatter = new Intl.RelativeTimeFormat('es', { numeric: 'auto' });
+
+function toDate(value?: Date | string | null): Date | null {
+  if (!value) return null;
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatRegistered(value?: Date | string | null): string {
+  const date = toDate(value);
+  return date ? dateFormatter.format(date) : '—';
+}
+
+function formatLastAccess(value?: Date | string | null): string {
+  const date = toDate(value);
+  if (!date) return 'Sin accesos';
+
+  const minutes = Math.round((date.getTime() - Date.now()) / 60_000);
+  const abs = Math.abs(minutes);
+
+  if (abs < 1) return 'Ahora';
+  if (abs < 60) return relativeFormatter.format(minutes, 'minute');
+
+  const hours = Math.round(minutes / 60);
+  if (Math.abs(hours) < 24) return relativeFormatter.format(hours, 'hour');
+
+  const days = Math.round(hours / 24);
+  if (Math.abs(days) < 30) return relativeFormatter.format(days, 'day');
+
+  return dateFormatter.format(date);
+}
+
+function getFullName(user: UserListItem): string {
+  return [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || user.email;
+}
+
+function getInitials(user: UserListItem): string {
+  if (user.firstName && user.lastName) {
+    return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+  }
+  return (user.email?.[0] ?? '?').toUpperCase();
+}
+
+function VerifiedMark({ verified }: { verified: boolean }) {
+  return verified ? (
+    <span className="inline-flex items-center gap-1 text-emerald-700">
+      <Check className="h-3.5 w-3.5" aria-hidden="true" />
+      verificado
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1 text-amber-700">
+      <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
+      sin verificar
+    </span>
+  );
+}
+
+const ICON_BUTTON =
+  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f2e3a]/30';
+
 export function UserCardView({
   users,
   onViewDetail,
@@ -25,185 +105,175 @@ export function UserCardView({
   canManage,
   canDelete,
 }: UserCardViewProps) {
-  const getRoleBadge = (role: string) => {
-    const styles: Record<string, string> = {
-      ADMIN: 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-purple-200',
-      AGENT: 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-blue-200',
-      DEVELOPER: 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-emerald-200',
-      USER: 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-gray-200',
-    };
-    return styles[role] || styles.USER;
-  };
-
-  const getInitials = (user: UserListItem) => {
-    if (user.firstName && user.lastName) {
-      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-    }
-    return user.email[0].toUpperCase();
-  };
-
-  const formatDate = (date: Date | string | undefined) => {
-    if (!date) return 'Nunca';
-    return new Date(date).toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
-  };
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-      {users.map((user) => (
-        <div
-          key={user.id}
-          className="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-blue-200/50 transition-all duration-300 overflow-hidden"
-        >
-          {/* Barra superior decorativa con gradiente */}
-          <div className="h-1.5 bg-gradient-to-r from-blue-500 via-teal-400 to-emerald-400" />
+    <ul className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      {users.map((user) => {
+        const fullName = getFullName(user);
+        const role = user.role ?? 'USER';
+        const showProduction =
+          PUBLISHER_ROLES.has(role) ||
+          user.publishedPropertiesCount > 0 ||
+          user.publishedProjectsCount > 0;
+        const location = [user.city, user.country].filter(Boolean).join(', ');
 
-          <div className="p-5">
-            {/* Header de la tarjeta */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center gap-3">
-                {/* Avatar */}
-                <div className="relative">
+        return (
+          <li key={user.id}>
+            <article
+              className={`flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,46,58,0.04)] transition hover:border-slate-300 ${
+                user.enabled ? '' : 'bg-slate-50/70'
+              }`}
+            >
+              <div className="flex-1 p-5">
+                <div className="flex items-center gap-3">
                   {user.profilePhotoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={user.profilePhotoUrl}
-                      alt={`${user.firstName} ${user.lastName}`}
-                      className="w-12 h-12 rounded-xl object-cover ring-2 ring-gray-100"
+                      alt=""
+                      loading="lazy"
+                      className={`h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-slate-200 ${
+                        user.enabled ? '' : 'grayscale'
+                      }`}
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-teal-400 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                    <span
+                      aria-hidden="true"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-700 ring-1 ring-slate-200"
+                    >
                       {getInitials(user)}
+                    </span>
+                  )}
+
+                  <div className="min-w-0">
+                    <h3 className="truncate text-sm font-semibold text-slate-900" title={fullName}>
+                      {fullName}
+                    </h3>
+                    <p className="truncate text-xs text-slate-500" title={user.email}>
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                  <span
+                    className={`rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${
+                      ROLE_STYLES[role] ?? ROLE_STYLES.USER
+                    }`}
+                  >
+                    {ROLE_LABELS[role] ?? role}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${
+                      user.enabled
+                        ? 'bg-emerald-50 text-emerald-800 ring-emerald-200'
+                        : 'bg-rose-50 text-rose-800 ring-rose-200'
+                    }`}
+                  >
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        user.enabled ? 'bg-emerald-500' : 'bg-rose-500'
+                      }`}
+                      aria-hidden="true"
+                    />
+                    {user.enabled ? 'Activo' : 'Suspendido'}
+                  </span>
+                </div>
+
+                <dl className="mt-4 space-y-2 text-xs text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <dt className="sr-only">Correo</dt>
+                    <Mail className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                    <dd>
+                      Correo <VerifiedMark verified={Boolean(user.emailVerified)} />
+                    </dd>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <dt className="sr-only">Teléfono</dt>
+                    <Phone className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                    <dd className="flex min-w-0 flex-wrap items-center gap-x-2">
+                      <span className="truncate">{user.phone || 'Sin teléfono'}</span>
+                      {user.phone ? <VerifiedMark verified={Boolean(user.phoneVerified)} /> : null}
+                    </dd>
+                  </div>
+
+                  {location && (
+                    <div className="flex items-center gap-2">
+                      <dt className="sr-only">Ubicación</dt>
+                      <MapPin className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+                      <dd className="truncate">{location}</dd>
                     </div>
                   )}
-                  {/* Indicador de estado */}
-                  <div
-                    className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white ${
-                      user.enabled ? 'bg-green-500' : 'bg-red-400'
+                </dl>
+
+                {showProduction && (
+                  <dl className="mt-4 grid grid-cols-2 divide-x divide-slate-100 border-t border-slate-100 pt-4">
+                    <div className="pr-3">
+                      <dd className="text-xl font-semibold tabular-nums text-slate-900">
+                        {user.publishedPropertiesCount ?? 0}
+                      </dd>
+                      <dt className="text-xs text-slate-500">Propiedades publicadas</dt>
+                    </div>
+                    <div className="pl-4">
+                      <dd className="text-xl font-semibold tabular-nums text-slate-900">
+                        {user.publishedProjectsCount ?? 0}
+                      </dd>
+                      <dt className="text-xs text-slate-500">Proyectos publicados</dt>
+                    </div>
+                  </dl>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-3 text-xs text-slate-500">
+                <span>Alta: {formatRegistered(user.createdAt)}</span>
+                <span>Último acceso: {formatLastAccess(user.lastLoginAt)}</span>
+              </div>
+
+              <div className="flex items-center gap-2 border-t border-slate-100 p-3">
+                <button
+                  type="button"
+                  onClick={() => onViewDetail(user)}
+                  className="h-9 flex-1 rounded-lg bg-[#0f2e3a] px-3 text-sm font-medium text-white transition hover:bg-[#164453] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0f2e3a]/40 focus-visible:ring-offset-2"
+                >
+                  Ver detalle
+                </button>
+
+                {canManage && onToggleStatus && (
+                  <button
+                    type="button"
+                    onClick={() => onToggleStatus(user)}
+                    title={user.enabled ? 'Suspender cuenta' : 'Reactivar cuenta'}
+                    aria-label={`${user.enabled ? 'Suspender' : 'Reactivar'} la cuenta de ${fullName}`}
+                    className={`${ICON_BUTTON} ${
+                      user.enabled
+                        ? 'text-amber-700 hover:border-amber-300 hover:bg-amber-50'
+                        : 'text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50'
                     }`}
-                  />
-                </div>
-
-                {/* Nombre y email */}
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-sm font-semibold text-gray-900 truncate">
-                    {user.firstName} {user.lastName}
-                  </h3>
-                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
-                </div>
-              </div>
-
-              {/* Badge de rol */}
-              <span
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider shadow-sm ${getRoleBadge(user.role)}`}
-              >
-                {user.role}
-              </span>
-            </div>
-
-            {/* Información detallada */}
-            <div className="space-y-2 mb-4">
-              {/* Teléfono */}
-              <div className="flex items-center gap-2 text-xs text-gray-500">
-                <Phone className="w-3.5 h-3.5 text-gray-400" />
-                <span>{user.phone || 'Sin teléfono'}</span>
-              </div>
-
-              {/* Ubicación */}
-              {(user.city || user.country) && (
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                  <span>{[user.city, user.country].filter(Boolean).join(', ')}</span>
-                </div>
-              )}
-
-              {/* Verificaciones */}
-              <div className="flex items-center gap-3 text-xs">
-                <div className="flex items-center gap-1">
-                  <Mail className="w-3.5 h-3.5" />
-                  {user.emailVerified ? (
-                    <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                  ) : (
-                    <XCircle className="w-3.5 h-3.5 text-yellow-500" />
-                  )}
-                  <span className="text-gray-400">Email</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Phone className="w-3.5 h-3.5" />
-                  {user.phoneVerified ? (
-                    <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                  ) : (
-                    <XCircle className="w-3.5 h-3.5 text-yellow-500" />
-                  )}
-                  <span className="text-gray-400">Tel</span>
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div className="flex items-center gap-4 pt-1">
-                {user.publishedPropertiesCount > 0 && (
-                  <div className="flex items-center gap-1 text-xs">
-                    <span className="font-semibold text-blue-600">{user.publishedPropertiesCount}</span>
-                    <span className="text-gray-400">props</span>
-                  </div>
+                  >
+                    {user.enabled ? (
+                      <UserX className="h-4 w-4" aria-hidden="true" />
+                    ) : (
+                      <UserCheck className="h-4 w-4" aria-hidden="true" />
+                    )}
+                  </button>
                 )}
-                {user.publishedProjectsCount > 0 && (
-                  <div className="flex items-center gap-1 text-xs">
-                    <span className="font-semibold text-emerald-600">{user.publishedProjectsCount}</span>
-                    <span className="text-gray-400">proys</span>
-                  </div>
+
+                {canDelete && onDelete && (
+                  <button
+                    type="button"
+                    onClick={() => onDelete(user)}
+                    title="Eliminar usuario"
+                    aria-label={`Eliminar a ${fullName}`}
+                    className={`${ICON_BUTTON} text-rose-700 hover:border-rose-300 hover:bg-rose-50`}
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  </button>
                 )}
               </div>
-            </div>
-
-            {/* Footer con fechas */}
-            <div className="flex items-center justify-between pt-3 border-t border-gray-50">
-              <div className="flex items-center gap-1 text-[10px] text-gray-400">
-                <Calendar className="w-3 h-3" />
-                <span>{formatDate(user.createdAt)}</span>
-              </div>
-              <div className="flex items-center gap-1 text-[10px] text-gray-400">
-                <Clock className="w-3 h-3" />
-                <span>{formatDate(user.lastLoginAt)}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Acciones hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4 gap-2">
-            <button
-              onClick={() => onViewDetail(user)}
-              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white/90 text-gray-800 hover:bg-white shadow-lg hover:shadow-xl transition-all flex items-center gap-1.5"
-            >
-              <Eye className="w-3.5 h-3.5" />
-              Ver Detalle
-            </button>
-            {canManage && onToggleStatus && (
-              <button
-                onClick={() => onToggleStatus(user)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg shadow-lg transition-all flex items-center gap-1.5 ${
-                  user.enabled
-                    ? 'bg-yellow-500/90 text-white hover:bg-yellow-500'
-                    : 'bg-green-500/90 text-white hover:bg-green-500'
-                }`}
-              >
-                {user.enabled ? 'Pausar' : 'Reanudar'}
-              </button>
-            )}
-            {canDelete && onDelete && (
-              <button
-                onClick={() => onDelete(user)}
-                className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/90 text-white hover:bg-red-500 shadow-lg transition-all flex items-center gap-1.5"
-              >
-                <XCircle className="w-3.5 h-3.5" />
-                Eliminar
-              </button>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
+            </article>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

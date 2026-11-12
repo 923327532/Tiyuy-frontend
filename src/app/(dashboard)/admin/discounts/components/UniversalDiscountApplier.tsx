@@ -293,9 +293,9 @@ function AgentDiscountContent({ onClose }: AgentDiscountContentProps) {
         data: {
           planCode: selectedPlan.code,
           discountPercentage: Number(planDiscount.discountPercentage),
-          customPrice: planDiscount.customPrice ? Number(planDiscount.customPrice) : undefined,
-          startDate: new Date(planDiscount.startDate).toISOString(),
-          endDate: new Date(planDiscount.endDate).toISOString(),
+          customPricePen: planDiscount.customPrice ? Number(planDiscount.customPrice) : undefined,
+          validFrom: new Date(planDiscount.startDate).toISOString(),
+          validUntil: new Date(planDiscount.endDate).toISOString(),
         },
       });
       resetAndClose();

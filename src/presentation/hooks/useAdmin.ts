@@ -35,6 +35,7 @@ import {
   UserProjectsResponse,
   PropertyComment,
   NotifyOwnerRequest,
+  ModerateProjectRequest,
   AgentDashboardStats,
   AgentListItem,
 } from '@/core/domain/entities/Admin';
@@ -51,52 +52,36 @@ import { PaginationParams } from '@/core/domain/repositories/IAdminRepository';
 const adminRepository = new AdminRepository();
 const ADMIN_QUERY_KEY = 'admin';
 
+interface NotifyDeveloperRequest {
+  subject: string;
+  message: string;
+  includeProjectDetails?: boolean;
+}
+
+interface AgentPlanDiscountRequest {
+  planCode: string;
+  discountPercentage: number;
+  customPricePen?: number;
+  validFrom?: string;
+  validUntil?: string;
+  notes?: string;
+}
+
 // Dashboard hooks
 export const useDashboardStats = () => {
   return useQuery({
     queryKey: [ADMIN_QUERY_KEY, 'dashboard', 'stats'],
-    queryFn: async () => {
-      console.log(' Calling getDashboardStats...');
-      try {
-        const result = await adminRepository.getDashboardStats();
-        console.log(' Dashboard stats received:', result);
-        return result;
-      } catch (error) {
-        console.error(' Error fetching dashboard stats:', error);
-        // Retornar datos por defecto en caso de error 500
-        return {
-          totalUsers: 0,
-          activeUsers: 0,
-          newUsersToday: 0,
-          newUsersThisWeek: 0,
-          newUsersThisMonth: 0,
-          totalProperties: 0,
-          publishedProperties: 0,
-          pendingProperties: 0,
-          rejectedProperties: 0,
-          totalProjects: 0,
-          activeProjects: 0,
-          totalPayments: 0,
-          paymentsToday: 0,
-          totalRevenue: 0,
-          revenueToday: 0,
-          revenueThisWeek: 0,
-          revenueThisMonth: 0,
-          totalChatMessages: 0,
-          totalEvents: 0,
-          pendingReports: 0,
-          usersByRole: {},
-          propertiesByType: {},
-          propertiesByStatus: {},
-          generatedAt: new Date().toISOString(),
-          usersGrowthPercent: 0,
-          propertiesGrowthPercent: 0,
-          projectsGrowthPercent: 0,
-          revenueGrowthPercent: 0
-        };
-      }
-    },
+    queryFn: () => adminRepository.getDashboardStats(),
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const usePropertyAnalytics = () => {
+  return useQuery({
+    queryKey: [ADMIN_QUERY_KEY, 'dashboard', 'properties'],
+    queryFn: () => adminRepository.getPropertyAnalytics(),
+    staleTime: 60 * 1000,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -147,33 +132,7 @@ export const useUserRegistrationHistory = (period: string = '1M') => {
 export const useFinanceStats = () => {
   return useQuery({
     queryKey: [ADMIN_QUERY_KEY, 'dashboard', 'financeStats'],
-    queryFn: async () => {
-      console.log('Fetching finance stats from backend...');
-      try {
-        const stats = await adminRepository.getFinanceStats();
-        console.log('Finance stats received:', stats);
-        return stats;
-      } catch (error) {
-        console.error(' Error fetching finance stats:', error);
-        return {
-          totalRevenue: 0,
-          revenueToday: 0,
-          revenueThisWeek: 0,
-          revenueThisMonth: 0,
-          totalPayments: 0,
-          paymentsToday: 0,
-          averageTransactionValue: 0,
-          refundsTotal: 0,
-          refundsCount: 0,
-          totalSubscriptions: 0,
-          activeSubscriptions: 0,
-          newSubscriptionsToday: 0,
-          totalTransactions: 0,
-          transactionsToday: 0,
-          totalWalletBalance: 0
-        };
-      }
-    },
+    queryFn: () => adminRepository.getFinanceStats(),
     staleTime: 0, // No caché - siempre datos frescos
     refetchOnWindowFocus: true, // Refrescar al enfocar ventana
     refetchOnReconnect: true, // Refrescar al reconectar
@@ -416,11 +375,15 @@ export const useToggleAgentStatus = () => {
 };
 
 // Discount code hooks
-export const useDiscountCodes = (params: PaginationParams = { page: 0, size: 20 }) => {
+export const useDiscountCodes = (
+  params: PaginationParams = { page: 0, size: 20 },
+  options?: { enabled?: boolean },
+) => {
   return useQuery({
     queryKey: [ADMIN_QUERY_KEY, 'discounts', params],
     queryFn: () => adminRepository.getAllDiscountCodes(params),
     staleTime: 60 * 1000,
+    enabled: options?.enabled ?? true,
   });
 };
 
@@ -655,7 +618,6 @@ export const useDeletePropertyComment = () => {
 };
 
 export const useNotifyPropertyOwner = () => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ propertyId, request }: { propertyId: number; request: NotifyOwnerRequest }) =>
       adminRepository.notifyPropertyOwner(propertyId, request),
@@ -718,7 +680,7 @@ export const useProjectStats = () => {
 export const useModerateProject = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ projectId, request }: { projectId: number; request: any }) =>
+    mutationFn: ({ projectId, request }: { projectId: number; request: ModerateProjectRequest }) =>
       adminRepository.moderateProject(projectId, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'projects'] });
@@ -779,9 +741,8 @@ export const useDeleteProjectComment = () => {
 };
 
 export const useNotifyProjectDeveloper = () => {
-  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ projectId, request }: { projectId: number; request: any }) =>
+    mutationFn: ({ projectId, request }: { projectId: number; request: NotifyDeveloperRequest }) =>
       adminRepository.notifyProjectDeveloper(projectId, request),
     onSuccess: () => {
       // No need to invalidate queries, just notification sent
@@ -971,7 +932,7 @@ export const useAgentList = (params: PaginationParams = { page: 0, size: 20 }) =
 export const useCreateAgentPlanDiscount = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ agentId, data }: { agentId: number; data: any }) => 
+    mutationFn: ({ agentId, data }: { agentId: number; data: AgentPlanDiscountRequest }) =>
       adminRepository.createAgentPlanDiscount(agentId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'agents', 'plan-discounts'] });
@@ -1056,12 +1017,13 @@ export const useCentralDiscountSummary = () => {
 
 // ================== Marketing Module Hooks ==================
 
-export const useMarketingStats = () => {
+export const useMarketingStats = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: [ADMIN_QUERY_KEY, 'marketing', 'stats'],
     queryFn: () => adminRepository.getMarketingStats(),
     staleTime: 30000,
     refetchOnWindowFocus: true,
+    enabled: options?.enabled ?? true,
   });
 };
 

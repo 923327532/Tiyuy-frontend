@@ -47,7 +47,7 @@ export function UserAvatar({
     return fallback;
   };
 
-  const baseClasses = `rounded-full flex items-center justify-center font-semibold overflow-hidden bg-gradient-to-br from-teal-400 to-emerald-500 text-white ${sizeClasses[size]}`;
+  const baseClasses = `rounded-full flex items-center justify-center font-semibold overflow-hidden bg-[#1e4a57] text-white ${sizeClasses[size]}`;
   
   if (photoUrl && !imgError) {
     return (
