@@ -55,7 +55,7 @@ const FOOTER_COLUMNS = [
     title: 'Acerca de nosotros',
     links: [
       { label: 'Por qué elegir TIYUY', href: '/about-tiyuy' },
-      { label: 'Trabaja con nosotros', href: '/trabaja-con-nosotros' },
+      { label: 'Trabaja con nosotros', href: '/work-with-us' },
       { label: 'Inversores', href: '/inversores' },
       { label: 'Noticias y comunicados', href: '/noticias' },
       { label: 'Impacto comunitario', href: '/impacto-comunitario' },
@@ -147,6 +147,23 @@ export function Footer() {
                    <Icon icon="lucide:phone" width="16" />
                 </div>
                 <span>+51 923 327 532</span>
+              </a>
+            </div>
+
+            <div className="mt-8">
+              <p className="text-white font-medium text-[14px] mb-3">Descarga nuestra app</p>
+              <a
+                href="https://play.google.com/store/apps/details?id=com.sabero.tiyuy&pcampaignid=web_share"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Descargar Tiyuy en Google Play"
+                className="inline-flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-white transition-colors hover:border-[#4A9A3E]/60 hover:bg-[#4A9A3E]/10"
+              >
+                <Icon icon="logos:google-play-icon" width="24" height="24" />
+                <span className="text-left leading-tight">
+                  <span className="block text-[10px] text-gray-400">Disponible en</span>
+                  <span className="block text-sm font-semibold">Google Play</span>
+                </span>
               </a>
             </div>
           </div>

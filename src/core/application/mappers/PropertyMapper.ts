@@ -17,8 +17,15 @@ export class PropertyMapper {
     // Owner viene como campos planos desde el backend
     const ownerName = 
       `${anyDto.ownerFirstName || ''} ${anyDto.ownerLastName || ''}`.trim() || 
+      anyDto.owner?.name ||
       anyDto.ownerEmail || 
       'Usuario';
+    const ownerPhotoUrl = anyDto.ownerPhotoUrl ||
+      anyDto.owner?.photoUrl ||
+      anyDto.owner?.avatar ||
+      anyDto.ownerProfilePhoto ||
+      anyDto.ownerAvatarUrl ||
+      undefined;
 
     const safeMedia = Array.isArray(anyDto.media)
       ? anyDto.media
@@ -74,11 +81,12 @@ export class PropertyMapper {
       coverPhotoUrl: anyDto.coverPhotoUrl || undefined,
 
       owner: {
-        id: Number(anyDto.ownerId || 0),
+        id: Number(anyDto.ownerId || anyDto.owner?.id || 0),
         name: ownerName,
-        email: String(anyDto.ownerEmail || ''),
+        email: String(anyDto.ownerEmail || anyDto.owner?.email || ''),
         phone: '',
-        role: anyDto.ownerRole || 'USER',
+        role: anyDto.ownerRole || anyDto.owner?.role || 'USER',
+        photoUrl: ownerPhotoUrl,
       },
 
       seo: {

@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { toast } from '@/presentation/store/toastStore';
 import { axiosClient } from '@/infrastructure/api/axios-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Globe, Lock, User, Camera, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Eye, EyeOff, Globe, Lock, User, Camera, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { UserAvatar } from '@/presentation/components/shared/UserAvatar';
 
 // Formatos de imagen permitidos
@@ -140,6 +140,7 @@ export default function AdminProfilePage() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [visiblePasswords, setVisiblePasswords] = useState({ new: false, confirm: false });
   const [email, setEmail] = useState('');
   const [isEditingEmail, setIsEditingEmail] = useState(false);
 
@@ -477,45 +478,60 @@ export default function AdminProfilePage() {
 
                 {/* Cambio de Contrasena */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-gray-900 mb-4">Cambiar Contrasena</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Cambiar Contrasena</h3>
                   
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Contrasena Actual</label>
-                    <input
-                      type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      placeholder="Ingresa tu contrasena actual"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-                    />
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Contrasena Actual</label>
+                    <div className="relative">
+                      <input
+                        type="password"
+                        autoComplete="off"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="Ingresa tu contrasena actual para verificar tu identidad"
+                        className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Nueva Contrasena</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Minimo 6 caracteres"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-                    />
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Nueva Contrasena</label>
+                    <div className="relative">
+                      <input
+                        type={visiblePasswords.new ? 'text' : 'password'}
+                        autoComplete="new-password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Minimo 6 caracteres"
+                        className="w-full px-4 pr-12 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      />
+                      <button type="button" onClick={() => setVisiblePasswords((state) => ({ ...state, new: !state.new }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-teal-600" aria-label={visiblePasswords.new ? 'Ocultar contrasena' : 'Mostrar contrasena'}>
+                        {visiblePasswords.new ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
 
                   <div>
-                    <label className="text-sm text-gray-600 mb-1 block">Confirmar Contrasena</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Repite la nueva contrasena"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-                    />
+                    <label className="text-sm text-[var(--text-secondary)] mb-1 block">Confirmar Contrasena</label>
+                    <div className="relative">
+                      <input
+                        type={visiblePasswords.confirm ? 'text' : 'password'}
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Repite la nueva contrasena"
+                        className="w-full px-4 pr-12 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      />
+                      <button type="button" onClick={() => setVisiblePasswords((state) => ({ ...state, confirm: !state.confirm }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-teal-600" aria-label={visiblePasswords.confirm ? 'Ocultar contrasena' : 'Mostrar contrasena'}>
+                        {visiblePasswords.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
 
                   <button
                     onClick={handleChangePassword}
                     disabled={changePassword.isPending}
-                    className="w-full py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 disabled:opacity-50 transition-colors"
+                    className="w-full py-3 bg-[var(--brand-primary)] text-white rounded-xl font-medium hover:bg-[var(--brand-primary-hover)] disabled:opacity-50 transition-colors"
                   >
                     {changePassword.isPending ? 'Cargando...' : <><Lock className="w-4 h-4 inline mr-1" /> Cambiar Contrasena</>}
                   </button>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { PropertyMedia } from '@/core/domain/entities/Property';
-import { Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
 
 interface PropertyGalleryProps {
   media: PropertyMedia[];
@@ -61,15 +61,17 @@ export function PropertyGallery({ media, coverPhotoUrl }: PropertyGalleryProps) 
           <>
             <button
               onClick={() => setSelectedIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-colors"
+              aria-label="Imagen anterior"
+              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm shadow-md ring-1 ring-white/20 hover:bg-[var(--brand-primary)] transition-colors"
             >
-              ←
+              <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={() => setSelectedIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition-colors"
+              aria-label="Imagen siguiente"
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm shadow-md ring-1 ring-white/20 hover:bg-[var(--brand-primary)] transition-colors"
             >
-              →
+              <ChevronRight className="w-5 h-5" />
             </button>
           </>
         )}
