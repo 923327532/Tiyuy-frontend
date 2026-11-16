@@ -1,7 +1,5 @@
 /**
  * Contrato de datos del módulo Usuarios (propuesta TIYUY).
- * Todo lo de `UserDetailExtras` es lo que el backend debe entregar para la ficha completa;
- * la interfaz ya está lista para consumirlo.
  */
 
 export type UserSegment = 'REAL_ESTATE_COMPANY' | 'BROKER' | 'INDIVIDUAL' | 'INVESTOR';
@@ -28,38 +26,40 @@ export interface SupportTicket {
 /** Libro de Reclamaciones y solicitudes de cambio o devolución. */
 export interface FormalClaim {
   id: string;
-  /** Código visible, p. ej. "LR-000123". */
   code: string;
   type: 'CLAIM' | 'COMPLAINT' | 'REFUND' | 'EXCHANGE';
+  subject?: string;
   summary: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED';
+  status: 'OPEN' | 'IN_REVIEW' | 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'REJECTED';
   createdAt: string;
-  /** Fecha límite de respuesta, si aplica. */
   dueDate?: string;
 }
 
 export interface PaymentRecord {
   id: string;
   concept: string;
-  method: 'MERCADO_PAGO' | 'YAPE' | 'PLIN' | 'OTHER';
+  method: 'MERCADO_PAGO' | 'YAPE' | 'PLIN' | 'CARD' | 'TRANSFER' | 'OTHER';
   amount: number;
   currency: 'PEN' | 'USD';
   status: 'PAID' | 'PENDING' | 'REFUNDED' | 'FAILED';
-  paidAt: string;
+  date: string;
+  paidAt?: string;
 }
 
 export interface ListingRecord {
   id: string;
   title: string;
-  /** Enum PropertyStatus del backend. */
+  propertyType?: string;
   status: string;
   createdAt: string;
+  publishedAt?: string;
 }
 
 export interface CancellationRequest {
   id: string;
+  service?: string;
   reason?: string;
-  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED';
+  status: 'REQUESTED' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED';
   requestedAt: string;
   scheduledFor?: string;
 }
@@ -85,14 +85,27 @@ export interface BrokerPortfolio {
 }
 
 export interface UserDetailExtras {
+  accountState?: AccountState;
   identityStatus?: IdentityStatus;
   company?: CompanyProfile;
   brokerPortfolio?: BrokerPortfolio;
   policyAlerts?: PolicyAlert[];
+  openAlerts?: PolicyAlert[];
   cancellationRequest?: CancellationRequest | null;
+  cancellationRequests?: CancellationRequest[];
   tickets?: SupportTicket[];
+  openTickets?: SupportTicket[];
   claims?: FormalClaim[];
+  formalClaims?: FormalClaim[];
   accessibilitySupport?: AccessibilitySupport | null;
   listings?: ListingRecord[];
+  publishedListings?: ListingRecord[];
   payments?: PaymentRecord[];
+  savedSearchesCount?: number;
+  favoritesCount?: number;
+  leadsCount?: number;
+  failedLoginAttempts?: number;
+  lastDevice?: string;
+  notificationsEnabled?: boolean;
+  newsletterSubscribed?: boolean;
 }

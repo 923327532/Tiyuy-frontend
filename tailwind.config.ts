@@ -32,8 +32,23 @@ const config: Config = {
       },
       animation: {
         blob: 'blob 7s infinite',
+        'menu-fade-in': 'menu-fade-in 200ms ease-out',
+        'menu-slide-in': 'menu-slide-in 200ms ease-out',
+        'menu-drop-in': 'menu-drop-in 150ms ease-out',
       },
       keyframes: {
+        'menu-fade-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        'menu-slide-in': {
+          from: { transform: 'translateX(100%)' },
+          to: { transform: 'translateX(0)' },
+        },
+        'menu-drop-in': {
+          from: { opacity: '0', transform: 'translateY(-8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
         blob: {
           '0%': {
             transform: 'translate(0px, 0px) scale(1)',

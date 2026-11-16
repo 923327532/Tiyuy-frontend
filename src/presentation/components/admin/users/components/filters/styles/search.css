@@ -1,0 +1,78 @@
+/* Search field */
+.users-filters__search {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+}
+
+.users-filters__search-icon {
+  position: absolute;
+  left: 0.9rem;
+  z-index: 1;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--uf-text-muted);
+  pointer-events: none;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.users-filters__input {
+  width: 100%;
+  height: 2.625rem;
+  padding: 0 2.75rem 0 2.6rem;
+  border: 1px solid var(--uf-border);
+  border-radius: var(--uf-radius);
+  outline: none;
+  background: var(--uf-bg);
+  color: var(--uf-text-primary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: var(--uf-shadow-sm);
+  transition:
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 250ms ease;
+}
+
+.users-filters__input::placeholder { color: var(--uf-text-muted); font-weight: 400; }
+.users-filters__input:hover { border-color: var(--uf-border-hover); }
+.users-filters__input:focus {
+  border-color: var(--uf-success);
+  box-shadow: var(--uf-shadow-focus) var(--uf-success-glow);
+}
+.users-filters__search:focus-within .users-filters__search-icon { color: var(--uf-success); }
+.users-filters__input::-webkit-search-cancel-button { appearance: none; }
+
+.users-filters__search-clear {
+  position: absolute;
+  right: 0.55rem;
+  z-index: 1;
+  display: flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--uf-radius-sm);
+  background: transparent;
+  color: var(--uf-text-muted);
+  cursor: pointer;
+  animation: uf-clear-btn-enter 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transition: color 200ms ease, background-color 200ms ease, transform 200ms ease;
+}
+
+.users-filters__search-clear svg { width: 0.9rem; height: 0.9rem; }
+.users-filters__search-clear:hover {
+  background: var(--uf-bg-muted);
+  color: var(--uf-text-secondary);
+  transform: scale(1.05);
+}
+
+@keyframes uf-clear-btn-enter {
+  0% { opacity: 0; transform: scale(0.6) rotate(-45deg); }
+  60% { transform: scale(1.1) rotate(5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}

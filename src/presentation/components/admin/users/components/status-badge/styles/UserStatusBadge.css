@@ -1,0 +1,93 @@
+/* ==========================================
+   USER STATUS BADGE - 2026 PREMIUM
+   Consistente con la paleta muted del sistema
+========================================== */
+
+:root {
+  --usb-success: #6b9080;
+  --usb-success-soft: #e8f0ec;
+  --usb-warning: #c9a876;
+  --usb-warning-soft: #f5ede0;
+  --usb-danger: #cf8a92;
+  --usb-danger-soft: #f5e5e7;
+}
+
+/* Badge group */
+.user-status-badge__group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.user-status-badge__group:hover { transform: translateY(-1px); }
+
+/* Base overrides */
+.user-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  transition: background-color 200ms ease, color 200ms ease, transform 200ms ease;
+}
+
+.user-status-badge--sub {
+  font-size: 0.6875rem;
+  padding: 0.125rem 0.45rem;
+}
+
+/* Account state */
+.user-status-badge--active {
+  background: var(--usb-success-soft) !important;
+  color: var(--usb-success) !important;
+  border-color: color-mix(in srgb, var(--usb-success) 20%, transparent) !important;
+}
+.user-status-badge--active [data-dot],
+.user-status-badge--active .badge__dot {
+  background: var(--usb-success) !important;
+  box-shadow: 0 0 0 2px var(--usb-success-soft) !important;
+}
+
+.user-status-badge--suspended {
+  background: var(--usb-danger-soft) !important;
+  color: var(--usb-danger) !important;
+  border-color: color-mix(in srgb, var(--usb-danger) 20%, transparent) !important;
+}
+.user-status-badge--suspended [data-dot],
+.user-status-badge--suspended .badge__dot {
+  background: var(--usb-danger) !important;
+  box-shadow: 0 0 0 2px var(--usb-danger-soft) !important;
+}
+
+/* Verification */
+.user-status-badge--verified {
+  background: var(--usb-success-soft) !important;
+  color: var(--usb-success) !important;
+  border-color: color-mix(in srgb, var(--usb-success) 20%, transparent) !important;
+}
+.user-status-badge--verified [data-dot],
+.user-status-badge--verified .badge__dot {
+  background: var(--usb-success) !important;
+  box-shadow: 0 0 0 2px var(--usb-success-soft) !important;
+}
+
+.user-status-badge--unverified {
+  background: var(--usb-warning-soft) !important;
+  color: var(--usb-warning) !important;
+  border-color: color-mix(in srgb, var(--usb-warning) 20%, transparent) !important;
+}
+.user-status-badge--unverified [data-dot],
+.user-status-badge--unverified .badge__dot {
+  background: var(--usb-warning) !important;
+  box-shadow: 0 0 0 2px var(--usb-warning-soft) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-status-badge,
+  .user-status-badge__group { transition: none !important; }
+  .user-status-badge__group:hover { transform: none; }
+}

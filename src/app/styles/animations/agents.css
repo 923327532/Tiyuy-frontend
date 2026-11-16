@@ -1,0 +1,46 @@
+/* ========================================
+   AGENTS PLANS ANIMATIONS
+======================================== */
+
+@keyframes agents-entry {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agents-plan-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animate-agents-entry {
+  animation: agents-entry 0.45s ease-out both;
+}
+
+.agents-plan-item,
+.agents-top-agent {
+  animation: agents-entry 0.45s ease-out both;
+}
+
+.agents-plan-bar {
+  transform-origin: left;
+  animation: agents-plan-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-agents-entry,
+  .agents-plan-item,
+  .agents-top-agent,
+  .agents-plan-bar {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,81 @@
+/* ========================================
+   COMPONENTS - Inputs, Scrollbars, Forms
+======================================== */
+
+/* === Scrollbar oculto (hero sections, carruseles) === */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* === Input base === */
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  background-color: #ffffff;
+  outline: none;
+}
+
+.input:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  --tw-ring-color: #61BF53;
+  border-color: transparent;
+}
+
+html.dark .input {
+  background-color: #1e293b;
+  border-color: #475569;
+  color: #ffffff;
+}
+html.dark .input::placeholder {
+  color: #9ca3af;
+}
+
+/* === Hero section custom select === */
+.hero-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px 8px;
+  padding-right: 38px;
+}
+.hero-select::-ms-expand { display: none; }
+.hero-select option {
+  padding: 8px 12px;
+  background: white;
+  color: #374151;
+}
+.hero-input-number::-webkit-inner-spin-button,
+.hero-input-number::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.hero-input-number[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* === Featured carousel responsive widths === */
+.carousel-card { width: 160px; flex-shrink: 0; }
+@media (min-width: 640px) { .carousel-card { width: calc((100% - 20px) / 2); } }
+@media (min-width: 768px) { .carousel-card { width: calc((100% - 2 * 24px) / 3); } }
+@media (min-width: 1024px) { .carousel-card { width: calc((100% - 3 * 24px) / 4); } }
+@media (min-width: 1280px) { .carousel-card { width: calc((100% - 4 * 24px) / 5); } }
+@media (min-width: 1536px) { .carousel-card { width: calc((100% - 5 * 24px) / 6); } }
+@media (min-width: 1800px) { .carousel-card { width: calc((100% - 6 * 24px) / 7); } }

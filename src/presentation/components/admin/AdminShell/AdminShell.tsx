@@ -1,7 +1,6 @@
 /**
  * Admin shell: responsive sidebar, institutional header and scrollable content.
  */
-
 'use client';
 
 import { ReactNode, useEffect, useState } from 'react';
@@ -12,7 +11,7 @@ import { useAuthStore } from '@/presentation/store/authStore';
 import { Spinner } from '@/presentation/components/ui/Spinner';
 import { Card } from '@/presentation/components/ui/Card';
 import { AdminHeader } from '@/presentation/components/admin/AdminHeader/AdminHeader';
-import { AdminSidebar } from './AdminSidebar';
+import { AdminSidebar } from '@/presentation/components/admin/AdminSidebar';
 
 interface AdminShellProps {
   children: ReactNode;
@@ -107,10 +106,13 @@ export function AdminShell({ children }: AdminShellProps) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f6f7f5]">
-      <AdminHeader onToggleSidebar={handleToggleSidebar} />
+    <div className="flex min-h-screen w-full max-w-full flex-col overflow-x-hidden bg-[#f6f7f5]">
+      <AdminHeader
+        onToggleSidebar={handleToggleSidebar}
+        sidebarCollapsed={collapsed}
+      />
 
-      <div className="relative flex h-[calc(100vh-56px)] overflow-hidden">
+      <div className="relative flex h-[calc(100vh-64px)] w-full min-w-0 overflow-hidden">
         {mobileOpen && (
           <button
             type="button"
@@ -122,17 +124,21 @@ export function AdminShell({ children }: AdminShellProps) {
 
         <aside
           className={[
-            'fixed inset-y-0 left-0 top-14 z-40 flex h-[calc(100vh-56px)] w-[248px] flex-col overflow-hidden bg-[#0f2e3a] transition-transform duration-200 ease-in-out',
+            'fixed inset-y-0 left-0 top-16 z-40 flex h-[calc(100vh-64px)] w-64 flex-col overflow-hidden bg-[#0f2e3a] transition-transform duration-200 ease-in-out',
             mobileOpen ? 'translate-x-0' : '-translate-x-full',
             'md:static md:top-0 md:z-auto md:h-full md:shrink-0 md:translate-x-0 md:transition-[width]',
-            collapsed ? 'md:w-[64px]' : 'md:w-[248px]',
+            collapsed ? 'md:w-[72px]' : 'md:w-64',
           ].join(' ')}
           aria-label="Menú administrativo"
         >
-          <AdminSidebar collapsed={collapsed} onNavigate={() => setMobileOpen(false)} />
+          <AdminSidebar
+            collapsed={collapsed}
+            onNavigate={() => setMobileOpen(false)}
+            onRequestExpand={() => setCollapsed(false)}
+          />
         </aside>
 
-        <main className="h-full flex-1 overflow-y-auto bg-[#f6f7f5]">
+        <main className="h-full min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-[#f6f7f5]">
           {children}
         </main>
       </div>

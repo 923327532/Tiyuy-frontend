@@ -1,0 +1,82 @@
+/* ========================================
+   DASHBOARD ATTENTION ANIMATIONS
+======================================== */
+
+@keyframes attention-severity-entry {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.attention-severity-list {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+
+.attention-severity {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  animation: attention-severity-entry 0.4s ease-out both;
+}
+
+.attention-severity-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+
+.attention-severity-label {
+  font-weight: 600;
+}
+
+/* Crítico */
+.attention-severity--critical {
+  color: #be4454;
+  background: #fff1f2;
+  border-color: #fecdd3;
+}
+
+/* Advertencia */
+.attention-severity--warning {
+  color: #a66b20;
+  background: #fff8eb;
+  border-color: #f3dfb8;
+}
+
+/* Informativo */
+.attention-severity--info {
+  color: #64748b;
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .attention-severity-list {
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .attention-severity {
+    animation: none !important;
+  }
+}

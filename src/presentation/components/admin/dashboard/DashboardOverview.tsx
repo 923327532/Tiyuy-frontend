@@ -1,27 +1,29 @@
+/**
+ * DashboardOverview - Vista principal del dashboard administrativo
+ * Componente refactorizado usando la nueva arquitectura modular
+ */
 'use client';
 
-import { PropertyAnalyticsSection } from '@/presentation/components/admin/PropertyAnalytics/PropertyAnalyticsSection';
-import { DashboardAttention } from './DashboardAttention';
-import { DashboardHeader } from './DashboardHeader';
-import { DashboardModerationCard } from './DashboardModerationCard';
-import { DashboardPartialNotice } from './DashboardPartialNotice';
-import { DashboardPropertiesDonut } from './DashboardPropertiesDonut';
-import { DashboardQuickActions } from './DashboardQuickActions';
-import { DashboardRecentActivity } from './DashboardRecentActivity';
-import { DashboardRevenueCard } from './DashboardRevenueCard';
-import { DashboardSecondaryStats } from './DashboardSecondaryStats';
-import { DashboardError, DashboardLoading } from './DashboardStates';
-import type { RevenueSeriesPoint } from './dashboardTypes';
-import { useAdminDashboard } from './useAdminDashboard';
+import {
+  DashboardHeader,
+  DashboardKpiStrip,
+  DashboardQuickActions,
+  DashboardRevenueCard,
+  DashboardPropertiesDonut,
+  DashboardModerationCard,
+  DashboardAgentsPlans,
+  DashboardProjectsCard,
+  DashboardCampaignFunnel,
+  DashboardAttention,
+  DashboardRecentActivity,
+  DashboardPartialNotice,
+  DashboardLoading,
+  DashboardError,
+} from './components';
+import { useAdminDashboard } from './hooks';
+import type { DashboardOverviewProps } from '@/presentation/components/admin/dashboard/types/dashboard.types';
 
-interface DashboardOverviewProps {
-  /** Nombre del usuario para el saludo (opcional). */
-  userName?: string;
-  /** Historial mensual de ingresos para la gráfica (opcional). */
-  revenueSeries?: RevenueSeriesPoint[];
-}
-
-export function DashboardOverview({ userName, revenueSeries }: DashboardOverviewProps) {
+export function DashboardOverview({ userName }: DashboardOverviewProps) {
   const dashboard = useAdminDashboard();
 
   if (dashboard.isInitialLoading) {
@@ -38,8 +40,13 @@ export function DashboardOverview({ userName, revenueSeries }: DashboardOverview
     );
   }
 
+  const history = dashboard.financeHistory;
+  const revenueSeries = history
+    ? history.labels.map((label, index) => ({ label, value: history.revenue[index] ?? 0 }))
+    : undefined;
+
   return (
-    <div className="mx-auto max-w-[1400px] space-y-6 p-4 sm:p-6 lg:p-8">
+    <div className="w-full min-w-0 space-y-6 p-3 sm:p-6 lg:p-8">
       <DashboardHeader
         userName={userName}
         generatedAt={dashboard.stats?.generatedAt}
@@ -53,12 +60,19 @@ export function DashboardOverview({ userName, revenueSeries }: DashboardOverview
         isRetrying={dashboard.isRefreshing}
       />
 
+      <DashboardKpiStrip
+        stats={dashboard.stats}
+        marketing={dashboard.marketing}
+        canViewMarketing={dashboard.canViewMarketing}
+        marketingLoading={dashboard.loading.marketing}
+      />
+
       <DashboardQuickActions
         pendingProperties={dashboard.stats?.pendingProperties}
         canViewMarketing={dashboard.canViewMarketing}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,400px)]">
         <div className="min-w-0 space-y-6">
           <DashboardRevenueCard
             finance={dashboard.finance}
@@ -67,9 +81,10 @@ export function DashboardOverview({ userName, revenueSeries }: DashboardOverview
             financeUnavailable={dashboard.financeUnavailable}
             financeLoading={dashboard.loading.finance}
             series={revenueSeries}
+            growthPct={dashboard.stats?.revenueGrowthPercent}
           />
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <DashboardModerationCard
               stats={dashboard.stats}
               expiredFeatured={dashboard.propertyAnalytics?.expiredFeatured}
@@ -81,15 +96,29 @@ export function DashboardOverview({ userName, revenueSeries }: DashboardOverview
             />
           </div>
 
-          <DashboardSecondaryStats
-            stats={dashboard.stats}
-            systemStats={dashboard.systemStats}
-            systemLoading={dashboard.loading.system}
-            systemUnavailable={dashboard.systemUnavailable}
-          />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <DashboardAgentsPlans
+              stats={dashboard.agentStats}
+              loading={dashboard.loading.agents}
+              unavailable={dashboard.agentsUnavailable}
+            />
+            <DashboardProjectsCard
+              stats={dashboard.projectStats}
+              loading={dashboard.loading.projects}
+              unavailable={dashboard.projectsUnavailable}
+            />
+          </div>
+
+          {dashboard.canViewMarketing && (
+            <DashboardCampaignFunnel
+              marketing={dashboard.marketing}
+              loading={dashboard.loading.marketing}
+              unavailable={dashboard.marketingUnavailable}
+            />
+          )}
         </div>
 
-        <aside className="min-w-0 space-y-6">
+        <aside className="min-w-0 w-full space-y-6">
           <DashboardAttention
             items={dashboard.attention}
             overflow={dashboard.attentionOverflow}
@@ -98,12 +127,9 @@ export function DashboardOverview({ userName, revenueSeries }: DashboardOverview
           <DashboardRecentActivity
             items={dashboard.activity}
             isLoading={false}
-            unreadCount={dashboard.unreadNotifications}
           />
         </aside>
       </div>
-
-      <PropertyAnalyticsSection showRefresh={false} />
     </div>
   );
 }

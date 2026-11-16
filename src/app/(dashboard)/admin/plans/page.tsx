@@ -13,6 +13,7 @@ import {
   useCreateAgencyDiscount
 } from '@/presentation/hooks/useAdmin';
 import { usePermissions } from '@/presentation/hooks/usePermissions';
+import { useCreateActionParam } from '@/presentation/hooks/useCreateActionParam';
 import { adminRepository } from '@/infrastructure/repositories/AdminRepository';
 import { Card, CardHeader, CardTitle, CardContent } from '@/presentation/components/ui/Card';
 import { RealtimeFinanceChart } from '@/presentation/components/admin/RealtimeFinanceChart/RealtimeFinanceChart';
@@ -37,6 +38,9 @@ export default function PlansPage() {
 
   // Create plan state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Abre el modal cuando se llega desde el menú "Crear".
+  useCreateActionParam(() => setIsCreateModalOpen(true));
 
   // Delete confirmation state
   const [deleteConfirm, setDeleteConfirm] = useState<{isOpen: boolean; plan: SubscriptionPlan | null}>({
