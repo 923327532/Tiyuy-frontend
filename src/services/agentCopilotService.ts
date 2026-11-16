@@ -99,7 +99,7 @@ const ROUTE_REGISTRY: RouteEntry[] = [
   { path: '/noticias', category: 'public', label: 'noticias' },
   { path: '/politicas-de-cambio', category: 'public', label: 'politicas cambio' },
   { path: '/tips-decoracion', category: 'public', label: 'decoracion,tips' },
-  { path: '/trabaja-con-nosotros', category: 'public', label: 'trabajo,trabajar' },
+  { path: '/work-with-us', category: 'public', label: 'trabajo,trabajar' },
   { path: '/campaigns', category: 'public', label: 'campañas,campanas' },
   { path: '/corredores', category: 'public', label: 'corredores' },
   { path: '/servics', category: 'public', label: 'servicios,servics' },

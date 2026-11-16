@@ -40,6 +40,7 @@ export default function MyPropertiesPage() {
   const [showPlanExpiredModal, setShowPlanExpiredModal] = useState(false);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [previousPlan, setPreviousPlan] = useState<string | null>(null);
+  const [publishingPropertyId, setPublishingPropertyId] = useState<number | null>(null);
   const queryClient = useQueryClient();
 
   // Detect plan change
@@ -223,13 +224,17 @@ export default function MyPropertiesPage() {
       return;
     }
     
+    setPublishingPropertyId(parsedId);
     publishMutation.mutate(parsedId, {
       onError: (error: any) => {
         const status = error?.response?.status;
         if (status === 402) {
           setShowPlanExpiredModal(true);
         }
-      }
+      },
+      onSettled: () => {
+        setPublishingPropertyId(null);
+      },
     });
   };
 
@@ -603,10 +608,10 @@ export default function MyPropertiesPage() {
                       {(property.status === 'DRAFT' || property.status === 'PAUSED') && (
                         <button
                           onClick={() => handlePublish(property.id, property.status)}
-                          disabled={publishMutation.isPending}
+                          disabled={publishingPropertyId === Number(property.id)}
                           className="w-full py-1.5 bg-[var(--brand-primary)] text-white text-[11px] font-semibold rounded-md hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-1 shadow-sm"
                         >
-                          {publishMutation.isPending ? 'Procesando...' : (property.status === 'DRAFT' ? 'Publicar Ahora' : 'Reactivar')}
+                          {publishingPropertyId === Number(property.id) ? 'Procesando...' : (property.status === 'DRAFT' ? 'Publicar Ahora' : 'Reactivar')}
                         </button>
                       )}
 

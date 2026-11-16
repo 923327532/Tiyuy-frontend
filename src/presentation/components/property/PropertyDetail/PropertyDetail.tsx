@@ -13,7 +13,7 @@ import { ShareButton } from '../../shared/ShareButton/ShareButton';
 import { SimilarProperties } from '../SimilarProperties';
 import { PersonalizedRecommendations } from '../PersonalizedRecommendations';
 import { FeaturePropertyButton } from './FeaturePropertyButton';
-import { MapPin, FileText, Calendar, ChevronRight } from 'lucide-react';
+import { MapPin, FileText, Calendar, ChevronRight, UserRound } from 'lucide-react';
 import { StarRating } from './StarRating';
 import { AdvertiserDetailModal } from './AdvertiserDetailModal';
 import { toast } from 'sonner';
@@ -66,6 +66,29 @@ function DescriptionSection({ description }: { description: string }) {
 }
 
 export function PropertyDetail({ property }: PropertyDetailProps) {
+  const [ownerPhotoUrl, setOwnerPhotoUrl] = useState<string | undefined>(property.owner.photoUrl);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (property.owner.photoUrl || !property.owner.id) return;
+
+    fetch(`/api/properties/owner/${property.owner.id}`)
+      .then((response) => response.ok ? response.json() : null)
+      .then((profile) => {
+        if (!cancelled) {
+          setOwnerPhotoUrl(profile?.photoUrl || undefined);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setOwnerPhotoUrl(undefined);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [property.owner.id, property.owner.photoUrl]);
+
   // Trackear vista en CRM automáticamente
   useEffect(() => {
     if (!property.id) return;
@@ -266,9 +289,18 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   </span>
                 </h3>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
-                    {(property.owner.name || 'A').charAt(0).toUpperCase()}
-                  </div>
+                   {ownerPhotoUrl ? (
+                     <img
+                       src={ownerPhotoUrl}
+                       alt={property.owner.name}
+                       className="w-14 h-14 rounded-full object-cover flex-shrink-0 shadow-inner"
+                       onError={() => setOwnerPhotoUrl(undefined)}
+                     />
+                   ) : (
+                     <div className="w-14 h-14 rounded-full border-2 border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] flex-shrink-0">
+                       <UserRound className="w-7 h-7" />
+                     </div>
+                   )}
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
                     <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">Ver propiedades activas</p>
@@ -367,9 +399,18 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
                   </span>
                 </h3>
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 shadow-inner">
-                    {(property.owner.name || 'A').charAt(0).toUpperCase()}
-                  </div>
+                   {ownerPhotoUrl ? (
+                     <img
+                       src={ownerPhotoUrl}
+                       alt={property.owner.name}
+                       className="w-14 h-14 rounded-full object-cover flex-shrink-0 shadow-inner"
+                       onError={() => setOwnerPhotoUrl(undefined)}
+                     />
+                   ) : (
+                     <div className="w-14 h-14 rounded-full border-2 border-[var(--border-color)] flex items-center justify-center text-[var(--text-secondary)] flex-shrink-0">
+                       <UserRound className="w-7 h-7" />
+                     </div>
+                   )}
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-[var(--text-primary)] text-base truncate">{property.owner.name}</p>
                     <p className="text-xs text-[var(--text-tertiary)] truncate mt-0.5">Ver propiedades activas</p>

@@ -55,7 +55,7 @@ const FOOTER_COLUMNS = [
     title: 'Acerca de nosotros',
     links: [
       { label: 'Por qué elegir TIYUY', href: '/about-tiyuy' },
-      { label: 'Trabaja con nosotros', href: '/trabaja-con-nosotros' },
+      { label: 'Trabaja con nosotros', href: '/work-with-us' },
       { label: 'Inversores', href: '/inversores' },
       { label: 'Noticias y comunicados', href: '/noticias' },
       { label: 'Impacto comunitario', href: '/impacto-comunitario' },
