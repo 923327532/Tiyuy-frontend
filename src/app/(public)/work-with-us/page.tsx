@@ -79,7 +79,11 @@ export default function WorkWithUsPage() {
             </div>
           </div>
 
-          <div className="relative min-h-[420px] overflow-hidden rounded-[2rem] bg-[#16352c] p-6 text-white shadow-2xl shadow-[#16352c]/20 sm:p-8">
+          <div
+            className="relative min-h-[420px] overflow-hidden rounded-[2rem] bg-[#16352c] bg-cover bg-center p-6 text-white shadow-2xl shadow-[#16352c]/20 sm:p-8"
+            style={{ backgroundImage: "url('/assets/work-with.png')" }}
+          >
+            <div className="absolute inset-0 bg-[#16352c]/75" aria-hidden="true" />
             <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full border-[24px] border-white/10" />
             <div className="absolute -bottom-32 -left-16 h-72 w-72 rounded-full bg-[var(--brand-primary)]/40 blur-2xl" />
             <div className="relative flex h-full flex-col justify-between">

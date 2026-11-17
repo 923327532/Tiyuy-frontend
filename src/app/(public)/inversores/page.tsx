@@ -14,11 +14,11 @@ const HIGHLIGHTS = [
 export default function InversoresPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
-      <div className="bg-[var(--bg-primary)] border-b border-[var(--border-light)]">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-20 sm:py-28 flex flex-col items-center justify-center text-center relative overflow-hidden">
+      <div className="relative overflow-hidden bg-[var(--bg-primary)] border-b border-[var(--border-light)]">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-10 lg:gap-20 items-center relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-r from-[var(--brand-primary)]/10 to-transparent blur-3xl pointer-events-none rounded-full" />
           
-          <div className="max-w-3xl relative z-10 flex flex-col items-center">
+          <div className="max-w-3xl relative z-10 flex flex-col items-start text-left">
             <span className="inline-flex items-center gap-1.5 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-xs font-bold px-3 py-1.5 rounded-full tracking-wider uppercase mb-5">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)] animate-pulse" />
               <TrendingUp className="w-3.5 h-3.5" /> Inversores
@@ -30,6 +30,11 @@ export default function InversoresPage() {
               Conoce la visión, el mercado y las oportunidades detrás de Tiyuy.
             </p>
           </div>
+          <div
+            className="relative z-10 min-h-[260px] sm:min-h-[340px] rounded-[2rem] bg-cover bg-center shadow-2xl shadow-slate-900/10"
+            style={{ backgroundImage: "url('/assets/Inversors.png')" }}
+            aria-label="Reunión de asesoría para inversores"
+          />
         </div>
       </div>
 

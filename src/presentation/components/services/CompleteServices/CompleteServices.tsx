@@ -57,7 +57,8 @@ export function CompleteServices() {
     <div className="bg-[var(--bg-primary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10 py-16">
       <div className="w-full max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <header className="text-center mb-16 border-b-2 border-gray-200 dark:border-gray-800 pb-10">
+        <header className="relative isolate mb-16 grid grid-cols-1 items-center gap-8 overflow-hidden border-b-2 border-gray-200 pb-10 dark:border-gray-800 lg:grid-cols-[1fr_0.7fr] lg:gap-16">
+          <div className="relative z-10 max-w-2xl text-left">
           <p className="text-xs font-bold uppercase tracking-widest text-[var(--brand-primary)] mb-3">
             Instituciones & Recursos
           </p>
@@ -67,6 +68,12 @@ export function CompleteServices() {
           <p className="mt-3 text-lg text-[var(--text-secondary)] max-w-2xl mx-auto font-medium">
             Todo lo que necesitas para tus trámites y transacciones en el Perú de manera clara y accesible.
           </p>
+          </div>
+          <div
+            className="min-h-[180px] bg-contain bg-center bg-no-repeat lg:min-h-[230px]"
+            style={{ backgroundImage: "url('/assets/services.png')" }}
+            aria-label="Recursos y servicios inmobiliarios"
+          />
         </header>
 
         <div className="space-y-12">

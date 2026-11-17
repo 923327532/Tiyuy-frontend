@@ -13,22 +13,6 @@ import {
 import Link from 'next/link';
 
 
-const AccessibilityIllustration = () => (
-  <svg viewBox="0 0 200 200" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="100" cy="100" r="90" className="fill-[var(--brand-primary)]/5" />
-    <circle cx="100" cy="100" r="70" className="fill-[var(--brand-primary)]/10" />
-    <circle cx="100" cy="100" r="50" className="fill-[var(--brand-primary)]/15" />
-    <circle cx="100" cy="60" r="18" className="fill-[var(--brand-primary)]/30 stroke-[var(--brand-primary)]" strokeWidth="2" />
-    <path d="M85 85L115 85L120 130L105 130L100 105L95 130L80 130L85 85Z" className="fill-[var(--brand-primary)]" />
-    <path d="M75 95L125 95" className="stroke-[var(--brand-primary)]" strokeWidth="3" strokeLinecap="round" />
-    <circle cx="90" cy="155" r="12" className="fill-[var(--brand-primary)]/40 stroke-[var(--brand-primary)]" strokeWidth="2" />
-    <circle cx="110" cy="155" r="12" className="fill-[var(--brand-primary)]/40 stroke-[var(--brand-primary)]" strokeWidth="2" />
-    <path d="M90 155L90 143" className="stroke-[var(--brand-primary)]" strokeWidth="2" strokeLinecap="round" />
-    <path d="M110 155L110 143" className="stroke-[var(--brand-primary)]" strokeWidth="2" strokeLinecap="round" />
-  </svg>
-);
-
-
 const SUPPORT_TYPES: { value: TicketCategory; label: string; icon: React.ReactNode; desc: string }[] = [
   { value: 'PROPERTY_ISSUE', label: 'Información de accesibilidad', icon: <DoorOpen className="w-5 h-5" />, desc: 'Solicitar detalles sobre accesos, baños o rutas de una propiedad' },
   { value: 'OTHER', label: 'Ajuste razonable en visita', icon: <Users className="w-5 h-5" />, desc: 'Necesito apoyo adicional para realizar una visita presencial' },
@@ -131,13 +115,7 @@ export default function DiscapacidadPage() {
     <div className="min-h-screen bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
       {/* Hero Section */}
       <div className="bg-[var(--bg-primary)] border-b border-[var(--border-light)] relative overflow-hidden">
-        {/* Background Image */}
         <div className="absolute inset-0 pointer-events-none">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08] dark:opacity-[0.06]"
-            style={{ backgroundImage: "url('/assets/images/hero/hero-3.jpg')" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)] via-[var(--bg-primary)]/95 to-[var(--bg-primary)]/80" />
           <div className="absolute top-0 right-0 w-[800px] h-[400px] bg-gradient-to-l from-[var(--brand-primary)]/8 to-transparent blur-3xl rounded-full" />
           <div className="absolute bottom-0 left-1/3 w-[400px] h-[200px] bg-gradient-to-r from-[var(--brand-primary)]/5 to-transparent blur-3xl rounded-full" />
         </div>
@@ -174,9 +152,11 @@ export default function DiscapacidadPage() {
                 </Link>
               </div>
             </div>
-            <div className="hidden lg:block w-72 h-72 shrink-0">
-              <AccessibilityIllustration />
-            </div>
+            <div
+              className="hidden lg:block w-96 h-72 shrink-0 rounded-[2rem] bg-cover bg-center shadow-2xl shadow-[var(--brand-primary)]/10"
+              style={{ backgroundImage: "url('/assets/help-discap.png')" }}
+              aria-label="Apoyo inclusivo para personas con discapacidad"
+            />
           </div>
         </div>
       </div>

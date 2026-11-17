@@ -12,6 +12,7 @@ import {
   Headphones, TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const SECURITY_CATEGORIES: { value: TicketCategory; label: string; icon: React.ReactNode; desc: string }[] = [
   { value: 'PASSWORD_CHANGE', label: 'Cuenta vulnerada', icon: <ShieldAlert className="w-5 h-5" />, desc: 'Alguien accedió a mi cuenta sin autorización' },
@@ -246,16 +247,14 @@ export default function SeguridadPage() {
             </div>
 
             <div className="flex-1 w-full max-w-xl lg:max-w-none relative pt-4 lg:pt-0">
-              <div className="relative rounded-[1.5rem] overflow-hidden aspect-[4/3] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-[var(--border-light)]">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: "url('/assets/images/hero/hero-1.jpg')" }}
+              <div className="relative aspect-[4/3] rounded-[2rem] border border-[var(--brand-primary)]/20 bg-[var(--bg-card)]/70 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.06)]">
+                <Image
+                  src="/assets/security.png"
+                  alt="Ilustración de seguridad y protección inmobiliaria"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] object-contain object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-                <div className="absolute top-4 right-4 flex items-center gap-2 bg-[var(--bg-card)]/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[var(--border-light)] shadow-sm">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                  <span className="text-xs font-bold text-[var(--text-primary)]">Plataforma verificada</span>
-                </div>
               </div>
               
               <div className="absolute -bottom-4 left-4 right-4 sm:left-8 sm:right-auto sm:w-64 bg-[var(--bg-card)] rounded-xl border border-[var(--border-light)] shadow-[0_12px_30px_rgba(0,0,0,0.04)] p-4 flex items-center gap-3.5">

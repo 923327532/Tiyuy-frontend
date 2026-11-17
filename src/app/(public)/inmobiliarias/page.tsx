@@ -108,17 +108,18 @@ export default function InmobiliariasPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)]">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-md text-white/90 text-xs font-semibold px-3 py-1.5 rounded-full tracking-wide uppercase mb-5">
+      <div className="relative overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand-primary)]/10 via-[var(--bg-primary)] to-[var(--bg-secondary)]" aria-hidden="true" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-10 lg:gap-20 items-center">
+          <div className="relative z-10 max-w-3xl">
+            <div className="inline-flex items-center gap-1.5 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-xs font-semibold px-3 py-1.5 rounded-full tracking-wide uppercase mb-5">
               <Building2 className="w-3.5 h-3.5" />
               Para inmobiliarias
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
               Tu mercado inmobiliario en un solo lugar
             </h1>
-            <p className="text-lg sm:text-xl text-gray-300 mt-5 leading-relaxed max-w-2xl">
+            <p className="text-lg sm:text-xl text-[var(--text-secondary)] mt-5 leading-relaxed max-w-2xl">
               Publica, gestiona y destaca propiedades con herramientas profesionales.
               Conecta con compradores e inquilinos reales en todo el Perú.
             </p>
@@ -129,12 +130,17 @@ export default function InmobiliariasPage() {
                 Crear cuenta profesional
               </Link>
               <Link href="/contact"
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl transition-all border border-white/20 inline-flex items-center gap-2">
+                className="px-6 py-3 bg-[var(--bg-card)]/80 hover:bg-[var(--bg-card)] text-[var(--text-primary)] font-medium rounded-xl transition-all border border-[var(--border-color)] inline-flex items-center gap-2">
                 <Info className="w-4 h-4" />
                 Solicitar información
               </Link>
             </div>
           </div>
+          <div
+            className="relative z-10 min-h-[250px] sm:min-h-[330px] bg-contain bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/assets/inmobiliaria.png')" }}
+            aria-label="Asesora inmobiliaria y vivienda"
+          />
         </div>
       </div>
 
