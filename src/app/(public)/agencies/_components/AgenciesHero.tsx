@@ -37,7 +37,7 @@ export default function AgenciesHero() {
     <>
       <section
         aria-labelledby="agencies-title"
-        className="relative isolate overflow-hidden bg-[#F3EFEA]"
+        className="relative isolate overflow-hidden bg-gradient-to-br from-[#F9FCF7] via-[#EFF7EC] to-[#E8F2E5]"
       >
         {/* Detalles de fondo */}
         <div
@@ -94,7 +94,7 @@ export default function AgenciesHero() {
                 <a
                   href="#directorio"
                   onClick={scrollToDirectory}
-                  className="group inline-flex min-h-14 items-center gap-4 rounded-full bg-[#4A9A3E] px-7 text-sm font-semibold text-white shadow-[0_14px_32px_-16px_rgba(74,154,62,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7c31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#61BF53] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3EFEA] motion-reduce:transform-none motion-reduce:transition-none"
+                  className="group inline-flex min-h-14 items-center gap-4 rounded-full bg-[#4A9A3E] px-7 text-sm font-semibold text-white shadow-[0_14px_32px_-16px_rgba(74,154,62,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7c31] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#61BF53] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F9FCF7] motion-reduce:transform-none motion-reduce:transition-none"
                 >
                   Explorar agencias
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 group-hover:translate-y-0.5 motion-reduce:transition-none">
@@ -105,7 +105,7 @@ export default function AgenciesHero() {
                 <a
                   href="#directorio"
                   onClick={scrollToDirectory}
-                  className="group inline-flex min-h-12 items-center gap-2 px-2 text-sm font-semibold text-[#3b7c31] transition-colors hover:text-[#4A9A3E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F3EFEA]"
+                  className="group inline-flex min-h-12 items-center gap-2 px-2 text-sm font-semibold text-[#3b7c31] transition-colors hover:text-[#4A9A3E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E] focus-visible:ring-offset-4 focus-visible:ring-offset-[#F9FCF7]"
                 >
                   Buscar por ciudad
                   <ArrowRight
