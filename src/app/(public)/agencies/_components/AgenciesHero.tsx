@@ -166,40 +166,6 @@ export default function AgenciesHero() {
         </div>
       </section>
 
-      {/* Franja de navegación */}
-      <nav
-        aria-label="Navegación del directorio"
-        className="border-y border-stone-200 bg-white"
-      >
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-stone-200 text-[#4A9A3E]">
-              <MapPin className="h-4 w-4" aria-hidden="true" />
-            </span>
-
-            <div>
-              <p className="text-sm font-semibold text-stone-800">
-                Encuentra tu próxima conexión inmobiliaria
-              </p>
-              <p className="mt-0.5 text-xs text-stone-500">
-                Busca agencias por nombre o ciudad
-              </p>
-            </div>
-          </div>
-
-          <a
-            href="#directorio"
-            onClick={scrollToDirectory}
-            className="group inline-flex min-h-10 items-center gap-3 text-sm font-semibold text-[#3b7c31] transition-colors hover:text-[#4A9A3E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4A9A3E] focus-visible:ring-offset-4"
-          >
-            Ver todas las agencias
-            <ArrowDown
-              aria-hidden="true"
-              className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1 motion-reduce:transition-none"
-            />
-          </a>
-        </div>
-      </nav>
     </>
   );
 }

@@ -124,38 +124,38 @@ export default function AgenciesFilters({
     <form
       onSubmit={onSubmit}
       aria-label="Filtros de búsqueda de agencias"
-      className="relative rounded-2xl border border-stone-200 bg-white p-5 shadow-sm transition-shadow duration-300 hover:shadow-md sm:p-6 lg:p-7"
+      className="relative rounded-2xl border border-stone-200 bg-white p-4 shadow-sm transition-shadow duration-300 hover:shadow-md sm:p-5"
     >
       {/* Encabezado */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F4F8F2] text-[#4A9A3E]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F4F8F2] text-[#4A9A3E]">
             <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
           </span>
 
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4A9A3E]">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#4A9A3E]">
               Búsqueda personalizada
             </p>
-            <h2 className="mt-0.5 text-lg font-bold tracking-tight text-stone-900 sm:text-xl">
+            <h2 className="mt-0.5 text-base font-bold tracking-tight text-stone-900 sm:text-lg">
               Encuentra tu agencia ideal
             </h2>
           </div>
         </div>
 
-        <span className="hidden items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.15em] text-stone-500 sm:inline-flex">
+        <span className="hidden items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.13em] text-stone-500 sm:inline-flex">
           <span className="h-1.5 w-1.5 rounded-full bg-[#4A9A3E]" />
           Directorio Tiyuy
         </span>
       </div>
 
       {/* Campos de búsqueda */}
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(230px,0.65fr)_auto] lg:items-end lg:gap-0">
+      <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(230px,0.65fr)_auto] lg:items-end lg:gap-0">
         {/* Nombre */}
         <div className="group min-w-0 rounded-xl border border-transparent px-4 py-3 transition-all duration-300 focus-within:border-stone-200 focus-within:bg-[#F9FAF8] lg:rounded-none lg:border-r lg:border-r-stone-200 lg:py-1 lg:pl-2 lg:pr-7">
           <label
             htmlFor="agency-search"
-            className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-500"
+          className="mb-1 block text-[9px] font-semibold uppercase tracking-[0.14em] text-stone-500"
           >
             Nombre de agencia
           </label>
@@ -173,7 +173,7 @@ export default function AgenciesFilters({
               onChange={(e) => onDraftChange(e.target.value)}
               placeholder="¿Qué agencia estás buscando?"
               aria-label="Buscar agencia por nombre"
-              className="h-9 w-full min-w-0 bg-transparent text-sm font-medium text-stone-900 outline-none placeholder:font-normal placeholder:text-stone-400 focus-visible:ring-0"
+              className="h-8 w-full min-w-0 bg-transparent text-[13px] font-medium text-stone-900 outline-none placeholder:font-normal placeholder:text-stone-400 focus-visible:ring-0"
             />
           </div>
         </div>
@@ -186,7 +186,7 @@ export default function AgenciesFilters({
           <label
             id="agency-city-label"
             htmlFor="agency-city"
-            className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-stone-500"
+            className="mb-1 block text-[9px] font-semibold uppercase tracking-[0.14em] text-stone-500"
           >
             Ubicación
           </label>
@@ -274,7 +274,7 @@ export default function AgenciesFilters({
           type="submit"
           disabled={loading}
           aria-busy={loading}
-          className="inline-flex min-h-[54px] items-center justify-center gap-2 rounded-xl bg-[#4A9A3E] px-7 text-sm font-semibold text-white shadow-[0_10px_25px_-12px_rgba(74,154,62,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7c31] hover:shadow-[0_15px_30px_-12px_rgba(74,154,62,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#61BF53] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transform-none motion-reduce:transition-none lg:ml-4 lg:min-w-[185px]"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#4A9A3E] px-5 text-[13px] font-semibold text-white shadow-[0_10px_25px_-12px_rgba(74,154,62,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#3b7c31] hover:shadow-[0_15px_30px_-12px_rgba(74,154,62,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#61BF53] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transform-none motion-reduce:transition-none lg:ml-4 lg:min-w-[160px]"
         >
           {loading ? (
             <LoaderCircle
@@ -293,9 +293,9 @@ export default function AgenciesFilters({
       </div>
 
       {/* Detalle inferior */}
-      <div className="mt-5 flex items-center gap-2 border-t border-stone-100 pt-4">
+      <div className="mt-3 flex items-center gap-2 border-t border-stone-100 pt-3">
         <span className="h-1 w-1 rounded-full bg-[#4A9A3E]" />
-        <p className="text-[11px] leading-5 text-stone-500">
+        <p className="text-[10px] leading-4 text-stone-500">
           Refina tu búsqueda y descubre agencias inmobiliarias por ubicación.
         </p>
       </div>
