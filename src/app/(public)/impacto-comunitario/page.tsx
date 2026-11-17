@@ -1,7 +1,7 @@
 'use client';
 
-import { Heart, Shield, Users, BookOpen, Target, Globe, CheckCircle2, ArrowRight, Home, Sparkles, Lightbulb } from 'lucide-react';
-import Link from 'next/link';
+import { Heart, Shield, Users, BookOpen, Globe, CheckCircle2, Home, Sparkles, Lightbulb } from 'lucide-react';
+import { PublicPageHero } from '@/presentation/components/layout/PublicPageHero';
 
 const IMPACT_AREAS = [
   {
@@ -39,29 +39,14 @@ const IMPACT_AREAS = [
 export default function ImpactoComunitarioPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
-      <div className="relative overflow-hidden bg-[var(--bg-primary)] border-b border-[var(--border-light)]">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-10 lg:gap-20 items-center relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-r from-[var(--brand-primary)]/10 to-transparent blur-3xl pointer-events-none rounded-full" />
-          
-          <div className="max-w-3xl relative z-10 flex flex-col items-start text-left">
-            <span className="inline-flex items-center gap-1.5 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-xs font-bold px-3 py-1.5 rounded-full tracking-wider uppercase mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)] animate-pulse" />
-              <Heart className="w-3.5 h-3.5" /> Impacto
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-[var(--text-primary)] text-balance">
-              Impacto <span className="text-[var(--brand-primary)] relative inline-block">comunitario<span className="absolute bottom-1 left-0 w-full h-[6px] bg-[var(--brand-primary)]/20 -skew-x-12" /></span>
-            </h1>
-            <p className="text-lg sm:text-xl text-[var(--text-secondary)] mt-6 leading-relaxed font-medium">
-              Cómo Tiyuy genera un cambio positivo más allá del negocio.
-            </p>
-          </div>
-          <div
-            className="relative z-10 min-h-[260px] sm:min-h-[340px] rounded-[2rem] bg-cover bg-center shadow-2xl shadow-slate-900/10"
-            style={{ backgroundImage: "url('/assets/Impact.png')" }}
-            aria-label="Personas colaborando en una iniciativa comunitaria"
-          />
-        </div>
-      </div>
+      <PublicPageHero
+        eyebrow="Impacto comunitario"
+        icon={<Heart className="h-4 w-4" />}
+        title={<>Impacto <span className="text-[var(--brand-primary)]">comunitario</span></>}
+        description="Cómo Tiyuy genera un cambio positivo más allá del negocio."
+        imageSrc="/assets/Impact.png"
+        imageAlt="Personas colaborando en una iniciativa comunitaria"
+      />
 
       <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-12 sm:py-16 space-y-12 sm:space-y-16">
         {/* Propósito */}

@@ -9,6 +9,7 @@ import {
   CheckCircle2, Sparkles, ArrowRight, Layers, Info
 } from 'lucide-react';
 import { publicApiClient } from '@/infrastructure/api/axios-client';
+import { PublicPageHero } from '@/presentation/components/layout/PublicPageHero';
 
 interface AgentRadar {
   totalAgents: number;
@@ -79,41 +80,32 @@ export default function CorredoresPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)]">
-      {/* Hero */}
-      <div className="relative overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
-        <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-[var(--bg-primary)] to-[var(--bg-secondary)]" aria-hidden="true" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-10 lg:gap-20 items-center">
-          <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-1.5 bg-teal-500/10 text-teal-700 text-xs font-semibold px-3 py-1.5 rounded-full tracking-wide uppercase mb-5">
-              <Briefcase className="w-3.5 h-3.5" />
-              Para corredores
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-              Tu marca personal en el mercado inmobiliario
-            </h1>
-            <p className="text-lg sm:text-xl text-[var(--text-secondary)] mt-5 leading-relaxed max-w-2xl">
-              Construye presencia digital, muestra tus propiedades con profesionalismo y conecta con clientes que valoran la confianza y la calidad.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-8">
-              <Link href="/register"
-                className="px-6 py-3 bg-brand hover:bg-brand-dark text-white font-semibold rounded-xl transition-all shadow-lg inline-flex items-center gap-2">
-                <UserCheck className="w-4 h-4" />
-                Crear perfil de agente
-              </Link>
-              <Link href="/contact"
-                className="px-6 py-3 bg-[var(--bg-card)]/80 hover:bg-[var(--bg-card)] text-[var(--text-primary)] font-medium rounded-xl transition-all border border-[var(--border-color)] inline-flex items-center gap-2">
-                <Info className="w-4 h-4" />
-                Más información
-              </Link>
-            </div>
-          </div>
-          <div
-            className="relative z-10 min-h-[250px] sm:min-h-[330px] bg-contain bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/assets/asesor.png')" }}
-            aria-label="Corredor inmobiliario mostrando propiedades"
-          />
+      <PublicPageHero
+        eyebrow="Para corredores"
+        icon={<Briefcase className="h-4 w-4" />}
+        title="Tu marca personal en el mercado inmobiliario"
+        description="Construye presencia digital, muestra tus propiedades con profesionalismo y conecta con clientes que valoran la confianza y la calidad."
+        imageSrc="/assets/asesor.png"
+        imageAlt="Ilustración de una mano entregando las llaves de una vivienda"
+        imageFit="contain"
+      >
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href="/register"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand-primary)] px-6 py-3 font-semibold text-white shadow-lg shadow-[var(--brand-primary)]/20 transition-colors hover:bg-[var(--brand-primary-hover)]"
+          >
+            <UserCheck className="h-4 w-4" />
+            Crear perfil de agente
+          </Link>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-3 font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--brand-primary)]/40"
+          >
+            <Info className="h-4 w-4" />
+            Más información
+          </Link>
         </div>
-      </div>
+      </PublicPageHero>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12 sm:space-y-16">
         {/* Indicadores */}

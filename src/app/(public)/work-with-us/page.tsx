@@ -14,6 +14,7 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import Image from 'next/image';
 
 const TEAMS = [
   { icon: Globe, name: 'Producto y Diseño', desc: 'Creamos experiencias que hacen que comprar, vender y alquilar una propiedad sea más humano.' },
@@ -49,26 +50,29 @@ const CULTURE = [
 export default function WorkWithUsPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-[var(--bg-secondary)] text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
-      <section className="relative border-b border-[var(--border-light)] bg-[var(--bg-primary)]">
-        <div className="pointer-events-none absolute -right-40 -top-48 h-[560px] w-[560px] rounded-full bg-[var(--brand-primary)]/10 blur-3xl" />
-        <div className="relative mx-auto grid max-w-[1440px] gap-12 px-5 pb-16 pt-8 sm:px-10 sm:pb-24 sm:pt-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-20 lg:px-16 lg:pb-28 lg:pt-16">
-          <div className="max-w-3xl">
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[var(--brand-primary)]/20 bg-[var(--brand-primary)]/8 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--brand-primary)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
+      <section className="relative isolate overflow-hidden border-b border-[var(--border-light)] bg-[var(--bg-primary)]">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-40 -top-48 h-[560px] w-[560px] rounded-full bg-[var(--brand-primary)]/10 blur-3xl"
+        />
+        <div className="relative mx-auto grid max-w-[1440px] gap-12 px-5 py-14 sm:px-10 sm:py-20 lg:grid-cols-[1fr_0.95fr] lg:items-center lg:gap-16 lg:px-16 lg:py-24">
+          <div className="max-w-2xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--brand-primary)]/20 bg-[var(--brand-primary)]/8 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">
+              <Briefcase className="h-4 w-4" />
               Trabaja en Tiyuy
             </div>
-            <h1 className="max-w-3xl text-5xl font-black leading-[0.95] tracking-[-0.055em] text-[var(--text-primary)] sm:text-6xl lg:text-8xl">
+            <h1 className="text-balance text-4xl font-black leading-[1.02] tracking-[-0.045em] text-[var(--text-primary)] sm:text-5xl lg:text-7xl">
               Construye el futuro del <span className="text-[var(--brand-primary)]">mercado inmobiliario.</span>
             </h1>
-            <p className="mt-7 max-w-xl text-base leading-8 text-[var(--text-secondary)] sm:text-lg">
-              Construimos tecnologia para que encontrar, vender y alquilar un lugar sea mas simple, claro y humano.
+            <p className="mt-6 max-w-xl text-base leading-7 text-[var(--text-secondary)] sm:text-lg sm:leading-8">
+              Construimos tecnología para que encontrar, vender y alquilar un lugar sea más simple, claro y humano.
             </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="mailto:tiyuy@saberoconsulting.com"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[var(--brand-primary)]/20 transition-all hover:bg-[var(--brand-primary-hover)]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary)] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[var(--brand-primary)]/20 transition-colors hover:bg-[var(--brand-primary-hover)]"
               >
-                Inicia una conversacion <ArrowRight className="h-4 w-4" />
+                Inicia una conversación <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href="#teams"
@@ -77,37 +81,35 @@ export default function WorkWithUsPage() {
                 Conoce nuestros equipos
               </a>
             </div>
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[var(--border-light)] pt-5 text-sm text-[var(--text-secondary)]">
+              <span className="font-bold text-[var(--text-primary)]">6 equipos</span>
+              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-[var(--brand-primary)]" />
+              <span>Una misión compartida</span>
+            </div>
           </div>
 
-          <div
-            className="relative min-h-[420px] overflow-hidden rounded-[2rem] bg-[#16352c] bg-cover bg-center p-6 text-white shadow-2xl shadow-[#16352c]/20 sm:p-8"
-            style={{ backgroundImage: "url('/assets/work-with.png')" }}
-          >
-            <div className="absolute inset-0 bg-[#16352c]/75" aria-hidden="true" />
-            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full border-[24px] border-white/10" />
-            <div className="absolute -bottom-32 -left-16 h-72 w-72 rounded-full bg-[var(--brand-primary)]/40 blur-2xl" />
-            <div className="relative flex h-full flex-col justify-between">
-              <div className="flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-emerald-200 backdrop-blur-sm">
-                  <Briefcase className="h-5 w-5" />
-                </div>
-                <span className="rounded-full border border-white/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">Invitacion abierta</span>
+          <div className="relative mx-auto w-full max-w-[40rem] pb-5 pl-3 sm:pb-7 sm:pl-5">
+            <div
+              aria-hidden="true"
+              className="absolute inset-x-0 bottom-0 top-5 rounded-[2rem] bg-[var(--brand-primary)]/10 sm:top-8 sm:rounded-[2.5rem]"
+            />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-[var(--border-light)] bg-[var(--bg-secondary)] shadow-[0_24px_70px_rgba(15,23,42,0.14)] sm:rounded-[2.5rem]">
+              <Image
+                src="/assets/work-with.png"
+                alt="Equipo de Tiyuy colaborando en un espacio de trabajo"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 48vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="absolute bottom-0 left-0 flex items-center gap-3 rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-3.5 shadow-xl sm:p-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]">
+                <Users className="h-5 w-5" />
               </div>
-              <div className="mt-24">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-emerald-200">Un equipo, muchas perspectivas</p>
-                <p className="mt-4 max-w-sm text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-                  Tu proxima gran etapa puede comenzar aqui.
-                </p>
-              </div>
-              <div className="mt-10 grid grid-cols-2 gap-3">
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
-                  <p className="text-2xl font-black">6</p>
-                  <p className="mt-1 text-xs text-white/65">equipos para conocer</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
-                  <p className="text-2xl font-black">1</p>
-                  <p className="mt-1 text-xs text-white/65">una mision compartida</p>
-                </div>
+              <div>
+                <p className="text-sm font-bold text-[var(--text-primary)]">Un equipo, muchas perspectivas</p>
+                <p className="mt-0.5 text-xs text-[var(--text-secondary)]">Tu próxima etapa puede comenzar aquí</p>
               </div>
             </div>
           </div>

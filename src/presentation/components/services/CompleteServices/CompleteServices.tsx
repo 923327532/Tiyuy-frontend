@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Building2, Building, Home, Users, Ruler, PiggyBank, ExternalLink, ChevronRight } from 'lucide-react';
+import { Building2, Building, Home, Users, Ruler, PiggyBank, ExternalLink, ChevronRight, ShieldCheck } from 'lucide-react';
+import { PublicPageHero } from '@/presentation/components/layout/PublicPageHero';
 
 export function CompleteServices() {
   const sections = [
@@ -54,56 +55,61 @@ export function CompleteServices() {
   ];
 
   return (
-    <div className="bg-[var(--bg-primary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10 py-16">
-      <div className="w-full max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <header className="relative isolate mb-16 grid grid-cols-1 items-center gap-8 overflow-hidden border-b-2 border-gray-200 pb-10 dark:border-gray-800 lg:grid-cols-[1fr_0.7fr] lg:gap-16">
-          <div className="relative z-10 max-w-2xl text-left">
-          <p className="text-xs font-bold uppercase tracking-widest text-[var(--brand-primary)] mb-3">
-            Instituciones & Recursos
-          </p>
-          <h1 className="text-3xl sm:text-5xl font-black text-[var(--text-primary)] tracking-tight">
-            Servicios Inmobiliarios
-          </h1>
-          <p className="mt-3 text-lg text-[var(--text-secondary)] max-w-2xl mx-auto font-medium">
-            Todo lo que necesitas para tus trámites y transacciones en el Perú de manera clara y accesible.
-          </p>
-          </div>
-          <div
-            className="min-h-[180px] bg-contain bg-center bg-no-repeat lg:min-h-[230px]"
-            style={{ backgroundImage: "url('/assets/services.png')" }}
-            aria-label="Recursos y servicios inmobiliarios"
-          />
-        </header>
+    <div className="bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
+      <PublicPageHero
+        eyebrow="Instituciones y recursos"
+        icon={<Building2 className="h-4 w-4" />}
+        title="Servicios inmobiliarios"
+        description="Todo lo que necesitas para tus trámites y transacciones en el Perú de manera clara y accesible."
+        imageSrc="/assets/services.png"
+        imageAlt="Equipo colaborando en servicios para el sector inmobiliario"
+      />
 
-        <div className="space-y-12">
+      <main className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8 sm:py-16 lg:px-10 lg:py-20">
+        <div className="mb-9 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">
+              Recursos oficiales
+            </p>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-[var(--text-primary)] sm:text-4xl">
+              Avanza con información confiable
+            </h2>
+          </div>
+          <p className="max-w-xl text-sm leading-6 text-[var(--text-secondary)] sm:text-base">
+            Encuentra accesos útiles para tus gestiones tributarias, registrales y financieras.
+          </p>
+        </div>
+
+        <div className="space-y-6">
           {sections.map((sec) => (
-            <section key={sec.title} className="bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-6 sm:p-8 border-2 border-gray-200 dark:border-gray-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b-2 border-gray-200 dark:border-gray-800 pb-6">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <section
+              key={sec.title}
+              className="py-2"
+            >
+              <div className="relative mb-5 flex flex-col items-center gap-4 pb-5 sm:min-h-[6.5rem] sm:justify-center sm:pb-0">
+                <div className="flex flex-col items-center gap-3 text-center">
                   {sec.image ? (
-                    <div className="w-52 h-20 rounded-xl bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center shrink-0 overflow-hidden">
-                      <div className="relative w-full h-full">
-                        <Image 
-                          src={sec.image} 
-                          alt={sec.title} 
+                    <div className="flex h-14 w-36 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-2">
+                      <div className="relative h-full w-full">
+                        <Image
+                          src={sec.image}
+                          alt={`${sec.title} logo`}
                           fill
-                          sizes="(max-width: 768px) 208px, 208px"
-                          className={`object-contain object-center ${sec.imageScale || 'scale-110'}`}
-                          priority
+                          sizes="144px"
+                          className={`object-contain ${sec.imageScale || ''}`}
                         />
                       </div>
                     </div>
                   ) : (
-                    <div className="w-12 h-12 rounded-xl bg-[var(--brand-primary)]/10 border-2 border-[var(--brand-primary)]/20 flex items-center justify-center shrink-0">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-primary)]/10">
                       {sec.icon}
                     </div>
                   )}
                   <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+                    <h3 className="text-xl font-bold tracking-tight text-[var(--text-primary)] sm:text-2xl">
                       {sec.title}
-                    </h2>
-                    <p className="text-[var(--text-secondary)] text-sm font-medium mt-0.5">
+                    </h3>
+                    <p className="mt-1 max-w-2xl text-sm leading-5 text-[var(--text-secondary)]">
                       {sec.subtitle}
                     </p>
                   </div>
@@ -112,21 +118,27 @@ export function CompleteServices() {
                   href={sec.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--brand-primary)] hover:underline self-start sm:self-center cursor-pointer"
+                  className="inline-flex w-fit items-center gap-2 rounded-xl border border-[var(--border-color)] px-4 py-2.5 text-sm font-semibold text-[var(--text-primary)] transition-colors hover:border-[var(--brand-primary)]/40 hover:bg-[var(--brand-primary)]/5 hover:text-[var(--brand-primary)] sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2"
                 >
-                  Ir al sitio oficial
-                  <ExternalLink className="w-4 h-4" />
+                  Sitio oficial
+                  <ExternalLink className="h-4 w-4" />
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {sec.items.map((item) => (
-                  <div key={item.title} className="bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-gray-200 dark:border-gray-700 flex flex-col justify-between hover:border-[var(--brand-primary)]/40 dark:hover:border-[var(--brand-primary)]/40 transition-colors shadow-md">
+              <div className="grid grid-cols-1 gap-3 pt-5 sm:grid-cols-2 xl:grid-cols-3">
+                {sec.items.map((item, index) => (
+                  <article
+                    key={item.title}
+                    className="group flex min-h-40 flex-col justify-between rounded-2xl border border-[var(--border-light)] bg-[var(--bg-secondary)]/70 p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--brand-primary)]/30 hover:bg-[var(--bg-card)] hover:shadow-md"
+                  >
                     <div>
-                      <h3 className="text-base font-bold text-[var(--text-primary)] mb-1">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                        Recurso {String(index + 1).padStart(2, '0')}
+                      </p>
+                      <h4 className="mt-2 font-bold text-[var(--text-primary)]">
                         {item.title}
-                      </h3>
-                      <p className="text-[var(--text-secondary)] text-xs font-medium leading-relaxed">
+                      </h4>
+                      <p className="mt-1.5 text-sm leading-5 text-[var(--text-secondary)]">
                         {item.desc}
                       </p>
                     </div>
@@ -134,67 +146,70 @@ export function CompleteServices() {
                       href={sec.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-0.5 mt-5 text-xs font-bold text-[var(--brand-primary)] hover:opacity-80 underline underline-offset-4 cursor-pointer"
+                      className="mt-5 inline-flex w-fit items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm font-bold text-[var(--brand-primary)] transition-colors hover:bg-[var(--brand-primary)]/10"
                     >
-                      <span>{item.cta}</span>
-                      <ChevronRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+                      {item.cta}
+                      <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </Link>
-                  </div>
+                  </article>
                 ))}
               </div>
             </section>
           ))}
         </div>
 
-        <section className="mt-12 bg-gray-50 dark:bg-gray-900/40 rounded-2xl p-6 sm:p-8 border-2 border-gray-200 dark:border-gray-800">
-          <div className="mb-6 border-b-2 border-gray-200 dark:border-gray-800 pb-4">
-            <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)] mb-1">
-              Complementarios
+        <section className="mt-12">
+          <div className="mb-5">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">
+              Más recursos
             </p>
-            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
-              Otras Instituciones
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-[var(--text-primary)] sm:text-3xl">
+              Otras instituciones
             </h2>
-            <p className="text-[var(--text-secondary)] text-sm font-medium mt-0.5">
-              Entidades y enlaces de utilidad para el sector
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">
+              Entidades y enlaces de utilidad para el sector inmobiliario.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {otrasInstituciones.map((inst) => (
-              <div key={inst.title} className="bg-white dark:bg-gray-800 rounded-xl p-5 border-2 border-gray-200 dark:border-gray-700 flex flex-col justify-between hover:border-[var(--brand-primary)]/40 dark:hover:border-[var(--brand-primary)]/40 transition-colors shadow-md">
-                <div>
-                  <div className="mb-3">{inst.icon}</div>
-                  <h3 className="text-base font-bold text-[var(--text-primary)] mb-1">
-                    {inst.title}
-                  </h3>
-                  <p className="text-[var(--text-secondary)] text-xs font-medium leading-relaxed">
-                    {inst.desc}
-                  </p>
+              <article
+                key={inst.title}
+                className="group flex min-h-56 flex-col rounded-2xl border border-[var(--border-light)] bg-[var(--bg-card)] p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-[var(--brand-primary)]/30 hover:shadow-lg"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--brand-primary)]/10">
+                  {inst.icon}
                 </div>
-                <Link 
-                  href={inst.url} 
-                  target="_blank" 
+                <h3 className="mt-5 font-bold text-[var(--text-primary)]">
+                  {inst.title}
+                </h3>
+                <p className="mt-2 flex-1 text-sm leading-5 text-[var(--text-secondary)]">
+                  {inst.desc}
+                </p>
+                <Link
+                  href={inst.url}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-0.5 mt-4 text-xs font-bold text-[var(--brand-primary)] hover:opacity-80 underline underline-offset-4 cursor-pointer"
+                  className="mt-5 inline-flex w-fit items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm font-bold text-[var(--brand-primary)] transition-colors hover:bg-[var(--brand-primary)]/10"
                 >
-                  <span>{inst.cta}</span>
-                  <ChevronRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+                  {inst.cta}
+                  <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
-              </div>
+              </article>
             ))}
           </div>
         </section>
 
-        <footer className="mt-12 bg-[var(--brand-primary)]/[0.02] dark:bg-[var(--brand-primary)]/[0.05] rounded-2xl p-6 sm:p-8 text-center max-w-4xl mx-auto border-2 border-[var(--brand-primary)]/10">
-          <h3 className="text-base font-bold text-[var(--brand-primary)] mb-2">
-            Información Oficial Verificada
-          </h3>
-          <p className="text-[var(--text-secondary)] text-sm leading-relaxed font-medium">
-            Todos los enlaces dirigen a instituciones oficiales del Estado peruano y entidades reguladas. Facilitamos el acceso a esta información para tu comodidad y seguridad, pero recuerda que todos los trámites deben gestionarse finalmente dentro de las plataformas oficiales correspondientes.
-          </p>
-        </footer>
-
-      </div>
+        <aside className="mt-10 flex gap-4 rounded-2xl border border-[var(--brand-primary)]/15 bg-[var(--brand-primary)]/5 p-5 sm:p-6">
+          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[var(--brand-primary)]" />
+          <div>
+            <h3 className="font-bold text-[var(--text-primary)]">Información oficial verificada</h3>
+            <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+              Los enlaces te llevan a los sitios de las instituciones. Los trámites deben gestionarse directamente en sus plataformas oficiales.
+            </p>
+          </div>
+        </aside>
+      </main>
     </div>
   );
 }

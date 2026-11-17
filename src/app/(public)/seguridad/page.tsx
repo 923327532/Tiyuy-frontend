@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCreateSupportTicket } from '@/presentation/hooks/admin/useSupportTickets';
 import { useAuthStore } from '@/presentation/store/authStore';
 import { TicketCategory, TicketSeverity } from '@/core/domain/entities/Admin';
+import { PublicPageHero } from '@/presentation/components/layout/PublicPageHero';
 import {
   X, Send, AlertCircle, CheckCircle2, Shield, Loader2,
   ShieldAlert, MessageSquareWarning, AlertTriangle, Eye,
@@ -12,7 +13,6 @@ import {
   Headphones, TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 const SECURITY_CATEGORIES: { value: TicketCategory; label: string; icon: React.ReactNode; desc: string }[] = [
   { value: 'PASSWORD_CHANGE', label: 'Cuenta vulnerada', icon: <ShieldAlert className="w-5 h-5" />, desc: 'Alguien accedió a mi cuenta sin autorización' },
@@ -190,87 +190,56 @@ export default function SeguridadPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
-      <div className="relative bg-[var(--bg-primary)] border-b border-[var(--border-light)] overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute top-0 right-0 w-[600px] h-[300px] bg-gradient-to-l from-[var(--brand-primary)]/[0.04] to-transparent blur-3xl rounded-full" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.01)_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)]" />
-        </div>
-
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 pt-4 sm:pt-6 pb-20 sm:pb-24 relative z-10">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-16">
-            
-            <div className="flex-1 max-w-2xl space-y-6">
-              <div className="inline-flex items-center gap-2.5 px-3 py-1 bg-[var(--bg-secondary)] border border-[var(--border-light)] rounded-lg">
-                <Shield className="w-4 h-4 text-[var(--brand-primary)]" />
-                <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">Centro de Seguridad</span>
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05] text-[var(--text-primary)]">
-                Seguridad y confianza,<br />sin excepciones.
-              </h1>
-
-              <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed font-normal max-w-xl">
-                Un equipo dedicado revisa cada reporte de forma confidencial. Protegemos tu cuenta,
-                tus visitas y tus datos en cada transacción inmobiliaria.
-              </p>
-
-              <div className="flex flex-wrap gap-3 pt-2">
-                <button
-                  onClick={() => setStep('category')}
-                  className="px-6 py-3 bg-[var(--brand-primary)] hover:opacity-95 text-white font-bold rounded-xl transition-all shadow-sm flex items-center gap-2 active:scale-[0.98]"
-                >
-                  <ShieldAlert className="w-4 h-4" />
-                  Reportar incidente
-                </button>
-                <Link
-                  href="#faq"
-                  className="px-6 py-3 border border-[var(--border-color)] hover:bg-[var(--bg-secondary)] text-[var(--text-primary)] font-bold rounded-xl transition-all flex items-center gap-2 bg-[var(--bg-card)]"
-                >
-                  <FileText className="w-4 h-4 text-[var(--text-secondary)]" />
-                  Ver preguntas frecuentes
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-x-8 gap-y-4 pt-6 border-t border-[var(--border-light)]">
-                {TRUST_STATS.map((stat, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-light)] flex items-center justify-center text-[var(--brand-primary)] flex-shrink-0">
-                      {stat.icon}
-                    </div>
-                    <div>
-                      <p className="text-base font-black text-[var(--text-primary)] leading-none">{stat.value}</p>
-                      <p className="text-[11px] text-[var(--text-muted)] font-bold mt-0.5 uppercase tracking-wide">{stat.label}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+      <PublicPageHero
+        eyebrow="Centro de seguridad"
+        icon={<Shield className="h-4 w-4" />}
+        title={<>Seguridad y confianza, <span className="text-[var(--brand-primary)]">sin excepciones.</span></>}
+        description="Un equipo dedicado revisa cada reporte de forma confidencial. Protegemos tu cuenta, tus visitas y tus datos en cada transacción inmobiliaria."
+        imageSrc="/assets/security.png"
+        imageAlt="Ilustración de llaves y protección para encontrar una vivienda"
+        imageFit="contain"
+        imageBadge={
+          <div className="flex items-center gap-3 rounded-xl border border-[var(--border-light)] bg-[var(--bg-card)]/95 p-3 shadow-xl backdrop-blur">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-primary)]/10">
+              <TrendingUp className="h-5 w-5 text-[var(--brand-primary)]" />
             </div>
-
-            <div className="flex-1 w-full max-w-xl lg:max-w-none relative pt-4 lg:pt-0">
-              <div className="relative aspect-[4/3] rounded-[2rem] border border-[var(--brand-primary)]/20 bg-[var(--bg-card)]/70 p-4 shadow-[0_18px_45px_rgba(0,0,0,0.06)]">
-                <Image
-                  src="/assets/security.png"
-                  alt="Ilustración de seguridad y protección inmobiliaria"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="inset-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] object-contain object-center"
-                />
-              </div>
-              
-              <div className="absolute -bottom-4 left-4 right-4 sm:left-8 sm:right-auto sm:w-64 bg-[var(--bg-card)] rounded-xl border border-[var(--border-light)] shadow-[0_12px_30px_rgba(0,0,0,0.04)] p-4 flex items-center gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-[var(--brand-primary)]/10 flex items-center justify-center flex-shrink-0">
-                  <TrendingUp className="w-5 h-5 text-[var(--brand-primary)]" />
-                </div>
-                <div>
-                  <p className="text-lg font-black text-[var(--text-primary)] leading-none">+12,400</p>
-                  <p className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">Reportes resueltos este año</p>
-                </div>
-              </div>
+            <div>
+              <p className="text-lg font-black leading-none text-[var(--text-primary)]">+12,400</p>
+              <p className="mt-1 text-xs font-medium text-[var(--text-secondary)]">Reportes resueltos este año</p>
             </div>
-
           </div>
+        }
+      >
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => setStep('category')}
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--brand-primary)] px-6 py-3 font-bold text-white shadow-sm transition-colors hover:bg-[var(--brand-primary-hover)]"
+          >
+            <ShieldAlert className="h-4 w-4" />
+            Reportar incidente
+          </button>
+          <Link
+            href="#faq"
+            className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] px-6 py-3 font-bold text-[var(--text-primary)] transition-colors hover:border-[var(--brand-primary)]/40"
+          >
+            <FileText className="h-4 w-4 text-[var(--text-secondary)]" />
+            Ver preguntas frecuentes
+          </Link>
         </div>
-      </div>
+        <div className="grid grid-cols-2 gap-4 border-t border-[var(--border-light)] pt-5 sm:grid-cols-3">
+          {TRUST_STATS.map((stat) => (
+            <div key={stat.label} className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--brand-primary)]">
+                {stat.icon}
+              </div>
+              <div>
+                <p className="text-base font-black leading-none text-[var(--text-primary)]">{stat.value}</p>
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-[var(--text-muted)]">{stat.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </PublicPageHero>
 
       <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-12">
         {step === 'info' && (

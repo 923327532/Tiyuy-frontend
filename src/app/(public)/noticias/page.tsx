@@ -1,7 +1,7 @@
 'use client';
 
-import { Newspaper, ArrowRight, Calendar, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import { Newspaper, ArrowRight } from 'lucide-react';
+import { PublicPageHero } from '@/presentation/components/layout/PublicPageHero';
 
 const NEWS = [
   {
@@ -33,29 +33,14 @@ const NEWS = [
 export default function NoticiasPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
-      <div className="relative overflow-hidden bg-[var(--bg-primary)] border-b border-[var(--border-light)]">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-16 sm:py-24 grid grid-cols-1 lg:grid-cols-[1fr_0.8fr] gap-10 lg:gap-20 items-center relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-r from-[var(--brand-primary)]/10 to-transparent blur-3xl pointer-events-none rounded-full" />
-          
-          <div className="max-w-3xl relative z-10 flex flex-col items-start text-left">
-            <span className="inline-flex items-center gap-1.5 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-xs font-bold px-3 py-1.5 rounded-full tracking-wider uppercase mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)] animate-pulse" />
-              <Newspaper className="w-3.5 h-3.5" /> Sala de prensa
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-[var(--text-primary)] text-balance">
-              Noticias y <span className="text-[var(--brand-primary)] relative inline-block">comunicados<span className="absolute bottom-1 left-0 w-full h-[6px] bg-[var(--brand-primary)]/20 -skew-x-12" /></span>
-            </h1>
-            <p className="text-lg sm:text-xl text-[var(--text-secondary)] mt-6 leading-relaxed font-medium">
-              Entérate de los últimos anuncios, lanzamientos y novedades de Tiyuy.
-            </p>
-          </div>
-          <div
-            className="relative z-10 min-h-[260px] sm:min-h-[340px] rounded-[2rem] bg-cover bg-center shadow-2xl shadow-slate-900/10"
-            style={{ backgroundImage: "url('/assets/News.png')" }}
-            aria-label="Periódico con noticias y comunicados"
-          />
-        </div>
-      </div>
+      <PublicPageHero
+        eyebrow="Sala de prensa"
+        icon={<Newspaper className="h-4 w-4" />}
+        title={<>Noticias y <span className="text-[var(--brand-primary)]">comunicados</span></>}
+        description="Entérate de los últimos anuncios, lanzamientos y novedades de Tiyuy."
+        imageSrc="/assets/News.png"
+        imageAlt="Periódico con noticias y comunicados"
+      />
 
       <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto space-y-6">
