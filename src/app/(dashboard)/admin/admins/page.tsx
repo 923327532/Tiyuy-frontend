@@ -17,6 +17,7 @@ import {
   useToggleAdminStatus,
 } from '@/presentation/hooks/useAdmin';
 import { usePermissions } from '@/presentation/hooks/usePermissions';
+import { useCreateActionParam } from '@/presentation/hooks/useCreateActionParam';
 import { Card } from '@/presentation/components/ui/Card';
 import { Button } from '@/presentation/components/ui/Button';
 import { Spinner } from '@/presentation/components/ui/Spinner';
@@ -105,6 +106,9 @@ export default function AdminUsersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showCreateDropdown, setShowCreateDropdown] = useState(false);
   const [previewRole, setPreviewRole] = useState<AdminRoleType | null>(null);
+
+  // Abre el selector de rol cuando se llega desde el menú "Crear".
+  useCreateActionParam(() => setShowCreateDropdown(true));
 
   // Step 1: Account form
   const [accountForm, setAccountForm] = useState({

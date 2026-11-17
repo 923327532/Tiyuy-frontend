@@ -1,0 +1,40 @@
+/* ========================================
+   PROPERTIES DONUT ANIMATIONS
+======================================== */
+
+@keyframes properties-donut-grow {
+  from {
+    stroke-dasharray: 0 var(--segment-circumference);
+    opacity: 0.5;
+  }
+  to {
+    stroke-dasharray: var(--segment-dasharray);
+    opacity: 1;
+  }
+}
+
+@keyframes properties-legend-entry {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.properties-donut-segment {
+  animation: properties-donut-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.properties-donut-legend {
+  animation: properties-legend-entry 0.45s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .properties-donut-segment,
+  .properties-donut-legend {
+    animation: none !important;
+  }
+}

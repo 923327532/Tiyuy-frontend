@@ -1,0 +1,21 @@
+:root {
+  --udm-bg: #ffffff;
+  --udm-bg-subtle: #fafbfc;
+  --udm-border: #e8ecef;
+  --udm-border-strong: #d8dee3;
+  --udm-text-primary: #0f172a;
+  --udm-text-secondary: #475569;
+  --udm-text-tertiary: #64748b;
+  --udm-text-muted: #94a3b8;
+  --udm-brand: #475569;
+  --udm-brand-soft: #f1f5f9;
+  --udm-success: #6b9080;
+  --udm-success-soft: #e8f0ec;
+  --udm-warning: #c9a876;
+  --udm-warning-soft: #f5ede0;
+  --udm-danger: #cf8a92;
+  --udm-danger-soft: #f5e5e7;
+  --udm-shadow-lg: 0 24px 48px -12px rgb(15 23 42 / 0.15), 0 8px 16px rgb(15 23 42 / 0.05);
+  --udm-radius: 1rem;
+  --udm-radius-sm: 0.5rem;
+}

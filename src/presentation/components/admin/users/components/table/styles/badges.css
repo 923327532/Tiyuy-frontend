@@ -1,0 +1,58 @@
+/* Badge enhancements */
+.users-table__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.users-table__badge--success {
+  background: var(--ut-success-soft) !important;
+  color: var(--ut-success) !important;
+  border: 1px solid color-mix(in srgb, var(--ut-success) 20%, transparent) !important;
+}
+.users-table__badge--success [data-dot] {
+  background: var(--ut-success) !important;
+  box-shadow: 0 0 0 2px var(--ut-success-soft) !important;
+}
+
+.users-table__badge--danger {
+  background: var(--ut-danger-soft) !important;
+  color: var(--ut-danger) !important;
+  border: 1px solid color-mix(in srgb, var(--ut-danger) 20%, transparent) !important;
+}
+.users-table__badge--danger [data-dot] {
+  background: var(--ut-danger) !important;
+  box-shadow: 0 0 0 2px var(--ut-danger-soft) !important;
+}
+
+.users-table__badge--warning {
+  background: var(--ut-warning-soft) !important;
+  color: var(--ut-warning) !important;
+  border: 1px solid color-mix(in srgb, var(--ut-warning) 20%, transparent) !important;
+}
+.users-table__badge--warning [data-dot] {
+  background: var(--ut-warning) !important;
+  box-shadow: 0 0 0 2px var(--ut-warning-soft) !important;
+}
+
+.users-table__badge--info {
+  background: var(--ut-info-soft) !important;
+  color: var(--ut-info) !important;
+  border: 1px solid color-mix(in srgb, var(--ut-info) 20%, transparent) !important;
+}
+
+.users-table__badge--brand {
+  background: var(--ut-brand-soft) !important;
+  color: var(--ut-brand) !important;
+  border: 1px solid color-mix(in srgb, var(--ut-brand) 20%, transparent) !important;
+}
+
+.users-table__badge--neutral {
+  background: var(--ut-neutral-soft) !important;
+  color: var(--ut-neutral) !important;
+  border: 1px solid color-mix(in srgb, var(--ut-neutral) 20%, transparent) !important;
+}

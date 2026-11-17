@@ -1,0 +1,31 @@
+/* Users table design tokens */
+:root {
+  --ut-brand: #475569;
+  --ut-brand-soft: #f1f5f9;
+  --ut-success: #6b9080;
+  --ut-success-soft: #e8f0ec;
+  --ut-success-glow: rgb(107 144 128 / 0.15);
+  --ut-warning: #c9a876;
+  --ut-warning-soft: #f5ede0;
+  --ut-warning-glow: rgb(201 168 118 / 0.15);
+  --ut-danger: #cf8a92;
+  --ut-danger-soft: #f5e5e7;
+  --ut-danger-glow: rgb(207 138 146 / 0.15);
+  --ut-info: #7ba0bc;
+  --ut-info-soft: #e6eff5;
+  --ut-info-glow: rgb(123 160 188 / 0.15);
+  --ut-neutral: #64748b;
+  --ut-neutral-soft: #f1f5f9;
+  --ut-bg: #ffffff;
+  --ut-bg-subtle: #fafbfc;
+  --ut-bg-hover: #f8fafc;
+  --ut-border: #e8ecef;
+  --ut-border-strong: #d8dee3;
+  --ut-text-primary: #0f172a;
+  --ut-text-secondary: #334155;
+  --ut-text-tertiary: #64748b;
+  --ut-text-muted: #94a3b8;
+  --ut-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --ut-radius: 0.75rem;
+  --ut-radius-sm: 0.5rem;
+}

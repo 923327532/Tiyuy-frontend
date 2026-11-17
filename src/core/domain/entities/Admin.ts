@@ -210,6 +210,20 @@ export interface DashboardStats {
   revenueGrowthPercent: number;
 }
 
+// Property analytics snapshot (GET /admin/dashboard/properties)
+export interface PropertyAnalyticsResponse {
+  totalProperties: number;
+  propertiesByStatus: Record<string, number>;
+  propertiesByType: Record<string, number>;
+  propertiesByTransactionType: Record<string, number>;
+  verified: number;
+  unverified: number;
+  featured: number;
+  expiredFeatured: number;
+  availableFeaturedSlots: number;
+  generatedAt: string;
+}
+
 // User stats
 export interface UserStats {
   totalUsers: number;

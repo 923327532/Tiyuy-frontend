@@ -1,0 +1,29 @@
+:root {
+  --rcm-brand: #475569;
+  --rcm-brand-soft: #f1f5f9;
+  --rcm-brand-hover: #3d4a5c;
+  --rcm-brand-glow: rgb(71 85 105 / 0.18);
+  --rcm-user: #6b9080;
+  --rcm-user-soft: #e8f0ec;
+  --rcm-agent: #7ba0bc;
+  --rcm-agent-soft: #e6eff5;
+  --rcm-developer: #9b8ec4;
+  --rcm-developer-soft: #ede8f5;
+  --rcm-admin: #cf8a92;
+  --rcm-admin-soft: #f5e5e7;
+  --rcm-bg: #ffffff;
+  --rcm-bg-subtle: #fafbfc;
+  --rcm-bg-muted: #f5f7f9;
+  --rcm-border: #e8ecef;
+  --rcm-border-strong: #d8dee3;
+  --rcm-text-primary: #0f172a;
+  --rcm-text-secondary: #334155;
+  --rcm-text-tertiary: #64748b;
+  --rcm-text-muted: #94a3b8;
+  --rcm-danger: #cf8a92;
+  --rcm-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --rcm-shadow-md: 0 8px 20px -8px rgb(15 23 42 / 0.10), 0 2px 6px rgb(15 23 42 / 0.04);
+  --rcm-shadow-lg: 0 24px 48px -12px rgb(15 23 42 / 0.15), 0 8px 16px rgb(15 23 42 / 0.05);
+  --rcm-radius: 1rem;
+  --rcm-radius-sm: 0.625rem;
+}

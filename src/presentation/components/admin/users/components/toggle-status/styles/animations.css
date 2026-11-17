@@ -1,0 +1,22 @@
+@keyframes tsm-surface-enter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+  60% { transform: translateY(-3px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes tsm-icon-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+@keyframes tsm-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .toggle-status-modal__surface { max-width: 100%; border-radius: var(--tsm-radius-sm); }
+  .toggle-status-modal__header, .toggle-status-modal__body { padding: 1.25rem; }
+  .toggle-status-modal__actions { padding: 1rem 1.25rem; flex-direction: column-reverse; }
+  .toggle-status-modal__btn { width: 100%; height: 2.75rem; }
+  .toggle-status-modal__icon { width: 2.5rem; height: 2.5rem; }
+  .toggle-status-modal__title { font-size: 1.0625rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toggle-status-modal__surface, .toggle-status-modal__icon, .toggle-status-modal__textarea, .toggle-status-modal__btn, .toggle-status-modal__spinner {
+    animation: none !important; transition: none !important;
+  }
+  .toggle-status-modal__btn:hover:not(:disabled), .toggle-status-modal__btn:active:not(:disabled) { transform: none !important; }
+}

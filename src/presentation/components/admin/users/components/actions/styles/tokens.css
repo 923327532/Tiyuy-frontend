@@ -1,0 +1,24 @@
+:root {
+  --ua-brand: #475569;
+  --ua-brand-soft: #f1f5f9;
+  --ua-success: #6b9080;
+  --ua-success-soft: #e8f0ec;
+  --ua-warning: #c9a876;
+  --ua-warning-soft: #f5ede0;
+  --ua-danger: #cf8a92;
+  --ua-danger-soft: #f5e5e7;
+  --ua-info: #7ba0bc;
+  --ua-info-soft: #e6eff5;
+  --ua-bg: #ffffff;
+  --ua-bg-subtle: #fafbfc;
+  --ua-border: #e8ecef;
+  --ua-border-strong: #d8dee3;
+  --ua-text-primary: #0f172a;
+  --ua-text-secondary: #334155;
+  --ua-text-tertiary: #64748b;
+  --ua-text-muted: #94a3b8;
+  --ua-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --ua-shadow-lg: 0 20px 40px -12px rgb(15 23 42 / 0.12), 0 8px 16px rgb(15 23 42 / 0.04);
+  --ua-radius: 0.75rem;
+  --ua-radius-sm: 0.5rem;
+}

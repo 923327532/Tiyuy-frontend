@@ -1,13 +1,13 @@
 /**
  * Admin Layout
- * El header y sidebar están encapsulados dentro de GitHubShell
+ * El header y sidebar están encapsulados dentro de AdminShell
  */
 
 'use client';
 
 import { ReactNode } from 'react';
 import { AdminGuard } from '@/presentation/components/guards/AdminGuard';
-import { GitHubShell } from '@/presentation/components/admin/AdminShell/AdminShell';
+import { AdminShell } from '@/presentation/components/admin/AdminShell/AdminShell';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -16,9 +16,9 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <AdminGuard>
-      <GitHubShell>
+      <AdminShell>
         {children}
-      </GitHubShell>
+      </AdminShell>
     </AdminGuard>
   );
 }

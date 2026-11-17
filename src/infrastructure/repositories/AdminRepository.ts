@@ -15,6 +15,7 @@ import {
   CreateAdminUserRequest,
   UpdateAdminUserRequest,
   DashboardStats,
+  PropertyAnalyticsResponse,
   UserStats,
   FinanceStats,
   FinanceHistoryDto,
@@ -88,11 +89,12 @@ export class AdminRepository implements IAdminRepository {
 
   // Dashboard & Analytics
   async getDashboardStats(): Promise<DashboardStats> {
-    const url = `${this.basePath}/dashboard/stats`;
-    console.log(' Making GET request to:', url);
-    const response = await axiosClient.get(url);
-    console.log('Response status:', response.status);
-    console.log('Response data:', response.data);
+    const response = await axiosClient.get(`${this.basePath}/dashboard/stats`);
+    return response.data;
+  }
+
+  async getPropertyAnalytics(): Promise<PropertyAnalyticsResponse> {
+    const response = await axiosClient.get(`${this.basePath}/dashboard/properties`);
     return response.data;
   }
 
