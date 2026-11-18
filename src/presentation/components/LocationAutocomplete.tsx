@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { MapPin } from 'lucide-react';
+import { useLocationSearch, LocationPrediction } from '@/presentation/hooks/useLocationSearch';
 
 interface LocationAutocompleteProps {
   value?: string;
   onChange: (value: string) => void;
-  onPlaceSelected?: (place: google.maps.places.PlaceResult) => void;
+  onPlaceSelected?: (place: LocationPrediction) => void;
   placeholder?: string;
   className?: string;
 }
@@ -19,69 +20,84 @@ export default function LocationAutocomplete({
   className = "" 
 }: LocationAutocompleteProps) {
   const [inputValue, setInputValue] = useState(value || '');
-  const autocompleteRef = useRef<HTMLInputElement>(null);
-  const autocompleteServiceRef = useRef<google.maps.places.AutocompleteService | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const { predictions, loading } = useLocationSearch(inputValue);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setInputValue(value || '');
   }, [value]);
 
   useEffect(() => {
-    if (!window.google || !autocompleteRef.current) return;
-
-    const autocomplete = new window.google.maps.places.AutocompleteService();
-    autocompleteServiceRef.current = autocomplete;
-
-    const input = autocompleteRef.current;
-    
-    const listener = window.google.maps.event.addListener(
-      autocomplete,
-      'place_changed',
-      () => {
-        const place = autocomplete.getPlace();
-        if (place) {
-          const address = place.formatted_address || '';
-          const district = place.address_components?.find((comp: any) => 
-            comp.types.includes('sublocality') || comp.types.includes('administrative_area_level_3')
-          )?.long_name || '';
-          
-          setInputValue(district || address);
-          onChange(district || address);
-          
-          if (onPlaceSelected) {
-            onPlaceSelected(place);
-          }
-        }
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
       }
-    );
-
-    autocomplete.setFields(['place_id', 'formatted_address', 'address_components']);
-    autocomplete.bindTo('input', input);
-
-    return () => {
-      window.google.maps.event.removeListener(listener);
     };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    onChange(value);
+    const val = e.target.value;
+    setInputValue(val);
+    onChange(val);
+    setShowDropdown(val.length >= 2);
+  };
+
+  const handleSelect = (prediction: LocationPrediction) => {
+    const mainText = prediction.structured_formatting.main_text;
+    setInputValue(mainText);
+    onChange(mainText);
+    setShowDropdown(false);
+    if (onPlaceSelected) {
+      onPlaceSelected(prediction);
+    }
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <input
-        ref={autocompleteRef}
         type="text"
         value={inputValue}
         onChange={handleInputChange}
+        onFocus={() => inputValue.length >= 2 && setShowDropdown(true)}
         placeholder={placeholder}
         className={`w-full px-3 py-2 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${className}`}
       />
       <div className="absolute right-3 top-2.5 text-gray-400">
-        <MapPin className="w-4 h-4" />
+        {loading ? (
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500" />
+        ) : (
+          <MapPin className="w-4 h-4" />
+        )}
       </div>
+
+      {showDropdown && predictions.length > 0 && (
+        <div className="absolute z-[9999] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          {predictions.map((prediction) => (
+            <div
+              key={prediction.place_id}
+              className="px-4 py-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+              onClick={() => handleSelect(prediction)}
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-1">
+                  <MapPin className="w-4 h-4 text-gray-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-gray-900 truncate">
+                    {prediction.structured_formatting.main_text}
+                  </div>
+                  <div className="text-sm text-gray-500 truncate">
+                    {prediction.structured_formatting.secondary_text}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
