@@ -148,25 +148,6 @@ export function Banner({ className = '' }: BannerProps) {
           </div>
         </div>
       </div>
-
-      {/* Pie informativo */}
-      <div className="
-        relative mt-6 flex flex-wrap
-        items-center justify-between gap-3
-        border-t border-slate-200/70 pt-4
-      ">
-        <div className="
-          flex items-center gap-2 text-xs
-          font-medium text-slate-500
-        ">
-          <Clock3 className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" />
-          <time>{formatCurrentDate()}</time>
-        </div>
-
-        <span className="text-[11px] font-medium text-slate-400">
-          Panel de administración de usuarios
-        </span>
-      </div>
     </header>
   );
 }
