@@ -10,7 +10,9 @@ export function getUserConditionalColumns(roleFilter: UsersFiltersState['roleFil
     key: 'publishedPropertiesCount',
     label: 'Propiedades',
     sortable: true,
-    width: roleFilter === 'AGENT' || roleFilter === 'USER' ? '110px' : '100px',
+    width: '80px',
+    className: '!px-2 text-center',
+    headerClassName: '!px-2 text-center',
     render: (value: unknown) => renderCount(value),
   };
 
@@ -18,7 +20,9 @@ export function getUserConditionalColumns(roleFilter: UsersFiltersState['roleFil
     key: 'publishedProjectsCount',
     label: 'Proyectos',
     sortable: true,
-    width: roleFilter === 'DEVELOPER' ? '110px' : '100px',
+    width: '80px',
+    className: '!px-2 text-center',
+    headerClassName: '!px-2 text-center',
     render: (value: unknown) => renderCount(value),
   };
 

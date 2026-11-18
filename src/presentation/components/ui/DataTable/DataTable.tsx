@@ -45,6 +45,8 @@ export interface DataTableProps<T> {
   hoverable?: boolean;
   /** Custom className */
   className?: string;
+  /** Additional classes for the table element */
+  tableClassName?: string;
 }
 
 function SortIcon({ order }: { order: 'asc' | 'desc' }) {
@@ -100,6 +102,7 @@ export function DataTable<T>({
   striped = true,
   hoverable = true,
   className = '',
+  tableClassName = '',
 }: DataTableProps<T>) {
   const getRowKey = useMemo(() => {
     if (typeof rowKey === 'function') return rowKey;
@@ -151,11 +154,11 @@ export function DataTable<T>({
     return (
       <div className={className}>
         <div className="overflow-x-auto">
-          <table className="w-full" role="table">
+          <table className={`w-full ${tableClassName}`} role="table">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
                 {onSelectionChange && (
-                  <th className="px-4 py-3 text-left w-12" />
+                  <th className="w-8 px-2 py-3 text-left" />
                 )}
                 {columns.map((col) => (
                   <th
@@ -200,12 +203,12 @@ export function DataTable<T>({
 
   return (
     <div className={`${className} overflow-x-auto`}>
-      <table className="w-full" role="table">
+      <table className={`w-full ${tableClassName}`} role="table">
         <thead className="bg-slate-50 border-b border-slate-200">
           <tr>
             {onSelectionChange && (
               <th
-                className="px-4 py-3 text-left w-12"
+                className="w-8 px-2 py-3 text-left"
                 scope="col"
               >
                 <Checkbox
@@ -256,7 +259,7 @@ export function DataTable<T>({
                 onClick={() => onRowClick?.(row)}
               >
                 {onSelectionChange && (
-                  <td className="px-4 py-3">
+                  <td className="px-2 py-3">
                     <Checkbox
                       checked={isSelected}
                       onChange={(checked) => handleRowSelect(row, checked)}

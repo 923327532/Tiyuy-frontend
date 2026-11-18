@@ -79,7 +79,7 @@ export function UsersListPanel({
     return () => media.removeEventListener('change', update);
   }, []);
 
-  const effectiveViewMode: ViewMode = isDesktop ? viewMode : 'cards';
+  const effectiveViewMode: ViewMode = isDesktop ? viewMode : 'table';
 
   return (
     <div className="bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">

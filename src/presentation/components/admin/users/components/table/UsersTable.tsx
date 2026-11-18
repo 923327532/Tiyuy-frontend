@@ -105,7 +105,8 @@ export function UsersTable({
       striped
       hoverable
       emptyMessage="No se encontraron usuarios"
-      className="users-table__container"
+      className="users-table__container w-full min-w-0 overflow-x-auto rounded-xl border border-slate-100 bg-white shadow-lg"
+      tableClassName="min-w-[960px]"
     />
   );
 }
