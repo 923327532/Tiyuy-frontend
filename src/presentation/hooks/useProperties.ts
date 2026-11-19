@@ -156,10 +156,6 @@ export function useUploadPhotos() {
       propertyRepo.uploadPhotos(propertyId, files),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['property', variables.propertyId] });
-      toast.success('Fotos subidas correctamente');
-    },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Error al subir fotos');
     },
   });
 }
