@@ -107,7 +107,7 @@ function RealtimeTicketChart({ tickets }: { tickets: SupportTicket[] }) {
   const candleData = useMemo(() => {
     const periods = 14;
     const now = new Date();
-    const periodMs = (7 * 86400000) / periods; // 7 días dividido en 14 períodos (12h cada uno)
+    const periodMs = (30 * 86400000) / periods; // 30 días dividido en 14 períodos (~51.4h cada uno)
     
     const buckets: { start: number; count: number; tickets: SupportTicket[] }[] = [];
     for (let i = periods - 1; i >= 0; i--) {
@@ -671,11 +671,11 @@ export default function CommunicationsPage() {
               <div className="flex items-center gap-3 text-xs text-gray-400">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-[#1693a5]" />
-                  Ultimos 7 dias
+                  Ultimos 30 dias
                 </span>
                 <span className="flex items-center gap-1">
                   <Users className="w-3 h-3" />
-                  {stats.ticketsLast7Days} esta semana
+                  {stats.ticketsLast30Days} ultimos 30 dias
                 </span>
               </div>
             </div>

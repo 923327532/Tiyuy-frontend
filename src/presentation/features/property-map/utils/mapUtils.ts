@@ -1,27 +1,11 @@
-/**
- * 🎨 PRESENTATION - Utilidades genéricas para el Mapa
- * 
- * Funciones que operan sobre MapItem (genérico), no sobre tipos específicos.
- * Sigue el principio DRY - un solo set de utilidades para propiedades y proyectos.
- */
 
 import { MapItem, MapCoverageType } from '@/core/domain/entities/MapTypes';
 
-/**
- * Formatea precio al estilo peruano
- */
 export function formatPrice(price: number, currency: 'PEN' | 'USD'): string {
   const symbol = currency === 'USD' ? 'US$' : 'S/';
   return `${symbol} ${price.toLocaleString('es-PE')}`;
 }
 
-/**
- * Retorna el color del marcador según el tipo de cobertura
- * Colores oficiales Tiyuy:
- *   - Verde #00A852 (botones app)
- *   - Naranja #F59E0B (alertas)
- *   - Morado #4A00E0 (logotipo)
- */
 export function getMarkerColor(coverage: MapCoverageType): string {
   switch (coverage) {
     case 'EXACT_DISTRICT':
@@ -55,37 +39,38 @@ export function getMarkerFillColor(coverage: MapCoverageType): string {
   }
 }
 
-/**
- * Crea el HTML para un marker personalizado de Leaflet
- */
 export function createPriceMarkerHtml(
-  price: number,
-  currency: 'PEN' | 'USD',
-  coverage: MapCoverageType,
+  _price: number,
+  _currency: 'PEN' | 'USD',
+  _coverage: MapCoverageType,
   isSelected: boolean = false
 ): string {
-  const color = getMarkerColor(coverage);
-  const bgColor = getMarkerFillColor(coverage);
-  const formattedPrice = formatPrice(price, currency);
-  const borderWidth = isSelected ? '3px' : '2px';
-  const scale = isSelected ? 'scale-110' : '';
+  const size = isSelected ? 44 : 38;
+  const shadow = isSelected
+    ? '0 4px 14px rgba(0,0,0,0.35)'
+    : '0 2px 8px rgba(0,0,0,0.20)';
 
   return `
-    <div class="price-marker ${scale}" style="
-      background: ${bgColor};
-      border: ${borderWidth} solid ${color};
-      color: ${color};
-      font-weight: 700;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.08);
-      white-space: nowrap;
+    <div style="
+      width: ${size}px;
+      height: ${size}px;
+      box-shadow: ${shadow};
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s ease;
       cursor: pointer;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     ">
-      ${formattedPrice}
+      <img
+        src="/assets/icons/logo_mapa.png"
+        alt="TIYUY"
+        style="
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          display: block;
+        "
+      />
     </div>
   `;
 }

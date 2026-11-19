@@ -622,7 +622,7 @@ export default function GuiaAlquilarPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[var(--bg-secondary)]">
       {/* Mensaje de éxito flotante */}
       {showSuccessMessage && (
         <div className="fixed top-6 right-6 z-50 bg-gradient-to-r from-brand to-brand text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce">
@@ -634,15 +634,15 @@ export default function GuiaAlquilarPage() {
       )}
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-white dark:bg-[var(--bg-card)] border-b border-gray-100 dark:border-[var(--border-color)]">
         <div className="w-full px-8 xl:px-16">
           <div className="max-w-[1920px] mx-auto py-3">
             <nav className="flex items-center gap-2 text-sm">
-              <Link href="/" className="text-gray-500 hover:text-brand transition-colors font-medium flex items-center gap-1">
+              <Link href="/" className="text-gray-500 dark:text-[var(--text-secondary)] hover:text-brand transition-colors font-medium flex items-center gap-1">
                 <Home className="w-4 h-4" />
                 Inicio
               </Link>
-              <ChevronRight className="w-4 h-4 text-gray-300" />
+              <ChevronRight className="w-4 h-4 text-gray-300 dark:text-[var(--text-muted)]" />
               <span className="text-brand font-semibold bg-brand-light px-3 py-1 rounded-full">Guía para alquilar</span>
             </nav>
           </div>
@@ -651,16 +651,16 @@ export default function GuiaAlquilarPage() {
 
 {/* Selector de Roles - Fondo normal */}
       {!selectedRole && (
-        <div className="w-full px-8 xl:px-16 py-12 bg-gray-50">
+        <div className="w-full px-8 xl:px-16 py-12 bg-gray-50 dark:bg-[var(--bg-secondary)]">
             <div className="max-w-[1920px] mx-auto">
               <div className="text-center mb-12">
                 <div className="inline-block relative">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-[var(--text-primary)] mb-4">
                     ¿Quién eres?
                   </h2>
                   <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-brand rounded-full"></div>
                 </div>
-                <p className="text-lg text-gray-600 mt-6 max-w-xl mx-auto">
+                <p className="text-lg text-gray-600 dark:text-[var(--text-secondary)] mt-6 max-w-xl mx-auto">
                   Selecciona tu perfil para obtener la guía personalizada con pasos detallados
                 </p>
               </div>
@@ -670,7 +670,7 @@ export default function GuiaAlquilarPage() {
                   <button
                     key={role.id}
                     onClick={() => setSelectedRole(role)}
-                    className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-brand hover:-translate-y-1 text-left relative overflow-hidden cursor-pointer"
+                    className="group bg-white dark:bg-[var(--bg-card)] rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-brand hover:-translate-y-1 text-left relative overflow-hidden cursor-pointer"
                   >
                     <div className="absolute top-0 right-0 w-20 h-20 bg-brand-light rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-light-hover transition-colors"></div>
                     
@@ -684,14 +684,14 @@ export default function GuiaAlquilarPage() {
                       </div>
                     </div>
                     
-                    <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 group-hover:text-brand transition-colors">
+                    <h3 className="text-base md:text-lg font-bold text-gray-900 dark:text-[var(--text-primary)] mb-2 group-hover:text-brand transition-colors">
                       {role.title}
                     </h3>
-                    <p className="text-gray-500 text-xs md:text-sm leading-relaxed mb-4 line-clamp-2">
+                    <p className="text-gray-500 dark:text-[var(--text-secondary)] text-xs md:text-sm leading-relaxed mb-4 line-clamp-2">
                       {role.description}
                     </p>
                     
-                    <div className="pt-4 border-t border-gray-100">
+                    <div className="pt-4 border-t border-gray-100 dark:border-[var(--border-color)]">
                       <div className="flex items-center gap-2 text-brand font-semibold text-sm group-hover:gap-3 transition-all">
                         <span>Comenzar guía</span>
                         <ChevronRight className="w-4 h-4" />
@@ -705,12 +705,12 @@ export default function GuiaAlquilarPage() {
       )}
 
       {selectedRole && (
-        <div className="bg-white border-b border-gray-100">
+        <div className="bg-white dark:bg-[var(--bg-card)] border-b border-gray-100 dark:border-[var(--border-color)]">
             <div className="w-full px-8 xl:px-16 py-12">
               <div className="max-w-[1920px] mx-auto">
                 <button
                   onClick={() => setSelectedRole(null)}
-                  className="flex items-center gap-2 text-gray-600 hover:text-brand font-medium transition-colors bg-white px-4 py-2 rounded-lg mb-8 shadow-sm hover:shadow-md border border-gray-200 hover:border-brand"
+                  className="flex items-center gap-2 text-gray-600 dark:text-[var(--text-secondary)] hover:text-brand font-medium transition-colors bg-white dark:bg-[var(--bg-card)] px-4 py-2 rounded-lg mb-8 shadow-sm hover:shadow-md border border-gray-200 dark:border-[var(--border-color)] hover:border-brand"
                 >
                   <ChevronLeft className="w-5 h-5" />
                   Volver a perfiles
@@ -721,10 +721,10 @@ export default function GuiaAlquilarPage() {
                     <Shield className="w-5 h-5" />
                     <span>GUÍA OFICIAL TIYUY</span>
                   </div>
-                  <h1 className="text-4xl xl:text-5xl font-bold text-gray-900 mb-4">
+                  <h1 className="text-4xl xl:text-5xl font-bold text-gray-900 dark:text-[var(--text-primary)] mb-4">
                     {selectedRole.title}
                   </h1>
-                  <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                  <p className="text-xl text-gray-600 dark:text-[var(--text-secondary)] max-w-2xl mx-auto">
                     {selectedRole.description}
                   </p>
                 </div>
@@ -732,7 +732,7 @@ export default function GuiaAlquilarPage() {
                 <div className="flex flex-col md:flex-row items-center justify-center gap-4">
                   <button
                     onClick={() => shareGuide(selectedRole)}
-                    className="flex items-center justify-center gap-2 bg-white text-brand w-48 md:w-auto px-4 md:px-8 py-3 md:py-4 rounded-xl font-semibold hover:bg-brand-light transition-all shadow-md hover:shadow-lg border-2 border-brand cursor-pointer"
+                    className="flex items-center justify-center gap-2 bg-white dark:bg-[var(--bg-card)] text-brand w-48 md:w-auto px-4 md:px-8 py-3 md:py-4 rounded-xl font-semibold hover:bg-brand-light transition-all shadow-md hover:shadow-lg border-2 border-brand cursor-pointer"
                   >
                     <Share2 className="w-4 h-4 md:w-5 md:h-5" />
                     Compartir
@@ -754,17 +754,17 @@ export default function GuiaAlquilarPage() {
       {selectedRole && (
         <div className="w-full px-8 xl:px-16 py-12">
           <div className="max-w-[1920px] mx-auto">
-            <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 relative overflow-hidden">
+            <div className="bg-white dark:bg-[var(--bg-card)] rounded-2xl shadow-xl p-8 mb-8 border border-gray-100 dark:border-[var(--border-color)] relative overflow-hidden">
                 <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand to-brand"></div>
                 <div className="flex items-start gap-4 md:gap-6 mb-6">
                   <div className="w-14 h-14 md:w-24 md:h-24 bg-brand-light rounded-2xl flex items-center justify-center text-3xl md:text-5xl shadow-lg flex-shrink-0">
                     {selectedRole.icon}
                   </div>
                   <div className="flex-1">
-                    <h1 className="text-xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">
+                    <h1 className="text-xl md:text-3xl font-bold text-gray-900 dark:text-[var(--text-primary)] mb-1 md:mb-2">
                       {selectedRole.title}
                     </h1>
-                    <p className="text-gray-600 text-sm md:text-lg">
+                    <p className="text-gray-600 dark:text-[var(--text-secondary)] text-sm md:text-lg">
                       {selectedRole.description}
                     </p>
                   </div>
@@ -776,11 +776,11 @@ export default function GuiaAlquilarPage() {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {selectedRole.howToKnow.map((item, index) => (
-                      <div key={index} className="flex items-start gap-3 bg-white/60 rounded-lg p-3">
+                      <div key={index} className="flex items-start gap-3 bg-white/60 dark:bg-[var(--bg-tertiary)] rounded-lg p-3">
                         <div className="w-6 h-6 bg-brand rounded-full flex items-center justify-center flex-shrink-0">
                           <Check className="w-3 h-3 text-white" />
                         </div>
-                        <p className="text-gray-700 text-sm">
+                        <p className="text-gray-700 dark:text-[var(--text-primary)] text-sm">
                           {item}
                         </p>
                       </div>
@@ -795,35 +795,35 @@ export default function GuiaAlquilarPage() {
                   <ClipboardList className="w-5 h-5" />
                   <span>PASOS OBLIGATORIOS</span>
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-[var(--text-primary)]">
                   Si eres <span className="text-brand">{selectedRole.title}</span>, haz esto:
                 </h2>
               </div>
 
               {selectedRole.steps.map((step, index) => (
-                <div key={index} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group">
+                <div key={index} className="bg-white dark:bg-[var(--bg-card)] rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-[var(--border-color)] overflow-hidden group">
                   <div className="flex flex-col md:flex-row md:items-stretch">
                     <div className="md:w-16 bg-gradient-to-br from-brand to-brand flex flex-row md:flex-col items-center justify-center gap-2 md:gap-0 py-2 md:py-8 px-4 md:px-0 text-white">
                       <span className="text-xl md:text-3xl font-bold">{index + 1}</span>
                       <span className="text-xs uppercase opacity-80">Paso</span>
                     </div>
                     <div className="flex-1 p-4 md:p-6">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-brand transition-colors">
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-[var(--text-primary)] mb-2 group-hover:text-brand transition-colors">
                         {step.title}
                       </h3>
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-gray-600 dark:text-[var(--text-secondary)] mb-4">
                         {step.description}
                       </p>
 
                       {step.actions.length > 0 && (
                         <div className="space-y-4 mt-4">
                           {step.actions.map((action, actionIndex) => (
-                            <div key={actionIndex} className="bg-gray-50 rounded-xl p-5 border border-gray-100 hover:border-brand/30 hover:shadow-md transition-all">
+                            <div key={actionIndex} className="bg-gray-50 dark:bg-[var(--bg-tertiary)] rounded-xl p-5 border border-gray-100 dark:border-[var(--border-color)] hover:border-brand/30 hover:shadow-md transition-all">
                               <div className="flex items-center gap-3 mb-3">
                                 <div className="w-10 h-10 bg-brand-light rounded-xl flex items-center justify-center flex-shrink-0">
                                   <Link2 className="w-5 h-5 text-brand" />
                                 </div>
-                                <h4 className="font-bold text-gray-900">
+                                <h4 className="font-bold text-gray-900 dark:text-[var(--text-primary)]">
                                   {action.title}
                                 </h4>
                               </div>
@@ -839,13 +839,13 @@ export default function GuiaAlquilarPage() {
                               </a>
 
                               <div className="space-y-2">
-                                <p className="font-semibold text-gray-700">Pasos:</p>
+                                <p className="font-semibold text-gray-700 dark:text-[var(--text-secondary)]">Pasos:</p>
                                 {action.steps.map((stepText, stepIndex) => (
                                   <div key={stepIndex} className="flex items-start gap-3">
-                                    <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold text-gray-600 flex-shrink-0 mt-0.5">
+                                    <div className="w-6 h-6 bg-gray-200 dark:bg-[var(--bg-tertiary)] rounded-full flex items-center justify-center text-xs font-bold text-gray-600 dark:text-[var(--text-muted)] flex-shrink-0 mt-0.5">
                                       {stepIndex + 1}
                                     </div>
-                                    <p className="text-gray-600 text-sm">
+                                    <p className="text-gray-600 dark:text-[var(--text-secondary)] text-sm">
                                       {stepText}
                                     </p>
                                   </div>
@@ -857,15 +857,15 @@ export default function GuiaAlquilarPage() {
                       )}
 
                       {step.why && (
-                        <div className="mt-4 p-4 bg-amber-50 rounded-xl border border-amber-200">
-                          <p className="font-bold text-amber-800 mb-3 flex items-center gap-2">
+                        <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-700/30">
+                          <p className="font-bold text-amber-800 dark:text-amber-400 mb-3 flex items-center gap-2">
                             <Info className="w-4 h-4" />
                             ¿Por qué debes hacerlo?
                           </p>
                           <div className="space-y-2">
                             {step.why.map((reason, whyIndex) => (
-                              <p key={whyIndex} className="text-amber-700 text-sm flex items-start gap-2">
-                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                              <p key={whyIndex} className="text-amber-700 dark:text-amber-300 text-sm flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 bg-amber-500 dark:bg-amber-400 rounded-full mt-1.5 flex-shrink-0"></span>
                                 <span>{reason}</span>
                               </p>
                             ))}
@@ -874,14 +874,14 @@ export default function GuiaAlquilarPage() {
                       )}
 
                       {step.shows && (
-                        <div className="mt-4 p-4 bg-brand-light rounded-xl border border-brand/20">
+                        <div className="mt-4 p-4 bg-brand-light dark:bg-brand-primary-light rounded-xl border border-brand/20">
                           <p className="font-bold text-brand mb-3 flex items-center gap-2">
                             <Eye className="w-4 h-4" />
                             Esto te mostrará:
                           </p>
                           <div className="space-y-2">
                             {step.shows.map((item, showIndex) => (
-                              <p key={showIndex} className="text-gray-700 text-sm flex items-start gap-2">
+                              <p key={showIndex} className="text-gray-700 dark:text-[var(--text-secondary)] text-sm flex items-start gap-2">
                                 <span className="w-1.5 h-1.5 bg-brand rounded-full mt-1.5 flex-shrink-0"></span>
                                 {item}
                               </p>
@@ -891,14 +891,14 @@ export default function GuiaAlquilarPage() {
                       )}
 
                       {step.documents && (
-                        <div className="mt-4 p-4 bg-brand-light rounded-xl border border-brand/20">
+                        <div className="mt-4 p-4 bg-brand-light dark:bg-brand-primary-light rounded-xl border border-brand/20">
                           <p className="font-bold text-brand mb-3 flex items-center gap-2">
                             <FileText className="w-4 h-4" />
                             Debes tener:
                           </p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                             {step.documents.map((doc, docIndex) => (
-                              <p key={docIndex} className="text-gray-700 text-sm flex items-center gap-2 bg-white/60 rounded-lg px-3 py-2">
+                              <p key={docIndex} className="text-gray-700 dark:text-[var(--text-secondary)] text-sm flex items-center gap-2 bg-white/60 dark:bg-[var(--bg-tertiary)] rounded-lg px-3 py-2">
                                 <span className="w-5 h-5 bg-brand-light rounded-full flex items-center justify-center flex-shrink-0">
                                   <Check className="w-3 h-3 text-brand" />
                                 </span>
@@ -910,14 +910,14 @@ export default function GuiaAlquilarPage() {
                       )}
 
                       {step.tips && (
-                        <div className="mt-4 p-4 bg-brand-light rounded-xl border border-brand/20">
+                        <div className="mt-4 p-4 bg-brand-light dark:bg-brand-primary-light rounded-xl border border-brand/20">
                           <p className="font-bold text-brand mb-3 flex items-center gap-2">
                             <Sun className="w-4 h-4" />
                             Recomendaciones:
                           </p>
                           <div className="space-y-2">
                             {step.tips.map((tip, tipIndex) => (
-                              <p key={tipIndex} className="text-gray-700 text-sm flex items-start gap-2">
+                              <p key={tipIndex} className="text-gray-700 dark:text-[var(--text-secondary)] text-sm flex items-start gap-2">
                                 <span className="w-1.5 h-1.5 bg-brand rounded-full mt-1.5 flex-shrink-0"></span>
                                 {tip}
                               </p>
@@ -927,15 +927,15 @@ export default function GuiaAlquilarPage() {
                       )}
 
                       {step.conditions && (
-                        <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                          <p className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <div className="mt-4 p-4 bg-gray-50 dark:bg-[var(--bg-tertiary)] rounded-xl border border-gray-200 dark:border-[var(--border-color)]">
+                          <p className="font-bold text-gray-800 dark:text-[var(--text-primary)] mb-3 flex items-center gap-2">
                             <ClipboardList className="w-4 h-4" />
                             Condiciones a revisar:
                           </p>
                           <div className="space-y-2">
                             {step.conditions.map((condition, condIndex) => (
-                              <p key={condIndex} className="text-gray-600 text-sm flex items-start gap-2">
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-1.5 flex-shrink-0"></span>
+                              <p key={condIndex} className="text-gray-600 dark:text-[var(--text-secondary)] text-sm flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full mt-1.5 flex-shrink-0"></span>
                                 {condition}
                               </p>
                             ))}
@@ -944,9 +944,9 @@ export default function GuiaAlquilarPage() {
                       )}
 
                       {step.important && (
-                        <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-200">
-                          <p className="font-semibold text-red-800 flex items-center gap-2">
-                            <TriangleAlert className="w-5 h-5 text-red-600" />
+                        <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-700/30">
+                          <p className="font-semibold text-red-800 dark:text-red-400 flex items-center gap-2">
+                            <TriangleAlert className="w-5 h-5 text-red-600 dark:text-red-400" />
                             Importante: {step.important}
                           </p>
                         </div>

@@ -69,7 +69,7 @@ export function MapCoverageMessage({
         <div className="mt-0.5">{config.icon}</div>
         <div>
           <p className={`text-sm font-semibold ${config.text}`}>{message}</p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-[var(--text-muted)] mt-1">
             Intenta ampliar tu búsqueda a otras zonas o ajusta los filtros.
           </p>
         </div>
@@ -86,13 +86,13 @@ export function MapCoverageMessage({
         <p className={`text-sm font-semibold ${config.text}`}>
           {totalResults} {label} encontrada{totalResults !== 1 ? 's' : ''}
         </p>
-        <p className="text-sm text-gray-600 mt-1">{message}</p>
+        <p className="text-sm text-[var(--text-secondary)] mt-1">{message}</p>
         {districtsIncluded.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-2">
             {districtsIncluded.map((district) => (
               <span
                 key={district}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white border border-gray-200 text-gray-700 shadow-sm"
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] shadow-sm"
               >
                 {district}
               </span>

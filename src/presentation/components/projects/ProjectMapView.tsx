@@ -104,7 +104,7 @@ export function ProjectMapView({
             <Popup>
               <div 
                 className="w-[220px] cursor-pointer"
-                onClick={() => window.location.href = `/proyectos/${project.slug || project.id}`}
+                onClick={() => window.location.href = `/projects/detail/${project.slug || project.id}`}
               >
                 {/* Imagen */}
                 {project.coverImageUrl && (

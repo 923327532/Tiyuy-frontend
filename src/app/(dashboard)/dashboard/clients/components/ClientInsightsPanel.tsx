@@ -61,7 +61,7 @@ export function ClientInsightsPanel({ metrics, topClients, atRiskClients }: Clie
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {insights.map((item, index) => (
-          <div key={index} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-sm transition-shadow">
+          <div key={index} className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-4 hover:shadow-sm transition-shadow">
             <div className="flex items-start justify-between">
               <div className={`${item.color} bg-opacity-10 p-2 rounded-lg`}>
                 <item.icon className={`w-4 h-4 ${item.color.replace('bg-', 'text-')}`} />
@@ -80,9 +80,9 @@ export function ClientInsightsPanel({ metrics, topClients, atRiskClients }: Clie
               )}
             </div>
             <div className="mt-3">
-              <p className="text-xs text-gray-500">{item.title}</p>
-              <p className="text-xl font-bold text-gray-900">{item.value}</p>
-              <p className="text-xs text-gray-400">{item.label}</p>
+              <p className="text-xs text-[var(--text-secondary)]">{item.title}</p>
+              <p className="text-xl font-bold text-[var(--text-primary)]">{item.value}</p>
+              <p className="text-xs text-[var(--text-muted)]">{item.label}</p>
             </div>
           </div>
         ))}
@@ -105,7 +105,7 @@ export function ClientInsightsPanel({ metrics, topClients, atRiskClients }: Clie
           </p>
           <div className="space-y-2 max-h-44 overflow-y-auto">
             {atRiskClients.slice(0, 5).map(client => (
-              <div key={client.id} className="flex items-center justify-between p-2.5 bg-white rounded-lg shadow-sm">
+              <div key={client.id} className="flex items-center justify-between p-2.5 bg-[var(--bg-card)] rounded-lg shadow-sm">
                 <div className="flex items-center gap-2.5">
                   <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center">
                     <span className="text-orange-600 font-semibold text-xs">
@@ -113,15 +113,15 @@ export function ClientInsightsPanel({ metrics, topClients, atRiskClients }: Clie
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{client.name}</p>
+                    <p className="text-sm font-medium text-[var(--text-primary)]">{client.name}</p>
                     <p className="text-xs text-orange-600">
                       Sin actividad: {client.daysSinceLastActivity} días
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-sm font-medium text-gray-700">Score: {client.interactionScore}</span>
-                  <p className="text-xs text-gray-400">{client.messageActivity.totalMessages} mensajes</p>
+                  <span className="text-sm font-medium text-[var(--text-primary)]">Score: {client.interactionScore}</span>
+                  <p className="text-xs text-[var(--text-muted)]">{client.messageActivity.totalMessages} mensajes</p>
                 </div>
               </div>
             ))}

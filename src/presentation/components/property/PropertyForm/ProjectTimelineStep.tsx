@@ -80,15 +80,15 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Timeline del Proyecto</h3>
-        <p className="text-sm text-gray-600 mb-6">
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Timeline del Proyecto</h3>
+        <p className="text-sm text-[var(--text-secondary)] mb-6">
           Define las fechas importantes y hitos de construcción
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
             Inicio de Construcción
           </label>
           <input
@@ -99,10 +99,10 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
               onChange('startDate', e.target.value);
               validateMainDates('startDate', e.target.value);
             }}
-            className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-white text-gray-900 ${
+            className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-[var(--bg-card)] text-[var(--text-primary)] ${
               errors.startDate 
                 ? 'border-red-500 focus:ring-red-200 focus:border-red-500' 
-                : 'border-gray-300 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
+                : 'border-[var(--input-border)] focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
             }`}
           />
           {errors.startDate && (
@@ -113,7 +113,7 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
             Entrega Estimada *
           </label>
           <input
@@ -124,10 +124,10 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
               onChange('estimatedDelivery', e.target.value);
               validateMainDates('estimatedDelivery', e.target.value);
             }}
-            className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-white text-gray-900 ${
+            className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-[var(--bg-card)] text-[var(--text-primary)] ${
               errors.estimatedDelivery 
                 ? 'border-red-500 focus:ring-red-200 focus:border-red-500' 
-                : 'border-gray-300 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
+                : 'border-[var(--input-border)] focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
             }`}
             required
           />
@@ -139,9 +139,9 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-900 mb-2">Información importante</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 rounded-lg p-4">
+        <h4 className="font-medium text-[var(--text-primary)] mb-2">Información importante</h4>
+        <ul className="text-sm text-[var(--text-secondary)] space-y-1">
           <li>• La fecha de entrega estimada es obligatoria</li>
           <li>• Puedes agregar hitos importantes del proyecto</li>
           <li>• Estas fechas serán visibles para los compradores</li>
@@ -150,23 +150,23 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
 
       {formData.timeline && formData.timeline.length > 0 && (
         <div className="space-y-4">
-          <h4 className="font-medium text-gray-900">Hitos del Proyecto</h4>
+          <h4 className="font-medium text-[var(--text-primary)]">Hitos del Proyecto</h4>
           <div className="space-y-3">
             {[...formData.timeline]
               .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
               .map((milestone: any) => (
-                <div key={milestone.id} className="border border-gray-200 rounded-lg p-4 bg-white">
+                <div key={milestone.id} className="border border-[var(--border-color)] rounded-lg p-4 bg-[var(--bg-card)]">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-2 h-2 bg-[var(--brand-primary)] rounded-full"></div>
-                        <span className="font-medium text-gray-900">{milestone.phase}</span>
-                        <span className="text-sm text-gray-500">
+                        <span className="font-medium text-[var(--text-primary)]">{milestone.phase}</span>
+                        <span className="text-sm text-[var(--text-muted)]">
                           {new Date(milestone.date + 'T00:00:00').toLocaleDateString('es-PE')}
                         </span>
                       </div>
                       {milestone.description && (
-                        <p className="text-sm text-gray-600">{milestone.description}</p>
+                        <p className="text-sm text-[var(--text-secondary)]">{milestone.description}</p>
                       )}
                     </div>
                     <button
@@ -187,7 +187,7 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
         <button
           type="button"
           onClick={() => setShowMilestoneForm(true)}
-          className="w-full py-3 border-2 border-dashed border-gray-300 rounded-xl text-gray-500 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition text-sm font-medium"
+          className="w-full py-3 border-2 border-dashed border-[var(--border-color)] rounded-xl text-[var(--text-muted)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition text-sm font-medium"
         >
           + Agregar Hito
         </button>
@@ -195,10 +195,10 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
 
       {showMilestoneForm && (
         <div className="border border-[var(--brand-primary)]/20 rounded-xl p-5 bg-[var(--brand-primary)]/[0.04] space-y-4">
-          <h4 className="font-semibold text-gray-900">Nuevo Hito</h4>
+          <h4 className="font-semibold text-[var(--text-primary)]">Nuevo Hito</h4>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
                 Fase o Hito *
               </label>
               <input
@@ -211,10 +211,10 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
                     setErrors(p => { const { phase, ...r } = p; return r; });
                   }
                 }}
-                className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-white text-gray-900 ${
+                className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-[var(--bg-card)] text-[var(--text-primary)] ${
                   errors.phase 
                     ? 'border-red-500 focus:ring-red-200 focus:border-red-500' 
-                    : 'border-gray-300 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
+                    : 'border-[var(--input-border)] focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
                 }`}
                 placeholder="Ej: Inicio de cimentación"
                 required
@@ -227,7 +227,7 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Fecha *
               </label>
               <input
@@ -239,10 +239,10 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
                     setErrors(p => { const { date, ...r } = p; return r; });
                   }
                 }}
-                className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-white text-gray-900 ${
+                className={`w-full px-3 py-2 border rounded-lg outline-none transition focus:ring-2 bg-[var(--bg-card)] text-[var(--text-primary)] ${
                   errors.date 
                     ? 'border-red-500 focus:ring-red-200 focus:border-red-500' 
-                    : 'border-gray-300 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
+                    : 'border-[var(--input-border)] focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)]'
                 }`}
                 required
               />
@@ -254,7 +254,7 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
                 Descripción
               </label>
               <input
@@ -262,7 +262,7 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
                 maxLength={250}
                 value={currentMilestone.description}
                 onChange={(e) => setCurrentMilestone({ ...currentMilestone, description: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg outline-none transition focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg outline-none transition focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] text-[var(--text-primary)] bg-[var(--bg-card)]"
                 placeholder="Detalles importantes (opcional)"
               />
             </div>
@@ -292,7 +292,7 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
       )}
 
       <div>
-        <h4 className="font-medium text-gray-900 mb-3">Certificaciones y Sellos de Calidad</h4>
+        <h4 className="font-medium text-[var(--text-primary)] mb-3">Certificaciones y Sellos de Calidad</h4>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {[
             'Sello de Calidad', 'Certificación LEED', 'ISO 9001', 
@@ -311,9 +311,9 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
                     onChange('certifications', current.filter((c: string) => c !== cert));
                   }
                 }}
-                className="rounded border-gray-300 text-[var(--brand-primary)] focus:ring-[var(--brand-primary)] w-4 h-4 cursor-pointer transition"
+                className="rounded border-[var(--border-color)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)] w-4 h-4 cursor-pointer transition"
               />
-              <span className="text-sm text-gray-700 select-none group-hover:text-gray-900 transition-colors">{cert}</span>
+              <span className="text-sm text-[var(--text-secondary)] select-none group-hover:text-[var(--text-primary)] transition-colors">{cert}</span>
             </label>
           ))}
         </div>
@@ -321,21 +321,21 @@ export function ProjectTimelineStep({ formData, onChange }: ProjectTimelineStepP
 
       {formData.timeline && formData.timeline.length > 0 && (
         <div className="bg-[var(--brand-primary)]/[0.04] border border-[var(--brand-primary)]/20 rounded-xl p-4">
-          <h4 className="font-medium text-gray-900 mb-2">Resumen del Timeline</h4>
+          <h4 className="font-medium text-[var(--text-primary)] mb-2">Resumen del Timeline</h4>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Total Hitos:</span>
-              <span className="font-semibold text-gray-900">{formData.timeline.length}</span>
+              <span className="text-[var(--text-secondary)]">Total Hitos:</span>
+              <span className="font-semibold text-[var(--text-primary)]">{formData.timeline.length}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Primer Hito:</span>
-              <span className="font-semibold text-gray-900">
+              <span className="text-[var(--text-secondary)]">Primer Hito:</span>
+              <span className="font-semibold text-[var(--text-primary)]">
                 {new Date(Math.min(...formData.timeline.map((m: any) => new Date(m.date).getTime())) + 86400000).toLocaleDateString('es-PE')}
               </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Último Hito:</span>
-              <span className="font-semibold text-gray-900">
+              <span className="text-[var(--text-secondary)]">Último Hito:</span>
+              <span className="font-semibold text-[var(--text-primary)]">
                 {new Date(Math.max(...formData.timeline.map((m: any) => new Date(m.date).getTime())) + 86400000).toLocaleDateString('es-PE')}
               </span>
             </div>

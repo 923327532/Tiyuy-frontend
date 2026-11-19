@@ -182,19 +182,19 @@ export function StarRating({
                 className={`${sizeClasses[size]} ${
                   isFilled
                     ? 'text-yellow-500 fill-yellow-500'
-                    : 'text-gray-300'
+                    : 'text-[var(--text-tertiary)]'
                 } transition-colors`}
               />
             </button>
           );
         })}
         {showValue && (hoverRating || rating) > 0 && (
-          <span className="text-sm text-gray-500 ml-1">
+          <span className="text-sm text-[var(--text-secondary)] ml-1">
             {hoverRating || rating}/5
           </span>
         )}
         {saving && (
-          <span className="text-xs text-gray-400 ml-1 animate-pulse">Guardando...</span>
+          <span className="text-xs text-[var(--text-tertiary)] ml-1 animate-pulse">Guardando...</span>
         )}
       </div>
 
@@ -202,13 +202,13 @@ export function StarRating({
       {showAuthModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowAuthModal(false)}>
           <div 
-            className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in zoom-in-95"
+            className="bg-[var(--bg-card)] rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Botón cerrar */}
             <button
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-3 right-3 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -221,10 +221,10 @@ export function StarRating({
             </div>
 
             {/* Título */}
-            <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+            <h3 className="text-lg font-bold text-[var(--text-primary)] text-center mb-2">
               Calificar {entityName}
             </h3>
-            <p className="text-sm text-gray-500 text-center mb-6">
+            <p className="text-sm text-[var(--text-secondary)] text-center mb-6">
               {pendingRating && (
                 <>Quieres darle <span className="font-semibold text-amber-500">{pendingRating} estrella{pendingRating !== 1 ? 's' : ''}</span> a este {entityName}.</>
               )}
@@ -248,14 +248,14 @@ export function StarRating({
                   setShowAuthModal(false);
                   router.push('/profile-selector');
                 }}
-                className="w-full flex items-center justify-center gap-2 bg-white text-teal-600 font-semibold py-3 px-4 rounded-xl border-2 border-teal-600 hover:bg-teal-50 transition-colors"
+                className="w-full flex items-center justify-center gap-2 bg-[var(--bg-card)] text-teal-600 font-semibold py-3 px-4 rounded-xl border-2 border-teal-600 hover:bg-[var(--bg-secondary)] transition-colors"
               >
                 <UserPlus className="w-4 h-4" />
                 Crear cuenta gratis
               </button>
               <button
                 onClick={() => setShowAuthModal(false)}
-                className="w-full text-sm text-gray-400 hover:text-gray-600 py-2 transition-colors"
+                className="w-full text-sm text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] py-2 transition-colors"
               >
                 Ahora no
               </button>

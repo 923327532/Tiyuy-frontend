@@ -80,6 +80,35 @@ export class FinanceRepository implements IFinanceRepository {
     }
   }
 
+  async getPublicationStats(): Promise<{
+    hasActiveSubscription: boolean;
+    canPublish: boolean;
+    publicationsUsed: number;
+    publicationsLimit: number;
+    publicationsRemaining: number;
+    planStatus: string;
+    planStatusLabel: string;
+    message?: string;
+  } | null> {
+    try {
+      const response = await apiClient.get<any>('/properties/my-properties/stats');
+      const d = response.data;
+      if (!d) return null;
+      return {
+        hasActiveSubscription: !!d.hasActiveSubscription,
+        canPublish: !!d.canPublish,
+        publicationsUsed: Number(d.publicationsUsed ?? 0),
+        publicationsLimit: Number(d.publicationsLimit ?? 0),
+        publicationsRemaining: Number(d.publicationsRemaining ?? 0),
+        planStatus: d.planStatus || 'NO_PLAN',
+        planStatusLabel: d.planStatusLabel || 'Sin plan activo',
+        message: d.message,
+      };
+    } catch (error) {
+      return null;
+    }
+  }
+
   async hasUserUsedFreePlan(userId: number): Promise<boolean> {
     const response = await apiClient.get(
       `${ENDPOINTS.FINANCE.SUBSCRIPTIONS.FREE_PLAN_USED}?userId=${userId}`
@@ -89,7 +118,13 @@ export class FinanceRepository implements IFinanceRepository {
 
   async getAvailablePlans(): Promise<SubscriptionPlan[]> {
     const response = await apiClient.get<SubscriptionPlanDTO[]>(ENDPOINTS.FINANCE.SUBSCRIPTIONS.PLANS);
-    return response.data;
+    return response.data.map(item => ({
+      ...item,
+      agencyDiscountedPrice: item.agencyDiscountedPrice,
+      hasAgencyDiscount: item.hasAgencyDiscount,
+      userPlanStatus: item.userPlanStatus,
+      userPlanStatusLabel: item.userPlanStatusLabel,
+    }));
   }
 
   async createMercadoPagoPreference(subscriptionId: string, frontendUrl?: string): Promise<any> {
@@ -113,13 +148,14 @@ export class FinanceRepository implements IFinanceRepository {
     const planIdToTier: Record<string, string> = {
       '1': 'FREE',
       '2': 'BASIC',
-      '3': 'PREMIUM',
+      '3': 'PRO',
       '4': 'ENTERPRISE_TRIAL',
-      '5': 'ENTERPRISE'
+      '5': 'ENTERPRISE',
+      '10': 'PLAN LANZAMIENTO'
     };
     
     // Si planId ya es un tier válido, usarlo directamente
-    if (['FREE', 'BASIC', 'PREMIUM', 'ENTERPRISE_TRIAL', 'ENTERPRISE'].includes(planIdStr.toUpperCase())) {
+    if (['FREE', 'BASIC', 'PRO', 'ENTERPRISE_TRIAL', 'ENTERPRISE', 'PLAN LANZAMIENTO'].includes(planIdStr.toUpperCase())) {
       tier = planIdStr.toUpperCase();
     } else if (planIdToTier[planIdStr]) {
       // Si es un ID numérico, convertir al tier correspondiente
@@ -132,7 +168,6 @@ export class FinanceRepository implements IFinanceRepository {
     const body: any = {
       tier: tier,
       paymentMethod,
-      activateImmediately: false, // No activar inmediatamente, esperar notificacion de MercadoPago
     };
     
     if (discountCode) {
@@ -141,14 +176,23 @@ export class FinanceRepository implements IFinanceRepository {
     
     const response = await apiClient.post<ActiveSubscriptionDTO>(ENDPOINTS.FINANCE.SUBSCRIPTIONS.SUBSCRIBE, body);
 
-    const data = response.data;
+    const data = response.data as any;
     return {
       id: data.id,
       plan: data.plan,
-      status: data.status as any,
-      startsAt: new Date(data.startsAt),
-      expiresAt: new Date(data.expiresAt),
-      remainingPublications: data.remainingPublications,
+      status: (data.status || (data.isActive ? 'ACTIVE' : 'PENDING')) as any,
+      startsAt: new Date(data.startsAt || data.startDate),
+      expiresAt: new Date(data.expiresAt || data.endDate),
+      remainingPublications: data.remainingPublications ?? ((data.publicationsLimit ?? 0) - (data.publicationsUsed ?? 0)),
+    };
+  }
+
+  async getPlanPriceForUser(planId: number): Promise<{ finalPrice: number; originalPrice: number; currency: string }> {
+    const response = await apiClient.get(`/finance/subscriptions/plans/${planId}/price`);
+    return {
+      finalPrice: Number(response.data.finalPrice),
+      originalPrice: Number(response.data.originalPrice),
+      currency: response.data.currency || 'PEN',
     };
   }
 

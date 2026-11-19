@@ -57,7 +57,7 @@ export function GrupoPostCard({
       {/* Header del post */}
       <div className="p-4">
         <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-semibold">
+          <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-semibold">
             {post.userName?.charAt(0).toUpperCase() || 'U'}
           </div>
           <div className="flex-1 min-w-0">

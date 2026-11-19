@@ -416,17 +416,17 @@ export function CampaignModal({ isOpen, onClose, onSubmit, title, initialData, t
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4">
               <button
                 type="submit"
-                className="flex-1 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-600 to-teal-500 text-white hover:shadow-lg hover:-translate-y-0.5"
+                className="w-full sm:flex-1 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-gradient-to-r from-emerald-600 to-teal-500 text-white hover:shadow-lg hover:-translate-y-0.5"
               >
                 {initialData ? 'Guardar Cambios' : 'Crear Campaña (7 días)'}
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-300 text-gray-600 hover:bg-gray-50"
+                className="w-full sm:flex-1 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-sm border-2 border-gray-300 text-gray-600 hover:bg-gray-50"
               >
                 Cancelar
               </button>

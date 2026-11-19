@@ -116,7 +116,7 @@ export function ChannelCard({ channel, currentUserId }: ChannelCardProps) {
         className={`w-full py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 ${
           channel.isSubscribed
             ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50'
-            : 'bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50'
+            : 'bg-blue-600 text-white hover:opacity-90 disabled:opacity-50'
         }`}
       >
         {isSubscribing || isUnsubscribing ? (

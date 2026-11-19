@@ -42,6 +42,8 @@ export const RegisterAgenteForm: React.FC = () => {
   const [emailExists, setEmailExists] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem('googleRegistrationData');
@@ -101,6 +103,11 @@ export const RegisterAgenteForm: React.FC = () => {
       else if (!phoneRegex.test(formData.phone.trim())) newErrors.phone = 'Teléfono inválido: 9 dígitos empezando con 9';
     }
 
+    if (step === 3) {
+      if (!acceptedPrivacy) newErrors.privacy = 'Debes aceptar el tratamiento de tus datos personales';
+      if (!acceptedTerms) newErrors.terms = 'Debes aceptar los términos y condiciones';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -116,6 +123,7 @@ export const RegisterAgenteForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateStep(3)) return;
     try {
       const email = googleData ? googleData.email : formData.email;
       const password = googleData ? crypto.randomUUID() : formData.password;
@@ -140,7 +148,6 @@ export const RegisterAgenteForm: React.FC = () => {
           });
         } catch { /* no bloqueante */ }
       }
-      window.location.href = '/dashboard';
     } catch { /* expuesto via error */ }
   };
 
@@ -413,6 +420,52 @@ export const RegisterAgenteForm: React.FC = () => {
                 <span className="text-gray-400">Teléfono</span>
                 <span className="font-medium text-gray-700">{formData.phone}</span>
               </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100 space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptedPrivacy}
+                  onChange={(e) => {
+                    setAcceptedPrivacy(e.target.checked);
+                    if (e.target.checked && errors.privacy) {
+                      setErrors((prev) => { const n = { ...prev }; delete n.privacy; return n; });
+                    }
+                  }}
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-xs text-gray-600">
+                  Acepto el tratamiento de mis datos personales conforme a la{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Política de Privacidad</a>{' '}
+                  de TIYUY
+                </span>
+              </label>
+              {errors.privacy && (
+                <p className="text-xs text-red-600 ml-7" role="alert">{errors.privacy}</p>
+              )}
+
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptedTerms}
+                  onChange={(e) => {
+                    setAcceptedTerms(e.target.checked);
+                    if (e.target.checked && errors.terms) {
+                      setErrors((prev) => { const n = { ...prev }; delete n.terms; return n; });
+                    }
+                  }}
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <span className="text-xs text-gray-600">
+                  Acepto los{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Términos y Condiciones</a>{' '}
+                  de TIYUY
+                </span>
+              </label>
+              {errors.terms && (
+                <p className="text-xs text-red-600 ml-7" role="alert">{errors.terms}</p>
+              )}
             </div>
 
             <div className="flex gap-2 pt-1">

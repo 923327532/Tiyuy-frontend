@@ -56,21 +56,21 @@ export function WhatsAppButton({ property, className = '' }: WhatsAppButtonProps
       <div className="mt-3">
         <button
           onClick={() => setShowMessageEditor(!showMessageEditor)}
-          className="w-full text-gray-600 hover:text-gray-800 text-sm font-medium py-2 flex items-center justify-center gap-2 transition-colors"
+          className="w-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm font-medium py-2 flex items-center justify-center gap-2 transition-colors"
         >
           <SquarePen className="w-4 h-4" />
           {showMessageEditor ? 'Ocultar editor' : 'Personalizar mensaje'}
         </button>
 
         {showMessageEditor && (
-          <div className="mt-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mt-3 p-4 bg-[var(--bg-secondary)] rounded-xl border border-[var(--border-color)]">
+            <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
               Mensaje personalizado:
             </label>
             <textarea
               value={customMessage}
               onChange={(e) => setCustomMessage(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none bg-gray-50 text-gray-700 placeholder:text-gray-400"
+              className="w-full px-3 py-2 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none bg-[var(--bg-primary)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
               rows={3}
               placeholder="Escribe tu mensaje personalizado..."
             />
@@ -96,7 +96,7 @@ export function WhatsAppButton({ property, className = '' }: WhatsAppButtonProps
       </div>
 
       {/* Información adicional */}
-      <div className="mt-3 text-xs text-gray-500 text-center">
+      <div className="mt-3 text-xs text-[var(--text-tertiary)] text-center">
         Respuesta rápida por WhatsApp • Disponible 24/7
       </div>
     </div>

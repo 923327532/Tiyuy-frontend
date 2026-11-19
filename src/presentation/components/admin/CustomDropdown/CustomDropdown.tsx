@@ -55,7 +55,7 @@ export function CustomDropdown({ value, onChange, options, placeholder, minWidth
       <button
         onClick={toggleDropdown}
         className="px-4 py-2.5 pr-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:bg-gray-50 transition-all cursor-pointer text-sm shadow-sm flex items-center justify-between"
-        style={{ minWidth }}
+        style={{ minWidth: `clamp(120px, 40vw, ${minWidth})` }}
       >
         <span>{selectedLabel}</span>
         <ChevronDown className="w-4 h-4 text-gray-400" />

@@ -18,12 +18,12 @@ export function PropertyLocation({ location, propertyId }: PropertyLocationProps
   const pills = [location.district, location.province, location.region].filter(Boolean) as string[];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] overflow-hidden">
 
       {/* Header */}
-      <div className="px-6 py-4 flex items-center gap-2 border-b border-gray-100">
+      <div className="px-6 py-4 flex items-center gap-2 border-b border-[var(--border-color)]">
         <MapPin className="w-4 h-4 text-teal-600 flex-shrink-0" />
-        <h2 className="text-base font-bold text-gray-900">Ubicación</h2>
+        <h2 className="text-base font-bold text-[var(--text-primary)]">Ubicación</h2>
       </div>
 
       {/* Mapa — altura fija, el EnhancedMap ahora es solo el mapa */}
@@ -32,16 +32,16 @@ export function PropertyLocation({ location, propertyId }: PropertyLocationProps
       </div>
 
       {/* Info debajo del mapa — separada con divide */}
-      <div className="divide-y divide-gray-100">
+      <div className="divide-y divide-[var(--border-color)]">
 
         {/* Dirección */}
         <div className="px-6 py-4 flex items-start gap-3">
           <div className="w-2.5 h-2.5 rounded-full bg-blue-500 mt-1 flex-shrink-0" />
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide font-medium mb-1">
+            <p className="text-xs text-[var(--text-tertiary)] uppercase tracking-wide font-medium mb-1">
               Ubicación de la propiedad
             </p>
-            <p className="text-sm text-gray-700">{addressLine}</p>
+            <p className="text-sm text-[var(--text-primary)]">{addressLine}</p>
           </div>
         </div>
 
@@ -51,7 +51,7 @@ export function PropertyLocation({ location, propertyId }: PropertyLocationProps
             {pills.map((pill, index) => (
               <span
                 key={`${pill}-${index}`}
-                className="inline-flex items-center bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full"
+                className="inline-flex items-center bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-secondary)] text-xs font-medium px-3 py-1.5 rounded-full"
               >
                 {pill}
               </span>
@@ -62,7 +62,7 @@ export function PropertyLocation({ location, propertyId }: PropertyLocationProps
         {/* Coordenadas */}
         {location.latitude && location.longitude && (
           <div className="px-6 py-3">
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[var(--text-tertiary)]">
               Coordenadas: {location.latitude}, {location.longitude}
             </p>
           </div>

@@ -69,33 +69,33 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-100">
+    <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] h-full flex flex-col">
+      <div className="p-4 border-b border-[var(--border-color)]">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-gray-800">
-            Clientes <span className="text-gray-400 font-normal">({filteredClients.length})</span>
+          <h2 className="text-sm font-semibold text-[var(--text-primary)]">
+            Clientes <span className="text-[var(--text-muted)] font-normal">({filteredClients.length})</span>
           </h2>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`p-1.5 rounded-lg transition-colors ${showFilters ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+            className={`p-1.5 rounded-lg transition-colors ${showFilters ? 'bg-blue-50 text-blue-600' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'}`}
           >
             <Filter className="w-4 h-4" />
           </button>
         </div>
 
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[var(--text-muted)]" />
           <input
             type="text"
             placeholder="Buscar clientes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full pl-8 pr-3 py-1.5 border border-[var(--border-color)] rounded-lg text-xs bg-[var(--bg-primary)] text-[var(--text-primary)] focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -103,12 +103,12 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
         </div>
 
         {showFilters && (
-          <div className="mt-3 space-y-2 pt-3 border-t border-gray-100">
+          <div className="mt-3 space-y-2 pt-3 border-t border-[var(--border-color)]">
             <div className="flex gap-2">
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as ClientFilter)}
-                className="flex-1 p-1.5 border border-gray-200 rounded-lg text-xs"
+                className="flex-1 p-1.5 border border-[var(--border-color)] rounded-lg text-xs bg-[var(--bg-primary)] text-[var(--text-primary)]"
               >
                 {FILTER_OPTIONS.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -117,7 +117,7 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortBy)}
-                className="flex-1 p-1.5 border border-gray-200 rounded-lg text-xs"
+                className="flex-1 p-1.5 border border-[var(--border-color)] rounded-lg text-xs bg-[var(--bg-primary)] text-[var(--text-primary)]"
               >
                 {SORT_OPTIONS.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -131,12 +131,12 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
       <div className="flex-1 overflow-y-auto">
         {filteredClients.length === 0 ? (
           <div className="p-6 text-center">
-            <Users className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">No se encontraron clientes</p>
-            <p className="text-xs text-gray-400 mt-0.5">Intenta con otros filtros</p>
+            <Users className="w-10 h-10 text-[var(--text-muted)] mx-auto mb-2" />
+            <p className="text-sm text-[var(--text-secondary)]">No se encontraron clientes</p>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">Intenta con otros filtros</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-50">
+          <div className="divide-y divide-[var(--border-light)]">
               {filteredClients.map(client => {
               const activityStatus = getActivityStatus(client.daysSinceLastActivity);
               const isSelected = selectedClientId === client.id;
@@ -148,7 +148,7 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
                 <div
                   key={client.id}
                   onClick={() => onClientSelect(client)}
-                  className={`p-3 cursor-pointer transition-all hover:bg-gray-50 ${
+                  className={`p-3 cursor-pointer transition-all hover:bg-[var(--bg-tertiary)] ${
                     isSelected ? 'bg-blue-50 border-l-2 border-blue-500' : ''
                   }`}
                 >
@@ -160,14 +160,14 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-medium text-gray-900 truncate">{displayName}</h3>
+                        <h3 className="text-sm font-medium text-[var(--text-primary)] truncate">{displayName}</h3>
                         <div className="flex items-center gap-1">
                           <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
                           <span className="text-xs font-semibold text-blue-600">{client.interactionScore}</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                      <div className="flex flex-wrap items-center gap-x-2 text-xs text-[var(--text-secondary)] mt-0.5">
                         {client.email && (
                           <span className="flex items-center gap-0.5 truncate max-w-[120px]">
                             <Mail className="w-3 h-3 shrink-0" />
@@ -182,19 +182,19 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 mt-1.5">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5">
                         <span className={`px-1.5 py-0.5 rounded text-[10px] ${activityStatus.color}`}>
                           {activityStatus.label}
                         </span>
-                        <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                        <span className="flex items-center gap-0.5 text-[10px] text-[var(--text-muted)]">
                           <MessageSquare className="w-3 h-3" />
                           {client.messageActivity.totalMessages}
                         </span>
-                        <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                        <span className="flex items-center gap-0.5 text-[10px] text-[var(--text-muted)]">
                           <Users className="w-3 h-3" />
                           {client.groupActivity.groupsJoined}
                         </span>
-                        <span className="flex items-center gap-0.5 text-[10px] text-gray-400">
+                        <span className="flex items-center gap-0.5 text-[10px] text-[var(--text-muted)]">
                           <Calendar className="w-3 h-3" />
                           {client.channelActivity.eventsAttended}
                         </span>
@@ -205,7 +205,7 @@ export function ClientList({ clients, filterClients, selectedClientId, onClientS
                       </div>
                     </div>
 
-                    <ChevronRight className="w-4 h-4 text-gray-300 shrink-0 mt-1" />
+                    <ChevronRight className="w-4 h-4 text-[var(--text-muted)] shrink-0 mt-1" />
                   </div>
                 </div>
               );

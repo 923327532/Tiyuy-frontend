@@ -1,0 +1,22 @@
+/* Row actions */
+.users-table__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.users-table__action-btn {
+  transition: background-color 200ms ease, color 200ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.users-table__action-btn:hover:not(:disabled) { transform: scale(1.08); }
+.users-table__action-btn:active:not(:disabled) { transform: scale(0.95); }
+
+.users-table__action-btn--view:hover:not(:disabled) { background: var(--ut-brand-soft); color: var(--ut-brand); }
+.users-table__action-btn--activate:hover:not(:disabled) { background: var(--ut-success-soft); color: var(--ut-success); }
+.users-table__action-btn--suspend:hover:not(:disabled) { background: var(--ut-warning-soft); color: var(--ut-warning); }
+.users-table__action-btn--delete:hover:not(:disabled) { background: var(--ut-danger-soft); color: var(--ut-danger); }
+.users-table__action-btn--properties:hover:not(:disabled),
+.users-table__action-btn--projects:hover:not(:disabled) { background: var(--ut-info-soft); color: var(--ut-info); }
+
+.users-table__action-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }

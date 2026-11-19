@@ -15,11 +15,13 @@ import {
   CreateAdminUserRequest,
   UpdateAdminUserRequest,
   DashboardStats,
+  PropertyAnalyticsResponse,
   UserStats,
   FinanceStats,
   FinanceHistoryDto,
   UserRegistrationHistory,
   UserListItem,
+  InternationalUserListItem,
   ChangeUserRoleRequest,
   DiscountCode,
   CreateDiscountCodeRequest,
@@ -87,11 +89,12 @@ export class AdminRepository implements IAdminRepository {
 
   // Dashboard & Analytics
   async getDashboardStats(): Promise<DashboardStats> {
-    const url = `${this.basePath}/dashboard/stats`;
-    console.log(' Making GET request to:', url);
-    const response = await axiosClient.get(url);
-    console.log('Response status:', response.status);
-    console.log('Response data:', response.data);
+    const response = await axiosClient.get(`${this.basePath}/dashboard/stats`);
+    return response.data;
+  }
+
+  async getPropertyAnalytics(): Promise<PropertyAnalyticsResponse> {
+    const response = await axiosClient.get(`${this.basePath}/dashboard/properties`);
     return response.data;
   }
 
@@ -184,6 +187,31 @@ export class AdminRepository implements IAdminRepository {
 
   async getUserById(userId: number): Promise<UserListItem> {
     const response = await axiosClient.get(`${this.basePath}/users/${userId}`);
+    return response.data;
+  }
+
+  // ── Usuarios internacionales (sección "Extranjeros") ─────────────────────
+  async getInternationalUsers(
+    params?: PaginationParams
+  ): Promise<PaginatedResponse<InternationalUserListItem>> {
+    const queryParams = new URLSearchParams();
+    if (params?.page !== undefined) queryParams.set('page', params.page.toString());
+    if (params?.size !== undefined) queryParams.set('size', params.size.toString());
+    if (params?.sort) queryParams.set('sort', params.sort);
+
+    const response = await axiosClient.get(`${this.basePath}/international?${queryParams.toString()}`);
+    return response.data;
+  }
+
+  async approveInternationalUser(userId: number): Promise<InternationalUserListItem> {
+    const response = await axiosClient.put(`${this.basePath}/international/${userId}/approve`);
+    return response.data;
+  }
+
+  async rejectInternationalUser(userId: number, reason?: string): Promise<InternationalUserListItem> {
+    const queryParams = new URLSearchParams();
+    if (reason) queryParams.set('reason', reason);
+    const response = await axiosClient.put(`${this.basePath}/international/${userId}/reject?${queryParams.toString()}`);
     return response.data;
   }
 
@@ -863,6 +891,16 @@ export class AdminRepository implements IAdminRepository {
     return response.data;
   }
 
+  async searchDeveloperDiscountTargets(search: string): Promise<PaginatedResponse<DeveloperResponse>> {
+    const searchParams = new URLSearchParams({
+      search,
+      page: '0',
+      size: '10',
+    });
+    const response = await axiosClient.get(`${this.basePath}/developers?${searchParams.toString()}`);
+    return response.data;
+  }
+
   async getDeveloperById(id: number): Promise<InmobiliariaWithStats> {
     const response = await axiosClient.get(`${this.basePath}/developers/${id}`);
     return response.data;
@@ -1215,6 +1253,10 @@ export class AdminRepository implements IAdminRepository {
     return response.data;
   }
 
+  async toggleBanner(id: number): Promise<void> {
+    await axiosClient.post(`/v1/admin/marketing/banners/${id}/toggle`);
+  }
+
   async deleteBanner(id: number): Promise<void> {
     await axiosClient.delete(`/v1/admin/marketing/banners/${id}`);
   }
@@ -1280,5 +1322,3 @@ export class AdminRepository implements IAdminRepository {
 
 // Export singleton instance
 export const adminRepository = new AdminRepository();
-
-

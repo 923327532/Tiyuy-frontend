@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
+  productionBrowserSourceMaps: false,
   async rewrites() {
     return [
       // Local API wrappers must run before proxying to backend
@@ -12,12 +16,14 @@ const nextConfig: NextConfig = {
         source: '/api/images/proxy/:path*',
         destination: '/api/images/proxy/:path*',
       },
-      // Proxy other API calls to backend
-      // BACKEND_URL ya incluye /api (ej: https://api.tiyuy.com/api)
-      // por lo tanto destination = BACKEND_URL/:path*
+      // Proxy other API calls to backend via BACKEND_URL
+      // El backend usa context-path /api, por lo que /api/:path* -> BACKEND_URL/api/:path*
       {
         source: '/api/:path*',
-        destination: `${process.env.BACKEND_URL ? process.env.BACKEND_URL.replace(/\/+$/, '') : 'http://152.70.129.43:8080/api'}/:path*`,
+        destination: `${process.env.BACKEND_URL ? `${process.env.BACKEND_URL.replace(/\/+$/, '')}/api` : 'http://localhost:8080/api'}/:path*`,
+       // BACKEND_URL debe configurarse como variable de entorno en el hosting.
+       // En Condabo, el backend corre en http://94.72.122.190:8080.
+       // En desarrollo local, se usa http://localhost:8080.
       },
       // Existing rewrites
       {

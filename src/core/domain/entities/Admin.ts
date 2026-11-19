@@ -99,11 +99,25 @@ export interface DeveloperResponse {
   companyName: string;
   ruc?: string;
   phone?: string;
+  managerName?: string;
+  city?: string;
+  address?: string;
+  totalProjects?: number;
+  totalAgents?: number;
   enabled: boolean;
   status: string;
-  totalAgents: number;
   createdAt: Date;
   lastLoginAt?: Date;
+}
+
+export interface DeveloperDiscountTarget {
+  id: number;
+  name: string;
+  ruc?: string;
+  email?: string;
+  managerName?: string;
+  currentPlan?: string;
+  revenue30Days?: number;
 }
 
 // Search filter for developers
@@ -196,6 +210,20 @@ export interface DashboardStats {
   revenueGrowthPercent: number;
 }
 
+// Property analytics snapshot (GET /admin/dashboard/properties)
+export interface PropertyAnalyticsResponse {
+  totalProperties: number;
+  propertiesByStatus: Record<string, number>;
+  propertiesByType: Record<string, number>;
+  propertiesByTransactionType: Record<string, number>;
+  verified: number;
+  unverified: number;
+  featured: number;
+  expiredFeatured: number;
+  availableFeaturedSlots: number;
+  generatedAt: string;
+}
+
 // User stats
 export interface UserStats {
   totalUsers: number;
@@ -266,6 +294,27 @@ export interface UserListItem {
 export interface ChangeUserRoleRequest {
   newRole: 'USER' | 'AGENT' | 'DEVELOPER' | 'ADMIN';
   reason?: string;
+}
+
+// Usuario internacional para la sección "Extranjeros" del panel admin.
+// El administrador compara la foto del documento con la selfie y aprueba/rechaza.
+export interface InternationalUserListItem {
+  userId: number;
+  email: string;
+  phone: string;
+  firstName: string;
+  lastName: string;
+  documentType: string; // INTERNATIONAL
+  issuingCountry: string;
+  internationalDocumentType: string; // PASSPORT | NATIONAL_ID | RESIDENCE_PERMIT
+  internationalDocumentNumber: string;
+  documentImageUrl?: string;
+  selfieImageUrl?: string;
+  verificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED' | 'MANUAL_REVIEW';
+  verificationResult?: string;
+  verifiedAt?: Date;
+  enabled: boolean;
+  createdAt: Date;
 }
 
 // User properties response from admin endpoint
@@ -1310,4 +1359,3 @@ export interface UpdateSupportTicketStatusRequest {
   status: TicketStatus;
   adminNotes?: string;
 }
-

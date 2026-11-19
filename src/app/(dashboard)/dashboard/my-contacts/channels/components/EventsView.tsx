@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Home, User, Bell, Plus, MapPin, Calendar, Users, Star, Share2, ChevronDown, Pin, Check, Mail, MoreHorizontal } from 'lucide-react';
+import { Search, Home, User, Bell, Plus, MapPin, Calendar, Users, Star, Share2, ChevronDown, Pin, Check, Mail, MoreHorizontal, Menu, X } from 'lucide-react';
 import { useChannelEvents, useChannelUpcomingEvents, useRespondToEvent, useChannelSubscribers } from '@/presentation/hooks/useContacts';
 import EventCard from './EventCard';
 
@@ -20,6 +20,16 @@ export default function EventsView({
   onEventSelect,
   onCreateEvent 
 }: EventsViewProps) {
+  const [isMobile, setIsMobile] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'upcoming' | 'following' | 'featured'>('upcoming');
   const [showUserEventsDropdown, setShowUserEventsDropdown] = useState(false);
@@ -70,13 +80,37 @@ export default function EventsView({
   const filteredEvents = getFilteredEvents();
 
   return (
-    <div className="flex h-full bg-gray-50">
+    <div className="flex h-full bg-gray-50 relative">
+      {isMobile && showMobileSidebar && (
+        <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowMobileSidebar(false)} />
+      )}
+      {isMobile && (
+        <button
+          onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+          className="fixed top-3 left-3 z-50 p-2 bg-white rounded-lg shadow-md border border-gray-200"
+        >
+          <Menu className="w-5 h-5 text-gray-700" />
+        </button>
+      )}
       {/* SIDEBAR IZQUIERDO */}
-      <div className="w-[280px] bg-white border-r border-gray-200 flex flex-col">
+      <div
+        className={`${
+          isMobile
+            ? `fixed inset-y-0 left-0 z-50 w-[280px] bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${showMobileSidebar ? 'translate-x-0' : '-translate-x-full'}`
+            : 'w-[280px]'
+        } bg-white border-r border-gray-200 flex flex-col`}
+      >
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
-          <h1 className="text-xl font-bold text-gray-900 mb-4">Eventos</h1>
-          
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-bold text-gray-900">Eventos</h1>
+            {isMobile && (
+              <button onClick={() => setShowMobileSidebar(false)} className="p-1 hover:bg-gray-100 rounded-lg">
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            )}
+          </div>
+
           {/* Search */}
           <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
             <Search className="w-4 h-4 text-gray-400" />

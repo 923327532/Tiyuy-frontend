@@ -142,7 +142,10 @@ export default function RecentActivitySection() {
               </tr>
             ) : (
               discounts.map((discount, index) => (
-                <tr key={discount.id ?? index} className="hover:bg-gray-50/50 transition-colors">
+                <tr
+                  key={`${discount.source || 'UNKNOWN'}-${discount.id ?? 'no-id'}-${discount.code || 'no-code'}-${discount.createdAt || 'no-date'}-${index}`}
+                  className="hover:bg-gray-50/50 transition-colors"
+                >
                   <td className="px-6 py-3.5">
                     <div className="flex items-center gap-2">
                       <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${statusColors[discount.status] || 'bg-gray-300'}`} />

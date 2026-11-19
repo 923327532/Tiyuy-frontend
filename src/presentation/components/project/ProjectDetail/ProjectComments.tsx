@@ -30,7 +30,7 @@ export function ProjectComments({ projectId }: ProjectCommentsProps) {
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState<number>(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(COMMENTS_PER_PAGE);
+  const [showAll, setShowAll] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -111,12 +111,8 @@ export function ProjectComments({ projectId }: ProjectCommentsProps) {
     }
   };
 
-  const visibleComments = comments.slice(0, visibleCount);
-  const hasMore = visibleCount < comments.length;
-
-  const loadMore = () => {
-    setVisibleCount(prev => prev + COMMENTS_PER_PAGE);
-  };
+  const visibleComments = showAll ? comments : comments.slice(0, 1);
+  const hiddenCount = comments.length - 1;
 
   if (loading) {
     return (
@@ -204,53 +200,44 @@ export function ProjectComments({ projectId }: ProjectCommentsProps) {
           )}
         </div>
 
-        {/* Lista de comentarios con paginación */}
+        {/* Lista de comentarios */}
         {comments.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {visibleComments.map((comment, index) => (
-              <div key={comment.id || `comment-${index}-${comment.createdAt}`} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-semibold text-gray-900">{comment.userName}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(comment.createdAt).toLocaleDateString('es-PE', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
+              <div key={comment.id || `comment-${index}-${comment.createdAt}`} className="bg-gray-50 rounded-lg px-3 py-2 border border-gray-100">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xs font-medium text-gray-700 truncate">{comment.userName}</span>
+                    <span className="text-[10px] text-gray-400 shrink-0">
+                      {comment.createdAt ? (() => {
+                        try { return new Date(comment.createdAt).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }); }
+                        catch { return ''; }
+                      })() : ''}
+                    </span>
                   </div>
-                  {comment.rating && (
-                    <StarRating
-                      initialRating={comment.rating}
-                      readonly
-                      size="sm"
-                    />
-                  )}
+                  {comment.rating && <StarRating initialRating={comment.rating} readonly size="sm" />}
                 </div>
-                <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+                <p className="text-sm text-gray-600 leading-snug">{comment.content}</p>
               </div>
             ))}
             
-            {/* Botón "Ver más" para paginación */}
-            {hasMore && (
-              <div className="text-center pt-2">
-                <button
-                  onClick={loadMore}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-5 py-2.5 rounded-lg transition-colors"
-                >
-                  <ChevronDown className="w-4 h-4" />
-                  Ver más comentarios ({comments.length - visibleCount} restantes)
-                </button>
-              </div>
+            {/* Botón "Ver más" compacto */}
+            {!showAll && hiddenCount > 0 && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="w-full text-center text-xs text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 py-2 rounded-lg transition-colors font-medium"
+              >
+                Ver {hiddenCount} comentario{hiddenCount !== 1 ? 's' : ''} más
+              </button>
             )}
-            
-            {/* Indicador de cuántos se muestran */}
-            <div className="text-center text-xs text-gray-400 pt-1">
-              Mostrando {visibleComments.length} de {totalComments} comentarios
-            </div>
+            {showAll && comments.length > 1 && (
+              <button
+                onClick={() => setShowAll(false)}
+                className="w-full text-center text-xs text-gray-500 hover:text-gray-600 py-1.5 transition-colors"
+              >
+                Mostrar menos
+              </button>
+            )}
           </div>
         ) : (
           <div className="bg-gray-50 rounded-lg p-4 text-center">

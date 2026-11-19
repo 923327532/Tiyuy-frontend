@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import { Eye, EyeOff, Mail, User, Phone, Lock, Hash, Building2, Star, MapPin } from 'lucide-react';
+import { Eye, EyeOff, Mail, User, Phone, Lock, Hash, Building2, Star, MapPin, XCircle } from 'lucide-react';
 import { useAuth } from '@/presentation/hooks';
 import { useGoogleAuth, GoogleUserData } from '@/presentation/hooks/useGoogleAuth';
 import { AuthRepository } from '@/infrastructure/repositories/AuthRepository';
@@ -23,6 +23,16 @@ export const RegisterDeveloperForm: React.FC = () => {
   const { validateEmail, isValidating: validatingEmail } = useUserValidation();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorModalMessage, setErrorModalMessage] = useState('');
+
+  // Mostrar modal cuando hay error de registro (en vez de solo el banner)
+  useEffect(() => {
+    if (error) {
+      setErrorModalMessage(error);
+      setShowErrorModal(true);
+    }
+  }, [error]);
   const [googleData, setGoogleData] = useState<GoogleUserData | null>(null);
   const [formData, setFormData] = useState({
     email: '',
@@ -40,6 +50,7 @@ export const RegisterDeveloperForm: React.FC = () => {
   const [isDniValidated, setIsDniValidated] = useState(false);
   const [isRucValidated, setIsRucValidated] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [emailExists, setEmailExists] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -106,6 +117,7 @@ export const RegisterDeveloperForm: React.FC = () => {
     if (step === 3) {
       if (!formData.ruc) newErrors.ruc = 'El RUC de la empresa es obligatorio';
       else if (formData.ruc.length !== 11) newErrors.ruc = 'El RUC debe tener 11 dígitos';
+      if (!acceptedPrivacy) newErrors.privacy = 'Debes aceptar el tratamiento de tus datos personales';
       if (!acceptedTerms) newErrors.terms = 'Debes aceptar los términos y condiciones';
     }
 
@@ -136,24 +148,31 @@ export const RegisterDeveloperForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep(3)) return;
+    
     const email = googleData ? googleData.email : formData.email;
     const password = googleData ? crypto.randomUUID() : formData.password;
     const firstName = googleData ? (formData.firstName || googleData.firstName) : formData.firstName;
     const lastName = googleData ? (formData.lastName || googleData.lastName) : formData.lastName;
 
-    await register({
-      email,
-      password,
-      phone: formData.phone,
-      firstName,
-      lastName,
-      dni: formData.dni,
-      ruc: formData.ruc,
-      fullName: formData.companyName,
-      city: formData.city,
-      address: formData.address,
-      role: 'DEVELOPER',
-    });
+    try {
+      // Intentar registrar. Si falla, el error se muestra en el banner (manejado internamente por useAuth).
+      // No se cierra el formulario ni se redirige. El usuario puede corregir datos y reintentar.
+      await register({
+        email,
+        password,
+        phone: formData.phone,
+        firstName,
+        lastName,
+        dni: formData.dni,
+        ruc: formData.ruc,
+        fullName: formData.companyName,
+        city: formData.city,
+        address: formData.address,
+        role: 'DEVELOPER',
+      });
+    } catch (_err: any) {
+      // Error inesperado - ya debería estar capturado en useAuth, pero por seguridad
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -421,20 +440,42 @@ export const RegisterDeveloperForm: React.FC = () => {
               placeholder="Nombre de tu empresa"
             />
 
-            <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 text-center">
               {[
                 { value: '1', label: 'Proyecto' },
                 { value: '∞', label: 'Unidades' },
                 { value: '30', label: 'Días gratis' },
               ].map(({ value, label }) => (
-                <div key={label} className="bg-blue-50 rounded-xl p-3 border border-blue-100">
-                  <div className="text-blue-600 font-bold text-lg">{value}</div>
-                  <div className="text-xs text-gray-600">{label}</div>
+                <div key={label} className="bg-blue-50 rounded-xl p-2 sm:p-3 border border-blue-100">
+                  <div className="text-blue-600 font-bold text-base sm:text-lg">{value}</div>
+                  <div className="text-[11px] sm:text-xs text-gray-600">{label}</div>
                 </div>
               ))}
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={acceptedPrivacy}
+                  onChange={(e) => {
+                    setAcceptedPrivacy(e.target.checked);
+                    if (e.target.checked && errors.privacy) {
+                      setErrors((prev) => { const n = { ...prev }; delete n.privacy; return n; });
+                    }
+                  }}
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <div className="text-sm text-gray-600">
+                  Acepto el tratamiento de mis datos personales conforme a la{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Política de Privacidad</a>{' '}
+                  de TIYUY
+                </div>
+              </label>
+              {errors.privacy && (
+                <p className="text-sm text-red-600 ml-7" role="alert">{errors.privacy}</p>
+              )}
+
               <label className="flex items-start gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -445,18 +486,16 @@ export const RegisterDeveloperForm: React.FC = () => {
                       setErrors((prev) => { const n = { ...prev }; delete n.terms; return n; });
                     }
                   }}
-                  className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="mt-0.5 w-[18px] h-[18px] shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
                 <div className="text-sm text-gray-600">
                   Acepto los{' '}
-                  <a href="/terminos" className="text-blue-600 hover:underline">Términos y Condiciones</a>{' '}
-                  y la{' '}
-                  <a href="/privacidad" className="text-blue-600 hover:underline">Política de Privacidad</a>{' '}
+                  <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Términos y Condiciones</a>{' '}
                   de TIYUY
                 </div>
               </label>
               {errors.terms && (
-                <p className="mt-2 text-sm text-red-600 ml-7" role="alert">{errors.terms}</p>
+                <p className="text-sm text-red-600 ml-7" role="alert">{errors.terms}</p>
               )}
             </div>
 
@@ -471,6 +510,29 @@ export const RegisterDeveloperForm: React.FC = () => {
           </div>
         )}
       </form>
+      {/* Modal de error de registro */}
+      {showErrorModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <XCircle className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Error al registrar</h3>
+            <p className="text-gray-600 mb-6">{errorModalMessage}</p>
+            <p className="text-sm text-gray-500 mb-4">Puedes corregir los datos y volver a intentarlo.</p>
+            <button
+              type="button"
+              onClick={() => {
+                setShowErrorModal(false);
+                clearError();
+              }}
+              className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors"
+            >
+              Entendido, corregir datos
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

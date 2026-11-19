@@ -84,7 +84,7 @@ export function getEntityIcon(name: string): LucideIcon {
   return FALLBACK_ICONS[hash % FALLBACK_ICONS.length];
 }
 
-export function EntityIcon({ name, className = 'w-8 h-8' }: { name: string; className?: string }) {
+export function EntityIcon({ name, className = 'w-8 h-8 text-white' }: { name: string; className?: string }) {
   const Icon = getEntityIcon(name);
-  return <Icon className={`${className} text-white`} />;
+  return <Icon className={className} />;
 }

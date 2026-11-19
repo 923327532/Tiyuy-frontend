@@ -59,12 +59,6 @@ export default function DeveloperAgentsPage() {
 
   // Debug logging
   useEffect(() => {
-    console.log('=== DEBUG DeveloperAgentsPage ===');
-    console.log('activeTab:', activeTab, 'statusFilter:', statusFilter);
-    console.log('developerId:', developerId);
-    console.log('associationsData:', associationsData);
-    console.log('filteredAssociations count:', filteredAssociations.length);
-    console.log('==================================');
   }, [activeTab, statusFilter, developerId, associationsData, filteredAssociations]);
 
   const handleApprove = async (associationId: number) => {
@@ -145,10 +139,10 @@ export default function DeveloperAgentsPage() {
 
   if (!developerId) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="text-center py-12 text-gray-500">
-            <AlertCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+      <div className="min-h-screen bg-[var(--bg-secondary)] sm:p-6 p-4">
+        <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-6">
+          <div className="text-center py-12 text-[var(--text-secondary)]">
+            <AlertCircle className="w-12 h-12 mx-auto mb-4 text-[var(--text-muted)]" />
             <p className="font-medium mb-2">No se pudo identificar tu cuenta</p>
             <p className="text-sm">Por favor, inicia sesión nuevamente</p>
           </div>
@@ -159,69 +153,70 @@ export default function DeveloperAgentsPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-[var(--bg-secondary)] sm:p-6 p-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] sm:p-6 p-4">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center shrink-0">
               <Users className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Mis Agentes</h1>
-              <p className="text-gray-600">Gestiona las solicitudes de asociación de agentes a tu inmobiliaria</p>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">Mis Agentes</h1>
+              <p className="text-[var(--text-secondary)]">Gestiona las solicitudes de asociación de agentes a tu inmobiliaria</p>
             </div>
           </div>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center shrink-0">
                 <Clock className="w-5 h-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{pendingData?.totalElements || 0}</p>
-                <p className="text-sm text-gray-600">Solicitudes pendientes</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{pendingData?.totalElements || 0}</p>
+                <p className="text-sm text-[var(--text-secondary)]">Solicitudes pendientes</p>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
                 <CheckCircle className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{activeTab === 'active' ? associationsData?.totalElements || 0 : '-'}</p>
-                <p className="text-sm text-gray-600">Agentes activos (en pestaña Actual)</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{activeTab === 'active' ? associationsData?.totalElements || 0 : '-'}</p>
+                <p className="text-sm text-[var(--text-secondary)]">Agentes activos (en pestaña Actual)</p>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
                 <Users className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{associationsData?.totalElements || 0}</p>
-                <p className="text-sm text-gray-600">Total en vista actual</p>
+                <p className="text-2xl font-bold text-[var(--text-primary)]">{associationsData?.totalElements || 0}</p>
+                <p className="text-sm text-[var(--text-secondary)]">Total en vista actual</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl border border-gray-200">
-          <div className="flex gap-2 border-b border-gray-200 p-4">
+        <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)]">
+          <div className="overflow-x-auto scrollbar-hide border-b border-[var(--border-color)]">
+            <div className="flex gap-2 sm:p-4 p-3 w-max sm:w-full">
             <button
                 onClick={() => handleTabChange('pending')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
                   activeTab === 'pending'
                     ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                 }`}
               >
                 <Clock className="w-4 h-4" />
@@ -229,10 +224,10 @@ export default function DeveloperAgentsPage() {
               </button>
             <button
                 onClick={() => handleTabChange('active')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
                   activeTab === 'active'
                     ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                 }`}
               >
                 <Users className="w-4 h-4" />
@@ -240,26 +235,27 @@ export default function DeveloperAgentsPage() {
               </button>
             <button
                 onClick={() => handleTabChange('all')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
                   activeTab === 'all'
                     ? 'bg-blue-100 text-blue-700'
-                    : 'text-gray-600 hover:bg-gray-100'
+                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                 }`}
               >
                 <Building2 className="w-4 h-4" />
                 Todos ({associationsData?.totalElements || 0})
               </button>
+            </div>
           </div>
 
           {/* Content */}
-          <div className="p-4">
+          <div className="sm:p-4 p-3">
             {isLoading ? (
               <div className="flex items-center justify-center py-12">
                 <Spinner size="lg" />
               </div>
             ) : filteredAssociations.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <div className="text-center py-12 text-[var(--text-secondary)]">
+                <Users className="w-12 h-12 mx-auto mb-4 text-[var(--text-muted)]" />
                 <p className="font-medium mb-2">
                   {activeTab === 'pending' ? 'No hay solicitudes pendientes' : 
                    activeTab === 'active' ? 'No hay agentes activos' : 
@@ -278,30 +274,30 @@ export default function DeveloperAgentsPage() {
                 {filteredAssociations.map((association) => (
                   <div 
                     key={association.id} 
-                    className="bg-gray-50 rounded-lg border border-gray-200 p-4 hover:border-teal-500 transition"
+                    className="bg-[var(--bg-tertiary)] rounded-lg border border-[var(--border-color)] p-4 hover:border-teal-500 transition"
                   >
                     {/* Card Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center text-white font-semibold">
+                    <div className="flex items-start justify-between mb-4 gap-2">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center text-white font-semibold shrink-0">
                           {association.agentFirstName?.[0] || association.agentEmail?.[0] || 'A'}
                         </div>
-                        <div>
-                          <p className="font-semibold text-gray-900">
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[var(--text-primary)] truncate">
                             {association.agentFirstName} {association.agentLastName}
                           </p>
-                          <p className="text-sm text-gray-500">{association.agentEmail}</p>
+                          <p className="text-sm text-[var(--text-secondary)] truncate">{association.agentEmail}</p>
                         </div>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusBadge(association.status)}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium border shrink-0 ${getStatusBadge(association.status)}`}>
                         {getStatusLabel(association.status)}
                       </span>
                     </div>
 
                     {/* Card Details */}
-                    <div className="space-y-2 mb-4 text-sm text-gray-600">
+                    <div className="space-y-2 mb-4 text-sm text-[var(--text-secondary)]">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4" />
+                        <Clock className="w-4 h-4 shrink-0" />
                         <span>
                           {association.requestedAt 
                             ? new Date(association.requestedAt).toLocaleDateString('es-ES', {
@@ -314,7 +310,7 @@ export default function DeveloperAgentsPage() {
                         </span>
                       </div>
                       {association.notes && (
-                        <div className="bg-white rounded p-2">
+                        <div className="bg-[var(--bg-card)] rounded p-2">
                           <span className="font-medium">Notas:</span> {association.notes}
                         </div>
                       )}
@@ -322,7 +318,7 @@ export default function DeveloperAgentsPage() {
 
                     {/* Card Actions */}
                     {association.status === 'PENDING' && (
-                      <div className="flex gap-2 pt-3 border-t border-gray-200">
+                      <div className="flex gap-2 pt-3 border-t border-[var(--border-color)]">
                         <Button
                           onClick={() => handleApprove(association.id)}
                           disabled={approveMutation.isPending || rejectMutation.isPending}
@@ -344,7 +340,7 @@ export default function DeveloperAgentsPage() {
                     )}
 
                     {association.status === 'ACTIVE' && (
-                      <div className="pt-3 border-t border-gray-200">
+                      <div className="pt-3 border-t border-[var(--border-color)]">
                         <Button
                           onClick={() => handleRemove(association.agentId)}
                           disabled={removeMutation.isPending}
@@ -363,25 +359,25 @@ export default function DeveloperAgentsPage() {
 
             {/* Pagination */}
             {associationsData && associationsData.totalPages > 1 && (
-              <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 px-4 pb-4">
-                <p className="text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-6 pt-4 border-t border-[var(--border-color)] px-4 pb-4">
+                <p className="text-sm text-[var(--text-secondary)]">
                   Mostrando {filteredAssociations.length} de {associationsData.totalElements} asociaciones
                 </p>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setPage(p => Math.max(0, p - 1))}
                     disabled={page === 0}
-                    className="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200"
+                    className="px-3 py-1 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--bg-tertiary)]"
                   >
                     Anterior
                   </button>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[var(--text-secondary)]">
                     Página {page + 1} de {associationsData.totalPages}
                   </span>
                   <button
                     onClick={() => setPage(p => Math.min(associationsData.totalPages - 1, p + 1))}
                     disabled={page >= associationsData.totalPages - 1}
-                    className="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200"
+                    className="px-3 py-1 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[var(--bg-tertiary)]"
                   >
                     Siguiente
                   </button>

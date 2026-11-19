@@ -1169,7 +1169,7 @@ export function ChannelPostsPanel({
             onClick={() => setShowStatisticsModal(false)}
           />
           {/* Sidebar - Wider than access manager */}
-          <div className="fixed right-0 top-[64px] bottom-0 w-[600px] bg-white border-l border-gray-200 flex flex-col z-50 shadow-2xl">
+          <div className="fixed right-0 top-[64px] bottom-0 w-full sm:w-[420px] lg:w-[600px] bg-white border-l border-gray-200 flex flex-col z-50 shadow-2xl">
             <ChannelStatisticsModal
               channelId={channelId}
               channelName={channelName}

@@ -25,7 +25,7 @@ export function PropertyMapSidebar({
   onClose,
 }: PropertyMapSidebarProps) {
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="hidden md:flex md:flex-col md:h-full bg-white">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div>
@@ -120,20 +120,37 @@ export function PropertyMapSidebar({
         </div>
       )}
 
-      {/* Property list */}
+      {/* Property list - Desktop: vertical list; Mobile: 2 cards grid */}
       {!isLoading && properties.length > 0 && (
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {properties.map((property) => (
-            <PropertyMapCard
-              key={property.id}
-              property={property}
-              isSelected={selectedPropertyId === property.id}
-              onClick={() => onSelectProperty(
-                selectedPropertyId === property.id ? null : property.id
-              )}
-              requestedDistrict={coverageInfo?.searchedDistrict}
-            />
-          ))}
+        <div className="flex-1 overflow-y-auto p-4">
+          {/* Desktop */}
+          <div className="hidden md:flex md:flex-col gap-3">
+            {properties.map((property) => (
+              <PropertyMapCard
+                key={property.id}
+                property={property}
+                isSelected={selectedPropertyId === property.id}
+                onClick={() => onSelectProperty(
+                  selectedPropertyId === property.id ? null : property.id
+                )}
+                requestedDistrict={coverageInfo?.searchedDistrict}
+              />
+            ))}
+          </div>
+          {/* Mobile: grid 2 columnas, sin scroll */}
+          <div className="md:hidden grid grid-cols-2 gap-2">
+            {properties.map((property) => (
+              <PropertyMapCard
+                key={property.id}
+                property={property}
+                isSelected={selectedPropertyId === property.id}
+                onClick={() => onSelectProperty(
+                  selectedPropertyId === property.id ? null : property.id
+                )}
+                requestedDistrict={coverageInfo?.searchedDistrict}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

@@ -212,39 +212,39 @@ export default function MarketRadarPage() {
   const handleChartLeave = () => { setHoveredPoint(null); setTooltip(null); };
 
   if (loading && !general) {
-    return <div className="min-h-screen bg-white flex items-center justify-center"><div className="text-center space-y-4"><div className="w-10 h-10 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto" /><p className="text-gray-400 text-sm font-medium">Cargando radar...</p></div></div>;
+    return <div className="min-h-screen bg-white dark:bg-[var(--bg-primary)] flex items-center justify-center"><div className="text-center space-y-4"><div className="w-10 h-10 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto" /><p className="text-gray-400 dark:text-[var(--text-muted)] text-sm font-medium">Cargando radar...</p></div></div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-100">
+    <div className="min-h-screen bg-gray-50 dark:bg-[var(--bg-secondary)]">
+      <div className="bg-white dark:bg-[var(--bg-card)] border-b border-gray-100 dark:border-[var(--border-color)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div className="space-y-3">
               <div className="inline-flex items-center gap-1.5 bg-brand-light text-brand-dark text-xs font-semibold px-3 py-1 rounded-full tracking-wide uppercase"><BarChart3 className="w-3.5 h-3.5" />Inteligencia de Mercado</div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">Radar del Mercado</h1>
-              <p className="text-gray-500 text-base max-w-2xl leading-relaxed">Indicadores de precio, oferta, demanda y actividad. Datos agregados del inventario de Tiyuy.</p>
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-[var(--text-primary)] tracking-tight">Radar del Mercado</h1>
+              <p className="text-gray-500 dark:text-[var(--text-secondary)] text-base max-w-2xl leading-relaxed">Indicadores de precio, oferta, demanda y actividad. Datos agregados del inventario de Tiyuy.</p>
             </div>
             <div className="flex items-center gap-3">
-              {lastUpdated && <span className="text-xs text-gray-400 flex items-center gap-1"><Clock className="w-3 h-3" />{lastUpdated}</span>}
+              {lastUpdated && <span className="text-xs text-gray-400 dark:text-[var(--text-muted)] flex items-center gap-1"><Clock className="w-3 h-3" />{lastUpdated}</span>}
               <button onClick={fetchRadar} className="flex items-center gap-2 px-4 py-2.5 bg-brand text-white text-sm font-medium rounded-xl hover:bg-brand-dark shadow-sm"><RefreshCw className="w-4 h-4" />Actualizar</button>
               <button onClick={() => setShowMethodology(!showMethodology)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-white text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-100 border border-gray-200"><Info className="w-4 h-4" />Metodologia</button>
+                className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-[var(--bg-card)] text-gray-700 dark:text-[var(--text-secondary)] text-sm font-medium rounded-xl hover:bg-gray-100 dark:hover:bg-[var(--bg-tertiary)] border border-gray-200 dark:border-[var(--border-color)]"><Info className="w-4 h-4" />Metodologia</button>
             </div>
           </div>
         </div>
       </div>
 
       {showMethodology && (
-        <div className="bg-gray-50 border-b border-gray-100">
+        <div className="bg-gray-50 dark:bg-[var(--bg-secondary)] border-b border-gray-100 dark:border-[var(--border-color)]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="bg-white rounded-2xl border border-gray-100 p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Metodologia</h3>
+            <div className="bg-white dark:bg-[var(--bg-card)] rounded-2xl border border-gray-100 dark:border-[var(--border-color)] p-6">
+              <h3 className="font-bold text-gray-900 dark:text-[var(--text-primary)] mb-3">Metodologia</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
-                <div><h4 className="font-semibold text-gray-800 mb-1">Fuente de datos</h4><p className="text-gray-500">Indicadores calculados de anuncios y proyectos publicados en Tiyuy. Precios de oferta, no de cierre.</p></div>
-                <div><h4 className="font-semibold text-gray-800 mb-1">Demanda</h4><p className="text-gray-500">Metricas basadas en vistas, favoritos y contactos agregados del portal.</p></div>
-                <div><h4 className="font-semibold text-gray-800 mb-1">Muestra minima</h4><p className="text-gray-500">Se requiere muestra minima (5+ registros) para asegurar consistencia estadistica.</p></div>
-                <div><h4 className="font-semibold text-gray-800 mb-1">Actualizacion</h4><p className="text-gray-500">Datos actualizados automaticamente en cada consulta. Cobertura nacional.</p></div>
+                <div><h4 className="font-semibold text-gray-800 dark:text-[var(--text-primary)] mb-1">Fuente de datos</h4><p className="text-gray-500 dark:text-[var(--text-secondary)]">Indicadores calculados de anuncios y proyectos publicados en Tiyuy. Precios de oferta, no de cierre.</p></div>
+                <div><h4 className="font-semibold text-gray-800 dark:text-[var(--text-primary)] mb-1">Demanda</h4><p className="text-gray-500 dark:text-[var(--text-secondary)]">Metricas basadas en vistas, favoritos y contactos agregados del portal.</p></div>
+                <div><h4 className="font-semibold text-gray-800 dark:text-[var(--text-primary)] mb-1">Muestra minima</h4><p className="text-gray-500 dark:text-[var(--text-secondary)]">Se requiere muestra minima (5+ registros) para asegurar consistencia estadistica.</p></div>
+                <div><h4 className="font-semibold text-gray-800 dark:text-[var(--text-primary)] mb-1">Actualizacion</h4><p className="text-gray-500 dark:text-[var(--text-secondary)]">Datos actualizados automaticamente en cada consulta. Cobertura nacional.</p></div>
               </div>
             </div>
           </div>
@@ -260,11 +260,11 @@ export default function MarketRadarPage() {
             { key: 'lotes' as Vertical, label: 'Lotes', icon: <LandPlot className="w-4 h-4" /> },
           ].map(v => (
             <button key={v.key} onClick={() => setVertical(v.key)}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-all cursor-pointer ${vertical === v.key ? 'bg-brand text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}>
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl transition-all cursor-pointer ${vertical === v.key ? 'bg-brand text-white shadow-md' : 'bg-white dark:bg-[var(--bg-card)] text-gray-600 dark:text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-[var(--bg-tertiary)] border border-gray-200 dark:border-[var(--border-color)]'}`}>
               {v.icon}{v.label}
             </button>
           ))}
-          <button onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)} className="lg:hidden flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl bg-white text-gray-600 border border-gray-200 ml-auto"><Filter className="w-4 h-4" />Filtros</button>
+          <button onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)} className="lg:hidden flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-xl bg-white dark:bg-[var(--bg-card)] text-gray-600 dark:text-[var(--text-secondary)] border border-gray-200 dark:border-[var(--border-color)] ml-auto"><Filter className="w-4 h-4" />Filtros</button>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-6">
@@ -272,33 +272,33 @@ export default function MarketRadarPage() {
             <div className="flex gap-2 overflow-x-auto pb-1">
               {METRICS_BY_VERTICAL[vertical].map(m => (
                 <button key={m} onClick={() => setMetric(m)}
-                  className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-lg transition-all cursor-pointer ${metric === m ? 'bg-brand-light text-brand-dark border border-brand-light' : 'bg-white text-gray-500 hover:bg-gray-50 border border-gray-200'}`}>
+                  className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-lg transition-all cursor-pointer ${metric === m ? 'bg-brand-light text-brand-dark border border-brand-light' : 'bg-white dark:bg-[var(--bg-card)] text-gray-500 dark:text-[var(--text-secondary)] hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] border border-gray-200 dark:border-[var(--border-color)]'}`}>
                   {METRIC_ICONS[m]}{METRIC_LABELS[m]}
                 </button>
               ))}
             </div>
 
             {/* Premium Line Chart */}
-            <div className={`bg-white rounded-3xl border border-gray-100/80 shadow-sm p-7 ${chartLoading ? 'opacity-60' : ''}`}>
+            <div className={`bg-white dark:bg-[var(--bg-card)] rounded-3xl border border-gray-100/80 dark:border-[var(--border-color)] shadow-sm p-7 ${chartLoading ? 'opacity-60' : ''}`}>
               <div className="flex items-start justify-between mb-7">
                 <div className="space-y-1.5">
-                  <h3 className="text-base font-semibold text-gray-900 tracking-tight">{METRIC_LABELS[metric]}</h3>
-                  <p className="text-sm text-gray-400 font-normal">Distribucion por distrito - Top {topN}</p>
+                  <h3 className="text-base font-semibold text-gray-900 dark:text-[var(--text-primary)] tracking-tight">{METRIC_LABELS[metric]}</h3>
+                  <p className="text-sm text-gray-400 dark:text-[var(--text-muted)] font-normal">Distribucion por distrito - Top {topN}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   {chartLoading && <Loader className="w-4 h-4 animate-spin text-brand" />}
-                  <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5">
+                  <div className="flex items-center gap-1 bg-gray-50 dark:bg-[var(--bg-tertiary)] rounded-lg p-0.5">
                     <button onClick={() => setChartMode('line')}
-                      className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'line' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>
+                      className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'line' ? 'bg-white dark:bg-[var(--bg-card)] text-gray-900 dark:text-[var(--text-primary)] shadow-sm' : 'text-gray-400 dark:text-[var(--text-muted)] hover:text-gray-600 dark:hover:text-[var(--text-secondary)]'}`}>
                       <TrendingUp className="w-3 h-3 inline mr-1" />Lineal
                     </button>
                     <button onClick={() => setChartMode('bars')}
-                      className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'bars' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>
+                      className={`px-2.5 py-1.5 text-[11px] font-medium rounded-md transition-all ${chartMode === 'bars' ? 'bg-white dark:bg-[var(--bg-card)] text-gray-900 dark:text-[var(--text-primary)] shadow-sm' : 'text-gray-400 dark:text-[var(--text-muted)] hover:text-gray-600 dark:hover:text-[var(--text-secondary)]'}`}>
                       <BarChart3 className="w-3 h-3 inline mr-1" />Barras
                     </button>
                   </div>
                   <select value={topN} onChange={e => setTopN(Number(e.target.value))}
-                    className="text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 cursor-pointer outline-none text-gray-500">
+                    className="text-xs bg-gray-50 dark:bg-[var(--bg-tertiary)] border border-gray-200 dark:border-[var(--border-color)] rounded-lg px-2 py-1.5 cursor-pointer outline-none text-gray-500 dark:text-[var(--text-secondary)]">
                     <option value={5}>Top 5</option><option value={10}>Top 10</option><option value={20}>Top 20</option>
                   </select>
                 </div>
@@ -306,9 +306,9 @@ export default function MarketRadarPage() {
 
               {trendData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12">
-                  <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center mb-3"><BarChart3 className="w-6 h-6 text-gray-200" /></div>
-                  <p className="text-sm font-medium text-gray-400">No hay datos suficientes</p>
-                  <p className="text-xs text-gray-300 mt-1">Intenta con otro filtro o periodo</p>
+                  <div className="w-12 h-12 bg-gray-50 dark:bg-[var(--bg-tertiary)] rounded-2xl flex items-center justify-center mb-3"><BarChart3 className="w-6 h-6 text-gray-200 dark:text-[var(--text-tertiary)]" /></div>
+                  <p className="text-sm font-medium text-gray-400 dark:text-[var(--text-secondary)]">No hay datos suficientes</p>
+                  <p className="text-xs text-gray-300 dark:text-[var(--text-muted)] mt-1">Intenta con otro filtro o periodo</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto pb-2">
@@ -396,12 +396,12 @@ export default function MarketRadarPage() {
                   {tooltip && hoveredPoint !== null && (
                     <div className="fixed z-50 pointer-events-none"
                       style={{ left: tooltip.x, top: tooltip.y - 60, transform: 'translateX(-50%)' }}>
-                      <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100/80 px-4 py-3 min-w-[130px]">
-                        <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">{tooltip.label}</p>
+                      <div className="bg-white/95 dark:bg-[var(--bg-card)]/95 backdrop-blur-md rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100/80 dark:border-[var(--border-color)] px-4 py-3 min-w-[130px]">
+                        <p className="text-[11px] font-semibold text-gray-500 dark:text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">{tooltip.label}</p>
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full" style={{backgroundColor: '#0d9488'}} />
-                          <span className="text-[11px] text-gray-400">Valor</span>
-                          <span className="text-sm font-bold text-gray-900 ml-auto">{tooltip.value}</span>
+                          <span className="text-[11px] text-gray-400 dark:text-[var(--text-muted)]">Valor</span>
+                          <span className="text-sm font-bold text-gray-900 dark:text-[var(--text-primary)] ml-auto">{tooltip.value}</span>
                         </div>
                       </div>
                     </div>
@@ -444,29 +444,29 @@ export default function MarketRadarPage() {
 
             {/* Ranking */}
             {vertical === 'viviendas' && viviendas && viviendas.hotDistricts.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-5">
-                <h3 className="font-bold text-gray-900 mb-1">Ranking de distritos</h3>
-                <p className="text-sm text-gray-400 mb-4">Ordenado por heat score</p>
+              <div className="bg-white dark:bg-[var(--bg-card)] rounded-2xl border border-gray-100 dark:border-[var(--border-color)] p-5">
+                <h3 className="font-bold text-gray-900 dark:text-[var(--text-primary)] mb-1">Ranking de distritos</h3>
+                <p className="text-sm text-gray-400 dark:text-[var(--text-muted)] mb-4">Ordenado por heat score</p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead><tr className="border-b border-gray-100">
-                      <th className="text-left py-3 px-3 font-semibold text-gray-600 text-xs uppercase">#</th>
-                      <th className="text-left py-3 px-3 font-semibold text-gray-600 text-xs uppercase">Distrito</th>
-                      <th className="text-right py-3 px-3 font-semibold text-gray-600 text-xs uppercase">Vistas</th>
-                      <th className="text-right py-3 px-3 font-semibold text-gray-600 text-xs uppercase">Favs</th>
-                      <th className="text-right py-3 px-3 font-semibold text-gray-600 text-xs uppercase">Contactos</th>
-                      <th className="text-right py-3 px-3 font-semibold text-gray-600 text-xs uppercase">Heat</th>
+                    <thead><tr className="border-b border-gray-100 dark:border-[var(--border-color)]">
+                      <th className="text-left py-3 px-3 font-semibold text-gray-600 dark:text-[var(--text-secondary)] text-xs uppercase">#</th>
+                      <th className="text-left py-3 px-3 font-semibold text-gray-600 dark:text-[var(--text-secondary)] text-xs uppercase">Distrito</th>
+                      <th className="text-right py-3 px-3 font-semibold text-gray-600 dark:text-[var(--text-secondary)] text-xs uppercase">Vistas</th>
+                      <th className="text-right py-3 px-3 font-semibold text-gray-600 dark:text-[var(--text-secondary)] text-xs uppercase">Favs</th>
+                      <th className="text-right py-3 px-3 font-semibold text-gray-600 dark:text-[var(--text-secondary)] text-xs uppercase">Contactos</th>
+                      <th className="text-right py-3 px-3 font-semibold text-gray-600 dark:text-[var(--text-secondary)] text-xs uppercase">Heat</th>
                     </tr></thead>
                     <tbody>
                       {viviendas.hotDistricts.map((d, idx) => (
-                        <tr key={d.district} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                          <td className="py-3 px-3 text-gray-400 font-medium">{idx + 1}</td>
-                          <td className="py-3 px-3 font-semibold text-gray-900">{d.district}</td>
-                          <td className="py-3 px-3 text-right text-gray-700">{formatCompact(d.totalViews)}</td>
-                          <td className="py-3 px-3 text-right text-gray-700">{formatCompact(d.totalFavorites)}</td>
-                          <td className="py-3 px-3 text-right text-gray-700">{formatCompact(d.totalContacts)}</td>
+                        <tr key={d.district} className="border-b border-gray-50 dark:border-[var(--border-light)] hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] transition-colors">
+                          <td className="py-3 px-3 text-gray-400 dark:text-[var(--text-muted)] font-medium">{idx + 1}</td>
+                          <td className="py-3 px-3 font-semibold text-gray-900 dark:text-[var(--text-primary)]">{d.district}</td>
+                          <td className="py-3 px-3 text-right text-gray-700 dark:text-[var(--text-secondary)]">{formatCompact(d.totalViews)}</td>
+                          <td className="py-3 px-3 text-right text-gray-700 dark:text-[var(--text-secondary)]">{formatCompact(d.totalFavorites)}</td>
+                          <td className="py-3 px-3 text-right text-gray-700 dark:text-[var(--text-secondary)]">{formatCompact(d.totalContacts)}</td>
                           <td className="py-3 px-3 text-right">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${d.heatScore >= 70 ? 'bg-red-50 text-red-700' : d.heatScore >= 40 ? 'bg-orange-50 text-orange-700' : 'bg-yellow-50 text-yellow-700'}`}>{d.heatScore}</span>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${d.heatScore >= 70 ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400' : d.heatScore >= 40 ? 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400' : 'bg-yellow-50 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'}`}>{d.heatScore}</span>
                           </td>
                         </tr>
                       ))}
@@ -477,22 +477,22 @@ export default function MarketRadarPage() {
             )}
 
             {vertical === 'viviendas' && viviendas && viviendas.weeklyHighlights.length > 0 && (
-              <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <div className="bg-white dark:bg-[var(--bg-card)] rounded-2xl border border-gray-100 dark:border-[var(--border-color)] p-5">
                 <div className="flex items-center justify-between mb-4">
-                  <div><h3 className="font-bold text-gray-900">Destacados de la semana</h3><p className="text-sm text-gray-400">Propiedades mas vistas en los ultimos 7 dias</p></div>
+                  <div><h3 className="font-bold text-gray-900 dark:text-[var(--text-primary)]">Destacados de la semana</h3><p className="text-sm text-gray-400 dark:text-[var(--text-muted)]">Propiedades mas vistas en los ultimos 7 dias</p></div>
                   <Activity className="w-5 h-5 text-brand" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {viviendas.weeklyHighlights.map((item, idx) => (
                     <Link key={item.id} href={`/property/${item.id}`}
-                      className="bg-gray-50 rounded-xl p-4 border border-gray-100 hover:shadow-lg hover:border-brand-light transition-all group">
+                      className="bg-gray-50 dark:bg-[var(--bg-tertiary)] rounded-xl p-4 border border-gray-100 dark:border-[var(--border-color)] hover:shadow-lg hover:border-brand-light transition-all group">
                       <div className="flex items-start justify-between mb-2">
-                        <div className="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center text-xs font-bold text-gray-400 group-hover:bg-brand-light group-hover:text-brand">{idx + 1}</div>
-                        <span className="text-[10px] font-semibold text-gray-400 uppercase">{propertyLabel(item.type)}</span>
+                        <div className="w-8 h-8 bg-gray-100 dark:bg-[var(--bg-secondary)] rounded-xl flex items-center justify-center text-xs font-bold text-gray-400 dark:text-[var(--text-muted)] group-hover:bg-brand-light group-hover:text-brand">{idx + 1}</div>
+                        <span className="text-[10px] font-semibold text-gray-400 dark:text-[var(--text-muted)] uppercase">{propertyLabel(item.type)}</span>
                       </div>
-                      <p className="font-semibold text-gray-900 text-sm mb-1 line-clamp-1">{item.title || `${propertyLabel(item.type)} en ${item.district}`}</p>
-                      <p className="text-xs text-gray-400 mb-2">{item.district} · {item.bedrooms} dorm.</p>
-                      <span className="font-bold text-gray-900">{formatPrice(item.price)}</span>
+                      <p className="font-semibold text-gray-900 dark:text-[var(--text-primary)] text-sm mb-1 line-clamp-1">{item.title || `${propertyLabel(item.type)} en ${item.district}`}</p>
+                      <p className="text-xs text-gray-400 dark:text-[var(--text-muted)] mb-2">{item.district} · {item.bedrooms} dorm.</p>
+                      <span className="font-bold text-gray-900 dark:text-[var(--text-primary)]">{formatPrice(item.price)}</span>
                     </Link>
                   ))}
                 </div>
@@ -501,18 +501,18 @@ export default function MarketRadarPage() {
           </div>
 
           <div className={`lg:w-72 flex-shrink-0 ${mobileFiltersOpen ? 'block' : 'hidden lg:block'}`}>
-            <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24 space-y-5">
+            <div className="bg-white dark:bg-[var(--bg-card)] rounded-2xl border border-gray-100 dark:border-[var(--border-color)] p-5 sticky top-24 space-y-5">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-gray-900 text-sm uppercase tracking-wider">Filtros</h3>
-                <button onClick={() => setMobileFiltersOpen(false)} className="lg:hidden text-gray-400 hover:text-gray-600"><X className="w-4 h-4" /></button>
+                <h3 className="font-bold text-gray-900 dark:text-[var(--text-primary)] text-sm uppercase tracking-wider">Filtros</h3>
+                <button onClick={() => setMobileFiltersOpen(false)} className="lg:hidden text-gray-400 dark:text-[var(--text-muted)] hover:text-gray-600 dark:hover:text-[var(--text-secondary)]"><X className="w-4 h-4" /></button>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Operacion</label>
+                <label className="block text-xs font-semibold text-gray-500 dark:text-[var(--text-secondary)] uppercase tracking-wider mb-2">Operacion</label>
                 <div className="flex gap-2">
                   {['SALE', 'RENT'].map(op => (
                     <button key={op} onClick={() => setOperation(op)}
-                      className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all cursor-pointer ${operation === op ? 'bg-brand text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                      className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all cursor-pointer ${operation === op ? 'bg-brand text-white shadow-sm' : 'bg-gray-100 dark:bg-[var(--bg-tertiary)] text-gray-600 dark:text-[var(--text-secondary)] hover:bg-gray-200 dark:hover:bg-[var(--bg-secondary)]'}`}>
                       {op === 'SALE' ? 'Venta' : 'Alquiler'}
                     </button>
                   ))}
@@ -520,46 +520,46 @@ export default function MarketRadarPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Region</label>
+                <label className="block text-xs font-semibold text-gray-500 dark:text-[var(--text-secondary)] uppercase tracking-wider mb-2">Region</label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-[var(--text-muted)] pointer-events-none" />
                   <input type="text" value={regionSearch || regionLabel || ''} placeholder="Buscar region..."
                     onChange={e => { setRegionSearch(e.target.value); setShowRegionDropdown(true); }}
                     onFocus={() => setShowRegionDropdown(true)}
-                    className="w-full pl-8 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand" />
+                    className="w-full pl-8 pr-3 py-2.5 bg-gray-50 dark:bg-[var(--bg-tertiary)] border border-gray-200 dark:border-[var(--border-color)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand text-gray-900 dark:text-[var(--text-primary)]" />
                 </div>
                 {showRegionDropdown && (
-                  <div className="mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto" ref={regionRef}>
+                  <div className="mt-1 bg-white dark:bg-[var(--bg-card)] border border-gray-200 dark:border-[var(--border-color)] rounded-xl shadow-lg max-h-48 overflow-y-auto" ref={regionRef}>
                     <button onClick={() => { setRegionLabel(''); setRegion(''); setRegionSearch(''); setShowRegionDropdown(false); setProvince(''); setDistrict(''); }}
-                      className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${!region ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600'}`}>Todo el pais</button>
+                      className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] ${!region ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600 dark:text-[var(--text-secondary)]'}`}>Todo el pais</button>
                     {filteredRegions.map(r => (
                       <button key={r} onClick={() => { setRegionLabel(r); setRegion(r); setRegionSearch(r); setShowRegionDropdown(false); }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${region === r ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600'}`}>{r}</button>
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] ${region === r ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600 dark:text-[var(--text-secondary)]'}`}>{r}</button>
                     ))}
-                    {filteredRegions.length === 0 && <p className="px-3 py-2 text-sm text-gray-400">Sin resultados</p>}
+                    {filteredRegions.length === 0 && <p className="px-3 py-2 text-sm text-gray-400 dark:text-[var(--text-muted)]">Sin resultados</p>}
                   </div>
                 )}
               </div>
 
               {region && (
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Provincia</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-[var(--text-secondary)] uppercase tracking-wider mb-2">Provincia</label>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-[var(--text-muted)] pointer-events-none" />
                     <input type="text" value={provinceSearch || provinceLabel || ''} placeholder="Buscar provincia..."
                       onChange={e => { setProvinceSearch(e.target.value); setShowProvinceDropdown(true); }}
                       onFocus={() => setShowProvinceDropdown(true)}
-                      className="w-full pl-8 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand" />
+                      className="w-full pl-8 pr-3 py-2.5 bg-gray-50 dark:bg-[var(--bg-tertiary)] border border-gray-200 dark:border-[var(--border-color)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand text-gray-900 dark:text-[var(--text-primary)]" />
                   </div>
                   {showProvinceDropdown && (
-                    <div className="mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto" ref={provinceRef}>
+                    <div className="mt-1 bg-white dark:bg-[var(--bg-card)] border border-gray-200 dark:border-[var(--border-color)] rounded-xl shadow-lg max-h-48 overflow-y-auto" ref={provinceRef}>
                       <button onClick={() => { setProvinceLabel(''); setProvince(''); setProvinceSearch(''); setShowProvinceDropdown(false); setDistrict(''); }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${!province ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600'}`}>Todas</button>
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] ${!province ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600 dark:text-[var(--text-secondary)]'}`}>Todas</button>
                       {filteredProvinces.map(p => (
                         <button key={p} onClick={() => { setProvinceLabel(p); setProvince(p); setProvinceSearch(p); setShowProvinceDropdown(false); }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${province === p ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600'}`}>{p}</button>
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] ${province === p ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600 dark:text-[var(--text-secondary)]'}`}>{p}</button>
                       ))}
-                      {filteredProvinces.length === 0 && <p className="px-3 py-2 text-sm text-gray-400">Sin resultados</p>}
+                      {filteredProvinces.length === 0 && <p className="px-3 py-2 text-sm text-gray-400 dark:text-[var(--text-muted)]">Sin resultados</p>}
                     </div>
                   )}
                 </div>
@@ -567,34 +567,34 @@ export default function MarketRadarPage() {
 
               {province && (
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Distrito</label>
+                  <label className="block text-xs font-semibold text-gray-500 dark:text-[var(--text-secondary)] uppercase tracking-wider mb-2">Distrito</label>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-[var(--text-muted)] pointer-events-none" />
                     <input type="text" value={districtSearch || districtLabel || ''} placeholder="Buscar distrito..."
                       onChange={e => { setDistrictSearch(e.target.value); setShowDistrictDropdown(true); }}
                       onFocus={() => setShowDistrictDropdown(true)}
-                      className="w-full pl-8 pr-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand" />
+                      className="w-full pl-8 pr-3 py-2.5 bg-gray-50 dark:bg-[var(--bg-tertiary)] border border-gray-200 dark:border-[var(--border-color)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand text-gray-900 dark:text-[var(--text-primary)]" />
                   </div>
                   {showDistrictDropdown && (
-                    <div className="mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto" ref={districtRef}>
+                    <div className="mt-1 bg-white dark:bg-[var(--bg-card)] border border-gray-200 dark:border-[var(--border-color)] rounded-xl shadow-lg max-h-48 overflow-y-auto" ref={districtRef}>
                       <button onClick={() => { setDistrictLabel(''); setDistrict(''); setDistrictSearch(''); setShowDistrictDropdown(false); }}
-                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${!district ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600'}`}>Todos</button>
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] ${!district ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600 dark:text-[var(--text-secondary)]'}`}>Todos</button>
                       {filteredDistricts.map(d => (
                         <button key={d} onClick={() => { setDistrictLabel(d); setDistrict(d); setDistrictSearch(d); setShowDistrictDropdown(false); }}
-                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 ${district === d ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600'}`}>{d}</button>
+                          className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[var(--bg-tertiary)] ${district === d ? 'bg-brand-light text-brand-dark font-medium' : 'text-gray-600 dark:text-[var(--text-secondary)]'}`}>{d}</button>
                       ))}
-                      {filteredDistricts.length === 0 && <p className="px-3 py-2 text-sm text-gray-400">Sin resultados</p>}
+                      {filteredDistricts.length === 0 && <p className="px-3 py-2 text-sm text-gray-400 dark:text-[var(--text-muted)]">Sin resultados</p>}
                     </div>
                   )}
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Top distritos</label>
+                <label className="block text-xs font-semibold text-gray-500 dark:text-[var(--text-secondary)] uppercase tracking-wider mb-2">Top distritos</label>
                 <div className="flex gap-2">
                   {[5, 10, 20, 50].map(n => (
                     <button key={n} onClick={() => setTopN(n)}
-                      className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all cursor-pointer ${topN === n ? 'bg-brand text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>{n}</button>
+                      className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all cursor-pointer ${topN === n ? 'bg-brand text-white shadow-sm' : 'bg-gray-100 dark:bg-[var(--bg-tertiary)] text-gray-600 dark:text-[var(--text-secondary)] hover:bg-gray-200 dark:hover:bg-[var(--bg-secondary)]'}`}>{n}</button>
                   ))}
                 </div>
               </div>
@@ -604,15 +604,15 @@ export default function MarketRadarPage() {
                 <Loader className={`w-4 h-4 ${chartLoading ? 'animate-spin' : 'hidden'}`} />Aplicar filtros
               </button>
 
-              <div className="pt-3 border-t border-gray-100">
-                <p className="text-xs text-gray-400 leading-relaxed">Datos actualizados en cada consulta. Valores basados en anuncios publicados en Tiyuy.</p>
+              <div className="pt-3 border-t border-gray-100 dark:border-[var(--border-color)]">
+                <p className="text-xs text-gray-400 dark:text-[var(--text-muted)] leading-relaxed">Datos actualizados en cada consulta. Valores basados en anuncios publicados en Tiyuy.</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="text-center py-8 border-t border-gray-100 mt-8">
-          <p className="text-xs text-gray-400 max-w-xl mx-auto">Indicadores calculados de anuncios y proyectos en Tiyuy. Precios de oferta, no de cierre.</p>
+        <div className="text-center py-8 border-t border-gray-100 dark:border-[var(--border-color)] mt-8">
+          <p className="text-xs text-gray-400 dark:text-[var(--text-muted)] max-w-xl mx-auto">Indicadores calculados de anuncios y proyectos en Tiyuy. Precios de oferta, no de cierre.</p>
         </div>
       </div>
     </div>
@@ -621,16 +621,16 @@ export default function MarketRadarPage() {
 
 function InsightCard({ title, badge, color, items }: { title: string; badge: string; color: string; items: { label: string; value: string }[] }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-lg hover:border-brand-light transition-all">
+    <div className="bg-white dark:bg-[var(--bg-card)] rounded-2xl border border-gray-100 dark:border-[var(--border-color)] p-4 hover:shadow-lg hover:border-brand-light transition-all">
       <div className="flex items-center gap-2 mb-3">
-        <h4 className="font-bold text-gray-900 text-sm">{title}</h4>
+        <h4 className="font-bold text-gray-900 dark:text-[var(--text-primary)] text-sm">{title}</h4>
         <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-wider ${color}`}>{badge}</span>
       </div>
       <div className="space-y-1.5">
         {items.map((item, i) => (
           <div key={i} className="flex items-center justify-between py-1">
-            <span className="text-sm text-gray-700">{item.label}</span>
-            <span className="text-sm font-semibold text-gray-900">{item.value}</span>
+            <span className="text-sm text-gray-700 dark:text-[var(--text-secondary)]">{item.label}</span>
+            <span className="text-sm font-semibold text-gray-900 dark:text-[var(--text-primary)]">{item.value}</span>
           </div>
         ))}
       </div>

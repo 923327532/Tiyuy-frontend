@@ -96,15 +96,18 @@ export function PersonalizedRecommendations({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-base font-bold text-gray-900 mb-4">{title}</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-          {[1, 2, 3, 4, 5].map((_, index) => (
-            <div key={index} className="animate-pulse">
-              <div className="w-full aspect-square bg-gray-200 rounded-xl mb-3" />
-              <div className="space-y-2 p-1">
-                <div className="h-4 bg-gray-200 rounded w-3/4" />
-                <div className="h-3 bg-gray-200 rounded w-1/2" />
+      <div className="w-full">
+        <h2 className="text-lg sm:text-2xl font-semibold text-[var(--text-primary)] mb-4">{title}</h2>
+        <div className="flex overflow-x-auto hide-scrollbar gap-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="w-[160px] sm:w-[280px] md:w-[320px] lg:w-[240px] xl:w-[190px] 2xl:w-[220px] flex-shrink-0">
+              <div className="bg-transparent rounded-none border-none overflow-hidden animate-pulse">
+                <div className="w-full aspect-square bg-[var(--bg-tertiary)] rounded-[14px]" />
+                <div className="pt-2 space-y-1.5">
+                  <div className="h-3.5 bg-[var(--bg-tertiary)] rounded w-full" />
+                  <div className="h-3 bg-[var(--bg-tertiary)] rounded w-2/3" />
+                  <div className="h-3 bg-[var(--bg-tertiary)] rounded w-16" />
+                </div>
               </div>
             </div>
           ))}
@@ -114,44 +117,49 @@ export function PersonalizedRecommendations({
   }
 
   if (noResults || recommendations.length === 0) {
-    return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-base font-bold text-gray-900 mb-4">{title}</h3>
-        <p className="text-gray-500 text-sm text-center py-8">
-          No tenemos recomendaciones disponibles.
-        </p>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h3 className="text-base font-bold text-gray-900 mb-4">{title}</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+    <div className="w-full">
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+
+      <h2 className="text-lg sm:text-2xl font-semibold text-[var(--text-primary)] mb-4">{title}</h2>
+
+      {/* NOTA: ancho fijo por card para evitar que PropertyCard (min-w-[200px] en sm+)
+          desborde su contenedor y las cards se sobrepongan en columnas angostas. */}
+      <div className="flex overflow-x-auto gap-3 sm:gap-4 md:gap-4 hide-scrollbar pb-4">
         {recommendations.map((property) => (
-          <PropertyCard key={property.id} property={property} />
+          <div key={property.id} className="w-[160px] sm:w-[240px] flex-shrink-0">
+            <PropertyCard property={property} />
+          </div>
         ))}
         
         {/* Tarjeta Ver todo */}
-        <Link
-          href="/properties"
-          className="flex flex-col items-center justify-center min-h-[280px] w-full bg-white hover:bg-gray-50 rounded-2xl border border-gray-200 transition-all hover:shadow-md group"
-        >
-          <div className="relative w-28 h-20 mb-4 group-hover:scale-105 transition-transform duration-300">
-            <div className="absolute top-0 left-0 w-16 h-16 bg-gray-200 rounded-xl border-2 border-white shadow-sm -rotate-6 transform origin-bottom-left z-10 overflow-hidden">
-              <div className="w-full h-full bg-blue-100/50"></div>
-            </div>
-            <div className="absolute top-2 right-0 w-16 h-16 bg-gray-200 rounded-xl border-2 border-white shadow-sm rotate-6 transform origin-bottom-right z-20 overflow-hidden">
-              <div className="w-full h-full bg-green-100/50"></div>
-            </div>
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-16 bg-gray-100 rounded-xl border-2 border-white shadow-md z-30 overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                <Image className="w-7 h-7 text-gray-400" />
+        <div className="w-[160px] sm:w-[240px] flex-shrink-0">
+          <Link
+            href="/properties"
+            className="flex flex-col items-center justify-center h-full min-h-[160px] sm:min-h-[320px] w-full bg-[var(--bg-secondary)] hover:bg-[var(--bg-tertiary)]/70 rounded-[14px] sm:rounded-2xl border border-[var(--border-color)] transition-all hover:shadow-sm group"
+          >
+            <div className="relative w-16 h-12 sm:w-32 sm:h-24 mb-3 sm:mb-6 group-hover:scale-105 transition-transform duration-300">
+              <div className="absolute top-0 left-0 w-10 h-10 sm:w-20 sm:h-20 bg-[var(--bg-tertiary)] rounded-lg sm:rounded-xl border-2 border-[var(--bg-card)] shadow-[0_1px_2px_var(--shadow-color)] -rotate-6 transform origin-bottom-left z-10 overflow-hidden">
+                <div className="w-full h-full bg-blue-100/50"></div>
+              </div>
+              <div className="absolute top-2 right-0 w-10 h-10 sm:w-20 sm:h-20 bg-[var(--bg-tertiary)] rounded-lg sm:rounded-xl border-2 border-[var(--bg-card)] shadow-[0_1px_2px_var(--shadow-color)] rotate-6 transform origin-bottom-right z-20 overflow-hidden">
+                <div className="w-full h-full bg-green-100/50"></div>
+              </div>
+              <div className="absolute -top-1 sm:-top-2 left-1/2 -translate-x-1/2 w-10 h-10 sm:w-20 sm:h-20 bg-[var(--bg-secondary)] rounded-lg sm:rounded-xl border-2 border-[var(--bg-card)] shadow-[0_4px_6px_var(--shadow-color)] z-30 overflow-hidden">
+                <div className="w-full h-full flex items-center justify-center bg-[var(--bg-secondary)]">
+                  <Image className="w-4 h-4 sm:w-8 sm:h-8 text-[var(--text-tertiary)]" />
+                </div>
               </div>
             </div>
-          </div>
-          <span className="text-[#003B95] font-semibold text-base group-hover:text-blue-800 transition-colors">Ver todo</span>
-        </Link>
+            <span className="text-[var(--brand-primary)] font-semibold text-xs sm:text-lg group-hover:text-[var(--brand-primary-dark)] transition-colors">Ver todo</span>
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -5,9 +5,9 @@ import { ProjectSearchBar } from './ProjectSearchBar';
 import { ProjectFiltersClient } from './ProjectFiltersClient';
 import { ProjectGrid } from './ProjectGrid';
 import { Pagination } from './Pagination';
-import { PropertyMapWrapper } from '@/presentation/features/property-map/components/PropertyMapWrapper';
 import { projectMapResultToGeneric } from '@/core/domain/adapters/MapItemAdapters';
 import { MapFilters } from '@/core/domain/entities/MapTypes';
+import PropertyMapWrapper from './DynamicMapWrapper';
 
 interface Props {
   params: Promise<{
@@ -148,7 +148,7 @@ export default async function ProjectsCategoryPage({ params, searchParams }: Pro
   const filters: any = {
     sort: 'createdAt,desc',
     page: resolvedSearchParams.page ? Number(resolvedSearchParams.page) : 0,
-    size: 9,
+    size: 15,
     ...(projectType ? { type: projectType } : {}),
     ...(isAllPeru ? {} : isMainProvince ? { province: location } : { district: location }),
     ...(isFiltered

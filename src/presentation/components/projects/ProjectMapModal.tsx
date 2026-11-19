@@ -40,12 +40,9 @@ export function ProjectMapModal({ filters, onClose }: ProjectMapModalProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Al cerrar el modal NO reseteamos el store porque comparte el estado
+  // con el mini mapa del padre. Si reseteamos, el mini mapa se queda sin datos.
+  // En su lugar, el padre se encarga de refrescar cuando sea necesario.
 
   // Resetear página cuando cambian los resultados
   useEffect(() => {

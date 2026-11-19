@@ -4,8 +4,7 @@ import { useState, FormEvent, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { axiosClient } from '@/infrastructure/api/axios-client';
 import { useAuthStore } from '@/presentation/store/authStore';
-import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
-
+import { AlertCircle, CheckCircle, Loader2, LogIn, X } from 'lucide-react';
 
 interface FormData {
   nombre: string;
@@ -51,18 +50,12 @@ export default function LibroReclamacionesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ComplaintResult | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Esperar a que el store de auth se hidrate (persist de zustand)
   useEffect(() => {
     setHydrated(true);
   }, []);
-
-  // Redirigir al login si no está autenticado (solo después de hidratado)
-  useEffect(() => {
-    if (hydrated && !isAuthenticated) {
-      router.push('/login?redirect=/libro-de-reclamaciones');
-    }
-  }, [hydrated, isAuthenticated, router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -71,6 +64,18 @@ export default function LibroReclamacionesPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    // Si no está autenticado, mostrar el modal de login
+    if (hydrated && !isAuthenticated) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    await submitComplaint();
+  };
+
+  const submitComplaint = async () => {
     setLoading(true);
     setError(null);
 
@@ -90,12 +95,17 @@ export default function LibroReclamacionesPage() {
     }
   };
 
-  // No renderizar nada mientras se hidrata o redirige
-  if (!hydrated || !isAuthenticated) {
-    return null;
-  }
+  // Manejar redirección después de login exitoso
+  const handleLoginRedirect = () => {
+    setShowLoginModal(false);
+    // Al volver del login autenticado, el usuario solo tendrá que hacer clic en "Enviar" nuevamente
+    router.push('/login?redirect=/libro-de-reclamaciones');
+  };
 
-
+  const handleRegisterRedirect = () => {
+    setShowLoginModal(false);
+    router.push('/profile-selector');
+  };
 
   if (result) {
     return (
@@ -126,8 +136,6 @@ export default function LibroReclamacionesPage() {
           >
             Ir a inicio
           </button>
-
-
         </div>
       </div>
     );
@@ -139,7 +147,7 @@ export default function LibroReclamacionesPage() {
         <div className="bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-700 rounded-t-lg p-6 text-center relative">
           <div className="absolute right-6 top-1/2 -translate-y-1/2">
             <img 
-              src="/assets/images/logo_s.png" 
+              src="/assets/images/logo_s.svg"
               alt="TIYUY" 
               className="h-12 w-auto dark:brightness-110"
             />
@@ -474,6 +482,58 @@ export default function LibroReclamacionesPage() {
           </div>
         </form>
       </div>
+
+      {/* Modal de inicio de sesión */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowLoginModal(false)}>
+          <div
+            className="bg-white rounded-2xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative p-6 text-center">
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                <LogIn className="w-8 h-8 text-red-500" />
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Inicia sesión para enviar tu reclamo
+              </h3>
+              <p className="text-sm text-gray-500 mb-6">
+                Para registrar tu reclamo en nuestro Libro de Reclamaciones, primero debes iniciar sesión o crear una cuenta.
+              </p>
+
+              <div className="space-y-3">
+                <button
+                  onClick={handleLoginRedirect}
+                  className="w-full py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm"
+                >
+                  Iniciar Sesión
+                </button>
+                <button
+                  onClick={handleRegisterRedirect}
+                  className="w-full py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition text-sm"
+                >
+                  Crear una Cuenta
+                </button>
+              </div>
+
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className="w-full text-sm text-gray-400 hover:text-gray-600 py-2 mt-3 transition-colors"
+              >
+                Continuar sin iniciar sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

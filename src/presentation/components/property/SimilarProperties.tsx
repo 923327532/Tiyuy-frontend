@@ -78,18 +78,18 @@ export function SimilarProperties({ currentProperty, maxItems = 5 }: SimilarProp
   // Estado de carga
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-base font-bold text-gray-900 mb-4">
+      <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+        <h3 className="text-base font-bold text-[var(--text-primary)] mb-4">
           Propiedades similares en {currentProperty.location?.district || 'la zona'}
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {Array.from({ length: Math.min(maxItems, 5) }).map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="w-full aspect-square bg-gray-200 rounded-xl mb-3" />
+              <div className="w-full aspect-square bg-[var(--bg-tertiary)] rounded-xl mb-3" />
               <div className="space-y-2 p-1">
-                <div className="h-4 bg-gray-200 rounded w-3/4" />
-                <div className="h-3 bg-gray-200 rounded w-1/2" />
-                <div className="h-3 bg-gray-200 rounded w-2/3" />
+                <div className="h-4 bg-[var(--bg-tertiary)] rounded w-3/4" />
+                <div className="h-3 bg-[var(--bg-tertiary)] rounded w-1/2" />
+                <div className="h-3 bg-[var(--bg-tertiary)] rounded w-2/3" />
               </div>
             </div>
           ))}
@@ -101,11 +101,11 @@ export function SimilarProperties({ currentProperty, maxItems = 5 }: SimilarProp
   // Error al cargar
   if (error) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-base font-bold text-gray-900 mb-4">
+      <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+        <h3 className="text-base font-bold text-[var(--text-primary)] mb-4">
           Propiedades similares
         </h3>
-        <p className="text-gray-500 text-sm text-center py-8">
+        <p className="text-[var(--text-secondary)] text-sm text-center py-8">
           No tenemos recomendaciones disponibles en este momento.
         </p>
       </div>
@@ -115,11 +115,11 @@ export function SimilarProperties({ currentProperty, maxItems = 5 }: SimilarProp
   // Sin resultados
   if (!data || data.properties.length === 0) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-base font-bold text-gray-900 mb-4">
+      <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+        <h3 className="text-base font-bold text-[var(--text-primary)] mb-4">
           Propiedades similares
         </h3>
-        <p className="text-gray-500 text-sm text-center py-8">
+        <p className="text-[var(--text-secondary)] text-sm text-center py-8">
           No tenemos recomendaciones disponibles.
         </p>
       </div>
@@ -133,11 +133,11 @@ export function SimilarProperties({ currentProperty, maxItems = 5 }: SimilarProp
     : 'en todo el pais';
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h3 className="text-base font-bold text-gray-900 mb-4">
+    <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-6">
+      <h3 className="text-base font-bold text-[var(--text-primary)] mb-4">
         Propiedades similares {locationLabel}
       </h3>
-      <p className="text-xs text-gray-400 mb-4">
+      <p className="text-xs text-[var(--text-tertiary)] mb-4">
         {transactionLabel} - {data.totalResults} propiedad{data.totalResults !== 1 ? 'es' : ''} encontrada{data.totalResults !== 1 ? 's' : ''}
       </p>
 
@@ -149,22 +149,22 @@ export function SimilarProperties({ currentProperty, maxItems = 5 }: SimilarProp
         {/* Tarjeta Ver todo */}
         <Link
           href="/properties"
-          className="flex flex-col items-center justify-center min-h-[280px] w-full bg-white hover:bg-gray-50 rounded-2xl border border-gray-200 transition-all hover:shadow-md group"
+          className="flex flex-col items-center justify-center min-h-[280px] w-full bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-color)] transition-all hover:shadow-[0_4px_6px_var(--shadow-color)] group"
         >
           <div className="relative w-28 h-20 mb-4 group-hover:scale-105 transition-transform duration-300">
-            <div className="absolute top-0 left-0 w-16 h-16 bg-gray-200 rounded-xl border-2 border-white shadow-sm -rotate-6 transform origin-bottom-left z-10 overflow-hidden">
+            <div className="absolute top-0 left-0 w-16 h-16 bg-[var(--bg-tertiary)] rounded-xl border-2 border-[var(--bg-card)] shadow-[0_1px_2px_var(--shadow-color)] -rotate-6 transform origin-bottom-left z-10 overflow-hidden">
               <div className="w-full h-full bg-blue-100/50"></div>
             </div>
-            <div className="absolute top-2 right-0 w-16 h-16 bg-gray-200 rounded-xl border-2 border-white shadow-sm rotate-6 transform origin-bottom-right z-20 overflow-hidden">
+            <div className="absolute top-2 right-0 w-16 h-16 bg-[var(--bg-tertiary)] rounded-xl border-2 border-[var(--bg-card)] shadow-[0_1px_2px_var(--shadow-color)] rotate-6 transform origin-bottom-right z-20 overflow-hidden">
               <div className="w-full h-full bg-green-100/50"></div>
             </div>
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-16 bg-gray-100 rounded-xl border-2 border-white shadow-md z-30 overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center bg-gray-50">
-                <Image className="w-7 h-7 text-gray-400" />
+            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-16 bg-[var(--bg-secondary)] rounded-xl border-2 border-[var(--bg-card)] shadow-[0_4px_6px_var(--shadow-color)] z-30 overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center bg-[var(--bg-secondary)]">
+                <Image className="w-7 h-7 text-[var(--text-tertiary)]" />
               </div>
             </div>
           </div>
-          <span className="text-[#003B95] font-semibold text-base group-hover:text-blue-800 transition-colors">Ver todo</span>
+          <span className="text-[var(--brand-primary)] font-semibold text-base group-hover:text-[var(--brand-primary-hover)] transition-colors">Ver todo</span>
         </Link>
       </div>
     </div>

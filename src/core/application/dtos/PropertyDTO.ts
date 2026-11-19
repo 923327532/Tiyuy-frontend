@@ -30,6 +30,7 @@ export interface PropertyResponseDTO {
     id: number;
     name: string;
     email: string;
+    photoUrl?: string;
   };
   viewsCount: number;
   isFeatured: boolean;

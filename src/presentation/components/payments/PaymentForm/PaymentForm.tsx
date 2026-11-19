@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PaymentRequest } from '@/core/domain/entities/Wallet';
 import { useProcessPayment } from '@/presentation/hooks/usePayments';
 import { useValidateDeveloperDiscountCode, useUseDeveloperDiscountCode } from '@/presentation/hooks/admin/useDevelopers';
+import { apiClient } from '@/infrastructure/api/axios-client';
 import { Icon } from '@iconify/react';
 import { Check, CreditCard, Crown, DollarSign, Globe, Loader, Shield } from 'lucide-react';
 
@@ -43,6 +44,49 @@ export function PaymentForm({
   const [isValidating, setIsValidating] = useState(false);
 
   const finalAmount = appliedDiscount?.discountedPrice ?? amount;
+  // Referencia compartida a la instancia de MP para usar en ambos flujos
+  const mpRef = useRef<any>(null);
+
+  // Obtener deviceSessionId del security.js de MP
+  const getDeviceSessionId = (): string => {
+    if (typeof window !== 'undefined' && (window as any).MP_DEVICE_SESSION_ID) {
+      return (window as any).MP_DEVICE_SESSION_ID;
+    }
+    return '';
+  };
+
+  // Botón "Pagar con MercadoPago" (Checkout Pro)
+  const handleMercadoPagoCheckout = async () => {
+    setIsProcessing(true);
+    try {
+      // security.js (cargado desde layout.tsx) ya generó MP_DEVICE_SESSION_ID
+      // Este ID es el device fingerprint que MP necesita para evaluar riesgo
+      const deviceSessionId = getDeviceSessionId();
+      console.log('MP Device Session ID:', deviceSessionId);
+      
+      const response = await apiClient.post('/finance/mercadopago/create-preference', {
+        subscriptionId: null,
+        unitPrice: finalAmount,
+        title: planName || description,
+        frontendUrl: window.location.origin,
+        deviceSessionId,
+      });
+
+      const data = response.data;
+      
+      if (data.initPoint) {
+        window.location.href = data.initPoint;
+      } else if (data.sandboxInitPoint) {
+        window.location.href = data.sandboxInitPoint;
+      } else {
+        onPaymentError('Error al obtener el punto de pago');
+      }
+    } catch (error: any) {
+      onPaymentError(error.response?.data?.error || error.message || 'Error al iniciar el pago con MercadoPago');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleValidateDiscount = async () => {
     if (!discountCode.trim()) return;
@@ -86,6 +130,7 @@ export function PaymentForm({
         process.env.NEXT_PUBLIC_MP_PUBLIC_KEY!,
         { locale: 'es-PE' }
       );
+      mpRef.current = mp; // Guardar referencia para usarla en handleMercadoPagoCheckout
 
       const cardForm = mp.cardForm({
         amount: Number(finalAmount),
@@ -99,15 +144,20 @@ export function PaymentForm({
           onSubmit: async (cardData: any) => {
             setIsProcessing(true);
             try {
-              // Usar el descuento antes del pago si está aplicado
               if (appliedDiscount?.valid && userId) {
                 await handleUseDiscount();
               }
+
+              const sessionId = mp.getSessionId();
+              const deviceSessionId = getDeviceSessionId();
+              console.log('MP Session ID (cardForm):', sessionId, 'Device:', deviceSessionId);
 
               const result = await processPaymentMutation.mutateAsync({
                 token: cardData.token,
                 amount: finalAmount,
                 description,
+                sessionId,
+                deviceSessionId,
               });
 
               if (result.status === 'APPROVED') {
@@ -237,9 +287,15 @@ export function PaymentForm({
             Otros Métodos de Pago
           </h3>
           <div className="space-y-3">
-            <button className="w-full p-4 bg-white border-2 border-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-3">
+            <button
+              onClick={handleMercadoPagoCheckout}
+              disabled={isProcessing}
+              className="w-full p-4 bg-white border-2 border-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Icon icon="simple-icons:mercadopago" className="w-8 h-8" />
-              <span className="font-semibold">Pagar con Mercado Pago</span>
+              <span className="font-semibold">
+                {isProcessing ? 'Redirigiendo...' : 'Pagar con Mercado Pago'}
+              </span>
             </button>
             
             <button className="w-full p-4 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">

@@ -29,12 +29,12 @@ const LOGIN_FEATURES = [
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg-secondary)]">
       <div className="flex flex-col lg:flex-row min-h-screen">
 
-        <section className="lg:w-[45%] relative flex items-center justify-center p-8 lg:p-12 min-h-[40vh] lg:min-h-screen">
-          <Image src="/assets/images/login/login1.jpg"alt="Casas de lujo en Perú - TIYUY"fill priority className="object-cover object-center brightness-[0.65]" sizes="(max-width: 1024px) 100vw, 45vw"/>
-
+        <section className="lg:w-[45%] relative flex items-center justify-center p-8 lg:p-12 min-h-[40vh] lg:min-h-screen overflow-hidden">
+          <Image src="/assets/images/login/login1.jpg"alt="Casas de lujo en Perú - TIYUY"fill priority className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 45vw"/>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
           <div className="relative z-10 text-center text-white max-w-md">
             <h1 className="text-4xl lg:text-5xl font-bold mb-6 drop-shadow-lg">
               Bienvenido a TIYUY
@@ -46,7 +46,7 @@ export default function LoginPage() {
             <div className="space-y-4 text-left">
               {LOGIN_FEATURES.map(({ id, text, icon }) => (
                 <div key={id} className="flex items-center gap-3 group">
-                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shrink-0 text-white transition-transform group-hover:scale-105">
+                  <div className="w-8 h-8 bg-[var(--brand-primary)] rounded-full flex items-center justify-center shrink-0 text-white transition-transform group-hover:scale-105">
                     {icon}
                   </div>
                   <span className="text-lg drop-shadow-lg font-medium">{text}</span>

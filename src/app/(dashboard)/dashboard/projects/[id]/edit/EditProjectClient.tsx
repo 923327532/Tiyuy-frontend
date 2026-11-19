@@ -10,8 +10,8 @@ import Link from 'next/link';
 
 export default function EditProjectClient({ id }: { id: number }) {
   const { isAuthenticated } = useAuthStore();
-  const { projectById } = useProjects();
-  const { data: project, isLoading, error } = projectById(id);
+  const { projectFull } = useProjects();
+  const { data: project, isLoading, error } = projectFull(id);
 
   if (!isAuthenticated) {
     return (
@@ -77,12 +77,14 @@ export default function EditProjectClient({ id }: { id: number }) {
             <TrialWarningBanner />
 
             <div className="mb-8">
-              <div className="px-4 py-6 sm:px-6 lg:px-8">
+              <div className="px-4 py-6 sm:px-6 lg:px-8 pb-4">
                 <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Editar Proyecto</h1>
                 <p className="mt-2 text-base text-slate-600 dark:text-slate-400">
                   Modifica la información de tu proyecto
                 </p>
               </div>
+              {/* Barra verde decorativa */}
+              <div className="h-1 bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500" />
             </div>
 
             <PropertyForm mode="edit" property={project} formType="project" />

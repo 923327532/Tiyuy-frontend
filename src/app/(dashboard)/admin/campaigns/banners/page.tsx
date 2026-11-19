@@ -6,23 +6,28 @@
 'use client';
 
 import { useState, useMemo, useRef } from 'react';
-import { useBanners, useCreateBannerWithUpload, useUpdateBanner, useDeleteBanner } from '@/presentation/hooks/useAdmin';
+import { useBanners, useCreateBannerWithUpload, useUpdateBanner, useToggleBanner, useDeleteBanner } from '@/presentation/hooks/useAdmin';
 import type { Banner } from '@/core/domain/entities/Admin';
 import { Modal } from '@/presentation/components/ui/Modal';
 import { Input } from '@/presentation/components/ui/Input';
 import { Button } from '@/presentation/components/ui/Button';
 import { LoadingState, EmptyState, ErrorState } from '@/presentation/components/admin/AdminUIStates';
+import { useCreateActionParam } from '@/presentation/hooks/useCreateActionParam';
 import { Image, Plus, Search, Edit3, Trash2, Eye, EyeOff, Upload, Clock } from 'lucide-react';
 
 
 export default function MarketingBannersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Abre el modal cuando se llega desde el menú "Crear".
+  useCreateActionParam(() => setIsCreateModalOpen(true));
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const { data: bannersData, isLoading, error, refetch } = useBanners();
   const createMutation = useCreateBannerWithUpload();
   const updateMutation = useUpdateBanner();
+  const toggleMutation = useToggleBanner();
   const deleteMutation = useDeleteBanner();
 
   const bannersList = Array.isArray(bannersData) ? bannersData : [];
@@ -77,8 +82,12 @@ export default function MarketingBannersPage() {
   };
 
   const handleToggleStatus = async (banner: Banner) => {
-    setSelectedBanner(banner);
-    await handleUpdate({ isActive: !banner.isActive });
+    try {
+      await toggleMutation.mutateAsync(banner.id);
+      refetch();
+    } catch (error) {
+      console.error('Failed to toggle banner:', error);
+    }
   };
 
   if (isLoading) return <LoadingState message="Cargando banners..." />;

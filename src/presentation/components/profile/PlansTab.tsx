@@ -53,6 +53,43 @@ export const PlansTab: React.FC<PlansTabProps> = ({ user }) => {
     return false;
   };
 
+  /**
+   * Obtiene el deviceSessionId de MercadoPago esperando a que security.js termine de cargar.
+   * Sin esto MP rechaza con cc_rejected_high_risk.
+   */
+  const getDeviceSessionId = (): Promise<string> => {
+    return new Promise((resolve) => {
+      if (typeof window !== 'undefined' && (window as any).MP_DEVICE_SESSION_ID) {
+        resolve((window as any).MP_DEVICE_SESSION_ID);
+        return;
+      }
+      let attempts = 0;
+      const maxAttempts = 50;
+      const checkInterval = setInterval(() => {
+        attempts++;
+        if (typeof window !== 'undefined' && (window as any).MP_DEVICE_SESSION_ID) {
+          clearInterval(checkInterval);
+          resolve((window as any).MP_DEVICE_SESSION_ID);
+          return;
+        }
+        if (attempts >= maxAttempts) {
+          clearInterval(checkInterval);
+          const script = document.createElement('script');
+          script.src = 'https://www.mercadopago.com/v2/security.js';
+          script.setAttribute('view', 'checkout');
+          script.async = true;
+          script.onload = () => {
+            setTimeout(() => {
+              resolve((window as any).MP_DEVICE_SESSION_ID || '');
+            }, 500);
+          };
+          script.onerror = () => resolve('');
+          document.head.appendChild(script);
+        }
+      }, 100);
+    });
+  };
+
   // Lógica de suscripción con descuento automático
   const handleSubscribe = () => {
     if (!selectedPlan) return;
@@ -77,6 +114,10 @@ export const PlansTab: React.FC<PlansTabProps> = ({ user }) => {
           const token = authStorage.getToken();
           console.log('Token obtenido:', token ? 'Presente' : 'Ausente');
           
+          // 🔴 CRÍTICO: Obtener deviceSessionId para antifraude
+          const deviceSessionId = await getDeviceSessionId();
+          console.log('MP Device Session ID (PlansTab):', deviceSessionId || '(no disponible)');
+          
           const response = await fetch(
             `/api/finance/mercadopago/create-preference`,
             {
@@ -89,7 +130,8 @@ export const PlansTab: React.FC<PlansTabProps> = ({ user }) => {
                 subscriptionId: subscription.id.toString(),
                 title: selectedPlan.name,
                 unitPrice: selectedPlan.price,
-                frontendUrl: window.location.origin
+                frontendUrl: window.location.origin,
+                deviceSessionId  // 🔴 CRÍTICO: fingerprint del dispositivo
               })
             }
           );

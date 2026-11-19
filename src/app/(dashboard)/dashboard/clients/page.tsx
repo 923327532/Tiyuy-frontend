@@ -39,11 +39,11 @@ export default function CRMDashboardPage() {
   if (isLoading) {
     return (
       <ProtectedRoute requiredRoles={['AGENT', 'DEVELOPER', 'ADMIN']}>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="min-h-screen bg-[var(--bg-secondary)] flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-teal-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 font-medium">Cargando panel de clientes...</p>
-            <p className="text-sm text-gray-400 mt-2">Sincronizando contactos, leads y propiedades</p>
+            <p className="text-[var(--text-secondary)] font-medium">Cargando panel de clientes...</p>
+            <p className="text-sm text-[var(--text-muted)] mt-2">Sincronizando contactos, leads y propiedades</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -52,78 +52,77 @@ export default function CRMDashboardPage() {
 
   return (
     <ProtectedRoute requiredRoles={['AGENT', 'DEVELOPER', 'ADMIN']}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <div className="min-h-screen bg-[var(--bg-secondary)]">
         {/* Header */}
-        <div className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-30">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+        <div className="bg-[var(--bg-card)]/80 backdrop-blur-md border-b border-[var(--border-color)] sticky top-0 z-30">
+          <div className="max-w-7xl mx-auto sm:px-6 px-4 py-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
                 <Link
                   href="/dashboard"
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-[var(--bg-tertiary)] rounded-lg transition-colors shrink-0"
                 >
-                  <ArrowLeft className="w-5 h-5 text-gray-600" />
+                  <ArrowLeft className="w-5 h-5 text-[var(--text-secondary)]" />
                 </Link>
-                <div>
+                <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-teal-50 rounded-lg">
+                    <div className="p-1.5 bg-teal-50 rounded-lg shrink-0">
                       <Users className="w-5 h-5 text-teal-600" />
                     </div>
-                    <h1 className="text-xl font-bold text-gray-900">Análisis y Seguimiento</h1>
+                    <h1 className="text-xl font-bold text-[var(--text-primary)] truncate">Análisis y Seguimiento</h1>
                   </div>
-                  <p className="text-sm text-gray-400 ml-[42px]">
-                    &nbsp;
-                  </p>
                 </div>
               </div>
 
-              {/* Tabs pequeños y elegantes en el header */}
-              <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
-                <button
-                  onClick={() => setActiveTab('principal')}
-                  className={`
-                    flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200
-                    ${activeTab === 'principal'
-                      ? 'bg-white text-teal-700 shadow-sm'
-                      : 'text-gray-500 hover:text-gray-700'
-                    }
-                  `}
-                >
-                  <Users className="w-3.5 h-3.5" />
-                  Principal
-                </button>
-                <button
-                  onClick={() => setActiveTab('estadisticas')}
-                  className={`
-                    flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200
-                    ${activeTab === 'estadisticas'
-                      ? 'bg-white text-teal-700 shadow-sm'
-                      : 'text-gray-500 hover:text-gray-700'
-                    }
-                  `}
-                >
-                  <BarChart3 className="w-3.5 h-3.5" />
-                  Estadísticas
-                </button>
-                <button
-                  onClick={() => setActiveTab('avanzado')}
-                  className={`
-                    flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200
-                    ${activeTab === 'avanzado'
-                      ? 'bg-white text-teal-700 shadow-sm'
-                      : 'text-gray-500 hover:text-gray-700'
-                    }
-                  `}
-                >
-                  <Zap className="w-3.5 h-3.5" />
-                  CRM Avanzado
-                </button>
+              {/* Tabs - scrollable en mobile */}
+              <div className="overflow-x-auto overflow-y-hidden scrollbar-hide -mr-4 pr-4 sm:mr-0 sm:pr-0 ml-auto">
+                <div className="flex items-center gap-1 bg-[var(--bg-tertiary)] rounded-lg p-0.5 w-max">
+                  <button
+                    onClick={() => setActiveTab('principal')}
+                    className={`
+                      flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 whitespace-nowrap
+                      ${activeTab === 'principal'
+                        ? 'bg-[var(--bg-card)] text-teal-600 shadow-sm'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }
+                    `}
+                  >
+                    <Users className="w-3 h-3" />
+                    Ppal
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('estadisticas')}
+                    className={`
+                      flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 whitespace-nowrap
+                      ${activeTab === 'estadisticas'
+                        ? 'bg-[var(--bg-card)] text-teal-600 shadow-sm'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }
+                    `}
+                  >
+                    <BarChart3 className="w-3 h-3" />
+                    Stats
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('avanzado')}
+                    className={`
+                      flex items-center gap-1 px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all duration-200 whitespace-nowrap
+                      ${activeTab === 'avanzado'
+                        ? 'bg-[var(--bg-card)] text-teal-600 shadow-sm'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                      }
+                    `}
+                  >
+                    <Zap className="w-3 h-3" />
+                    Avanz
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
+        <div className="max-w-7xl mx-auto sm:px-6 px-4 py-6 space-y-6">
           {/* VISTA PRINCIPAL - Tarjetas + Heatmap */}
           {activeTab === 'principal' && (
             <>
@@ -151,32 +150,32 @@ export default function CRMDashboardPage() {
                   onClientSelect={setSelectedClient}
                 />
                 {/* Top Clientes */}
-                <div className="bg-white rounded-xl border border-gray-200 p-5">
+                <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-1.5">
+                    <h3 className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
                       <Zap className="w-4 h-4 text-yellow-500" />
                       Más Comprometidos
                     </h3>
-                    <span className="text-xs text-gray-400">Top 5</span>
+                    <span className="text-xs text-[var(--text-muted)]">Top 5</span>
                   </div>
                   <div className="space-y-2">
                     {metrics.topEngagedClients.length === 0 ? (
-                      <p className="text-gray-500 text-center py-3 text-sm">No hay datos suficientes</p>
+                      <p className="text-[var(--text-secondary)] text-center py-3 text-sm">No hay datos suficientes</p>
                     ) : (
                       metrics.topEngagedClients.slice(0, 5).map((client, index) => {
                         const topName = client.name && client.name !== 'Sin nombre' && client.name.length > 2 
                           ? client.name 
                           : (client.email || client.phone || `Cliente #${client.id}`);
                         return (
-                        <div key={client.id} className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
+                        <div key={client.id} className="flex items-center justify-between p-2.5 bg-[var(--bg-tertiary)] rounded-lg">
                           <div className="flex items-center gap-2.5">
                             <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-teal-400 
                               flex items-center justify-center text-white font-semibold text-xs">
                               {index + 1}
                             </div>
                             <div>
-                              <p className="text-sm font-medium text-gray-900">{topName}</p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-sm font-medium text-[var(--text-primary)]">{topName}</p>
+                              <p className="text-xs text-[var(--text-secondary)]">
                                 {client.messageActivity.totalMessages} mensajes · {client.totalInteractions} interacciones
                               </p>
                             </div>
@@ -186,7 +185,7 @@ export default function CRMDashboardPage() {
                               <BarChart3 className="w-3.5 h-3.5 text-blue-500" />
                               <span className="font-bold text-blue-600 text-sm">{client.interactionScore}</span>
                             </div>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-[var(--text-muted)]">
                               {client.daysSinceLastActivity <= 7 ? 'Activo reciente' : `Hace ${client.daysSinceLastActivity} días`}
                             </p>
                           </div>
@@ -211,7 +210,7 @@ export default function CRMDashboardPage() {
                   <div className="p-1.5 bg-gradient-to-r from-teal-500 to-blue-500 rounded-lg">
                     <Zap className="w-4 h-4 text-white" />
                   </div>
-                  <h2 className="text-lg font-semibold text-gray-900">Conversión</h2>
+                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">Conversión</h2>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <HotLeadsPanel />
@@ -222,29 +221,29 @@ export default function CRMDashboardPage() {
 
               {/* Selected Client Detail - Solo en Conversión */}
               {selectedClient && (
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                  <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-teal-50 to-white">
-                    <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
-                      <div className="p-1 bg-teal-100 rounded-lg">
+                <div className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] shadow-sm overflow-hidden">
+                  <div className="sm:px-6 px-4 py-4 border-b border-[var(--border-color)] flex items-center justify-between bg-gradient-to-r from-teal-50 to-[var(--bg-card)]">
+                    <h3 className="text-base font-semibold text-[var(--text-primary)] flex items-center gap-2 min-w-0">
+                      <div className="p-1 bg-teal-100 rounded-lg shrink-0">
                         <Users className="w-4 h-4 text-teal-600" />
                       </div>
-                      Detalle: {selectedClient.name && selectedClient.name !== 'Sin nombre' && selectedClient.name.length > 2 
+                      <span className="truncate">Detalle: {selectedClient.name && selectedClient.name !== 'Sin nombre' && selectedClient.name.length > 2 
                         ? selectedClient.name 
-                        : (selectedClient.email || selectedClient.phone || `Cliente #${selectedClient.id}`)}
+                        : (selectedClient.email || selectedClient.phone || `Cliente #${selectedClient.id}`)}</span>
                     </h3>
                     <button
                       onClick={() => setSelectedClient(null)}
-                      className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded-lg"
+                      className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors p-1 hover:bg-[var(--bg-tertiary)] rounded-lg shrink-0"
                     >
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
                   </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="sm:p-6 p-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                       <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                        <h4 className="font-medium text-blue-900 mb-2 flex items-center gap-2 text-sm">Mensajes</h4>
+                        <h4 className="font-medium text-blue-900 mb-2 text-sm">Mensajes</h4>
                         <div className="space-y-1">
                           <p className="text-blue-700 text-sm"><span className="font-semibold">{selectedClient.messageActivity.totalMessages}</span> total</p>
                           <p className="text-blue-600 text-sm"><span className="font-semibold">{selectedClient.messageActivity.sentMessages}</span> enviados</p>
@@ -252,7 +251,7 @@ export default function CRMDashboardPage() {
                         </div>
                       </div>
                       <div className="p-4 bg-teal-50 rounded-xl border border-teal-100">
-                        <h4 className="font-medium text-teal-900 mb-2 flex items-center gap-2 text-sm">Grupos</h4>
+                        <h4 className="font-medium text-teal-900 mb-2 text-sm">Grupos</h4>
                         <div className="space-y-1">
                           <p className="text-teal-700 text-sm"><span className="font-semibold">{selectedClient.groupActivity.groupsJoined}</span> grupos</p>
                           <p className="text-teal-600 text-sm"><span className="font-semibold">{selectedClient.groupActivity.postsCreated}</span> posts</p>
@@ -260,7 +259,7 @@ export default function CRMDashboardPage() {
                         </div>
                       </div>
                       <div className="p-4 bg-purple-50 rounded-xl border border-purple-100">
-                        <h4 className="font-medium text-purple-900 mb-2 flex items-center gap-2 text-sm">Canales</h4>
+                        <h4 className="font-medium text-purple-900 mb-2 text-sm">Canales</h4>
                         <div className="space-y-1">
                           <p className="text-purple-700 text-sm"><span className="font-semibold">{selectedClient.channelActivity.channelsSubscribed}</span> suscripciones</p>
                           <p className="text-purple-600 text-sm"><span className="font-semibold">{selectedClient.channelActivity.eventsAttended}</span> eventos</p>
@@ -268,7 +267,7 @@ export default function CRMDashboardPage() {
                         </div>
                       </div>
                       <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-                        <h4 className="font-medium text-amber-900 mb-2 flex items-center gap-2 text-sm">Propiedades</h4>
+                        <h4 className="font-medium text-amber-900 mb-2 text-sm">Propiedades</h4>
                         <div className="space-y-1">
                           <p className="text-amber-700 text-sm"><span className="font-semibold">{selectedClient.propertyActivity.propertiesViewed}</span> vistas</p>
                           <p className="text-amber-600 text-sm"><span className="font-semibold">{selectedClient.propertyActivity.inquiriesMade}</span> consultas</p>
@@ -276,19 +275,19 @@ export default function CRMDashboardPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
-                      <div className="flex items-center gap-6">
+                    <div className="mt-6 pt-4 border-t border-[var(--border-color)]">
+                      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
                         <div className="text-center">
-                          <span className="text-xs text-gray-400">Score</span>
+                          <span className="text-xs text-[var(--text-muted)]">Score</span>
                           <p className="text-lg font-bold text-teal-600">{selectedClient.interactionScore}</p>
                         </div>
                         <div className="text-center">
-                          <span className="text-xs text-gray-400">Engagement</span>
+                          <span className="text-xs text-[var(--text-muted)]">Engagement</span>
                           <p className="text-lg font-bold text-emerald-600">{selectedClient.engagementRate}%</p>
                         </div>
                         <div className="text-center">
-                          <span className="text-xs text-gray-400">Última Actividad</span>
-                          <p className="text-sm font-medium text-gray-700">
+                          <span className="text-xs text-[var(--text-muted)]">Última Actividad</span>
+                          <p className="text-sm font-medium text-[var(--text-primary)]">
                             {selectedClient.daysSinceLastActivity === 0 ? 'Hoy' :
                              selectedClient.daysSinceLastActivity === 1 ? 'Ayer' :
                              `Hace ${selectedClient.daysSinceLastActivity} días`}

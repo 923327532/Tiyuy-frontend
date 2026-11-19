@@ -106,8 +106,8 @@ export function AdminBulkOperations({
     <>
       {/* Bulk Actions Bar */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="text-sm font-medium text-blue-900">
               {selectedItems.length} {getItemTypeLabel()} selected
             </span>
@@ -120,7 +120,7 @@ export function AdminBulkOperations({
             </Button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {canChangeStatus && (
               <div className="flex gap-2">
                 <Button

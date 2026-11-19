@@ -7,30 +7,33 @@ const SOCIAL_LINKS = [
     svg: '<svg fill="none" viewBox="0 0 24 24" width="20" height="20"><rect width="20" height="20" rx="4" fill="url(#ig)"/><path d="M17 2H7a5 5 0 0 0-5 5v10a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5V7a5 5 0 0 0-5-5zm-5 13.5A3.5 3.5 0 1 1 12 9a3.5 3.5 0 0 1 0 7zm4.5-7.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" fill="white"/><defs><linearGradient id="ig" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#f9ce34"/><stop offset="0.5" stop-color="#ee2a7b"/><stop offset="1" stop-color="#6228d7"/></linearGradient></defs></svg>'
   },
   {
-    href: 'https://www.facebook.com/tiyuyperu',
+    href: 'https://web.facebook.com/profile.php?id=61592199742048',
     label: 'Facebook',
     svg: '<svg fill="none" viewBox="0 0 24 24" width="20" height="20"><rect width="20" height="20" rx="4" fill="#1877F2"/><path d="M16 8.5h-2.5V7c0-.6.4-.5.9-.5h1.5V4h-2.5a3 3 0 0 0-3 3v1.5H9V11h2.5v7h3v-7H16L16 8.5z" fill="white"/></svg>'
   },
   {
-    href: 'https://twitter.com/tiyuyperu',
+    href: 'https://x.com/tiyuy6y',
     label: 'X (Twitter)',
     svg: '<svg fill="none" viewBox="0 0 24 24" width="20" height="20"><rect width="20" height="20" rx="4" fill="#000"/><path d="M5 5l5.4 7.2L5 19h1.2l4.8-5.4L15 19h5l-5.7-7.6L19 5h-1.2l-4.4 5L10 5H5z" fill="white"/></svg>'
   },
+
   {
     href: 'https://www.tiktok.com/@tiyuyperu_oficial',
     label: 'TikTok',
     svg: '<svg fill="none" viewBox="0 0 24 24" width="20" height="20"><rect width="20" height="20" rx="4" fill="#000"/><path d="M16 6v1.5a3.5 3.5 0 0 1-3.5-3.5h-1.8v9.8a2.2 2.2 0 1 1-1.5-2.1v-1.8a4 4 0 1 0 3.5 3.9V9.7c.8.5 1.7.8 2.7.8V8.8c-.6 0-1.1-.2-1.6-.5-.3-.3-.5-.7-.5-1.2H14l2 .3V7l-.6-.7L16 6z" fill="white"/></svg>'
   },
   {
-    href: 'https://www.youtube.com/@tiyuyperu',
+    href: 'https://www.youtube.com/@TiyuyTiyuy-r8s',
     label: 'YouTube',
     svg: '<svg fill="none" viewBox="0 0 24 24" width="20" height="20"><rect width="20" height="20" rx="4" fill="#FF0000"/><path d="M10 8.5v6l5-3-5-3z" fill="white"/><path d="M3 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0z" fill="none" stroke="white" stroke-width="1.5"/></svg>'
   },
+
   {
-    href: 'https://www.linkedin.com/in/tiyuy-peru-4858863b5/',
+    href: 'https://www.linkedin.com/company/143109038/admin/dashboard/',
     label: 'LinkedIn',
     svg: '<svg fill="none" viewBox="0 0 24 24" width="20" height="20"><rect width="20" height="20" rx="4" fill="#0077B5"/><path d="M7 9h2.5v8H7V9zm1.2-1.5a1.4 1.4 0 1 1 0-2.8 1.4 1.4 0 0 1 0 2.8zM12 11.5c0-1.1.9-2 2-2s2 .9 2 2v5.5h2.5v-5.5a4.5 4.5 0 0 0-9 0v5.5H12v-5.5z" fill="white"/></svg>'
   }
+
 ];
 
 const SOCIAL_HTML = SOCIAL_LINKS.map(social => `

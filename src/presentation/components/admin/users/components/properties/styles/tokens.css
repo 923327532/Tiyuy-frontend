@@ -1,0 +1,23 @@
+:root {
+  --upm-brand: #475569;
+  --upm-brand-soft: #f1f5f9;
+  --upm-success: #6b9080;
+  --upm-success-soft: #e8f0ec;
+  --upm-warning: #c9a876;
+  --upm-warning-soft: #f5ede0;
+  --upm-neutral: #64748b;
+  --upm-neutral-soft: #f1f5f9;
+  --upm-bg: #ffffff;
+  --upm-bg-subtle: #fafbfc;
+  --upm-bg-muted: #f5f7f9;
+  --upm-border: #e8ecef;
+  --upm-border-strong: #d8dee3;
+  --upm-text-primary: #0f172a;
+  --upm-text-secondary: #334155;
+  --upm-text-tertiary: #64748b;
+  --upm-text-muted: #94a3b8;
+  --upm-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --upm-shadow-md: 0 6px 16px -4px rgb(15 23 42 / 0.08), 0 2px 4px rgb(15 23 42 / 0.04);
+  --upm-radius: 0.75rem;
+  --upm-radius-sm: 0.5rem;
+}

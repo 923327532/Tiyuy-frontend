@@ -1,145 +1,136 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useChannels } from '@/presentation/hooks/useChannels';
+import { axiosClient } from '@/infrastructure/api/axios-client';
 import { formatCompactNumber } from '@/utils/formatters';
 import { Bell, BellOff, FileText, Search, Users } from 'lucide-react';
 import { EntityIcon } from '@/utils/entityIcons';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 export default function DiscoverChannelsView({ user, onChannelSelect }: { user: any; onChannelSelect: (channel: any) => void }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const { channels, channelsLoading: isLoading, subscribeToChannel, isSubscribing } = useChannels(user?.id);
-  
-  // Filtrar canales donde el usuario NO esta suscrito
-  const availableChannels = channels?.filter((c: any) => !c.isSubscribed) ?? [];
-  const filteredChannels = availableChannels.filter((channel: any) =>
-    channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    channel.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    channel.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    channel.city.toLowerCase().includes(searchTerm.toLowerCase())
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const { data: channelsData, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ['channels-discover', user?.id],
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await axiosClient.get(`/contacts/extended/channels?page=${pageParam}&size=15`);
+      return { channels: response.data?.content || [], totalPages: response.data?.totalPages || 1, currentPage: response.data?.number || pageParam, hasMore: response.data && !response.data.last };
+    },
+    getNextPageParam: (lastPage) => { if (!lastPage.hasMore) return undefined; return lastPage.currentPage + 1; },
+    initialPageParam: 0, staleTime: 1000 * 30,
+  });
+
+  useEffect(() => {
+    if (!hasNextPage || isFetchingNextPage) return;
+    const observer = new IntersectionObserver((entries) => { if (entries[0].isIntersecting) fetchNextPage(); }, { threshold: 0.1 });
+    const s = sentinelRef.current;
+    if (s) observer.observe(s);
+    return () => { if (s) observer.unobserve(s); };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const allChannels = channelsData?.pages?.flatMap((p: any) => p.channels) ?? [];
+  const filteredChannels = allChannels.filter((channel: any) =>
+    !channel.isSubscribed &&
+    (channel.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     channel.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     channel.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+     channel.city?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const { subscribeToChannel, isSubscribing } = useChannels(user?.id);
 
   const handleSubscribeChannel = (channelId: number, e: React.MouseEvent) => {
     e.stopPropagation();
-    // Marcar como suscrito localmente INMEDIATAMENTE para que desaparezca de la lista
-    // El hook useChannels también hace actualización optimista
     subscribeToChannel(channelId);
   };
 
   return (
-    <div className="h-full bg-white dark:bg-gray-900 p-6 overflow-y-auto">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Descubrir Canales</h2>
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            {filteredChannels.length} canales disponibles
+    <div className="flex flex-col bg-[var(--bg-primary)] h-full">
+      <div className="bg-[var(--brand-primary)] px-4 py-3 flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-white font-bold text-base leading-tight">Descubrir Canales</h1>
+            <p className="text-white/70 text-xs">{filteredChannels.length} canales disponibles</p>
           </div>
         </div>
-
-        {/* Barra de busqueda */}
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400 dark:text-gray-500" />
-            </div>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar canales por nombre, descripción, categoría o ciudad..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-        </div>
-
-        {/* Loading state */}
-        {isLoading && (
-          <div className="flex justify-center py-16">
-            <div className="w-8 h-8 rounded-full border-4 border-blue-600 border-t-transparent animate-spin" />
-          </div>
-        )}
-
-        {/* No channels available */}
-        {!isLoading && filteredChannels.length === 0 && (
-          <div className="text-center py-16">
-            <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mx-auto mb-6">
-              <span className="text-3xl"></span>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-              {searchTerm ? 'No se encontraron canales' : 'No hay canales disponibles'}
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm text-center max-w-md leading-relaxed">
-              {searchTerm 
-                ? 'Intenta con otros terminos de busqueda'
-                : 'No hay canales disponibles para suscribirse en este momento'
-              }
-            </p>
-          </div>
-        )}
-
-        {/* Grid de canales disponibles */}
-        {!isLoading && filteredChannels.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredChannels.map((channel: any) => (
-              <div
-                key={channel.id}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer"
-                onClick={(e) => {
-                  if (!channel.isSubscribed) {
-                    handleSubscribeChannel(channel.id, e);
-                  }
-                  setTimeout(() => onChannelSelect(channel), 300);
-                }}
-              >
-                {/* Banner del canal */}
-                <div className="h-24 bg-gradient-to-br from-brand to-brand-dark flex items-center justify-center">
-                  <EntityIcon name={channel.name} className="w-14 h-14 text-white/90" />
-                </div>
-
-                {/* Contenido */}
-                <div className="p-4">
-                  <h3 className="font-bold text-gray-900 dark:text-gray-100 text-sm mb-2 line-clamp-2">
-                    {channel.name}
-                  </h3>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                    {channel.description || 'Sin descripcion disponible'}
-                  </p>
-                  
-                  {/* Stats */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center gap-1">
-                      <Users className="w-3 h-3" />
-                      <span>{formatCompactNumber(channel.subscriberCount)} suscriptores</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FileText className="w-3 h-3" />
-                      <span>{channel.postsPerDay || 0} posts/dia</span>
-                    </div>
-                  </div>
-
-                  {/* Tipo de canal */}
-                  <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-3">
-                    <span className={`px-2 py-1 rounded-full ${
-                      channel.isPublic 
-                        ? 'bg-[var(--brand-primary-light)] text-gray-900 dark:text-gray-100' 
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                    }`}>
-                      {channel.isPublic ? ' Público' : ' Privado'}
-                    </span>
-                    <span>{channel.city}</span>
-                  </div>
-
-                  {/* Boton de entrada */}
-                  <div className="w-full py-2 bg-brand text-white text-sm font-semibold rounded-lg text-center">
-                    {channel.isSubscribed ? 'Entrar al canal' : isSubscribing ? 'Suscribiendose...' : 'Entrar'}
-                  </div>
-                </div>
+      </div>
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-6">
+            <div className="relative max-w-md">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-[var(--text-muted)]" />
               </div>
-            ))}
+              <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Buscar canales por nombre, descripción, categoría o ciudad..."
+                className="block w-full pl-10 pr-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-tertiary)] text-sm placeholder-[var(--text-muted)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            </div>
           </div>
-        )}
+
+          {isLoading && (
+            <div className="flex justify-center py-16">
+              <div className="w-8 h-8 rounded-full border-4 border-[var(--brand-primary)] border-t-transparent animate-spin" />
+            </div>
+          )}
+
+          {!isLoading && filteredChannels.length === 0 && (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center mx-auto mb-6">
+                <span className="text-3xl"></span>
+              </div>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
+                {searchTerm ? 'No se encontraron canales' : 'No hay canales disponibles'}
+              </h3>
+              <p className="text-[var(--text-secondary)] text-sm">{searchTerm ? 'Intenta con otros términos de búsqueda' : 'No hay canales disponibles para suscribirse en este momento'}</p>
+            </div>
+          )}
+
+          {!isLoading && filteredChannels.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredChannels.map((channel: any) => (
+                <div key={channel.id} className="bg-[var(--bg-card)] border border-[var(--border-light)] rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer"
+                  onClick={(e) => { if (!channel.isSubscribed) handleSubscribeChannel(channel.id, e); setTimeout(() => onChannelSelect(channel), 300); }}>
+                  <div className="h-24 bg-[var(--bg-tertiary)] flex items-center justify-center">
+                    <EntityIcon name={channel.name} className="w-14 h-14 text-brand" />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-[var(--text-primary)] text-sm mb-2 line-clamp-2">{channel.name}</h3>
+                    <p className="text-xs text-[var(--text-secondary)] line-clamp-2 mb-3">{channel.description || 'Sin descripción disponible'}</p>
+                    <div className="flex items-center justify-between text-xs text-[var(--text-muted)] mb-3 pb-2 border-b border-[var(--border-color)]">
+                      <span className="flex items-center gap-1"><Users className="w-3 h-3" />{formatCompactNumber(channel.subscriberCount)} suscriptores</span>
+                      <span className="flex items-center gap-1"><FileText className="w-3 h-3" />{channel.postsPerDay || 0} posts/día</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-[var(--text-muted)] mb-3">
+                      <span className={`px-2 py-1 rounded-full ${channel.isPublic ? 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]' : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'}`}>{channel.isPublic ? '🔓 Público' : '🔒 Privado'}</span>
+                      <span>{channel.city}</span>
+                    </div>
+                    <div className="w-full py-2 bg-[var(--text-primary)] text-[var(--bg-primary)] text-sm font-semibold rounded-lg text-center">
+                      {channel.isSubscribed ? 'Entrar al canal' : isSubscribing ? 'Suscribiéndose...' : 'Entrar'}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {hasNextPage && (
+            <div ref={sentinelRef} className="flex justify-center py-6 mt-4">
+              {isFetchingNextPage ? (
+                <div className="w-8 h-8 rounded-full border-3 border-brand border-t-transparent animate-spin" />
+              ) : (
+                <span className="text-xs text-[var(--text-muted)]">Desplaza para más canales...</span>
+              )}
+            </div>
+          )}
+
+          {!isLoading && allChannels.length > 0 && (
+            <div className="text-center mt-4 pb-4">
+              <span className="text-xs text-[var(--text-muted)]">Mostrando {allChannels.length} canales disponibles</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

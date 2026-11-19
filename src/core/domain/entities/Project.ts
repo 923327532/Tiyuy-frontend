@@ -8,8 +8,8 @@ export interface Project {
   slug: string;
   description: string;
   status: ProjectStatus;
-  phase: 'PRE_SALE' | 'SALE' | 'DELIVERY';
-  type: 'INDUSTRIAL' | 'COMMERCIAL' | 'MIXED_USE' | 'RESIDENTIAL';
+  phase: 'PRE_SALE' | 'SALE' | 'DELIVERY' | 'PLOTTING' | 'PRE_LOTIZATION' | 'URBANIZATION' | 'REGISTRATION' | 'COMPLETED' | 'LAND_BANK';
+  type: 'INDUSTRIAL' | 'COMMERCIAL' | 'MIXED_USE' | 'RESIDENTIAL' | 'LOTIZATION' | 'LAND_SUBDIVISION' | 'LAND_BANK';
   totalUnits: number;
   availableUnits: number;
   soldUnits: number;
@@ -55,6 +55,7 @@ export interface Project {
   isVerified: boolean;
   viewsCount: number;
   contactsCount: number;
+  publishedAt?: Date | string;
   
   // Lifecycle fields for subscription management
   lifecycleStatus?: ProjectLifecycleStatus;
@@ -66,7 +67,7 @@ export interface Project {
 export interface ProjectUnit {
   id: number;
   unitNumber: string;
-  type: 'APARTMENT' | 'DUPLEX' | 'PENTHOUSE' | 'OFFICE' | 'STORE' | 'WAREHOUSE';
+  type: 'APARTMENT' | 'DUPLEX' | 'PENTHOUSE' | 'OFFICE' | 'STORE' | 'WAREHOUSE' | 'LOT';
   floor: number;
   area: number;
   bedrooms?: number;
@@ -104,6 +105,7 @@ export interface ProjectSummary {
   isFeatured: boolean;
   isVerified: boolean;
   viewsCount: number;
+  publishedAt?: Date | string;
   // Lifecycle fields for subscription management
   lifecycleStatus?: ProjectLifecycleStatus;
   remainingGraceDays?: number;
@@ -122,4 +124,30 @@ export interface ProjectFull extends Project {
   images?: string[];
   blueprints?: string[];
   renders?: string[];
+  socialMediaUrl?: string;
+}
+
+// Perfil público del desarrollador (al hacer clic en el desarrollador de un proyecto)
+export interface DeveloperPublicProfile {
+  userId: number;
+  companyName: string;
+  ruc: string;
+  email: string;
+  phone: string;
+  photoUrl?: string;
+  memberSince?: string;  // Cuándo se unió a Tiyuy
+  totalActiveProjects: number;
+  projects: DeveloperProject[];
+}
+
+export interface DeveloperProject {
+  id: number;
+  slug?: string;
+  name?: string;
+  type?: string;
+  phase?: string;
+  priceFrom: number;
+  currency?: string;
+  district?: string;
+  coverImageUrl?: string;
 }

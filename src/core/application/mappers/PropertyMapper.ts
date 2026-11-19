@@ -17,8 +17,15 @@ export class PropertyMapper {
     // Owner viene como campos planos desde el backend
     const ownerName = 
       `${anyDto.ownerFirstName || ''} ${anyDto.ownerLastName || ''}`.trim() || 
+      anyDto.owner?.name ||
       anyDto.ownerEmail || 
       'Usuario';
+    const ownerPhotoUrl = anyDto.ownerPhotoUrl ||
+      anyDto.owner?.photoUrl ||
+      anyDto.owner?.avatar ||
+      anyDto.ownerProfilePhoto ||
+      anyDto.ownerAvatarUrl ||
+      undefined;
 
     const safeMedia = Array.isArray(anyDto.media)
       ? anyDto.media
@@ -28,10 +35,19 @@ export class PropertyMapper {
 
     const slug = String(anyDto.slug || anyDto.seo?.slug || '').trim();
     const createdAtRaw = anyDto.createdAt || anyDto.updatedAt;
-    const createdAt = createdAtRaw ? new Date(createdAtRaw) : new Date();
+    const createdAt = createdAtRaw ? new Date(createdAtRaw) : undefined;
+
+    // Detalles de habitación (ROOM) expuestos por el backend
+    const roomDetails = anyDto.roomDetails || null;
 
     return {
       id: dto.id,
+      ...(roomDetails ? {
+        roomDetails: {
+          hasPrivateBathroom: Boolean(roomDetails.hasPrivateBathroom),
+          totalCapacity: roomDetails.totalCapacity != null ? Number(roomDetails.totalCapacity) : undefined,
+        } as any,
+      } : {}),
       title: anyDto.title,
       type: (anyDto.type || 'APARTMENT') as any,
       transactionType: (anyDto.transactionType || 'SALE') as any,
@@ -65,11 +81,12 @@ export class PropertyMapper {
       coverPhotoUrl: anyDto.coverPhotoUrl || undefined,
 
       owner: {
-        id: Number(anyDto.ownerId || 0),
+        id: Number(anyDto.ownerId || anyDto.owner?.id || 0),
         name: ownerName,
-        email: String(anyDto.ownerEmail || ''),
+        email: String(anyDto.ownerEmail || anyDto.owner?.email || ''),
         phone: '',
-        role: anyDto.ownerRole || 'USER',
+        role: anyDto.ownerRole || anyDto.owner?.role || 'USER',
+        photoUrl: ownerPhotoUrl,
       },
 
       seo: {
@@ -86,8 +103,11 @@ export class PropertyMapper {
       isFeatured: Boolean(anyDto.isFeatured),
       isVerified: Boolean(anyDto.isVerified),
 
-      createdAt,
-      updatedAt: anyDto.updatedAt ? new Date(anyDto.updatedAt) : createdAt,
+      createdAt: (createdAt ?? undefined) as Date,
+      updatedAt: anyDto.updatedAt ? new Date(anyDto.updatedAt) : (createdAt as Date | undefined),
+      publishedAt: anyDto.publishedAt
+        ? new Date(anyDto.publishedAt)
+        : (createdAt ?? undefined),
 
       isNegotiable: false,
       parkingSpots: Number(anyDto.parkingSpots || 0),
@@ -117,12 +137,23 @@ export class PropertyMapper {
       bedrooms: dto.bedrooms,
       bathrooms: dto.bathrooms,
       totalArea: dto.totalArea,
+      ...(anyDto.roomDetails ? {
+        roomDetails: {
+          hasPrivateBathroom: Boolean(anyDto.roomDetails.hasPrivateBathroom),
+          totalCapacity: anyDto.roomDetails.totalCapacity != null ? Number(anyDto.roomDetails.totalCapacity) : undefined,
+        } as any,
+      } : {}),
       district,
       province,
       coverPhotoUrl: dto.coverPhotoUrl || undefined,
       isFeatured: dto.isFeatured,
       isVerified: false,
       viewsCount: dto.viewsCount,
+      publishedAt: (anyDto as any).publishedAt
+        ? new Date((anyDto as any).publishedAt)
+        : (anyDto as any).createdAt
+          ? new Date((anyDto as any).createdAt)
+          : undefined,
 
       // Lifecycle fields
       lifecycleStatus: (anyDto as any).lifecycleStatus || 'ACTIVE',

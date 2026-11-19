@@ -9,10 +9,12 @@ import {
   CreateAdminUserRequest,
   UpdateAdminUserRequest,
   DashboardStats,
+  PropertyAnalyticsResponse,
   UserStats,
   FinanceStats,
   FinanceHistoryDto,
   UserListItem,
+  InternationalUserListItem,
   ChangeUserRoleRequest,
   DiscountCode,
   CreateDiscountCodeRequest,
@@ -52,6 +54,7 @@ export interface PaginatedResponse<T> {
 export interface IAdminRepository {
   // Dashboard & Analytics
   getDashboardStats(): Promise<DashboardStats>;
+  getPropertyAnalytics(): Promise<PropertyAnalyticsResponse>;
   getUserStats(): Promise<UserStats>;
   getFinanceStats(): Promise<FinanceStats>;
   getFinanceHistory(period?: string): Promise<FinanceHistoryDto>;
@@ -80,6 +83,11 @@ export interface IAdminRepository {
   toggleUserStatus(userId: number, enabled: boolean, reason?: string): Promise<void>;
   changeUserRole(userId: number, request: ChangeUserRoleRequest): Promise<void>;
   verifyUserEmail(userId: number): Promise<void>;
+
+  // Usuarios internacionales (sección "Extranjeros")
+  getInternationalUsers(params?: PaginationParams): Promise<PaginatedResponse<InternationalUserListItem>>;
+  approveInternationalUser(userId: number): Promise<InternationalUserListItem>;
+  rejectInternationalUser(userId: number, reason?: string): Promise<InternationalUserListItem>;
 
   // Discount Codes
   getAllDiscountCodes(params: PaginationParams): Promise<PaginatedResponse<DiscountCode>>;
@@ -148,6 +156,7 @@ export interface IAdminRepository {
   getBanners(params?: { page?: number; size?: number; location?: string }): Promise<import('@/core/domain/entities/Admin').Banner[]>;
   createBanner(request: import('@/core/domain/entities/Admin').CreateBannerRequest): Promise<import('@/core/domain/entities/Admin').Banner>;
   updateBanner(id: number, request: Partial<import('@/core/domain/entities/Admin').CreateBannerRequest>): Promise<import('@/core/domain/entities/Admin').Banner>;
+  toggleBanner(id: number): Promise<void>;
   deleteBanner(id: number): Promise<void>;
   getFestiveCampaigns(params?: { page?: number; size?: number }): Promise<import('@/core/domain/entities/Admin').FestiveCampaign[]>;
   createFestiveCampaign(request: import('@/core/domain/entities/Admin').CreateFestiveCampaignRequest): Promise<import('@/core/domain/entities/Admin').FestiveCampaign>;

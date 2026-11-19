@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { PropertyCard } from '../PropertyCard/PropertyCard';
 import { useFilteredProperties } from '@/presentation/hooks/useFilteredProperties';
@@ -24,19 +24,42 @@ export function FilteredProperties({
 }: FilteredPropertiesProps) {
   const { data: properties = [], isLoading, error } = useFilteredProperties(filter);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
-  const canScrollLeft = false;
-  const canScrollRight = true;
+  const updateScrollButtons = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', updateScrollButtons);
+    updateScrollButtons();
+    return () => el.removeEventListener('scroll', updateScrollButtons);
+  }, [properties]);
+
+  const scrollByAmount = () => {
+    if (!scrollContainerRef.current) return 280;
+    if (window.innerWidth < 640) {
+      return scrollContainerRef.current.clientWidth / 2;
+    }
+    return scrollContainerRef.current.clientWidth;
+  };
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -scrollContainerRef.current.clientWidth, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: -scrollByAmount(), behavior: 'smooth' });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: scrollContainerRef.current.clientWidth, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: scrollByAmount(), behavior: 'smooth' });
     }
   };
 
@@ -48,13 +71,13 @@ export function FilteredProperties({
           <div className="flex gap-4 sm:gap-5 md:gap-6 pb-4 px-8 flex-shrink-0">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="w-[85vw] sm:w-[280px] md:w-[320px] lg:w-[240px] xl:w-[190px] 2xl:w-[220px] flex-shrink-0">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-                  <div className="w-full aspect-square bg-gray-200" />
+                <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-light)] overflow-hidden animate-pulse">
+                  <div className="w-full aspect-square bg-[var(--bg-tertiary)]" />
                   <div className="p-4 space-y-3">
-                    <div className="h-4 bg-gray-200 rounded-full w-24" />
-                    <div className="h-4 bg-gray-200 rounded w-full" />
-                    <div className="h-4 bg-gray-200 rounded w-2/3" />
-                    <div className="h-5 bg-gray-200 rounded w-20 mt-2" />
+                    <div className="h-4 bg-[var(--bg-tertiary)] rounded-full w-24" />
+                    <div className="h-4 bg-[var(--bg-tertiary)] rounded w-full" />
+                    <div className="h-4 bg-[var(--bg-tertiary)] rounded w-2/3" />
+                    <div className="h-5 bg-[var(--bg-tertiary)] rounded w-20 mt-2" />
                   </div>
                 </div>
               </div>
@@ -69,7 +92,7 @@ export function FilteredProperties({
   if (error) {
     return (
       <div className="text-center py-10">
-        <p className="text-gray-500">{error instanceof Error ? error.message : 'Error al cargar'}</p>
+        <p className="text-[var(--text-secondary)]">{error instanceof Error ? error.message : 'Error al cargar'}</p>
       </div>
     );
   }
@@ -77,7 +100,7 @@ export function FilteredProperties({
   if (properties.length === 0) {
     return (
       <div className="text-center py-10">
-        <p className="text-gray-500">{emptyMessage}</p>
+        <p className="text-[var(--text-secondary)]">{emptyMessage}</p>
       </div>
     );
   }
@@ -93,11 +116,38 @@ export function FilteredProperties({
           scrollbar-width: none;
         }
 
-        .carousel-card {
-          width: 85vw;
+        @media (max-width: 639px) {
+          .filtered-grid-mobile {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 8px;
+            scroll-snap-type: x mandatory;
+          }
+          .filtered-grid-mobile .carousel-card {
+            min-width: calc(50% - 5px);
+            flex-shrink: 0;
+            scroll-snap-align: start;
+          }
+          .filtered-grid-mobile .view-all-card {
+            display: none;
+          }
         }
+
         @media (min-width: 640px) {
-          .carousel-card { width: calc((100% - 20px) / 2); }
+          .filtered-grid-mobile {
+            display: flex;
+            overflow-x: auto;
+            gap: 16px;
+            padding-bottom: 16px;
+          }
+          .carousel-card { 
+            width: calc((100% - 20px) / 2); 
+            flex-shrink: 0;
+          }
+          .filtered-grid-mobile .view-all-card {
+            display: flex;
+          }
         }
         @media (min-width: 768px) {
           .carousel-card { width: calc((100% - 2 * 24px) / 3); }
@@ -117,12 +167,11 @@ export function FilteredProperties({
       `}</style>
 
       <div className="w-full">
-        {/* Header and Navigation Controls */}
         <div className="flex justify-between items-end mb-4">
           <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2">
             {title}
-            <Link href={viewAllLink} className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors ml-1">
-              <ChevronRight className="w-4 h-4 text-gray-700" />
+            <Link href={viewAllLink} className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[var(--bg-tertiary)] hover:bg-[var(--bg-tertiary)] transition-colors ml-1">
+              <ChevronRight className="w-4 h-4 text-[var(--text-primary)]" />
             </Link>
           </h2>
 
@@ -130,7 +179,7 @@ export function FilteredProperties({
             <button
               onClick={scrollLeft}
               disabled={!canScrollLeft}
-              className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:shadow-md transition-all bg-white text-gray-600 hover:text-gray-900 hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+              className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border-color)] hover:shadow-md transition-all bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
               aria-label="Scroll izquierda"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -138,7 +187,7 @@ export function FilteredProperties({
             <button
               onClick={scrollRight}
               disabled={!canScrollRight}
-              className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:shadow-md transition-all bg-white text-gray-600 hover:text-gray-900 hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+              className="w-8 h-8 flex items-center justify-center rounded-full border border-[var(--border-color)] hover:shadow-md transition-all bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:scale-105 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
               aria-label="Scroll derecha"
             >
               <ChevronRight className="w-4 h-4" />
@@ -146,21 +195,19 @@ export function FilteredProperties({
           </div>
         </div>
 
-        {/* Horizontal scroll container */}
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-auto gap-4 sm:gap-5 md:gap-6 hide-scrollbar snap-x snap-mandatory scroll-smooth pb-4"
+          className="filtered-grid-mobile"
         >
           {properties.map((property) => (
-            <div key={property.id} className="carousel-card flex-shrink-0 snap-start">
+            <div key={property.id} className="carousel-card">
               <PropertyCard property={property} />
             </div>
           ))}
 
-          {/* Tarjeta de Ver Todos al final */}
           {!hideViewAll && (
-            <div className="carousel-card flex-shrink-0 snap-start">
-              <Link href={viewAllLink} className="flex flex-col items-center justify-center h-full min-h-[320px] w-full bg-white hover:bg-gray-50 rounded-2xl border border-gray-200 transition-all hover:shadow-md group">
+            <div className="carousel-card view-all-card">
+              <Link href={viewAllLink} className="flex flex-col items-center justify-center h-full min-h-[320px] w-full bg-[var(--bg-card)] hover:bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border-color)] transition-all hover:shadow-md group">
                 <div className="relative w-32 h-24 mb-6 group-hover:scale-105 transition-transform duration-300">
                   <div className="absolute top-0 left-0 w-20 h-20 bg-gray-200 rounded-xl border-2 border-white shadow-sm -rotate-6 transform origin-bottom-left z-10 overflow-hidden">
                     <div className="w-full h-full bg-blue-100/50"></div>

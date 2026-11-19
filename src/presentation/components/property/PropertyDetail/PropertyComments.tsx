@@ -31,7 +31,7 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState<number>(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(COMMENTS_PER_PAGE);
+  const [showAll, setShowAll] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -112,19 +112,15 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
     }
   };
 
-  const visibleComments = comments.slice(0, visibleCount);
-  const hasMore = visibleCount < comments.length;
-
-  const loadMore = () => {
-    setVisibleCount(prev => prev + COMMENTS_PER_PAGE);
-  };
+  const visibleComments = showAll ? comments : comments.slice(0, 1);
+  const hiddenCount = comments.length - 1;
 
   if (loading) {
     return (
-      <div className="bg-green-50 rounded-lg p-4">
+      <div className="bg-[var(--bg-secondary)] rounded-lg p-4">
         <div className="flex items-center gap-2">
-          <Loader2 className="w-4 h-4 text-green-600 animate-spin" />
-          <span className="text-green-800">Cargando comentarios...</span>
+          <Loader2 className="w-4 h-4 text-[var(--brand-primary)] animate-spin" />
+          <span className="text-[var(--text-primary)]">Cargando comentarios...</span>
         </div>
       </div>
     );
@@ -134,12 +130,12 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
     <>
       <div className="space-y-4">
         {/* Formulario para agregar comentario */}
-        <div className="bg-blue-50 rounded-lg p-4">
+        <div className="bg-[var(--bg-card)] rounded-2xl shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-5">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-blue-800">
+            <h4 className="font-semibold text-[var(--text-primary)]">
               Comentarios de la zona
               {totalComments > 0 && (
-                <span className="text-sm font-normal text-blue-600 ml-2">
+                <span className="text-sm font-normal text-[var(--text-secondary)] ml-2">
                   ({totalComments} {totalComments === 1 ? 'comentario' : 'comentarios'})
                 </span>
               )}
@@ -147,14 +143,14 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
             {isAuthenticated ? (
               <button
                 onClick={() => setShowForm(!showForm)}
-                className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                className="text-sm bg-teal-600 text-white px-3 py-1 rounded-lg hover:bg-teal-700 transition-colors"
               >
                 {showForm ? 'Cancelar' : 'Agregar Comentario'}
               </button>
             ) : (
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="text-sm bg-teal-600 text-white px-3 py-1 rounded hover:bg-teal-700"
+                className="text-sm bg-teal-600 text-white px-3 py-1 rounded-lg hover:bg-teal-700 transition-colors"
               >
                 Inicia sesión para comentar
               </button>
@@ -174,7 +170,7 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
             <form onSubmit={handleSubmitComment} className="space-y-3">
               {/* Selector de estrellas con StarRating */}
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Califica esta propiedad:</span>
+                <span className="text-sm text-[var(--text-secondary)]">Califica esta propiedad:</span>
                 <StarRating
                   initialRating={newRating}
                   onRate={setNewRating}
@@ -187,16 +183,16 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Comparte tu experiencia sobre esta zona..."
-                className="w-full p-3 border border-blue-200 rounded-lg resize-none"
+                className="w-full p-3 border border-[var(--border-color)] rounded-lg resize-none bg-[var(--bg-primary)] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
                 rows={3}
                 maxLength={500}
               />
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500">{newComment.length}/500 caracteres</span>
+                <span className="text-xs text-[var(--text-tertiary)]">{newComment.length}/500 caracteres</span>
                 <button
                   type="submit"
                   disabled={!newComment.trim()}
-                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Publicar Comentario
                 </button>
@@ -205,57 +201,48 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
           )}
         </div>
 
-        {/* Lista de comentarios con paginación */}
+        {/* Lista de comentarios */}
         {comments.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {visibleComments.map((comment, index) => (
-              <div key={comment.id || `comment-${index}-${comment.createdAt}`} className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="font-semibold text-gray-900">{comment.userName}</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(comment.createdAt).toLocaleDateString('es-PE', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
+              <div key={comment.id || `comment-${index}-${comment.createdAt}`} className="bg-[var(--bg-secondary)] rounded-lg px-3 py-2 border border-[var(--border-color)]">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xs font-medium text-[var(--text-primary)] truncate">{comment.userName}</span>
+                    <span className="text-[10px] text-[var(--text-tertiary)] shrink-0">
+                      {comment.createdAt ? (() => {
+                        try { return new Date(comment.createdAt).toLocaleDateString('es-PE', { day: 'numeric', month: 'short', year: 'numeric' }); }
+                        catch { return ''; }
+                      })() : ''}
+                    </span>
                   </div>
-                  {comment.rating && (
-                    <StarRating
-                      initialRating={comment.rating}
-                      readonly
-                      size="sm"
-                    />
-                  )}
+                  {comment.rating && <StarRating initialRating={comment.rating} readonly size="sm" />}
                 </div>
-                <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+                <p className="text-sm text-[var(--text-secondary)] leading-snug">{comment.content}</p>
               </div>
             ))}
             
-            {/* Botón "Ver más" para paginación */}
-            {hasMore && (
-              <div className="text-center pt-2">
-                <button
-                  onClick={loadMore}
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-5 py-2.5 rounded-lg transition-colors"
-                >
-                  <ChevronDown className="w-4 h-4" />
-                  Ver más comentarios ({comments.length - visibleCount} restantes)
-                </button>
-              </div>
+            {/* Botón "Ver más" compacto */}
+            {!showAll && hiddenCount > 0 && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="w-full text-center text-xs text-teal-600 hover:text-teal-700 bg-[var(--bg-secondary)] hover:bg-[var(--bg-tertiary)] py-2 rounded-lg transition-colors font-medium"
+              >
+                Ver {hiddenCount} comentario{hiddenCount !== 1 ? 's' : ''} más
+              </button>
             )}
-            
-            {/* Indicador de cuántos se muestran */}
-            <div className="text-center text-xs text-gray-400 pt-1">
-              Mostrando {visibleComments.length} de {totalComments} comentarios
-            </div>
+            {showAll && comments.length > 1 && (
+              <button
+                onClick={() => setShowAll(false)}
+                className="w-full text-center text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] py-1.5 transition-colors"
+              >
+                Mostrar menos
+              </button>
+            )}
           </div>
         ) : (
-          <div className="bg-gray-50 rounded-lg p-4 text-center">
-            <p className="text-gray-600 flex items-center justify-center gap-2">
+          <div className="bg-[var(--bg-secondary)] rounded-lg p-4 text-center">
+            <p className="text-[var(--text-secondary)] flex items-center justify-center gap-2">
               <MessageCircle className="w-4 h-4" />
               Sé el primero en comentar sobre esta zona
             </p>
@@ -267,12 +254,12 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
       {showAuthModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowAuthModal(false)}>
           <div 
-            className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in zoom-in-95"
+            className="bg-[var(--bg-card)] rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in zoom-in-95"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-3 right-3 text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -283,10 +270,10 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
               </div>
             </div>
 
-            <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+            <h3 className="text-lg font-bold text-[var(--text-primary)] text-center mb-2">
               Comentar en esta propiedad
             </h3>
-            <p className="text-sm text-gray-500 text-center mb-6">
+            <p className="text-sm text-[var(--text-secondary)] text-center mb-6">
               Para dejar un comentario, necesitas una cuenta en Tiyuy.
             </p>
 
@@ -306,14 +293,14 @@ export function PropertyComments({ propertyId, location }: PropertyCommentsProps
                   setShowAuthModal(false);
                   router.push('/profile-selector');
                 }}
-                className="w-full flex items-center justify-center gap-2 bg-white text-teal-600 font-semibold py-3 px-4 rounded-xl border-2 border-teal-600 hover:bg-teal-50 transition-colors"
+                className="w-full flex items-center justify-center gap-2 bg-[var(--bg-card)] text-teal-600 font-semibold py-3 px-4 rounded-xl border-2 border-teal-600 hover:bg-[var(--bg-secondary)] transition-colors"
               >
                 <UserPlus className="w-4 h-4" />
                 Crear cuenta gratis
               </button>
               <button
                 onClick={() => setShowAuthModal(false)}
-                className="w-full text-sm text-gray-400 hover:text-gray-600 py-2 transition-colors"
+                className="w-full text-sm text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] py-2 transition-colors"
               >
                 Ahora no
               </button>

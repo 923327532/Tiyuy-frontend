@@ -1,0 +1,27 @@
+/* ========================================
+   KPI SPARKLINE ANIMATION
+======================================== */
+
+@keyframes kpi-draw {
+  from {
+    stroke-dasharray: 0 200;
+    opacity: 0.3;
+  }
+  to {
+    stroke-dasharray: 200 0;
+    opacity: 0.8;
+  }
+}
+
+.sparkline-path {
+  stroke-dasharray: 200;
+  animation: kpi-draw 1.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparkline-path {
+    animation: none;
+    stroke-dasharray: none;
+    opacity: 0.8;
+  }
+}

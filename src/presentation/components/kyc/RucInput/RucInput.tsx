@@ -36,24 +36,24 @@ export const RucInput: React.FC<RucInputProps> = ({
     try {
       setError('');
       const result = await validateRuc(value);
-      if (result.success) {
+      if (result?.success) {
         onValidated?.(result);
       } else {
-        setError('');
+        // La API no devolvió éxito pero tampoco error: continuamos manual
         onValidated?.({ 
           success: true, 
-          companyName: '', 
+          companyName: result?.companyName || '', 
           ruc: value,
           message: 'RUC validado localmente'
         });
       }
     } catch (err: any) {
-      setError('');
+      // La API de validación no responde: permitimos continuar manual
       onValidated?.({ 
         success: true, 
         companyName: '', 
         ruc: value,
-        message: 'RUC validado localmente'
+        message: 'Ingresa manualmente los datos de tu empresa'
       });
     }
   };

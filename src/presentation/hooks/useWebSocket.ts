@@ -171,14 +171,12 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       };
 
       globalWebSocket.onclose = (event) => {
-        console.log('🔌 WebSocket desconectado:', event.code, event.reason, 'wasClean:', event.wasClean);
         isConnectingRef.current = false;
         setIsConnected(false);
         options.onConnectionChange?.(false);
 
         // No reconectar si fue cerrado limpiamente por nosotros
         if (event.wasClean) {
-          console.log('🔌 Cierre limpio, no reconectando');
           return;
         }
 
@@ -186,9 +184,6 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         if (reconnectAttempts.current < maxReconnectAttempts) {
           reconnectAttempts.current++;
           const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
-          
-          console.log(`🔄 Intentando reconectar en ${delay}ms (intento ${reconnectAttempts.current}/${maxReconnectAttempts})`);
-          
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
           }, delay);

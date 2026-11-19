@@ -39,19 +39,18 @@ export const DniInput: React.FC<DniInputProps> = ({
     try {
       setError('');
       const result = await validateDni(value);
-      if (result.success) {
+      if (result?.success) {
         onValidated?.(result);
       } else {
-        setError(result.message || 'DNI no válido');
+        setModalMessage('Verifique su DNI, nuestro sistema no ha podido encontrarlo. Corrobore los dígitos ingresados.');
+        setShowErrorModal(true);
       }
     } catch (err: any) {
-      const errorMsg = err.message || '';
-      if (errorMsg.includes('no disponible') || errorMsg.includes('servicio') || errorMsg.includes('Error al validar')) {
-        setModalMessage('Servicio de validacion no disponible. Intente mas tarde.');
-      } else if (errorMsg.includes('no encontrado') || errorMsg.includes('DNI no')) {
-        setModalMessage('Su DNI no puede ser validado. Corrobore los digitos.');
+      const errorMsg = err?.message || '';
+      if (errorMsg.includes('no disponible') || errorMsg.includes('servicio') || errorMsg === 'Error al validar DNI') {
+        setModalMessage('Servicio de validación no disponible temporalmente. Verifique su DNI manualmente o intente más tarde.');
       } else {
-        setModalMessage(errorMsg || 'Su DNI no puede ser validado. Corrobore los digitos.');
+        setModalMessage('Verifique su DNI, nuestro sistema no ha podido encontrarlo. Corrobore los dígitos ingresados.');
       }
       setShowErrorModal(true);
       setError('');

@@ -96,19 +96,19 @@ export function StockTickerCards({ metrics }: StockTickerCardsProps) {
           <div
             key={card.label}
             className={`
-              relative bg-white rounded-xl border border-gray-100 shadow-sm
+              relative bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] shadow-sm
               hover:shadow-md transition-all duration-300
               border-l-4 ${card.accentColor}
               overflow-hidden group cursor-default
             `}
           >
             {/* Background shine effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-gray-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[var(--bg-tertiary)]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="relative p-3.5">
               {/* Header with icon */}
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[9px] font-bold tracking-[0.12em] text-gray-400 uppercase">
+                <span className="text-[9px] font-bold tracking-[0.12em] text-[var(--text-muted)] uppercase">
                   {card.label}
                 </span>
                 <div className={`p-1.5 rounded-lg ${card.bgColor} ${card.color}`}>
@@ -118,7 +118,7 @@ export function StockTickerCards({ metrics }: StockTickerCardsProps) {
 
               {/* Main value - stock ticker style */}
               <div className="flex items-baseline gap-1.5 mb-0.5">
-                <span className="text-2xl font-extrabold tracking-tight text-gray-900">
+                <span className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)]">
                   {displayValue}
                 </span>
                 {/* Change indicator */}
@@ -136,12 +136,12 @@ export function StockTickerCards({ metrics }: StockTickerCardsProps) {
               </div>
 
               {/* Subtitle */}
-              <p className="text-[11px] text-gray-400">{card.subtitle}</p>
+              <p className="text-[11px] text-[var(--text-muted)]">{card.subtitle}</p>
 
               {/* Change label */}
               <div className="mt-1.5 flex items-center gap-1">
                 <div className={`h-1 w-1 rounded-full ${isUp ? 'bg-emerald-400' : 'bg-red-400'}`} />
-                <span className="text-[10px] font-medium text-gray-500">
+                <span className="text-[10px] font-medium text-[var(--text-secondary)]">
                   {card.changeLabel}
                 </span>
               </div>

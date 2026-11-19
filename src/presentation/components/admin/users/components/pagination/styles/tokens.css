@@ -1,0 +1,17 @@
+:root {
+  --up-brand: #475569;
+  --up-brand-soft: #f1f5f9;
+  --up-brand-hover: #3d4a5c;
+  --up-bg: #ffffff;
+  --up-bg-subtle: #fafbfc;
+  --up-border: #e8ecef;
+  --up-border-strong: #d8dee3;
+  --up-text-primary: #0f172a;
+  --up-text-secondary: #334155;
+  --up-text-tertiary: #64748b;
+  --up-text-muted: #94a3b8;
+  --up-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --up-shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.08), 0 2px 4px rgb(15 23 42 / 0.04);
+  --up-radius: 0.625rem;
+  --up-radius-sm: 0.5rem;
+}

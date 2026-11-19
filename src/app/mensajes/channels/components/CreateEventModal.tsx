@@ -28,7 +28,54 @@ const VISIBILITY_TYPES = [
 ] as const;
 
 const MAX_IMAGES = 5;
-// Usar axiosClient centralizado - no se necesita API_BASE_URL
+
+// ─── CUSTOM SELECT ───
+function CustomSelect({ label, value, options, onChange, required }: {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (v: string) => void;
+  required?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const selectedLabel = options.find(o => o.value === value)?.label || 'Seleccionar';
+
+  return (
+    <div ref={ref} className="relative">
+      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <button type="button" onClick={() => setOpen(!open)}
+        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-left flex items-center justify-between cursor-pointer hover:border-gray-400 transition-colors">
+        <span>{selectedLabel}</span>
+        <svg className={`w-4 h-4 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden">
+          {options.map((opt) => (
+            <button key={opt.value} type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`w-full px-3 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${value === opt.value ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium' : 'text-gray-700 dark:text-gray-200'}`}>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess }: CreateEventModalProps) {
   const queryClient = useQueryClient();
@@ -54,7 +101,6 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
-  const autocompleteRef = useRef<any>(null);
   const locationInputRef = useRef<HTMLInputElement>(null);
   
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -63,6 +109,8 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapLoading, setMapLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searching, setSearching] = useState(false);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -187,8 +235,9 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
       setSelectedImages([]);
       imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
       setImagePreviewUrls([]);
-    } catch (error) {
-      console.error('Error creating event:', error);
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || error?.message || 'Error al crear el evento. Verifica los datos ingresados.';
+      toast.error(msg);
     }
   };
 
@@ -200,64 +249,41 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
   };
 
   // Initialize Google Maps
-  const initMap = useCallback(() => {
-    if (!mapRef.current || !window.google || mapInstanceRef.current) return;
+  const initMap = useCallback(async () => {
+    if (!mapRef.current || mapInstanceRef.current) return;
 
     setMapLoading(true);
     
-    // Default location (Lima, Peru)
-    const defaultLocation = { lat: -12.0464, lng: -77.0428 };
+    const L = (await import('leaflet')).default;
+    await import('leaflet/dist/leaflet.css');
     
-    const map = new window.google.maps.Map(mapRef.current, {
+    const defaultLocation: [number, number] = [-12.0464, -77.0428];
+    
+    const map = L.map(mapRef.current, {
       center: defaultLocation,
       zoom: 13,
-      mapTypeControl: false,
-      streetViewControl: false,
+      zoomControl: true,
+      attributionControl: true,
     });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
 
     mapInstanceRef.current = map;
 
-    // Create draggable marker
-    const marker = new window.google.maps.Marker({
-      position: defaultLocation,
-      map: map,
-      draggable: true,
-      animation: window.google.maps.Animation.DROP,
-    });
-
+    const marker = L.marker(defaultLocation, { draggable: true }).addTo(map);
     markerRef.current = marker;
 
-    // Add click listener to map
-    map.addListener('click', (e: any) => {
-      marker.setPosition(e.latLng);
-      updateLocationFromCoords(e.latLng.lat(), e.latLng.lng());
+    map.on('click', (e: any) => {
+      marker.setLatLng(e.latlng);
+      updateLocationFromCoords(e.latlng.lat, e.latlng.lng);
     });
 
-    // Add drag end listener to marker
-    marker.addListener('dragend', () => {
-      const position = marker.getPosition();
-      updateLocationFromCoords(position.lat(), position.lng());
+    marker.on('dragend', () => {
+      const position = marker.getLatLng();
+      updateLocationFromCoords(position.lat, position.lng);
     });
-
-    // Initialize autocomplete
-    if (locationInputRef.current) {
-      const autocomplete = new window.google.maps.places.Autocomplete(locationInputRef.current, {
-        types: ['geocode'],
-        componentRestrictions: { country: 'pe' },
-      });
-
-      autocompleteRef.current = autocomplete;
-
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        if (place.geometry) {
-          const location = place.geometry.location;
-          map.setCenter(location);
-          marker.setPosition(location);
-          updateLocationFromPlace(place);
-        }
-      });
-    }
 
     setMapLoaded(true);
     setMapLoading(false);
@@ -271,96 +297,87 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
       longitude: lng,
     }));
 
-    // Reverse geocode to get address
-    if (window.google) {
-      const geocoder = new window.google.maps.Geocoder();
-      try {
-        const result = await geocoder.geocode({ location: { lat, lng } });
-        if (result.results && result.results[0]) {
-          const place = result.results[0];
-          updateLocationFromPlace(place);
-        }
-      } catch (error) {
-        console.error('Error geocoding:', error);
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=es`, {
+        headers: { 'User-Agent': 'Tiyuy-Frontend' },
+      });
+      const data = await response.json();
+      if (data) {
+        const city = data.address?.city || data.address?.town || data.address?.county || '';
+        const country = data.address?.country || '';
+        setFormData(prev => ({
+          ...prev,
+          address: data.display_name || prev.address,
+          city: city || prev.city,
+          country: country || prev.country,
+        }));
       }
+    } catch (error) {
+      console.error('Error geocoding:', error);
     }
   };
 
   // Update location data from place result
-  const updateLocationFromPlace = (place: any) => {
-    const addressComponents = place.address_components || [];
-    
-    let city = '';
-    let country = '';
-    
-    addressComponents.forEach((component: any) => {
-      const types = component.types;
-      if (types.includes('locality') || types.includes('administrative_area_level_2')) {
-        city = component.long_name;
-      }
-      if (types.includes('country')) {
-        country = component.long_name;
-      }
-    });
-
-    setFormData(prev => ({
-      ...prev,
-      address: place.formatted_address || prev.address,
-      city: city || prev.city,
-      country: country || prev.country,
-    }));
+  const searchLocation = async (query: string) => {
+    if (!query || query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+    setSearching(true);
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pe&limit=5&accept-language=es`, {
+        headers: { 'User-Agent': 'Tiyuy-Frontend' },
+      });
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (error) {
+      console.error('Error searching location:', error);
+      setSearchResults([]);
+    } finally {
+      setSearching(false);
+    }
   };
 
-  // Load Google Maps script when modal opens - with proper cleanup
+  const handleLocationSearchSelect = (result: any) => {
+    const lat = parseFloat(result.lat);
+    const lng = parseFloat(result.lon);
+    
+    if (mapInstanceRef.current && markerRef.current) {
+      const L = require('leaflet');
+      const latlng = L.latLng(lat, lng);
+      mapInstanceRef.current.setView(latlng, 16);
+      markerRef.current.setLatLng(latlng);
+    }
+    
+    updateLocationFromCoords(lat, lng);
+    setSearchResults([]);
+    if (locationInputRef.current) {
+      locationInputRef.current.value = result.display_name;
+    }
+  };
+
+  // Load Leaflet map when modal opens
   useEffect(() => {
     if (!isOpen) {
-      // Cleanup map when modal closes
-      if (markerRef.current) {
-        markerRef.current.setMap(null);
-        markerRef.current = null;
-      }
-      if (autocompleteRef.current) {
-        window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
-        autocompleteRef.current = null;
-      }
       if (mapInstanceRef.current) {
-        window.google?.maps?.event?.clearInstanceListeners(mapInstanceRef.current);
+        mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
+      markerRef.current = null;
       setMapLoaded(false);
       return;
     }
 
     if (isOpen && !mapLoaded && !mapLoading) {
-      if (window.google && window.google.maps) {
-        initMap();
-      } else {
-        // Avoid duplicate script injection
-        const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-        if (!existingScript) {
-          const script = document.createElement('script');
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}&libraries=places`;
-          script.async = true;
-          script.defer = true;
-          script.onload = initMap;
-          document.head.appendChild(script);
-        } else {
-          existingScript.addEventListener('load', initMap);
-        }
-      }
+      initMap();
     }
   }, [isOpen, initMap, mapLoaded, mapLoading]);
 
   // Cleanup preview URLs and map on unmount
   useEffect(() => {
     return () => {
-      // Full cleanup on unmount
-      if (markerRef.current) {
-        markerRef.current.setMap(null);
-        markerRef.current = null;
-      }
       if (mapInstanceRef.current) {
-        window.google?.maps?.event?.clearInstanceListeners(mapInstanceRef.current);
+        mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
       imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
@@ -405,8 +422,9 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
   };
 
  return (
-  <Modal isOpen={isOpen} onClose={onClose} title="Crear Nuevo Evento" size="lg">
-    <form onSubmit={handleSubmit} className="space-y-6">
+  <Modal isOpen={isOpen} onClose={onClose} title="Crear Nuevo Evento" size="md">
+    <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+      <div className="flex-1 overflow-y-auto space-y-6 px-1">
       {/* Información Básica */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -445,40 +463,21 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
           {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Tipo de Evento <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={formData.eventType}
-              onChange={(e) => handleInputChange('eventType', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white"
-            >
-              {EVENT_TYPES.map(type => (
-                <option key={type.value} value={type.value} className="bg-white text-gray-900 dark:bg-gray-800 dark:text-white">
-                  {type.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Visibilidad <span className="text-red-500">*</span>
-            </label>
-            <select
-              value={formData.visibility}
-              onChange={(e) => handleInputChange('visibility', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white"
-            >
-              {VISIBILITY_TYPES.map(type => (
-                <option key={type.value} value={type.value} className="bg-white text-gray-900 dark:bg-gray-800 dark:text-white">
-                  {type.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <CustomSelect
+            label="Tipo de Evento"
+            value={formData.eventType}
+            options={EVENT_TYPES.map(t => ({ value: t.value, label: t.label }))}
+            onChange={(v) => handleInputChange('eventType', v)}
+            required
+          />
+          <CustomSelect
+            label="Visibilidad"
+            value={formData.visibility}
+            options={VISIBILITY_TYPES.map(t => ({ value: t.value, label: t.label }))}
+            onChange={(v) => handleInputChange('visibility', v)}
+            required
+          />
         </div>
       </div>
 
@@ -536,40 +535,24 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
         />
       </div>
 
-      {/* Fechas y Horas */}
+      {/* Fechas y Horas - una debajo de otra en mobile */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Fechas y Horas</h3>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Fecha y Hora de Inicio <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="datetime-local"
-              value={formData.startDateTime}
-              onChange={(e) => handleInputChange('startDateTime', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${
-                errors.startDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              }`}
-            />
-            {errors.startDateTime && <p className="text-red-500 text-xs mt-1">{errors.startDateTime}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Fecha y Hora de Fin
-            </label>
-            <input
-              type="datetime-local"
-              value={formData.endDateTime}
-              onChange={(e) => handleInputChange('endDateTime', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${
-                errors.endDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              }`}
-            />
-            {errors.endDateTime && <p className="text-red-500 text-xs mt-1">{errors.endDateTime}</p>}
-          </div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Fechas</h3>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Fecha y Hora de Inicio <span className="text-red-500">*</span>
+          </label>
+          <input type="datetime-local" value={formData.startDateTime}
+            onChange={(e) => handleInputChange('startDateTime', e.target.value)}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${errors.startDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`} />
+          {errors.startDateTime && <p className="text-red-500 text-xs mt-1">{errors.startDateTime}</p>}
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha y Hora de Fin</label>
+          <input type="datetime-local" value={formData.endDateTime}
+            onChange={(e) => handleInputChange('endDateTime', e.target.value)}
+            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white ${errors.endDateTime ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'}`} />
+          {errors.endDateTime && <p className="text-red-500 text-xs mt-1">{errors.endDateTime}</p>}
         </div>
       </div>
 
@@ -577,7 +560,7 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Ubicación</h3>
         
-        <div>
+        <div className="relative">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Buscar ubicación
           </label>
@@ -585,13 +568,29 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
             ref={locationInputRef}
             type="text"
             value={formData.address}
-            onChange={(e) => handleInputChange('address', e.target.value)}
+            onChange={(e) => {
+              handleInputChange('address', e.target.value);
+              searchLocation(e.target.value);
+            }}
             placeholder="Escribe una dirección para buscar"
             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 dark:bg-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 ${
               errors.address ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
             }`}
           />
           {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
+          {searchResults.length > 0 && (
+            <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+              {searchResults.map((result, idx) => (
+                <div
+                  key={idx}
+                  className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm text-gray-900 dark:text-white truncate"
+                  onClick={() => handleLocationSearchSelect(result)}
+                >
+                  {result.display_name}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Google Map */}
@@ -688,30 +687,21 @@ export default function CreateEventModal({ isOpen, onClose, channelId, onSuccess
           {errors.maxAttendees && <p className="text-red-500 text-xs mt-1">{errors.maxAttendees}</p>}
         </div>
       </div>
+      </div>
 
-      {/* Botones */}
-      <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}
-        >
+      {/* Botones */}  
+      <div className="flex-none flex gap-2 pt-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+        <button type="button" onClick={onClose}
+          className="flex-1 px-2 py-2 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}>
           Cancelar
         </button>
-        <button
-          type="submit"
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}
-        >
+        <button type="submit"
+          className="flex-1 px-2 py-2 text-sm bg-blue-600 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={createEventMutation.isPending || uploadEventImagesMutation.isPending}>
           {createEventMutation.isPending || uploadEventImagesMutation.isPending ? (
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent animate-spin" />
-              {uploadEventImagesMutation.isPending ? 'Subiendo imágenes...' : 'Creando...'}
-            </div>
-          ) : (
-            'Crear Evento'
-          )}
+            <div className="flex items-center justify-center gap-1"><div className="w-3 h-3 border-2 border-white border-t-transparent animate-spin" /> {uploadEventImagesMutation.isPending ? 'Subiendo...' : 'Creando...'}</div>
+          ) : 'Crear Evento'}
         </button>
       </div>
     </form>

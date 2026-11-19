@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Project, ProjectSummary } from '@/core/domain/entities/Project';
 import { ProjectCard } from './ProjectCard/ProjectCard';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 
 interface SimilarProjectsProps {
   currentProject: Project;
@@ -16,7 +18,7 @@ interface SimilarProjectsResponse {
   projectType: string;
 }
 
-export function SimilarProjects({ currentProject, maxItems = 6 }: SimilarProjectsProps) {
+export function SimilarProjects({ currentProject, maxItems = 10 }: SimilarProjectsProps) {
   const [data, setData] = useState<SimilarProjectsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -27,7 +29,6 @@ export function SimilarProjects({ currentProject, maxItems = 6 }: SimilarProject
         setLoading(true);
         setError(false);
         
-        // Calcular filtros de precio similar (+/- 30%) y area similar (+/- 30%)
         const params = new URLSearchParams();
         params.set('maxResults', String(maxItems));
         
@@ -40,7 +41,6 @@ export function SimilarProjects({ currentProject, maxItems = 6 }: SimilarProject
           params.set('maxArea', String(Number(currentProject.areaTo || currentProject.areaFrom) * 1.3));
         }
         
-        // Usar el nuevo endpoint con algoritmo progresivo
         const res = await fetch(`/api/projects/${currentProject.id}/similar?${params.toString()}`);
         if (res.ok) {
           const json: SimilarProjectsResponse = await res.json();
@@ -63,9 +63,9 @@ export function SimilarProjects({ currentProject, maxItems = 6 }: SimilarProject
         <h3 className="text-base font-bold text-gray-900 mb-4">
           Proyectos similares en {currentProject.district || 'la zona'}
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: Math.min(maxItems, 6) }).map((_, i) => (
-            <div key={i} className="animate-pulse">
+        <div className="flex overflow-x-auto gap-4 pb-4">
+          {Array.from({ length: Math.min(5, maxItems) }).map((_, i) => (
+            <div key={i} className="animate-pulse min-w-[200px] max-w-[260px] flex-shrink-0">
               <div className="w-full aspect-square bg-gray-200 rounded-xl mb-3" />
               <div className="space-y-2 p-1">
                 <div className="h-4 bg-gray-200 rounded w-3/4" />
@@ -105,23 +105,35 @@ export function SimilarProjects({ currentProject, maxItems = 6 }: SimilarProject
     );
   }
 
-  // Determinar el titulo segun el nivel de ubicacion alcanzado
   const locationLabel = data.locationLevel !== 'nacional'
     ? `en ${data.locationLevel}`
     : 'en todo el país';
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h3 className="text-base font-bold text-gray-900 mb-4">
-        Proyectos similares {locationLabel}
-      </h3>
-      <p className="text-xs text-gray-400 mb-4">
-        {data.totalResults} proyecto{data.totalResults !== 1 ? 's' : ''} encontrado{data.totalResults !== 1 ? 's' : ''}
-      </p>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-base font-bold text-gray-900">
+            Proyectos similares {locationLabel}
+          </h3>
+          <p className="text-xs text-gray-400 mt-0.5">
+            {data.totalResults} proyecto{data.totalResults !== 1 ? 's' : ''} encontrado{data.totalResults !== 1 ? 's' : ''}
+          </p>
+        </div>
+        <Link
+          href="/projects"
+          className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800 transition whitespace-nowrap"
+        >
+          Ver todos
+          <ChevronRight className="w-4 h-4" />
+        </Link>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex overflow-x-auto gap-3 pb-4 hide-scrollbar" style={{ scrollSnapType: 'x mandatory', scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
         {data.projects.map((p) => (
-          <ProjectCard key={p.id} project={p} />
+          <div key={p.id} className="min-w-[165px] max-w-[200px] flex-shrink-0">
+            <ProjectCard project={p} />
+          </div>
         ))}
       </div>
     </div>

@@ -34,6 +34,10 @@ export interface SubscriptionPlanDTO {
   features: string[];
   maxPublications: number;
   isFeatured: boolean;
+  agencyDiscountedPrice?: number;
+  hasAgencyDiscount?: boolean;
+  userPlanStatus?: string;
+  userPlanStatusLabel?: string;
 }
 
 export interface ActiveSubscriptionDTO {

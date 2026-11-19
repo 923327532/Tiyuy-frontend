@@ -360,21 +360,63 @@ export function ChannelPostsPanel({
   const currentUserInitial = currentUserName.charAt(0).toUpperCase();
 
   return (
-    <div className="h-full flex flex-col relative bg-white dark:bg-gray-900">
-      {/* Header */}
-      <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 z-10">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{channelName}</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Posts del canal</p>
+    <div className="h-full flex flex-col relative bg-[var(--bg-primary)]">
+      {/* Header - Responsive: stack on mobile, row on desktop */}
+      <div className="sticky top-0 bg-[var(--bg-card)] border-b border-[var(--border-color)] p-3 md:p-4 z-10">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div className="flex items-center justify-between md:block">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-base md:text-xl font-bold text-[var(--text-primary)] truncate">{channelName}</h2>
+              <p className="text-xs md:text-sm text-[var(--text-muted)]">Posts del canal</p>
+            </div>
+            {/* Mobile: hamburger menu for extra actions */}
+            <div className="md:hidden flex gap-1">
+              <button
+                onClick={() => setActiveTab('posts')}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  activeTab === 'posts'
+                    ? 'bg-[var(--brand-primary)] text-white'
+                    : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
+                }`}
+              >
+                Posts
+              </button>
+              <button
+                onClick={() => setActiveTab('events')}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  activeTab === 'events'
+                    ? 'bg-[var(--brand-primary)] text-white'
+                    : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)]'
+                }`}
+              >
+                Eventos
+              </button>
+              {isChannelAdmin && (
+                <button
+                  onClick={() => setShowAccessManager(!showAccessManager)}
+                  className="px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-lg"
+                >
+                  <Shield className="w-3.5 h-3.5" />
+                </button>
+              )}
+              {canViewStatistics && (
+                <button
+                  onClick={() => setShowStatisticsModal(true)}
+                  className="px-2 py-1.5 text-xs bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-lg"
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           </div>
-          <div className="flex gap-2">
+          {/* Desktop: full button row */}
+          <div className="hidden md:flex gap-2 flex-shrink-0">
             <button
               onClick={() => setActiveTab('posts')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                 activeTab === 'posts'
-                  ? 'bg-brand text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-[var(--brand-primary)] text-white'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
               }`}
             >
               <MessageSquare className="w-4 h-4" />
@@ -384,8 +426,8 @@ export function ChannelPostsPanel({
               onClick={() => setActiveTab('events')}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                 activeTab === 'events'
-                  ? 'bg-brand text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-[var(--brand-primary)] text-white'
+                  : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
               }`}
             >
               <Calendar className="w-4 h-4" />
@@ -397,8 +439,8 @@ export function ChannelPostsPanel({
                 onClick={() => setShowAccessManager(!showAccessManager)}
                 className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                   showAccessManager
-                    ? 'bg-brand text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-[var(--brand-primary)] text-white'
+                    : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                 }`}
               >
                 <Shield className="w-4 h-4" />
@@ -409,7 +451,7 @@ export function ChannelPostsPanel({
             {canViewStatistics && (
               <button
                 onClick={() => setShowStatisticsModal(true)}
-                className="px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 bg-gray-100 text-gray-700 hover:bg-gray-200"
+                className="px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
               >
                 <BarChart3 className="w-4 h-4" />
                 Estadísticas
@@ -427,27 +469,27 @@ export function ChannelPostsPanel({
             <>
               {!hasPosts && showWelcome ? (
                 // Initial state: "write first post" and "skip" buttons
-                <div className="bg-white dark:bg-gray-800 m-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <div className="bg-[var(--bg-card)] m-4 rounded-lg shadow-sm border border-[var(--border-color)] p-6">
                   <div className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4">
                       <UserAvatar size="lg" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
                       ¡Bienvenido a {channelName}!
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+                    <p className="text-[var(--text-secondary)] text-sm mb-6">
                       Este es el inicio del canal. Sé el primero en compartir algo.
                     </p>
                     <div className="flex gap-3">
                       <button
                         onClick={() => setShowCreateForm(true)}
-                        className="flex-1 py-2.5 bg-gradient-to-r brand text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                        className="flex-1 py-2.5 bg-[var(--brand-primary)] text-white rounded-lg font-semibold hover:opacity-90 transition-colors"
                       >
                         Escribir mi primera publicación
                       </button>
                       <button
                         onClick={() => setShowWelcome(false)}
-                        className="flex-1 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                        className="flex-1 py-2.5 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-lg font-semibold hover:bg-[var(--border-color)] transition-colors"
                       >
                         Omitir
                       </button>
@@ -456,16 +498,16 @@ export function ChannelPostsPanel({
                 </div>
               ) : (
                 // Facebook-style chat line
-                <div className="bg-white dark:bg-gray-800 m-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                <div className="bg-[var(--bg-card)] m-4 rounded-lg shadow-sm border border-[var(--border-color)]">
                   <div className="p-3">
                     <div className="flex items-start gap-3">
                       <UserAvatar size="sm" />
                       <div className="flex-1">
                         <div
                           onClick={() => setShowCreateForm(true)}
-                          className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 rounded-lg text-gray-500 dark:text-gray-400 cursor-text hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                          className="w-full px-4 py-2.5 bg-[var(--bg-tertiary)] rounded-lg text-[var(--text-muted)] cursor-text hover:bg-[var(--bg-tertiary)] transition-colors"
                         >
-                          <span className="text-gray-500 dark:text-gray-400">¿Qué estás pensando?</span>
+                          <span className="text-[var(--text-muted)]">¿Qué estás pensando?</span>
                         </div>
                       </div>
                     </div>
@@ -479,21 +521,21 @@ export function ChannelPostsPanel({
           <div className="p-4 space-y-4">
             {/* Welcome Message */}
             {showWelcome && posts && posts.length > 0 && (
-              <div className="bg-brand/10 border border-blue-200 rounded-lg p-4 mb-4">
+              <div className="bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded-lg p-4 mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-brand/20 flex items-center justify-center">
-                    <MessageSquare className="w-5 h-5 text-brand" />
+                  <div className="w-10 h-10 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-[var(--text-muted)]" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-blue-900">Bienvenido a {channelName}</h3>
-                    <p className="text-sm text-brand-dark">
+                    <h3 className="font-semibold text-[var(--text-primary)]">Bienvenido a {channelName}</h3>
+                    <p className="text-sm text-[var(--text-secondary)]">
                       Este es el feed de posts del canal. Aquí verás todas las publicaciones.
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowWelcome(false)}
-                  className="mt-3 text-sm text-brand hover:text-brand-dark"
+                  className="mt-3 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   Entendido
                 </button>
@@ -503,15 +545,15 @@ export function ChannelPostsPanel({
             {/* Create Post Modal */}
             {showCreateForm && (
               <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-                <div className="relative bg-white dark:bg-gray-800 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-                  <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="relative bg-[var(--bg-card)] rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+                  <div className="p-6 border-b border-[var(--border-color)]">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Crear publicación</h2>
+                      <h2 className="text-xl font-semibold text-[var(--text-primary)]">Crear publicación</h2>
                       <button
                         onClick={() => setShowCreateForm(false)}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                        className="p-2 hover:bg-[var(--bg-tertiary)] rounded-lg transition-colors"
                       >
-                        <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                        <X className="w-5 h-5 text-[var(--text-muted)]" />
                       </button>
                     </div>
                   </div>
@@ -520,8 +562,8 @@ export function ChannelPostsPanel({
                     <div className="flex items-start gap-3 mb-4">
                       <UserAvatar size="sm" />
                       <div>
-                        <p className="font-semibold text-gray-900 dark:text-gray-100">{currentUserName}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Creando post en {channelName}</p>
+                        <p className="font-semibold text-[var(--text-primary)]">{currentUserName}</p>
+                        <p className="text-xs text-[var(--text-muted)]">Creando post en {channelName}</p>
                       </div>
                     </div>
 
@@ -529,7 +571,7 @@ export function ChannelPostsPanel({
                       value={newPost}
                       onChange={(e) => setNewPost(e.target.value)}
                       placeholder="¿Qué estás pensando?"
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      className="w-full px-4 py-3 border border-[var(--border-color)] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
                       rows={6}
                       autoFocus
                     />
@@ -538,11 +580,11 @@ export function ChannelPostsPanel({
                     <div className="space-y-4 mb-4 mt-4">
                       {/* Font Style */}
                       <div className="flex items-center gap-4">
-                        <label className="text-sm font-medium text-gray-700">Tipo de letra:</label>
+                        <label className="text-sm font-medium text-[var(--text-secondary)]">Tipo de letra:</label>
                         <select
                           value={fontStyle}
                           onChange={(e) => setFontStyle(e.target.value as any)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border border-[var(--border-color)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value="normal">Normal</option>
                           <option value="bold">Negrita</option>
@@ -552,7 +594,7 @@ export function ChannelPostsPanel({
                         <select
                           value={borderStyle}
                           onChange={(e) => setBorderStyle(e.target.value as any)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="px-3 py-2 border border-[var(--border-color)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value="none">Sin borde</option>
                           <option value="solid">Borde sólido</option>
@@ -563,14 +605,14 @@ export function ChannelPostsPanel({
 
                       {/* Background Color */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Color de fondo:</label>
+                        <label className="text-sm font-medium text-[var(--text-secondary)]">Color de fondo:</label>
                         <div className="flex gap-2 flex-wrap">
                           {backgroundColors.map((color) => (
                             <button
                               key={color.value}
                               onClick={() => handleBackgroundColorChange(color.value)}
                               className={`w-8 h-8 rounded-lg border-2 transition-all ${
-                                backgroundColor === color.value ? 'border-gray-800 scale-110' : 'border-gray-300 hover:border-gray-400'
+                                backgroundColor === color.value ? 'border-[var(--text-primary)] scale-110' : 'border-[var(--border-color)] hover:border-[var(--text-muted)]'
                               }`}
                               style={{ backgroundColor: color.value }}
                               title={color.name}
@@ -581,13 +623,13 @@ export function ChannelPostsPanel({
 
                       {/* Emojis */}
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Emojis:</label>
+                        <label className="text-sm font-medium text-[var(--text-secondary)]">Emojis:</label>
                         <div className="flex gap-2 flex-wrap">
-                          {['', '', '️', '', '', '', '', '', '', '', '', ''].map((emoji) => (
+                          {['', '', '️', '', '', '', '', '', '', '', '', ''].map((emoji, idx) => (
                             <button
-                              key={emoji}
+                              key={`emoji-${idx}-${emoji}`}
                               onClick={() => setNewPost(newPost + emoji)}
-                              className="text-2xl hover:bg-gray-100 p-1 rounded transition-colors"
+                              className="text-2xl hover:bg-[var(--bg-tertiary)] p-1 rounded transition-colors"
                             >
                               {emoji}
                             </button>
@@ -609,7 +651,7 @@ export function ChannelPostsPanel({
                           <button
                             onClick={() => fileInputRef.current?.click()}
                             disabled={selectedImages.length >= 3}
-                            className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-3 py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                           >
                             <Image className="w-4 h-4" />
                             <span>Agregar imagen ({selectedImages.length}/3)</span>
@@ -627,7 +669,7 @@ export function ChannelPostsPanel({
                           <button
                             onClick={() => documentInputRef.current?.click()}
                             disabled={selectedDocuments.length >= 3}
-                            className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-3 py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                           >
                             <Paperclip className="w-4 h-4" />
                             <span>Adjuntar documento ({selectedDocuments.length}/3)</span>
@@ -641,7 +683,7 @@ export function ChannelPostsPanel({
                                 <img
                                   src={URL.createObjectURL(image)}
                                   alt={`Preview ${index + 1}`}
-                                  className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                                  className="w-20 h-20 object-cover rounded-lg border border-[var(--border-color)]"
                                 />
                                 <button
                                   onClick={() => removeImage(index)}
@@ -661,8 +703,8 @@ export function ChannelPostsPanel({
                               <div key={index} className="relative flex items-center gap-2 px-3 py-2 bg-brand/10 border border-blue-200 rounded-lg">
                                 <FileText className="w-5 h-5 text-brand" />
                                 <div className="flex flex-col">
-                                  <span className="text-xs font-medium text-gray-700 max-w-[120px] truncate">{doc.name}</span>
-                                  <span className="text-[10px] text-gray-500">{getDocumentIcon(doc.name)}  {(doc.size / 1024).toFixed(0)} KB</span>
+                                  <span className="text-xs font-medium text-[var(--text-secondary)] max-w-[120px] truncate">{doc.name}</span>
+                                  <span className="text-[10px] text-[var(--text-muted)]">{getDocumentIcon(doc.name)}  {(doc.size / 1024).toFixed(0)} KB</span>
                                 </div>
                                 <button
                                   onClick={() => removeDocument(index)}
@@ -690,14 +732,14 @@ export function ChannelPostsPanel({
                           setFontStyle('normal');
                           setBorderStyle('none');
                         }}
-                        className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                        className="px-6 py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded-lg hover:bg-[var(--border-color)] transition-colors"
                       >
                         Cancelar
                       </button>
                       <button
                         onClick={handleCreatePost}
                         disabled={(!newPost.trim() && selectedImages.length === 0 && selectedDocuments.length === 0) || isCreatingPost}
-                        className="px-6 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-6 py-2 bg-[var(--brand-primary)] text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       >
                         {isCreatingPost ? (
                           <>
@@ -722,7 +764,7 @@ export function ChannelPostsPanel({
               {posts?.map((post: any) => (
                 <div 
                   key={post.id} 
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
+                  className="bg-[var(--bg-card)] rounded-lg shadow-sm border border-[var(--border-color)] overflow-hidden hover:shadow-md transition-shadow duration-200"
                 >
                   {/* Post Header - Facebook Style */}
                   <div className="p-4">
@@ -734,7 +776,7 @@ export function ChannelPostsPanel({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <div>
-                            <span className="font-semibold text-gray-900">
+                            <span className="font-semibold text-[var(--text-primary)]">
                               {post.userFirstName} {post.userLastName}
                             </span>
                             {post.isPinned && (
@@ -744,7 +786,7 @@ export function ChannelPostsPanel({
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-[var(--text-muted)]">
                               {formatTimeAgo(post.createdAt)}
                             </span>
                             {/* Menu for post creator or channel admin */}
@@ -752,17 +794,17 @@ export function ChannelPostsPanel({
                               <div className="relative">
                                 <button
                                   onClick={() => setShowPostMenu(prev => ({ ...prev, [post.id]: !prev[post.id] }))}
-                                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                                  className="p-1 hover:bg-[var(--bg-tertiary)] rounded-full transition-colors"
                                 >
-                                  <MoreVertical className="w-4 h-4 text-gray-500" />
+                                  <MoreVertical className="w-4 h-4 text-[var(--text-muted)]" />
                                 </button>
                                 
                                 {showPostMenu[post.id] && (
-                                  <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-32">
+                                  <div className="absolute right-0 top-full mt-1 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg z-10 min-w-32">
                                     {post.userId === currentUserId && (
                                       <button
                                         onClick={() => handleEditPost(post)}
-                                        className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                                        className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--bg-tertiary)] flex items-center gap-2 transition-colors"
                                       >
                                         <Edit className="w-4 h-4" />
                                         Editar
@@ -770,7 +812,7 @@ export function ChannelPostsPanel({
                                     )}
                                     <button
                                       onClick={() => handleDeletePost(post.id)}
-                                      className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 text-red-600 flex items-center gap-2 transition-colors"
+                                      className="w-full px-3 py-2 text-left text-sm hover:bg-[var(--bg-tertiary)] text-red-600 flex items-center gap-2 transition-colors"
                                     >
                                       <Trash2 className="w-4 h-4" />
                                       Eliminar
@@ -781,7 +823,7 @@ export function ChannelPostsPanel({
                             )}
                           </div>
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-[var(--text-secondary)]">
                           {channelName}
                         </div>
                       </div>
@@ -802,20 +844,20 @@ export function ChannelPostsPanel({
                           <textarea
                             value={editContent[post.id] || ''}
                             onChange={(e) => setEditContent(prev => ({ ...prev, [post.id]: e.target.value }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={3}
                             autoFocus
                           />
                           <div className="flex gap-2 justify-end">
                             <button
                               onClick={() => handleCancelEdit(post.id)}
-                              className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                              className="px-3 py-1 text-sm bg-[var(--bg-tertiary)] text-[var(--text-secondary)] rounded hover:bg-[var(--border-color)] transition-colors"
                             >
                               Cancelar
                             </button>
                             <button
                               onClick={() => handleSaveEdit(post)}
-                              className="px-3 py-1 text-sm bg-brand text-white rounded hover:bg-blue-700 transition-colors"
+                              className="px-3 py-1 text-sm bg-[var(--brand-primary)] text-white rounded hover:opacity-90 transition-colors"
                             >
                               Guardar
                             </button>
@@ -851,7 +893,7 @@ export function ChannelPostsPanel({
                                 className="w-full h-48 object-cover"
                               />
                               {post.imageUrls.length > 3 && idx === 2 && (
-                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                                   <span className="text-white font-semibold text-lg">
                                     +{post.imageUrls.length - 3}
                                   </span>
@@ -876,8 +918,8 @@ export function ChannelPostsPanel({
                           >
                             <FileText className="w-8 h-8 text-brand flex-shrink-0" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">{doc.fileName}</p>
-                              <p className="text-xs text-gray-500">{doc.documentType}  {doc.formattedFileSize}</p>
+                              <p className="text-sm font-medium text-[var(--text-primary)] truncate">{doc.fileName}</p>
+                              <p className="text-xs text-[var(--text-muted)]">{doc.documentType}  {doc.formattedFileSize}</p>
                             </div>
                             <span className="text-xs text-brand font-medium">Descargar</span>
                           </a>
@@ -886,7 +928,7 @@ export function ChannelPostsPanel({
                     )}
 
                     {/* Interaction Counters - Above Buttons */}
-                    <div className="flex items-center justify-between text-sm text-gray-500 mb-3 pb-2 border-b border-gray-100">
+                    <div className="flex items-center justify-between text-sm text-[var(--text-muted)] mb-3 pb-2 border-b border-[var(--border-light)]">
                       <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1">
                           <Heart className="w-4 h-4 text-red-500" />
@@ -901,7 +943,7 @@ export function ChannelPostsPanel({
                           <span>{post.shareCount || 0}</span>
                         </span>
                       </div>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-[var(--text-muted)]">
                         {post.viewCount || 0} vistas
                       </span>
                     </div>
@@ -914,11 +956,11 @@ export function ChannelPostsPanel({
                         className={`flex-1 py-2 px-3 rounded-lg transition-colors font-medium disabled:opacity-50 ${
                           post.hasUserLiked 
                             ? 'bg-brand/10 text-brand hover:bg-brand/20' 
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                         }`}
                       >
                         {isLikingPost ? (
-                          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent animate-spin inline mr-1" />
+                          <div className="w-4 h-4 border-2 border-[var(--text-muted)] border-t-transparent animate-spin inline mr-1" />
                         ) : (
                           <Heart className={`w-4 h-4 inline mr-1 ${post.hasUserLiked ? 'fill-current' : ''}`} />
                         )}
@@ -929,7 +971,7 @@ export function ChannelPostsPanel({
                         className={`flex-1 py-2 px-3 rounded-lg transition-colors font-medium ${
                           showComments[post.id] 
                             ? 'bg-brand/10 text-brand hover:bg-brand/20' 
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                         }`}
                       >
                         <MessageSquare className="w-4 h-4 inline mr-1" />
@@ -940,12 +982,12 @@ export function ChannelPostsPanel({
                         disabled={isSharingPost}
                         className={`flex-1 py-2 px-3 rounded-lg transition-colors font-medium disabled:opacity-50 ${
                           isSharingPost 
-                            ? 'bg-gray-100 text-gray-400' 
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            ? 'bg-[var(--bg-tertiary)] text-[var(--text-muted)]' 
+                            : 'bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                         }`}
                       >
                         {isSharingPost ? (
-                          <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent animate-spin inline mr-1" />
+                          <div className="w-4 h-4 border-2 border-[var(--text-muted)] border-t-transparent animate-spin inline mr-1" />
                         ) : (
                           <Share2 className="w-4 h-4 inline mr-1" />
                         )}
@@ -955,7 +997,7 @@ export function ChannelPostsPanel({
                   </div>
 
                   {/* Comments Section - Facebook Style */}
-                  <div className="bg-gray-50 p-4 border-t border-gray-100">
+                  <div className="bg-[var(--bg-tertiary)] p-4 border-t border-[var(--border-light)]">
                     {/* Comment Input */}
                     <div className="flex items-start gap-2 mb-3">
                       <UserAvatar size="xs" />
@@ -966,12 +1008,12 @@ export function ChannelPostsPanel({
                           onChange={(e) => setCommentInputs(prev => ({ ...prev, [post.id]: e.target.value }))}
                           onKeyPress={(e) => e.key === 'Enter' && handleCommentSubmit(post.id)}
                           placeholder={`Escribe un comentario como ${currentUserName}...`}
-                          className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="flex-1 px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
                           onClick={() => handleCommentSubmit(post.id)}
                           disabled={!commentInputs[post.id]?.trim()}
-                          className="px-3 py-2 bg-brand text-white rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-3 py-2 bg-[var(--brand-primary)] text-white rounded-lg hover:opacity-90 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           Enviar
                         </button>
@@ -1009,11 +1051,11 @@ export function ChannelPostsPanel({
               {/* Empty State */}
               {!hasPosts && !showWelcome && (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-4">
-                    <MessageSquare className="w-8 h-8 text-gray-400" />
+                  <div className="w-16 h-16 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center mx-auto mb-4">
+                    <MessageSquare className="w-8 h-8 text-[var(--text-muted)]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Aún no hay publicaciones</h3>
-                  <p className="text-gray-600 text-sm">
+                  <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Aún no hay publicaciones</h3>
+                  <p className="text-[var(--text-secondary)] text-sm">
                     Sé el primero en publicar en este canal
                   </p>
                 </div>
@@ -1049,20 +1091,20 @@ export function ChannelPostsPanel({
       {posts?.map((post: any) => (
         showShareModal[post.id] && (
           <div key={`share-${post.id}`} className="fixed right-8 bottom-20 z-50">
-            <div className="bg-white rounded-xl p-6 max-w-md w-96 shadow-2xl border border-gray-200">
+            <div className="bg-[var(--bg-card)] rounded-xl p-6 max-w-md w-96 shadow-2xl border border-[var(--border-color)]">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Compartir publicación</h3>
+                <h3 className="text-lg font-semibold text-[var(--text-primary)]">Compartir publicación</h3>
                 <button 
                   onClick={() => setShowShareModal(prev => ({ ...prev, [post.id]: false }))} 
-                  className="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-xl leading-none"
+                  className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--bg-tertiary)] transition-colors text-xl leading-none"
                 >
                   
                 </button>
               </div>
               
               <div className="mb-4">
-                <p className="text-sm text-gray-600 line-clamp-3">{post.content}</p>
-                <p className="text-xs text-gray-500 mt-2">por {post.userFirstName} {post.userLastName} en {channelName}</p>
+                <p className="text-sm text-[var(--text-secondary)] line-clamp-3">{post.content}</p>
+                <p className="text-xs text-[var(--text-muted)] mt-2">por {post.userFirstName} {post.userLastName} en {channelName}</p>
               </div>
 
               <div className="grid grid-cols-5 gap-3">
@@ -1075,7 +1117,7 @@ export function ChannelPostsPanel({
                     setShowShareModal(prev => ({ ...prev, [post.id]: false }));
                     toast.success('Link copiado al portapapeles');
                   }}
-                  className="flex flex-col items-center p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  className="flex flex-col items-center p-3 bg-[var(--bg-tertiary)] hover:bg-[var(--bg-tertiary)] rounded-lg transition-colors"
                 >
                   <span className="text-lg">🔗</span>
                   <span className="text-xs font-medium">Copiar link</span>
@@ -1111,10 +1153,10 @@ export function ChannelPostsPanel({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setShowShareModal(prev => ({ ...prev, [post.id]: false }))}
-                  className="flex flex-col items-center p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  className="flex flex-col items-center p-3 bg-[var(--bg-tertiary)] hover:bg-[var(--bg-tertiary)] rounded-lg transition-colors"
                 >
                   <span className="text-lg">𝕏</span>
-                  <span className="text-xs text-gray-700 font-medium">X/Twitter</span>
+                  <span className="text-xs text-[var(--text-secondary)] font-medium">X/Twitter</span>
                 </a>
 
                 {/* LinkedIn */}
@@ -1168,7 +1210,7 @@ export function ChannelPostsPanel({
             onClick={() => setShowStatisticsModal(false)}
           />
           {/* Sidebar - Wider than access manager */}
-          <div className="fixed right-0 top-[64px] bottom-0 w-[600px] bg-white border-l border-gray-200 flex flex-col z-50 shadow-2xl">
+          <div className="fixed right-0 top-[64px] bottom-0 w-full sm:w-[420px] lg:w-[600px] bg-[var(--bg-card)] border-l border-[var(--border-color)] flex flex-col z-50 shadow-2xl">
             <ChannelStatisticsModal
               channelId={channelId}
               channelName={channelName}
@@ -1250,12 +1292,12 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
           size="xs" 
         />
         <div className="flex-1">
-          <div className="bg-gray-100 rounded-lg px-2 py-1.5 border border-gray-200">
-            <span className="font-semibold text-xs text-gray-900">
+          <div className="bg-[var(--bg-tertiary)] rounded-lg px-2 py-1.5 border border-[var(--border-color)]">
+            <span className="font-semibold text-xs text-[var(--text-primary)]">
               {nestedReply.userFirstName} {nestedReply.userLastName}
             </span>
-            <p className="text-sm text-gray-800 mt-0.5">{nestedReply.content}</p>
-            <span className="text-xs text-gray-400">{formatTimeAgo(nestedReply.createdAt)}</span>
+            <p className="text-sm text-[var(--text-primary)] mt-0.5">{nestedReply.content}</p>
+            <span className="text-xs text-[var(--text-muted)]">{formatTimeAgo(nestedReply.createdAt)}</span>
           </div>
           
           {/* Like and Reply buttons */}
@@ -1265,7 +1307,7 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
               className={`text-[10px] flex items-center gap-1 transition-colors ${
                 nestedReply.hasUserLiked
                   ? 'text-blue-500 hover:text-brand font-medium' 
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
               }`}
             >
               <span></span>
@@ -1274,7 +1316,7 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
             
             <button
               onClick={() => handleReplyToComment(nestedReply.id)}
-              className="text-[10px] text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
             >
               Responder
             </button>
@@ -1283,12 +1325,12 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
           {/* Reply input */}
           {replyingTo === nestedReply.id && (
             <div className="mt-1.5 px-2">
-              <div className="bg-gray-50 rounded-lg p-1.5 border border-gray-200">
-                <div className="flex items-center gap-1 mb-1 text-[10px] text-gray-600">
+              <div className="bg-[var(--bg-tertiary)] rounded-lg p-1.5 border border-[var(--border-color)]">
+                <div className="flex items-center gap-1 mb-1 text-[10px] text-[var(--text-secondary)]">
                   <span>Respondiendo a {nestedReply.userFirstName}</span>
                   <button
                     onClick={() => setReplyingTo(null)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                   >
                     
                   </button>
@@ -1301,13 +1343,13 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
                     onChange={(e) => setReplyInputs(prev => ({ ...prev, [nestedReply.id]: e.target.value }))}
                     onKeyPress={(e) => e.key === 'Enter' && handleReplySubmit(nestedReply.id)}
                     placeholder="Escribe una respuesta..."
-                    className="flex-1 px-2 py-1 bg-white border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className="flex-1 px-2 py-1 bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                     autoFocus
                   />
                   <button
                     onClick={() => handleReplySubmit(nestedReply.id)}
                     disabled={!replyInputs[nestedReply.id]?.trim()}
-                    className="px-2 py-1 bg-brand text-white rounded text-xs hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-2 py-1 bg-[var(--brand-primary)] text-white rounded text-xs hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Enviar
                   </button>
@@ -1318,7 +1360,7 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
           
           {/* More nested replies */}
           {nestedReply.replies && nestedReply.replies.length > 0 && (
-            <div className="mt-1.5 space-y-1 pl-3 border-l-2 border-gray-200">
+            <div className="mt-1.5 space-y-1 pl-3 border-l-2 border-[var(--border-color)]">
               {renderNestedReplies(nestedReply.replies)}
             </div>
           )}
@@ -1349,11 +1391,11 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
   };
 
   if (isLoading) {
-    return <div className="text-center py-4 text-gray-500 text-sm">Cargando comentarios...</div>;
+    return <div className="text-center py-4 text-[var(--text-muted)] text-sm">Cargando comentarios...</div>;
   }
 
   if (!comments || comments.length === 0) {
-    return <div className="text-center py-4 text-gray-500 text-sm">No hay comentarios aún</div>;
+    return <div className="text-center py-4 text-[var(--text-muted)] text-sm">No hay comentarios aún</div>;
   }
 
   console.log('Comments data structure:', comments.map((c: any) => ({ 
@@ -1376,12 +1418,12 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
               size="xs" 
             />
             <div className="flex-1">
-              <div className="bg-white rounded-lg px-3 py-2 border border-gray-200">
-                <span className="font-semibold text-xs text-gray-900">
+              <div className="bg-[var(--bg-card)] rounded-lg px-3 py-2 border border-[var(--border-color)]">
+                <span className="font-semibold text-xs text-[var(--text-primary)]">
                   {comment.userFirstName} {comment.userLastName}
                 </span>
-                <p className="text-sm text-gray-800 mt-0.5">{comment.content}</p>
-                <span className="text-xs text-gray-400">{formatTimeAgo(comment.createdAt)}</span>
+                <p className="text-sm text-[var(--text-primary)] mt-0.5">{comment.content}</p>
+                <span className="text-xs text-[var(--text-muted)]">{formatTimeAgo(comment.createdAt)}</span>
               </div>
               
               {/* Like and Reply buttons */}
@@ -1391,7 +1433,7 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
                   className={`text-xs flex items-center gap-1 transition-colors ${
                     commentLikes[comment.id] || comment.hasUserLiked
                       ? 'text-blue-500 hover:text-brand font-medium' 
-                      : 'text-gray-500 hover:text-gray-700'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
                   }`}
                 >
                   <span>{commentLikes[comment.id] || comment.hasUserLiked ? '' : ''}</span>
@@ -1400,7 +1442,7 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
                 
                 <button
                   onClick={() => handleReplyToComment(comment.id)}
-                  className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
                 >
                   Responder
                 </button>
@@ -1409,12 +1451,12 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
               {/* Reply input */}
               {replyingTo === comment.id && (
                 <div className="mt-2 px-3">
-                  <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
-                    <div className="flex items-center gap-2 mb-2 text-xs text-gray-600">
+                  <div className="bg-[var(--bg-tertiary)] rounded-lg p-2 border border-[var(--border-color)]">
+                    <div className="flex items-center gap-2 mb-2 text-xs text-[var(--text-secondary)]">
                       <span>Respondiendo a {comment.userFirstName}</span>
                       <button
                         onClick={() => setReplyingTo(null)}
-                        className="text-gray-400 hover:text-gray-600"
+                        className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
                       >
                         
                       </button>
@@ -1427,13 +1469,13 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
                         onChange={(e) => setReplyInputs(prev => ({ ...prev, [comment.id]: e.target.value }))}
                         onKeyPress={(e) => e.key === 'Enter' && handleReplySubmit(comment.id)}
                         placeholder="Escribe una respuesta..."
-                        className="flex-1 px-2 py-1 bg-white border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="flex-1 px-2 py-1 bg-[var(--bg-card)] border border-[var(--border-color)] rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                         autoFocus
                       />
                       <button
                         onClick={() => handleReplySubmit(comment.id)}
                         disabled={!replyInputs[comment.id]?.trim()}
-                        className="px-2 py-1 bg-brand text-white rounded text-xs hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-2 py-1 bg-[var(--brand-primary)] text-white rounded text-xs hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Enviar
                       </button>
@@ -1444,7 +1486,7 @@ function PostComments({ channelId, postId, currentUserId, currentUserName, curre
               
             {/* Replies - Use recursive function for all nesting levels */}
               {comment.replies && comment.replies.length > 0 && (
-                <div className="mt-2 space-y-2 pl-4 border-l-2 border-gray-200">
+                <div className="mt-2 space-y-2 pl-4 border-l-2 border-[var(--border-color)]">
                   {renderNestedReplies(comment.replies)}
                 </div>
               )}

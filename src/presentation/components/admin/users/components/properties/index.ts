@@ -1,0 +1,1 @@
+export { UserPropertiesModal } from './UserPropertiesModal';

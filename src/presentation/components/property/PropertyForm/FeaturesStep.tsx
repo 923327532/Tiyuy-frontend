@@ -9,7 +9,7 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
     <div className="space-y-6">
       {/* Dormitorios */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
           Dormitorios *
         </label>
         <div className="flex gap-2">
@@ -21,8 +21,8 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
               className={`
                 flex-1 py-3 rounded-lg border-2 font-semibold transition-all
                 ${formData.bedrooms === num
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-600'
+                  ? 'bg-[var(--brand-primary)] text-white border-[var(--brand-primary)]'
+                  : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border-color)] hover:border-[var(--brand-primary)]'
                 }
               `}
             >
@@ -34,7 +34,7 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
 
       {/* Baños */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
           Baños *
         </label>
         <div className="flex gap-2">
@@ -46,8 +46,8 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
               className={`
                 flex-1 py-3 rounded-lg border-2 font-semibold transition-all
                 ${formData.bathrooms === num
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-600'
+                  ? 'bg-[var(--brand-primary)] text-white border-[var(--brand-primary)]'
+                  : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border-color)] hover:border-[var(--brand-primary)]'
                 }
               `}
             >
@@ -59,7 +59,7 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
 
       {/* Estacionamientos */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
           Estacionamientos
         </label>
         <div className="flex gap-2">
@@ -71,8 +71,8 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
               className={`
                 flex-1 py-3 rounded-lg border-2 font-semibold transition-all
                 ${formData.parkingSpots === num
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-600'
+                  ? 'bg-[var(--brand-primary)] text-white border-[var(--brand-primary)]'
+                  : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border-color)] hover:border-[var(--brand-primary)]'
                 }
               `}
             >
@@ -85,7 +85,7 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
       {/* Áreas */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
             Área total (m²) *
           </label>
           <input
@@ -93,19 +93,19 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
             value={formData.totalArea}
             onChange={(e) => onChange('totalArea', Number(e.target.value))}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)]"
             placeholder="Ej: 120"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
             Área construida (m²)
           </label>
           <input
             type="number"
             value={formData.builtArea}
             onChange={(e) => onChange('builtArea', Number(e.target.value))}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+            className="w-full px-4 py-3 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)]"
             placeholder="Ej: 110"
           />
         </div>
@@ -115,26 +115,26 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
       {formData.type === 'APARTMENT' && (
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Piso
             </label>
             <input
               type="number"
               value={formData.floor}
               onChange={(e) => onChange('floor', Number(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+              className="w-full px-4 py-3 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="Ej: 3"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
               Antigüedad (años)
             </label>
             <input
               type="number"
               value={formData.age}
               onChange={(e) => onChange('age', Number(e.target.value))}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+              className="w-full px-4 py-3 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)]"
               placeholder="Ej: 5"
             />
           </div>
@@ -143,14 +143,14 @@ export function FeaturesStep({ formData, onChange }: FeaturesStepProps) {
 
       {/* Mantenimiento */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
           Mantenimiento mensual (opcional)
         </label>
         <input
           type="number"
           value={formData.maintenanceFee}
           onChange={(e) => onChange('maintenanceFee', Number(e.target.value))}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+          className="w-full px-4 py-3 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)]"
           placeholder="Ej: 250"
         />
       </div>

@@ -1,208 +1,100 @@
 'use client';
 
-/**
- * Marcadores personalizados de Tiyuy para Leaflet
- * Estilo tipo Urbania/Google Maps con la marca Tiyuy
- */
+const TIYUY_LOGO_URL = '/assets/icons/logo_mapa.png';
 
-// SVG del marcador tipo chincheta de Tiyuy (color brand)
-export const TIYUY_MARKER_SVG = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 56" width="40" height="56">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
-    </filter>
-  </defs>
-  <path d="M20 0C9 0 0 9 0 20c0 15 20 36 20 36s20-21 20-36C40 9 31 0 20 0z" fill="url(#grad)" filter="url(#shadow)"/>
-  <circle cx="20" cy="18" r="8" fill="white" opacity="0.9"/>
-  <text x="20" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2563EB">T</text>
-</svg>`;
-
-// SVG del marcador seleccionado (más grande, con glow)
-export const TIYUY_MARKER_SELECTED_SVG = `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 64" width="48" height="64">
-  <defs>
-    <linearGradient id="gradSel" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
-    </linearGradient>
-    <filter id="shadowSel" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-opacity="0.4"/>
-    </filter>
-  </defs>
-  <path d="M24 0C11 0 0 11 0 24c0 18 24 40 24 40s24-22 24-40C48 11 37 0 24 0z" fill="url(#gradSel)" filter="url(#shadowSel)"/>
-  <circle cx="24" cy="22" r="10" fill="white" opacity="0.95"/>
-  <text x="24" y="27" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#2563EB">T</text>
-</svg>`;
-
-// SVG del marcador con precio (tipo Urbania - badge con precio)
-export function createPriceMarkerSvg(price: string, isSelected: boolean = false): string {
-  const bgColor = isSelected ? '#2563EB' : '#1F2937';
-  const textColor = '#FFFFFF';
-  const borderColor = isSelected ? '#3B82F6' : '#374151';
-  
+function createLogoIconHtml(size: number, isSelected: boolean): string {
+  const shadow = isSelected
+    ? '0 4px 14px rgba(0,0,0,0.35)'
+    : '0 2px 8px rgba(0,0,0,0.20)';
   return `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 36" width="140" height="36">
-  <defs>
-    <filter id="shadowPrice" x="-10%" y="-10%" width="120%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.25"/>
-    </filter>
-  </defs>
-  <rect x="0" y="0" width="140" height="30" rx="15" ry="15" fill="${bgColor}" filter="url(#shadowPrice)"/>
-  <rect x="0" y="0" width="140" height="30" rx="15" ry="15" fill="none" stroke="${borderColor}" stroke-width="1"/>
-  <text x="70" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="${textColor}">${price}</text>
-  <polygon points="65,30 75,30 70,38" fill="${bgColor}"/>
-</svg>`;
+    <div style="
+      width: ${size}px;
+      height: ${size}px;
+      box-shadow: ${shadow};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    ">
+      <img
+        src="${TIYUY_LOGO_URL}"
+        alt="TIYUY"
+        style="width: 100%; height: 100%; object-fit: contain; display: block;"
+      />
+    </div>
+  `;
 }
 
-// SVG del cluster (grupo de marcadores)
-export function createClusterSvg(count: number): string {
-  const size = count > 99 ? 56 : count > 9 ? 48 : 40;
-  const fontSize = count > 99 ? 14 : count > 9 ? 16 : 18;
-  
-  return `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-  <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 2}" fill="#2563EB" opacity="0.9"/>
-  <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 6}" fill="none" stroke="white" stroke-width="2" opacity="0.5"/>
-  <text x="${size/2}" y="${size/2 + fontSize/3}" text-anchor="middle" font-family="Arial, sans-serif" font-size="${fontSize}" font-weight="bold" fill="white">${count}</text>
-</svg>`;
+/** Crea un icono Leaflet circular con el logo de TIYUY (pin de posición). */
+function createLogoIcon(isSelected: boolean = false): any {
+  if (typeof window === 'undefined') return null;
+  const L = require('leaflet');
+  const size = isSelected ? 44 : 38;
+  return L.divIcon({
+    html: createLogoIconHtml(size, isSelected),
+    className: 'tiyuy-logo-marker',
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+    popupAnchor: [0, -size / 2 - 4],
+  });
 }
 
-/**
- * Crea un icono Leaflet personalizado de Tiyuy
- */
+/** Marcador de posición (proyecto/propiedad) → logo de TIYUY. */
 export function createTiyuyIcon(isSelected: boolean = false): any {
-  if (typeof window === 'undefined') return null;
-  
-  const L = require('leaflet');
-  const svgContent = isSelected ? TIYUY_MARKER_SELECTED_SVG : TIYUY_MARKER_SVG;
-  const size = isSelected ? [48, 64] : [40, 56];
-  const anchor = isSelected ? [24, 64] : [20, 56];
-  
-  return L.icon({
-    iconUrl: `data:image/svg+xml;base64,${btoa(svgContent)}`,
-    iconSize: size as [number, number],
-    iconAnchor: anchor as [number, number],
-    popupAnchor: [0, -size[1]],
-  });
+  return createLogoIcon(isSelected);
 }
 
-/**
- * SVG del marcador compacto con precio (para mini mapas)
- */
-export function createCompactPriceMarkerSvg(price: string, isSelected: boolean = false): string {
-  const bgColor = isSelected ? '#2563EB' : '#1F2937';
-  const textColor = '#FFFFFF';
-  
-  return `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 22" width="70" height="22">
-  <rect x="0" y="0" width="70" height="18" rx="9" ry="9" fill="${bgColor}" opacity="0.95"/>
-  <text x="35" y="12" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="${textColor}">${price}</text>
-  <polygon points="33,18 37,18 35,22" fill="${bgColor}"/>
-</svg>`;
-}
 
-/**
- * Crea un icono Leaflet con precio compacto (para mini mapas)
- */
-export function createCompactPriceIcon(price: string, isSelected: boolean = false): any {
-  if (typeof window === 'undefined') return null;
-  const L = require('leaflet');
-  const svgContent = createCompactPriceMarkerSvg(price, isSelected);
-  return L.icon({
-    iconUrl: `data:image/svg+xml;base64,${btoa(svgContent)}`,
-    iconSize: [70, 22],
-    iconAnchor: [35, 22],
-    popupAnchor: [0, -28],
-  });
-}
-
-/**
- * SVG del chincheta Tiyuy compacta (para mini mapas)
- */
-export function createCompactTiyuySvg(isSelected: boolean = false): string {
-  const color = isSelected ? '#2563EB' : '#1F2937';
-  const size = isSelected ? 24 : 20;
-  return `
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size*1.4}" width="${size}" height="${size*1.4}">
-  <path d="M${size/2} 0C${size/5} 0 0 ${size/4} 0 ${size/2}c0 ${size*0.4} ${size/2} ${size*0.9} ${size/2} ${size*0.9}s${size/2}-${size*0.5} ${size/2}-${size*0.9}C${size} ${size/4} ${size*0.8} 0 ${size/2} 0z" fill="${color}" opacity="0.9"/>
-  <circle cx="${size/2}" cy="${size*0.45}" r="${size*0.2}" fill="white"/>
-</svg>`;
-}
-
-/**
- * Crea un icono Leaflet Tiyuy compacto (para mini mapas)
- */
+/** Marcador de posición compacto → logo de TIYUY. */
 export function createCompactTiyuyIcon(isSelected: boolean = false): any {
-  if (typeof window === 'undefined') return null;
-  const L = require('leaflet');
-  const svgContent = createCompactTiyuySvg(isSelected);
-  const size = isSelected ? 24 : 20;
-  return L.icon({
-    iconUrl: `data:image/svg+xml;base64,${btoa(svgContent)}`,
-    iconSize: [size, Math.round(size * 1.4)],
-    iconAnchor: [size/2, Math.round(size * 1.4)],
-    popupAnchor: [0, -Math.round(size * 1.4)],
-  });
+  return createLogoIcon(isSelected);
 }
 
-/**
- * Crea un icono Leaflet con precio (tipo Urbania)
- * @param color - Color personalizado para el badge (opcional)
- */
-export function createPriceIcon(price: string, isSelected: boolean = false, color?: string): any {
-  if (typeof window === 'undefined') return null;
-  
-  const L = require('leaflet');
-  const svgContent = createPriceMarkerSvg(price, isSelected);
-  
-  // Si se especifica un color personalizado, modificar el SVG
-  let finalSvg = svgContent;
-  if (color && !isSelected) {
-    finalSvg = svgContent.replace(/#1F2937/g, color).replace(/#374151/g, color);
-  }
-  
-  return L.icon({
-    iconUrl: `data:image/svg+xml;base64,${btoa(finalSvg)}`,
-    iconSize: [140, 38],
-    iconAnchor: [70, 38],
-    popupAnchor: [0, -45],
-  });
+/** Marcador con precio (proyecto/propiedad) → solo el logo de TIYUY. */
+export function createPriceIcon(_price: string, isSelected: boolean = false, _color?: string): any {
+  return createLogoIcon(isSelected);
 }
 
-/**
- * Crea un icono Leaflet con precio y color según el origen del marcador
- * - EXACT_DISTRICT: verde oscuro (#059669)
- * - NEARBY_DISTRICTS: verde claro (#10b981)
- * - Otros (expansión): azul (#3b82f6)
- */
-export function createColoredPriceIcon(price: string, matchType: 'EXACT' | 'NEARBY' | 'EXPANDED', isSelected: boolean = false): any {
-  const colorMap = {
-    'EXACT': '#059669',
-    'NEARBY': '#10b981',
-    'EXPANDED': '#3b82f6',
-  };
-  return createPriceIcon(price, isSelected, colorMap[matchType]);
+export function createCompactPriceIcon(_price: string, isSelected: boolean = false): any {
+  return createLogoIcon(isSelected);
 }
 
-/**
- * Crea un icono Leaflet para cluster
- */
+export function createColoredPriceIcon(_price: string, _matchType: 'EXACT' | 'NEARBY' | 'EXPANDED', isSelected: boolean = false): any {
+  return createLogoIcon(isSelected);
+}
+
+/** Cluster: logo de TIYUY con un pequeño contador (preserva la agrupación). */
 export function createClusterIcon(count: number): any {
   if (typeof window === 'undefined') return null;
-  
   const L = require('leaflet');
-  const svgContent = createClusterSvg(count);
   const size = count > 99 ? 56 : count > 9 ? 48 : 40;
-  
   return L.divIcon({
-    html: `<div style="width:${size}px;height:${size}px">${svgContent}</div>`,
+    html: `
+      <div style="position:relative;width:${size}px;height:${size}px;">
+        <img src="${TIYUY_LOGO_URL}" alt="TIYUY" style="width:100%;height:100%;object-fit:contain;display:block;" />
+        <div style="position:absolute;bottom:-4px;right:-6px;background:#00A852;color:#fff;font-size:10px;font-weight:800;min-width:16px;height:16px;padding:0 3px;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.3);white-space:nowrap;">${count}</div>
+      </div>
+    `,
     className: 'tiyuy-cluster-icon',
     iconSize: [size, size],
-    iconAnchor: [size/2, size/2],
+    iconAnchor: [size / 2, size / 2],
   });
 }
+
+// Helpers SVG que ya no se usan; se conservan por compatibilidad de imports.
+export const TIYUY_MARKER_SVG = '';
+export const TIYUY_MARKER_SELECTED_SVG = '';
+export function createPriceMarkerSvg(_price: string, _isSelected: boolean = false): string {
+  return '';
+}
+export function createCompactPriceMarkerSvg(_price: string, _isSelected: boolean = false): string {
+  return '';
+}
+export function createCompactTiyuySvg(_isSelected: boolean = false): string {
+  return '';
+}
+export function createClusterSvg(_count: number): string {
+  return '';
+}
+

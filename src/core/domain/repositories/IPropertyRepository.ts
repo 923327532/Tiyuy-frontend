@@ -51,6 +51,23 @@ export interface CreatePropertyData {
   roomArea?: number;
   maxCapacity?: number;
   bathroomType?: 'PRIVATE' | 'SHARED';
+  roomDetails?: {
+    isFurnished?: boolean;
+    hasPrivateBathroom?: boolean;
+    genderPreference?: string;
+    minAge?: number;
+    maxAge?: number;
+    allowsPets?: boolean;
+    allowsSmoking?: boolean;
+    allowsCouples?: boolean;
+    hasSharedKitchen?: boolean;
+    hasSharedLivingRoom?: boolean;
+    houseRules?: string;
+    currentRoommates?: number;
+    totalCapacity?: number;
+    availableFrom?: string;
+    minimumStayMonths?: number;
+  };
   
   // Campos para terrenos
   frontage?: number;

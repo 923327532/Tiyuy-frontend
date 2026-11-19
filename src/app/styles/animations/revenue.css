@@ -1,0 +1,55 @@
+/* ========================================
+   REVENUE CARD ANIMATIONS
+======================================== */
+
+@keyframes revenue-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes revenue-line-draw {
+  from {
+    stroke-dasharray: 0 1000;
+    opacity: 0.3;
+  }
+  to {
+    stroke-dasharray: 1000 0;
+    opacity: 1;
+  }
+}
+
+@keyframes revenue-area-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-revenue-fade {
+  animation: revenue-fade 0.55s ease-out both;
+}
+
+.revenue-line {
+  stroke-dasharray: 1000;
+  animation: revenue-line-draw 1.4s ease-out both;
+}
+
+.revenue-area {
+  animation: revenue-area-appear 1s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-revenue-fade,
+  .revenue-line,
+  .revenue-area {
+    animation: none !important;
+  }
+}

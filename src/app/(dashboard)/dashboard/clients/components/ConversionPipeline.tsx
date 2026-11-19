@@ -27,16 +27,16 @@ export function ConversionPipeline() {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-5">
         <div className="flex items-center gap-2 mb-4">
           <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
             <Filter className="w-4 h-4 text-white" />
           </div>
-          <h3 className="text-sm font-semibold text-gray-800">Embudo de Conversión</h3>
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Embudo de Conversión</h3>
         </div>
         <div className="animate-pulse space-y-2">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-10 bg-gray-100 rounded-lg" style={{ width: `${100 - i * 15}%`, margin: '0 auto' }} />
+            <div key={i} className="h-10 bg-[var(--bg-tertiary)] rounded-lg" style={{ width: `${100 - i * 15}%`, margin: '0 auto' }} />
           ))}
         </div>
       </div>
@@ -45,14 +45,14 @@ export function ConversionPipeline() {
 
   if (!pipeline?.stages?.length) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-5">
         <div className="flex items-center gap-2 mb-4">
           <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg">
             <Filter className="w-4 h-4 text-white" />
           </div>
-          <h3 className="text-sm font-semibold text-gray-800">Embudo de Conversión</h3>
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Embudo de Conversión</h3>
         </div>
-        <p className="text-gray-500 text-center py-3 text-sm">No hay datos de pipeline</p>
+        <p className="text-[var(--text-secondary)] text-center py-3 text-sm">No hay datos de pipeline</p>
       </div>
     );
   }
@@ -60,20 +60,20 @@ export function ConversionPipeline() {
   const maxCount = Math.max(...pipeline.stages.map(s => s.count));
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
+    <div className="bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)] p-5">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <div className="p-1.5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg shadow-blue-200/50">
             <Filter className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-800">Embudo de Conversión</h3>
-            <p className="text-xs text-gray-400">{pipeline.totalDeals} deals totales</p>
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">Embudo de Conversión</h3>
+            <p className="text-xs text-[var(--text-muted)]">{pipeline.totalDeals} deals totales</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-lg font-bold text-gray-900">{pipeline.totalDeals}</p>
-          <p className="text-[10px] text-gray-400 uppercase tracking-wider">Total</p>
+          <p className="text-lg font-bold text-[var(--text-primary)]">{pipeline.totalDeals}</p>
+          <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Total</p>
         </div>
       </div>
 
@@ -104,8 +104,8 @@ export function ConversionPipeline() {
                           <Icon className="w-4 h-4 text-white" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-gray-800">{stage.stageLabel}</p>
-                          <p className="text-[10px] text-gray-400">{stage.count} {stage.count === 1 ? 'deal' : 'deals'}</p>
+                          <p className="text-sm font-bold text-[var(--text-primary)]">{stage.stageLabel}</p>
+                          <p className="text-[10px] text-[var(--text-muted)]">{stage.count} {stage.count === 1 ? 'deal' : 'deals'}</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -117,7 +117,7 @@ export function ConversionPipeline() {
                     </div>
 
                     {/* Barra de progreso */}
-                    <div className="h-2 bg-white/70 rounded-full overflow-hidden shadow-inner">
+                    <div className="h-2 bg-[var(--bg-card)]/70 rounded-full overflow-hidden shadow-inner">
                       <div 
                         className={`h-full ${color.bar} rounded-full transition-all duration-1000 ease-out shadow-sm`}
                         style={{ width: `${widthPercent}%` }}
@@ -152,8 +152,8 @@ export function ConversionPipeline() {
               {/* Conector circular entre etapas */}
               {!isLast && (
                 <div className="flex justify-center -my-1 relative z-10">
-                  <div className="w-7 h-7 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center shadow-md">
-                    <svg className="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="w-7 h-7 rounded-full bg-[var(--bg-card)] border-2 border-[var(--border-color)] flex items-center justify-center shadow-md">
+                    <svg className="w-3 h-3 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                     </svg>
                   </div>
@@ -165,14 +165,14 @@ export function ConversionPipeline() {
       </div>
 
       {/* Resumen con dots de colores */}
-      <div className="mt-6 pt-5 border-t border-gray-100">
+      <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
         <div className="grid grid-cols-5 gap-2">
           {pipeline.stages.slice(0, 5).map((stage, index) => {
             const color = COLORS[index % COLORS.length];
             return (
               <div key={stage.stage} className="text-center">
                 <div className={`w-3 h-3 rounded-full mx-auto mb-1.5 ${color.bar} shadow-sm`} />
-                <p className="text-[8px] text-gray-400 uppercase tracking-wider font-medium">{stage.stageLabel}</p>
+                <p className="text-[8px] text-[var(--text-muted)] uppercase tracking-wider font-medium">{stage.stageLabel}</p>
                 <p className={`text-sm font-extrabold ${color.text}`}>{stage.count}</p>
               </div>
             );

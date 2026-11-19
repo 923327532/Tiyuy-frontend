@@ -71,10 +71,6 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
 
   const handleSave = async () => {
     try {
-      console.log('🔄 Guardando cambios...', formData);
-      console.log('🔄 Property ID:', property.id);
-      console.log('🔄 User ID:', user?.id);
-      
       const updateData = {
         userId: user?.id || 0,
         title: formData.title,
@@ -88,31 +84,26 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
         maintenanceFee: formData.maintenanceFee
       };
       
-      console.log('🔄 Datos que se enviarán:', updateData);
-      
-      const result = await updateMutation.mutateAsync({
+      await updateMutation.mutateAsync({
         id: property.id,
         data: updateData
       });
       
-      console.log('✅ Propiedad actualizada:', result);
       toast.success('Propiedad actualizada exitosamente');
       setIsEditing(false);
       
-      // Llamar a onSave después de que la actualización fue exitosa
       onSave?.();
     } catch (error) {
-      console.error('❌ Error al actualizar la propiedad:', error);
       toast.error('Error al actualizar la propiedad');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[var(--bg-secondary)] text-[var(--text-primary)] transition-colors">
       <div className="w-full px-4 sm:px-6 py-6">
         {/* Header con botones de acción */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">
             Editar Propiedad
           </h1>
           <div className="flex items-center gap-3">
@@ -120,14 +111,14 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
               <>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-[var(--border-color)] text-[var(--text-primary)] font-semibold text-sm rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors"
                 >
                   Cancelar edición
                 </button>
                 <button
                   onClick={handleSave}
                   disabled={updateMutation.isPending}
-                  className="px-4 py-2 bg-blue-600 text-white font-semibold text-sm rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+                  className="px-4 py-2 bg-[var(--brand-primary)] text-white font-semibold text-sm rounded-lg hover:bg-[var(--brand-primary-hover)] disabled:opacity-50 transition-colors"
                 >
                   {updateMutation.isPending ? 'Guardando...' : 'Guardar Cambios'}
                 </button>
@@ -136,13 +127,13 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
               <>
                 <Link
                   href="/my-properties"
-                  className="px-4 py-2 border border-gray-300 text-gray-700 font-semibold text-sm rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-4 py-2 border border-[var(--border-color)] text-[var(--text-primary)] font-semibold text-sm rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors"
                 >
                   Cancelar / Volver
                 </Link>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 bg-blue-600 text-white font-semibold text-sm rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-[var(--brand-primary)] text-white font-semibold text-sm rounded-lg hover:bg-[var(--brand-primary-hover)] transition-colors"
                 >
                   Modo Edición
                 </button>
@@ -151,32 +142,35 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {/* COLUMNA PRINCIPAL */}
-          <div className="lg:col-span-8 space-y-4">
+          <div className="space-y-4">
             {/* 1. GALERÍA (solo visual, no editable) */}
-            <div className="rounded-2xl overflow-hidden bg-white shadow-sm -mt-2">
+            <div className="rounded-2xl overflow-hidden bg-[var(--bg-card)] shadow-sm -mt-2 border border-[var(--border-color)]">
               <PropertyGallery media={property.media} coverPhotoUrl={property.coverPhotoUrl} />
             </div>
 
-            {/* 2. TIPO · PRECIO · TÍTULO · DIRECCIÓN */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <p className="text-sm text-gray-400">
-                {propertyTypeLabel}
-                {formData.totalArea ? ` · ${formData.totalArea} m²` : ''}
-                {formData.bedrooms ? ` · ${formData.bedrooms} dormitorio${formData.bedrooms > 1 ? 's' : ''}` : ''}
-              </p>
+            {/* 1.5 STATS RÁPIDOS (m², baños, dorm.) debajo de la galería */}
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-4">
+              <PropertyQuickInfo property={property} />
+            </div>
 
-              <div className="mt-2 flex items-baseline gap-3 flex-wrap">
+            {/* 2. TIPO · PRECIO · TÍTULO · DIRECCIÓN */}
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
+              <span className="font-semibold text-[var(--brand-primary)] uppercase tracking-wide text-xs">
+                {propertyTypeLabel}
+              </span>
+
+              <div className="mt-3 flex items-baseline gap-3 flex-wrap">
                 {isEditing ? (
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
                       value={formData.price}
                       onChange={(e) => handleInputChange('price', Number(e.target.value))}
-                      className="text-2xl sm:text-3xl font-bold text-gray-900 border border-gray-300 rounded px-2 py-1 w-48"
+                      className="text-2xl sm:text-3xl font-bold bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-color)] rounded px-2 py-1 w-48 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
                     />
-                    <span className="text-base font-normal text-gray-400">
+                    <span className="text-base font-normal text-[var(--text-secondary)]">
                       {property.currency === 'USD' ? 'US$' : 'S/'}
                       {property.transactionType === 'RENT' && (
                         <span className="ml-1">/ mes</span>
@@ -185,14 +179,14 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
                   </div>
                 ) : (
                   <>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
                       {transactionLabel}&nbsp;{formatPrice(formData.price, property.currency)}
                       {property.transactionType === 'RENT' && (
-                        <span className="text-base font-normal text-gray-400 ml-1">/ mes</span>
+                        <span className="text-base font-normal text-[var(--text-secondary)] ml-1">/ mes</span>
                       )}
                     </h2>
                     {property.pricePerSqm && (
-                      <span className="text-sm text-gray-400">
+                      <span className="text-sm text-[var(--text-secondary)]">
                         · {formatPrice(property.pricePerSqm, property.currency)} / m²
                       </span>
                     )}
@@ -206,56 +200,51 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
                   type="text"
                   value={formData.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  className="mt-3 text-lg font-semibold text-gray-800 leading-snug w-full border border-gray-300 rounded px-3 py-2"
+                  className="mt-3 text-lg font-semibold bg-[var(--bg-primary)] text-[var(--text-primary)] leading-snug w-full border border-[var(--border-color)] rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
                   placeholder="Título de la propiedad"
                 />
               ) : (
-                <h1 className="mt-3 text-lg font-semibold text-gray-800 leading-snug">
+                <h1 className="mt-3 text-lg font-semibold text-[var(--text-primary)] leading-snug">
                   {formData.title}
                 </h1>
               )}
 
               {locationLine && (
-                <p className="mt-2 text-sm text-gray-500 flex items-center gap-1.5">
-                  <MapPin className="w-4 h-4 text-teal-500 flex-shrink-0" />
+                <p className="mt-2 text-sm text-[var(--text-secondary)] flex items-center gap-1.5">
+                  <MapPin className="w-4 h-4 text-[var(--brand-primary)] flex-shrink-0" />
                   {locationLine}
                 </p>
               )}
             </div>
 
-            {/* 3. Stats editables */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-base font-bold text-gray-900 mb-4">Características</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* 3. CARACTERÍSTICAS (Formato vertical: Etiqueta arriba, Valor/Atributo abajo) */}
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
+              <h3 className="text-base font-bold text-[var(--text-primary)] mb-4">Características</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
-                  { label: 'Dormitorios', field: 'bedrooms', value: formData.bedrooms },
-                  { label: 'Baños', field: 'bathrooms', value: formData.bathrooms },
-                  { label: 'Área Total (m²)', field: 'totalArea', value: formData.totalArea },
-                  { label: 'Área Construida (m²)', field: 'builtArea', value: formData.builtArea },
+                  { label: 'Área Total', field: 'totalArea', value: formData.totalArea ? `${formData.totalArea.toLocaleString('es-PE')} m²` : '0 m²' },
+                  { label: 'Área Construida', field: 'builtArea', value: formData.builtArea ? `${formData.builtArea.toLocaleString('es-PE')} m²` : '0 m²' },
+                  { label: 'Dormitorios', field: 'bedrooms', value: formData.bedrooms ? `${formData.bedrooms} dorm.` : '0 dorm.' },
+                  { label: 'Baños', field: 'bathrooms', value: formData.bathrooms ? `${formData.bathrooms} baños` : '0 baños' },
                   { label: 'Estacionamientos', field: 'parkingSpots', value: formData.parkingSpots },
                   { label: 'Mantenimiento', field: 'maintenanceFee', value: formData.maintenanceFee ? `S/ ${formData.maintenanceFee}` : 'No' },
                 ].map(({ label, field, value }) => (
-                  <div key={field} className="text-center">
-                    <div className="text-sm text-gray-500 mb-1">{label}</div>
-                    {isEditing && field !== 'maintenanceFee' ? (
+                  <div key={field} className="p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-light)] flex flex-col items-start justify-center">
+                    <span className="text-xs font-medium text-[var(--text-secondary)] mb-1">
+                      {label}
+                    </span>
+                    {isEditing ? (
                       <input
                         type="number"
-                        value={value}
+                        value={formData[field as keyof typeof formData] || 0}
                         onChange={(e) => handleInputChange(field, Number(e.target.value))}
-                        className="w-full text-lg font-semibold text-gray-900 border border-gray-300 rounded px-2 py-1 text-center"
+                        className="w-full text-base font-semibold bg-[var(--bg-primary)] text-[var(--text-primary)] border border-[var(--border-color)] rounded px-2 py-1 text-left focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)]"
                         min="0"
-                      />
-                    ) : isEditing && field === 'maintenanceFee' ? (
-                      <input
-                        type="number"
-                        value={formData.maintenanceFee || 0}
-                        onChange={(e) => handleInputChange('maintenanceFee', Number(e.target.value))}
-                        className="w-full text-lg font-semibold text-gray-900 border border-gray-300 rounded px-2 py-1 text-center"
-                        min="0"
-                        placeholder="0"
                       />
                     ) : (
-                      <div className="text-lg font-semibold text-gray-900">{value}</div>
+                      <span className="text-base font-semibold text-[var(--text-primary)]">
+                        {value}
+                      </span>
                     )}
                   </div>
                 ))}
@@ -263,9 +252,9 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
             </div>
 
             {/* 4. DESCRIPCIÓN editable */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-teal-600 flex-shrink-0" />
+            <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
+              <h2 className="text-base font-bold text-[var(--text-primary)] mb-3 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[var(--brand-primary)] flex-shrink-0" />
                 Descripción de la propiedad
               </h2>
               {isEditing ? (
@@ -273,26 +262,18 @@ export function PropertyDetailEditable({ property, onSave }: PropertyDetailEdita
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
                   rows={6}
-                  className="w-full text-gray-700 leading-relaxed text-sm border border-gray-300 rounded px-3 py-2"
+                  className="w-full bg-[var(--bg-primary)] text-[var(--text-primary)] leading-relaxed text-sm border border-[var(--border-color)] rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
                   placeholder="Describe la propiedad..."
                 />
               ) : (
-                <p className="text-gray-700 leading-relaxed text-sm whitespace-pre-wrap">
+                <p className="text-[var(--text-secondary)] leading-relaxed text-sm whitespace-pre-wrap">
                   {formData.description || 'No hay descripción disponible'}
                 </p>
               )}
             </div>
 
-            {/* 5. MAPA (solo visual) */}
+            {/* 5. MAPA */}
             <PropertyLocation location={property.location} propertyId={property.id} />
-          </div>
-
-          {/* COLUMNA LATERAL */}
-          <div className="lg:col-span-4">
-            {/* Información rápida */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-              <PropertyQuickInfo property={property} />
-            </div>
           </div>
         </div>
       </div>

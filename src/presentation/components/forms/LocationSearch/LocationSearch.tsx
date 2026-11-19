@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input } from '@/presentation/components/ui/Input/Input';
 import { useLocationSearch } from '@/presentation/hooks/useLocationSearch';
-import { MapPin, AlertCircle } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface LocationSearchProps {
   onLocationSelect: (location: {
@@ -27,7 +27,6 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
   const { predictions, loading } = useLocationSearch(query);
 
   useEffect(() => {
@@ -82,7 +81,7 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
         onChange={handleInputChange}
         onFocus={handleInputFocus}
         placeholder={placeholder}
-        className={`pr-10 bg-white ${className}`}
+        className={`pr-10 bg-[var(--bg-card)] ${className}`}
         leftIcon={
           <MapPin className="w-5 h-5 text-blue-500" />
         }
@@ -93,42 +92,29 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
         }
       />
 
-      {/* Dropdown de predicciones */}
       {showDropdown && predictions.length > 0 && (
-        <div className="absolute z-[9999] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+        <div className="absolute z-[9999] w-full mt-1 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {predictions.map((prediction) => (
             <div
               key={prediction.place_id}
-              className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+              className="px-4 py-3 hover:bg-[var(--bg-tertiary)] cursor-pointer border-b border-[var(--border-light)] last:border-b-0 transition-colors"
               onClick={() => handleLocationClick(prediction)}
             >
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-1">
-                  <MapPin className="w-4 h-4 text-gray-400" />
+                  <MapPin className="w-4 h-4 text-[var(--text-muted)]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-900 truncate">
+                  <div className="font-medium text-[var(--text-primary)] truncate">
                     {prediction.structured_formatting.main_text}
                   </div>
-                  <div className="text-sm text-gray-500 truncate">
+                  <div className="text-sm text-[var(--text-muted)] truncate">
                     {prediction.structured_formatting.secondary_text}
                   </div>
                 </div>
               </div>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* Mensaje de error si no hay API key */}
-      {!API_KEY && (
-        <div className="absolute z-50 w-full mt-1 bg-red-50 border border-red-200 rounded-lg p-3">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-600" />
-            <span className="text-sm text-red-800">
-              Google Places API key no configurada. Agrega NEXT_PUBLIC_GOOGLE_PLACES_API_KEY a tu .env.local
-            </span>
-          </div>
         </div>
       )}
     </div>

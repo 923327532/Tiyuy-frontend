@@ -62,12 +62,20 @@ export const ResetPasswordForm: React.FC = () => {
     setError(null);
 
     try {
-      // Usar axiosClient directamente para evitar el route handler de Next.js
-      await publicApiClient.post('/auth/reset-password', {
-        token,
-        password,
-        confirmPassword
+      // Usar el route handler de Next.js (/api/auth/reset-password) para evitar
+      // el problema de doble /api en la URL del backend
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, password, confirmPassword })
       });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al restablecer la contraseña');
+      }
+
       setIsSuccess(true);
       // Redirigir al login después de 3 segundos
       setTimeout(() => {
@@ -75,9 +83,7 @@ export const ResetPasswordForm: React.FC = () => {
       }, 3000);
     } catch (err: any) {
       console.error('Error en reset password:', err);
-      const message = err.response?.data?.message
-        || err.response?.data
-        || 'Error de conexión. Inténtalo nuevamente';
+      const message = err.message || 'Error de conexión. Inténtalo nuevamente';
       setError(message);
     } finally {
       setIsLoading(false);

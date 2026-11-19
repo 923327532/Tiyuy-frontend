@@ -73,7 +73,7 @@ export function ChannelPostCard({
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             {/* User Avatar */}
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br brand flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-white font-bold text-sm">
               {post.userFirstName?.charAt(0).toUpperCase() || 'U'}
             </div>
             
@@ -211,7 +211,7 @@ export function ChannelPostCard({
         <div className="mt-3 pt-3 border-t border-gray-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-gradient-to-br brand flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-6 h-6 rounded bg-brand flex items-center justify-center text-white text-xs font-bold">
                 {post.channelName?.charAt(0).toUpperCase() || 'C'}
               </div>
               <span className="text-xs text-gray-600">{post.channelName}</span>

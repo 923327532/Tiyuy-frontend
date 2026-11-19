@@ -98,7 +98,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
           formDataUpload.append('type', 'blueprints');
 
           try {
-            const response = await fetch(`/api/properties/${propertyId}/photos`, {
+            const endpoint = entityType === 'project' ? 'projects' : 'properties';
+            const response = await fetch(`/api/${endpoint}/${propertyId}/upload`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` },
               body: formDataUpload,
@@ -106,7 +107,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
             if (response.ok) {
               const result = await response.json();
-              const uploadedUrl = result[0];
+              const uploadedUrl = Array.isArray(result) ? result[0] : result.url;
               console.log(`Plano de unidad ${unitId} subido:`, uploadedUrl);
               
               // Guardar la URL para actualizar la unidad
@@ -128,7 +129,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
           formDataUpload.append('type', 'blueprints');
 
           try {
-            const response = await fetch(`/api/properties/${propertyId}/photos`, {
+            const endpoint = entityType === 'project' ? 'projects' : 'properties';
+            const response = await fetch(`/api/${endpoint}/${propertyId}/upload`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` },
               body: formDataUpload,
@@ -136,7 +138,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
             if (response.ok) {
               const result = await response.json();
-              const uploadedUrl = result[0];
+              const uploadedUrl = Array.isArray(result) ? result[0] : result.url;
               console.log(`Plano de grupo ${groupId} subido:`, uploadedUrl);
               
               // Guardar la URL para actualizar el grupo
@@ -200,7 +202,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
       }, 500);
 
       // Usar ruta relativa - Vercel actúa como puente
-      const uploadUrl = `/api/properties/${propertyId}/photos`;
+      const endpoint = entityType === 'project' ? 'projects' : 'properties';
+      const uploadUrl = `/api/${endpoint}/${propertyId}/upload`;
 
       console.log(`Enviando POST a: ${uploadUrl}`);
 
@@ -254,19 +257,19 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
   return (
     <div data-multimedia-step className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Multimedia del Proyecto</h3>
-        <p className="text-sm text-gray-600 mb-6">
+        <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Multimedia del Proyecto</h3>
+        <p className="text-sm text-[var(--text-secondary)] mb-6">
           Sube imágenes, planos y renders para mostrar tu proyecto
         </p>
       </div>
 
       {!propertyId && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div className="bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 rounded-lg p-4">
           <div className="flex items-center space-x-2">
-            <div className="text-yellow-600"></div>
+            <div className="text-[var(--brand-primary)]"></div>
             <div>
-              <p className="text-yellow-800 font-medium">Importante</p>
-              <p className="text-yellow-700 text-sm">
+              <p className="text-[var(--text-primary)] font-medium">Importante</p>
+              <p className="text-[var(--text-secondary)] text-sm">
                 Debes completar los pasos anteriores para poder subir archivos multimedia
               </p>
             </div>
@@ -276,8 +279,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
       {/* Imágenes del Proyecto */}
       <div>
-        <h4 className="font-medium text-gray-900 mb-3">Imágenes del Proyecto</h4>
-        <p className="text-sm text-gray-600 mb-3">
+        <h4 className="font-medium text-[var(--text-primary)] mb-3">Imágenes del Proyecto</h4>
+        <p className="text-sm text-[var(--text-secondary)] mb-3">
           Fotos del edificio, amenities, vistas, etc. (Máximo 10 imágenes)
         </p>
         
@@ -286,7 +289,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             {formData.images.map((image: any, index: number) => (
               <div key={index} className="relative group">
-                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                <div className="aspect-square bg-[var(--bg-secondary)] rounded-lg overflow-hidden">
                   <img
                     src={image}
                     alt={`Imagen ${index + 1}`}
@@ -318,7 +321,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={!propertyId || uploading}
-          className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-purple-500 hover:text-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 border-2 border-dashed border-[var(--input-border)] rounded-lg text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {uploading ? 'Subiendo...' : '+ Subir Imágenes'}
         </button>
@@ -326,8 +329,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
       {/* Planos */}
       <div>
-        <h4 className="font-medium text-gray-900 mb-3">Planos del Proyecto</h4>
-        <p className="text-sm text-gray-600 mb-3">
+        <h4 className="font-medium text-[var(--text-primary)] mb-3">Planos del Proyecto</h4>
+        <p className="text-sm text-[var(--text-secondary)] mb-3">
           Planos arquitectónicos, plantas, distribuciones (PDF, DWG)
         </p>
         
@@ -335,14 +338,14 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
         {formData.blueprints && formData.blueprints.length > 0 && (
           <div className="space-y-2 mb-4">
             {formData.blueprints.map((blueprint: any, index: number) => (
-              <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-card)]">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                    <FileText className="w-4 h-4 text-blue-600" />
+                  <div className="w-8 h-8 bg-[var(--brand-primary-light)] rounded flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-[var(--brand-primary)]" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">{blueprint.name}</p>
-                    <p className="text-sm text-gray-500">{blueprint.size}</p>
+                    <p className="font-medium text-[var(--text-primary)]">{blueprint.name}</p>
+                    <p className="text-sm text-[var(--text-muted)]">{blueprint.size}</p>
                   </div>
                 </div>
                 <button
@@ -368,7 +371,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
         <button
           onClick={() => blueprintInputRef.current?.click()}
           disabled={!propertyId || uploading}
-          className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-purple-500 hover:text-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 border-2 border-dashed border-[var(--input-border)] rounded-lg text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {uploading ? 'Subiendo...' : '+ Subir Planos'}
         </button>
@@ -376,8 +379,8 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
       {/* Renders 3D */}
       <div>
-        <h4 className="font-medium text-gray-900 mb-3">Renders 3D</h4>
-        <p className="text-sm text-gray-600 mb-3">
+        <h4 className="font-medium text-[var(--text-primary)] mb-3">Renders 3D</h4>
+        <p className="text-sm text-[var(--text-secondary)] mb-3">
           Imágenes 3D, tours virtuales, visualizaciones
         </p>
         
@@ -389,7 +392,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
               
               return (
                 <div key={index} className="relative group">
-                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                  <div className="aspect-square bg-[var(--bg-secondary)] rounded-lg overflow-hidden">
                     {isVideo ? (
                       <video
                         src={render}
@@ -406,7 +409,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
                         className="w-full h-full object-cover"
                       />
                     )}
-                    <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                    <div className="absolute top-2 left-2 bg-[var(--brand-primary)] text-white text-xs px-2 py-1 rounded">
                       {isVideo ? ' VIDEO' : '3D'}
                     </div>
                   </div>
@@ -434,7 +437,7 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
         <button
           onClick={() => renderInputRef.current?.click()}
           disabled={!propertyId || uploading}
-          className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-purple-500 hover:text-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 border-2 border-dashed border-[var(--input-border)] rounded-lg text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {uploading ? 'Subiendo...' : '+ Subir Renders 3D'}
         </button>
@@ -442,14 +445,14 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
 
       {/* Progreso de subida */}
       {uploading && (
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-[var(--bg-secondary)] rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">Subiendo archivos...</span>
-            <span className="text-sm text-gray-500">{uploadProgress}%</span>
+            <span className="text-sm font-medium text-[var(--text-primary)]">Subiendo archivos...</span>
+            <span className="text-sm text-[var(--text-muted)]">{uploadProgress}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-[var(--border-color)] rounded-full h-2">
             <div
-              className="bg-purple-600 h-2 rounded-full transition-all duration-300"
+              className="bg-[var(--brand-primary)] h-2 rounded-full transition-all duration-300"
               style={{ width: `${uploadProgress}%` }}
             />
           </div>
@@ -457,31 +460,31 @@ export function ProjectMultimediaStep({ formData, onChange, propertyId, unitBlue
       )}
 
       {/* Resumen multimedia */}
-      <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-        <h4 className="font-medium text-purple-900 mb-3">Resumen Multimedia</h4>
+      <div className="bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 rounded-lg p-4">
+        <h4 className="font-medium text-[var(--text-primary)] mb-3">Resumen Multimedia</h4>
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
-            <span className="text-purple-700 block text-sm">Imágenes</span>
-            <p className="font-semibold text-purple-900 text-lg">{formData.images?.length || 0}</p>
+            <span className="text-[var(--brand-primary)] block text-sm">Imágenes</span>
+            <p className="font-semibold text-[var(--text-primary)] text-lg">{formData.images?.length || 0}</p>
           </div>
           <div>
-            <span className="text-purple-700 block text-sm">Planos</span>
-            <p className="font-semibold text-purple-900 text-lg">{formData.blueprints?.length || 0}</p>
+            <span className="text-[var(--brand-primary)] block text-sm">Planos</span>
+            <p className="font-semibold text-[var(--text-primary)] text-lg">{formData.blueprints?.length || 0}</p>
           </div>
           <div>
-            <span className="text-purple-700 block text-sm">Renders</span>
-            <p className="font-semibold text-purple-900 text-lg">{formData.renders?.length || 0}</p>
+            <span className="text-[var(--brand-primary)] block text-sm">Renders</span>
+            <p className="font-semibold text-[var(--text-primary)] text-lg">{formData.renders?.length || 0}</p>
           </div>
         </div>
       </div>
 
       {/* Tips */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div className="bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 rounded-lg p-4">
         <div className="flex items-start space-x-2">
-          <div className="text-blue-600 mt-0.5"></div>
+          <div className="text-[var(--brand-primary)] mt-0.5"></div>
           <div>
-            <p className="text-blue-800 font-medium mb-1">Recomendaciones</p>
-            <ul className="text-blue-700 text-sm space-y-1">
+            <p className="text-[var(--text-primary)] font-medium mb-1">Recomendaciones</p>
+            <ul className="text-[var(--text-secondary)] text-sm space-y-1">
               <li>• Usa imágenes de alta resolución (mínimo 1200x800px)</li>
               <li>• Incluye fotos del edificio, amenities y vistas</li>
               <li>• Los planos deben estar en PDF y ser legibles</li>

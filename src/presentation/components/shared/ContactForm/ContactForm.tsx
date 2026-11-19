@@ -128,14 +128,14 @@ export function ContactForm({ propertyId, ownerId }: ContactFormProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3">
+    <div className="bg-[var(--bg-card)] rounded-lg shadow-[0_1px_2px_var(--shadow-color)] border border-[var(--border-color)] p-3">
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-4px); }
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-      <h3 className="text-sm font-bold text-gray-900 mb-2">
+      <h3 className="text-sm font-bold text-[var(--text-primary)] mb-2">
         Contactar al propietario
       </h3>
 
@@ -175,13 +175,13 @@ export function ContactForm({ propertyId, ownerId }: ContactFormProps) {
 
         {/* Método preferido - Dropdown personalizado */}
         <div ref={dropdownRef}>
-          <label className="block text-xs font-medium text-gray-700 mb-1.5">
+          <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
             Prefieres que te contacten por
           </label>
           <button
             type="button"
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-300 bg-white shadow-sm hover:border-gray-400 transition-all duration-200 text-gray-700 text-sm"
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-[var(--input-border)] bg-[var(--bg-primary)] shadow-[0_1px_2px_var(--shadow-color)] hover:border-[var(--border-color)] transition-all duration-200 text-[var(--text-secondary)] text-sm"
           >
             <span className="flex items-center gap-2">
               {selectedMethod && (
@@ -191,14 +191,14 @@ export function ContactForm({ propertyId, ownerId }: ContactFormProps) {
             </span>
             <Icon
               icon="material-symbols:keyboard-arrow-down"
-              className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}
+              className={`w-4 h-4 text-[var(--text-tertiary)] transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}
             />
           </button>
 
           {dropdownOpen && (
             <div className="relative z-50">
               <div
-                className="absolute top-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+                className="absolute top-1 left-0 right-0 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg overflow-hidden"
                 style={{ animation: 'fadeIn 0.15s ease-out' }}
               >
                 {contactMethods.map((method) => (
@@ -212,12 +212,12 @@ export function ContactForm({ propertyId, ownerId }: ContactFormProps) {
                     className={`w-full flex items-center gap-2 px-3 py-2.5 text-left text-sm transition-colors duration-150 ${
                       formData.preferredContactMethod === method.value
                         ? 'bg-brand/5 text-brand font-semibold'
-                        : 'text-gray-700 hover:bg-gray-50'
+                        : 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]'
                     }`}
                   >
                     <Icon
                       icon={method.icon}
-                      className={`w-4 h-4 ${formData.preferredContactMethod === method.value ? 'text-brand' : 'text-gray-400'}`}
+                      className={`w-4 h-4 ${formData.preferredContactMethod === method.value ? 'text-brand' : 'text-[var(--text-tertiary)]'}`}
                     />
                     <span>{method.label}</span>
                     {formData.preferredContactMethod === method.value && (
@@ -232,7 +232,7 @@ export function ContactForm({ propertyId, ownerId }: ContactFormProps) {
 
         {/* Mensaje */}
         <div>
-          <label htmlFor="message" className="block text-xs font-medium text-gray-700 mb-1.5">
+          <label htmlFor="message" className="block text-xs font-medium text-[var(--text-secondary)] mb-1.5">
             Mensaje
           </label>
           <textarea
@@ -241,10 +241,10 @@ export function ContactForm({ propertyId, ownerId }: ContactFormProps) {
             value={formData.message}
             onChange={handleChange}
             rows={3}
-            className={`w-full px-3 py-2.5 rounded-lg border transition-all duration-200 focus:outline-none text-sm text-gray-700 placeholder:text-gray-400 ${
+            className={`w-full px-3 py-2.5 rounded-lg border transition-all duration-200 focus:outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] ${
               errors.message
                 ? 'border-red-500 focus:ring-2 focus:ring-red-500 bg-red-50'
-                : 'border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50'
+                : 'border-[var(--input-border)] focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-[var(--bg-secondary)]'
             }`}
             placeholder="Hola, me interesa esta propiedad..."
           />
