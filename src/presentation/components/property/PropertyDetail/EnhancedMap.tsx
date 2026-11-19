@@ -1,7 +1,7 @@
 'use client';
 
 import { PropertyLocation as Location } from '@/core/domain/entities/Property';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface EnhancedMapProps {
   location: Location;
@@ -10,75 +10,65 @@ interface EnhancedMapProps {
 
 export function EnhancedMap({ location, propertyId }: EnhancedMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [mapReady, setMapReady] = useState(false);
+  const mapInstanceRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!location.latitude || !location.longitude) return;
+    if (!location.latitude || !location.longitude || !mapRef.current) return;
 
-    const initializeMap = () => {
-      if (!mapRef.current) return;
+    if (mapInstanceRef.current) return;
 
-      const mapInstance = new window.google.maps.Map(mapRef.current, {
-        center: { lat: Number(location.latitude), lng: Number(location.longitude) },
+    let cancelled = false;
+
+    const initMap = async () => {
+      const L = (await import('leaflet')).default;
+      await import('leaflet/dist/leaflet.css');
+
+      if (cancelled || !mapRef.current) return;
+
+      const lat = Number(location.latitude);
+      const lng = Number(location.longitude);
+
+      const map = L.map(mapRef.current, {
+        center: [lat, lng],
         zoom: 16,
-        styles: [
-          {
-            featureType: 'poi',
-            elementType: 'labels',
-            stylers: [{ visibility: 'off' }],
-          },
-        ],
+        zoomControl: true,
+        attributionControl: true,
       });
 
-      new window.google.maps.Circle({
-        map: mapInstance,
-        center: { lat: Number(location.latitude), lng: Number(location.longitude) },
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      L.circle([lat, lng], {
         radius: 200,
-        strokeColor: '#3B82F6',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
+        color: '#3B82F6',
+        weight: 2,
         fillColor: '#3B82F6',
         fillOpacity: 0.1,
+      }).addTo(map);
+
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<div style="width:16px;height:16px;background:#3B82F6;border:2px solid white;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,0.3);"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
       });
 
-      new window.google.maps.Marker({
-        position: { lat: Number(location.latitude), lng: Number(location.longitude) },
-        map: mapInstance,
-        title: location.fullAddress || `${location.district}, ${location.province}`,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: '#3B82F6',
-          fillOpacity: 1,
-          strokeColor: '#FFFFFF',
-          strokeWeight: 2,
-        },
-      });
+      L.marker([lat, lng], { icon }).addTo(map)
+        .bindPopup(location.fullAddress || `${location.district}, ${location.province}`);
 
-      setMapReady(true);
+      mapInstanceRef.current = map;
     };
 
-    if (window.google?.maps) {
-      initializeMap();
-      return;
-    }
+    initMap();
 
-    if (document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
-      const interval = setInterval(() => {
-        if (window.google?.maps) {
-          clearInterval(interval);
-          initializeMap();
-        }
-      }, 100);
-      return () => clearInterval(interval);
-    }
-
-    window.initMap = initializeMap;
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}&libraries=places&callback=initMap`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
+    return () => {
+      cancelled = true;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
   }, [location.latitude, location.longitude]);
 
   return (

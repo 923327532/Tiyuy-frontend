@@ -43,6 +43,7 @@ export interface PropertyOwner {
   email: string;
   phone: string;
   role: string;
+  photoUrl?: string;
 }
 
 // Perfil público del anunciante (al hacer clic en el anunciante de una propiedad)

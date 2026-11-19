@@ -1,0 +1,47 @@
+.role-change-modal__field { display: flex; flex-direction: column; gap: 0.5rem; }
+.role-change-modal__label { display: flex; align-items: center; gap: 0.375rem; font-size: 0.8125rem; font-weight: 600; color: var(--rcm-text-secondary); line-height: 1.3; }
+.role-change-modal__required { color: var(--rcm-danger); font-weight: 700; }
+
+.role-change-modal__role-preview {
+  display: flex; align-items: center; gap: 0.875rem; padding: 0.875rem 1rem;
+  border-radius: var(--rcm-radius-sm); border: 1px solid transparent;
+  transition: background-color 300ms ease, border-color 300ms ease, transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: rcm-preview-enter 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.role-change-modal__role-preview--user { background: var(--rcm-user-soft); border-color: color-mix(in srgb, var(--rcm-user) 20%, transparent); }
+.role-change-modal__role-preview--agent { background: var(--rcm-agent-soft); border-color: color-mix(in srgb, var(--rcm-agent) 20%, transparent); }
+.role-change-modal__role-preview--developer { background: var(--rcm-developer-soft); border-color: color-mix(in srgb, var(--rcm-developer) 20%, transparent); }
+.role-change-modal__role-preview--admin { background: var(--rcm-admin-soft); border-color: color-mix(in srgb, var(--rcm-admin) 20%, transparent); }
+
+.role-change-modal__role-preview-icon {
+  display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; flex-shrink: 0;
+  border-radius: 0.625rem; background: var(--rcm-bg); border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.role-change-modal__role-preview--user .role-change-modal__role-preview-icon { color: var(--rcm-user); }
+.role-change-modal__role-preview--agent .role-change-modal__role-preview-icon { color: var(--rcm-agent); }
+.role-change-modal__role-preview--developer .role-change-modal__role-preview-icon { color: var(--rcm-developer); }
+.role-change-modal__role-preview--admin .role-change-modal__role-preview-icon { color: var(--rcm-admin); }
+.role-change-modal__role-preview-info { display: flex; flex-direction: column; gap: 0.125rem; min-width: 0; }
+.role-change-modal__role-preview-label { font-size: 0.875rem; font-weight: 700; color: var(--rcm-text-primary); line-height: 1.3; }
+.role-change-modal__role-preview-desc { font-size: 0.75rem; color: var(--rcm-text-tertiary); line-height: 1.4; }
+
+.role-change-modal__select, .role-change-modal__textarea {
+  width: 100%; border: 1px solid var(--rcm-border); border-radius: var(--rcm-radius-sm);
+  background: var(--rcm-bg); color: var(--rcm-text-secondary); font-size: 0.8125rem; font-weight: 600;
+  box-shadow: var(--rcm-shadow-sm);
+  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1), transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.role-change-modal__select {
+  height: 2.5rem; padding: 0 2.25rem 0 0.875rem; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.75rem center;
+}
+.role-change-modal__textarea {
+  min-height: 5.5rem; padding: 0.75rem 0.875rem; color: var(--rcm-text-primary); font-family: inherit;
+  font-size: 0.875rem; font-weight: 450; line-height: 1.5; resize: vertical; outline: none;
+}
+.role-change-modal__textarea::placeholder { color: var(--rcm-text-muted); font-weight: 400; }
+.role-change-modal__select:hover, .role-change-modal__textarea:hover { border-color: var(--rcm-border-strong); }
+.role-change-modal__select:hover { transform: translateY(-1px); box-shadow: var(--rcm-shadow-md); }
+.role-change-modal__select:focus, .role-change-modal__textarea:focus { outline: none; border-color: var(--rcm-brand); box-shadow: 0 0 0 3px var(--rcm-brand-glow); }

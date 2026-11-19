@@ -1,0 +1,32 @@
+.user-detail-modal__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  background: var(--udm-bg-subtle);
+  scroll-behavior: smooth;
+}
+.user-detail-modal__content::-webkit-scrollbar { width: 6px; }
+.user-detail-modal__content::-webkit-scrollbar-track { background: transparent; }
+.user-detail-modal__content::-webkit-scrollbar-thumb { background: var(--udm-border-strong); border-radius: 999px; }
+.user-detail-modal__content::-webkit-scrollbar-thumb:hover { background: var(--udm-text-muted); }
+
+.user-detail-modal__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 16rem;
+  color: var(--udm-text-tertiary);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.user-detail-modal__spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--udm-border);
+  border-top-color: var(--udm-brand);
+  border-radius: 50%;
+  animation: udm-spin 800ms linear infinite;
+}
+@keyframes udm-spin { to { transform: rotate(360deg); } }

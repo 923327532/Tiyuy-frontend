@@ -1,0 +1,76 @@
+/* ========================================
+   PROJECTS CARD ANIMATIONS
+======================================== */
+
+@keyframes projects-card-entry {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes projects-progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes projects-unit-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.projects-card-entry {
+  animation: projects-card-entry 0.45s ease-out both;
+}
+
+.projects-progress-item {
+  animation: projects-card-entry 0.45s ease-out both;
+}
+
+.projects-progress-bar {
+  transform-origin: left;
+  animation: projects-progress-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.projects-unit-segment {
+  transform-origin: left;
+  animation: projects-unit-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.projects-summary-item {
+  animation: projects-card-entry 0.45s ease-out both;
+}
+
+.projects-summary-item:nth-child(1) {
+  animation-delay: 80ms;
+}
+
+.projects-summary-item:nth-child(2) {
+  animation-delay: 160ms;
+}
+
+.projects-summary-item:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-card-entry,
+  .projects-progress-item,
+  .projects-progress-bar,
+  .projects-unit-segment,
+  .projects-summary-item {
+    animation: none !important;
+  }
+}

@@ -1,0 +1,14 @@
+@media (max-width: 768px) {
+  .users-table__user-cell { gap: 0.625rem; }
+  .users-table__avatar { width: 2.25rem; height: 2.25rem; }
+  .users-table__email { font-size: 0.8125rem; }
+  .users-table__actions { gap: 0.125rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .users-table__container { animation: none !important; }
+  .users-table__avatar,
+  .users-table__action-btn {
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from '@/presentation/store/toastStore';
 import { axiosClient } from '@/infrastructure/api/axios-client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Sun, Moon, Type, Globe, Lock, User, Camera, CheckCircle, Palette, MessageSquare, Users, Diamond, Home, Flame, Building, FolderGit, PlusCircle, SlidersHorizontal } from 'lucide-react';
+import { Sun, Moon, Eye, EyeOff, Globe, Lock, User, Camera, CheckCircle, Palette, MessageSquare, Users, Diamond, Home, Flame, Building, FolderGit, PlusCircle, SlidersHorizontal } from 'lucide-react';
 import { UserAvatar } from '@/presentation/components/shared/UserAvatar';
 import MyAgencySection from '@/presentation/components/profile/MyAgencySection';
 import { useDashboardSidebar } from './layout';
@@ -250,6 +250,7 @@ export default function DashboardPage() {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [visiblePasswords, setVisiblePasswords] = useState({ new: false, confirm: false });
   const [email, setEmail] = useState('');
   const [isEditingEmail, setIsEditingEmail] = useState(false);
 
@@ -358,15 +359,6 @@ export default function DashboardPage() {
     { value: 'Europe/Madrid', label: 'Madrid (GMT+1/+2)' },
     { value: 'America/New_York', label: 'New York (GMT-5/-4)' },
     { value: 'America/Los_Angeles', label: 'Los Angeles (GMT-8/-7)' },
-  ];
-
-  const crmColors = [
-    { name: 'Blanco', value: '#ffffff', class: 'bg-white' },
-    { name: 'Gris Claro', value: '#f8fafc', class: 'bg-slate-50' },
-    { name: 'Verde Menta', value: '#ecfdf5', class: 'bg-emerald-50' },
-    { name: 'Azul Cielo', value: '#eff6ff', class: 'bg-blue-50' },
-    { name: 'Calido', value: '#fff7ed', class: 'bg-orange-50' },
-    { name: 'Personalizado', value: 'custom', class: 'bg-gradient-to-br from-teal-400 to-emerald-500' },
   ];
 
   return (
@@ -491,8 +483,7 @@ export default function DashboardPage() {
                       <h3 className="font-semibold text-[var(--text-primary)]">Mis Proyectos</h3>
                       <p className="text-sm text-[var(--text-secondary)]">Desarrollos activos</p>
                     </div>
-                    <span className="ml-auto text-green-600 dark:text-green-400 font-bold">→</span>
-                  </Link>
+                   </Link>
 
                   {/* Tarjeta: Nuevo Proyecto */}
                   <Link 
@@ -506,8 +497,7 @@ export default function DashboardPage() {
                       <h3 className="font-semibold text-[var(--text-primary)]">Nuevo Proyecto</h3>
                       <p className="text-sm text-[var(--text-secondary)]">Crear desarrollo</p>
                     </div>
-                    <span className="ml-auto text-purple-600 dark:text-purple-400 font-bold">→</span>
-                  </Link>
+                   </Link>
                 </div>
               </div>
             )}
@@ -515,12 +505,12 @@ export default function DashboardPage() {
             {/* Personalizacion Visual */}
             {canViewCRM && (
             <div className="bg-[var(--bg-card)] rounded-2xl shadow-sm border border-[var(--border-color)] p-6">
-              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-6 flex items-center gap-2"><Palette className="w-5 h-5" /> Personalizacion Visual</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="space-y-4">
+                <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2"><Palette className="w-5 h-5" /> Tema Personalizacion Visual</h2>
+
+                <div className="grid grid-cols-1 gap-8 flex-1">
                 <div>
-                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Tema</h3>
-                  <div className="space-y-2">
+                    <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => setTheme('light')}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
@@ -548,50 +538,6 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div>
-                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Color de Fondo CRM</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    {crmColors.map((color) => (
-                      <button
-                        key={color.value}
-                        onClick={() => setCrmBackground(color.value)}
-                        className={`aspect-square rounded-xl ${color.class} border-2 transition-all flex flex-col items-center justify-center gap-1 ${
-                          crmBackground === color.value ? 'border-teal-500 ring-2 ring-teal-200' : 'border-[var(--border-color)] hover:border-[var(--border-color)]'
-                        }`}
-                      >
-                        {crmBackground === color.value && <span className="text-teal-600 text-lg">✓</span>}
-                        <span className="text-xs text-[var(--text-secondary)] text-center leading-tight">{color.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <input
-                    type="color"
-                    value={crmBackground}
-                    onChange={(e) => setCrmBackground(e.target.value)}
-                    className="w-full mt-3 h-10 rounded-xl cursor-pointer"
-                  />
-                </div>
-
-                <div>
-                  <h3 className="font-semibold text-[var(--text-primary)] mb-4">Tamaño de Fuente</h3>
-                  <div className="space-y-2">
-                    {(['small', 'normal', 'large'] as const).map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setFontSize(size)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                          fontSize === size ? 'bg-teal-50 dark:bg-teal-900/30 border-2 border-teal-500' : 'bg-[var(--bg-tertiary)] border-2 border-transparent hover:bg-[var(--bg-tertiary)]'
-                        }`}
-                      >
-                        <span className={`${size === 'small' ? 'text-sm' : size === 'normal' ? 'text-base' : 'text-lg'} font-bold text-[var(--text-secondary)]`}>Aa</span>
-                      <span className="font-medium text-[var(--text-primary)] capitalize flex items-center gap-2">
-                        <Type className="w-4 h-4" />
-                        {size === 'small' ? 'Pequeno' : size === 'normal' ? 'Normal' : 'Grande'}
-                      </span>
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-[var(--text-secondary)] mt-3">Ajusta el tamaño del texto para mayor comodidad.</p>
                 </div>
               </div>
             </div>
@@ -713,41 +659,56 @@ export default function DashboardPage() {
                   
                   <div>
                     <label className="text-sm text-[var(--text-secondary)] mb-1 block">Contrasena Actual</label>
-                    <input
-                      type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      placeholder="Ingresa tu contrasena actual"
-                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-                    />
+                    <div className="relative">
+                      <input
+                        type="password"
+                        autoComplete="off"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="Ingresa tu contrasena actual para verificar tu identidad"
+                        className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      />
+                    </div>
                   </div>
 
                   <div>
                     <label className="text-sm text-[var(--text-secondary)] mb-1 block">Nueva Contrasena</label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Minimo 6 caracteres"
-                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-                    />
+                    <div className="relative">
+                      <input
+                        type={visiblePasswords.new ? 'text' : 'password'}
+                        autoComplete="new-password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Minimo 6 caracteres"
+                        className="w-full px-4 pr-12 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      />
+                      <button type="button" onClick={() => setVisiblePasswords((state) => ({ ...state, new: !state.new }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-teal-600" aria-label={visiblePasswords.new ? 'Ocultar contrasena' : 'Mostrar contrasena'}>
+                        {visiblePasswords.new ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
 
                   <div>
                     <label className="text-sm text-[var(--text-secondary)] mb-1 block">Confirmar Contrasena</label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Repite la nueva contrasena"
-                      className="w-full px-4 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
-                    />
+                    <div className="relative">
+                      <input
+                        type={visiblePasswords.confirm ? 'text' : 'password'}
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Repite la nueva contrasena"
+                        className="w-full px-4 pr-12 py-3 rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-primary)] focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                      />
+                      <button type="button" onClick={() => setVisiblePasswords((state) => ({ ...state, confirm: !state.confirm }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-teal-600" aria-label={visiblePasswords.confirm ? 'Ocultar contrasena' : 'Mostrar contrasena'}>
+                        {visiblePasswords.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
 
                   <button
                     onClick={handleChangePassword}
                     disabled={changePassword.isPending}
-                    className="w-full py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 disabled:opacity-50 transition-colors"
+                    className="w-full py-3 bg-[var(--brand-primary)] text-white rounded-xl font-medium hover:bg-[var(--brand-primary-hover)] disabled:opacity-50 transition-colors"
                   >
                     {changePassword.isPending ? 'Cargando...' : <><Lock className="w-4 h-4 inline mr-1" /> Cambiar Contrasena</>}
                   </button>

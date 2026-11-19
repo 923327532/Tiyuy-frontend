@@ -2,31 +2,43 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const input = searchParams.get('input');
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
+  const query = searchParams.get('query');
 
-  if (!input || !apiKey) {
+  if (!query || query.length < 2) {
     return NextResponse.json(
-      { error: 'Missing input or API key' },
+      { error: 'Missing or invalid query parameter' },
       { status: 400 }
     );
   }
 
   try {
-    const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&key=${apiKey}&components=country:pe&types=(cities)&language=es`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=pe&limit=5&addressdetails=1&accept-language=es`;
     
-    console.log('Proxying Google Places autocomplete:', url);
-    
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Tiyuy-Frontend',
+      },
+    });
     
     if (!response.ok) {
-      throw new Error(`Google Places API error: ${response.status}`);
+      throw new Error(`Nominatim API error: ${response.status}`);
     }
     
     const data = await response.json();
     
-    // Agregar headers CORS
-    return NextResponse.json(data, {
+    const predictions = data.map((item: any) => ({
+      place_id: `${item.lat},${item.lon}`,
+      description: item.display_name,
+      structured_formatting: {
+        main_text: item.address?.suburb || item.address?.city || item.address?.town || item.name || query,
+        secondary_text: [item.address?.district, item.address?.city, item.address?.state, item.address?.country].filter(Boolean).join(', ') || item.display_name,
+      },
+      lat: parseFloat(item.lat),
+      lon: parseFloat(item.lon),
+      address: item.address,
+    }));
+    
+    return NextResponse.json({ predictions, status: 'OK' }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -35,40 +47,9 @@ export async function GET(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Error in Google Places proxy:', error);
+    console.error('Error in Nominatim proxy:', error);
     
-    // Fallback con datos comunes de Lima
-    const fallbackData = {
-      predictions: [
-        {
-          place_id: 'fallback_1',
-          description: `${input}, Lima, Perú`,
-          structured_formatting: {
-            main_text: input,
-            secondary_text: 'Lima, Perú'
-          }
-        },
-        {
-          place_id: 'fallback_2',
-          description: 'Miraflores, Lima, Perú',
-          structured_formatting: {
-            main_text: 'Miraflores',
-            secondary_text: 'Lima, Perú'
-          }
-        },
-        {
-          place_id: 'fallback_3',
-          description: 'Surco, Lima, Perú',
-          structured_formatting: {
-            main_text: 'Surco',
-            secondary_text: 'Lima, Perú'
-          }
-        }
-      ],
-      status: 'OK'
-    };
-    
-    return NextResponse.json(fallbackData, {
+    return NextResponse.json({ predictions: [], status: 'OK' }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',

@@ -1,0 +1,36 @@
+.user-properties-modal__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--upm-border);
+  background: linear-gradient(180deg, var(--upm-bg) 0%, var(--upm-bg-subtle) 100%);
+}
+.user-properties-modal__header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: var(--upm-radius-sm);
+  background: var(--upm-brand-soft);
+  color: var(--upm-brand);
+  animation: upm-icon-breathe 4s ease-in-out infinite;
+}
+.user-properties-modal__header-content { display: flex; flex-direction: column; gap: 0.25rem; }
+.user-properties-modal__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--upm-text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.user-properties-modal__subtitle { margin: 0; font-size: 0.8125rem; color: var(--upm-text-tertiary); line-height: 1.4; }
+.user-properties-modal__total { font-weight: 700; color: var(--upm-brand); font-variant-numeric: tabular-nums; }
+
+@keyframes upm-icon-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}

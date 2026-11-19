@@ -630,34 +630,23 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
               </p>
 
               <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-sm h-72">
-                {process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY ? (
-                  <>
-                    {currentProject.latitude && currentProject.longitude ? (
-                      <iframe
-                        width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen
-                        referrerPolicy="no-referrer-when-downgrade"
-                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}&q=${currentProject.latitude},${currentProject.longitude}&zoom=16`}
-                      />
-                    ) : currentProject.fullAddress || currentProject.address ? (
-                      <iframe
-                        width="100%" height="100%" style={{ border: 0 }} loading="lazy" allowFullScreen
-                        referrerPolicy="no-referrer-when-downgrade"
-                        src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}&q=${encodeURIComponent(
-                          currentProject.fullAddress || currentProject.address || `${currentProject.district}, ${currentProject.province}, Perú`
-                        )}&zoom=16`}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
-                        Sin coordenadas ni dirección
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <iframe
-                    width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${currentProject.longitude ? currentProject.longitude - 0.01 : '-77.0428'},${currentProject.latitude ? currentProject.latitude - 0.01 : '-12.0464'},${currentProject.longitude ? currentProject.longitude + 0.01 : '-77.0428'},${currentProject.latitude ? currentProject.latitude + 0.01 : '-12.0464'}&layer=mapnik&marker=${currentProject.latitude || '-12.0464'},${currentProject.longitude || '-77.0428'}`}
-                  />
-                )}
+                <>
+                  {currentProject.latitude && currentProject.longitude ? (
+                    <iframe
+                      width="100%" height="100%" style={{ border: 0 }} loading="lazy"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${currentProject.longitude - 0.01},${currentProject.latitude - 0.01},${currentProject.longitude + 0.01},${currentProject.latitude + 0.01}&layer=mapnik&marker=${currentProject.latitude},${currentProject.longitude}`}
+                    />
+                  ) : currentProject.fullAddress || currentProject.address ? (
+                    <iframe
+                      width="100%" height="100%" style={{ border: 0 }} loading="lazy"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=-77.05,-12.06,-77.03,-12.04&layer=mapnik`}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400 text-sm">
+                      Sin coordenadas ni dirección
+                    </div>
+                  )}
+                </>
               </div>
 
               {/* Comentarios del proyecto */}

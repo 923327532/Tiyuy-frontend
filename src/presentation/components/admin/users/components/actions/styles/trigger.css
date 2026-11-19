@@ -1,0 +1,33 @@
+.user-actions { position: relative; display: inline-flex; }
+
+.user-actions__trigger {
+  display: flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ua-radius-sm);
+  border: 1px solid var(--ua-border);
+  background: var(--ua-bg);
+  color: var(--ua-text-tertiary);
+  cursor: pointer;
+  box-shadow: var(--ua-shadow-sm);
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 200ms ease;
+}
+.user-actions__trigger:hover {
+  background: var(--ua-bg-subtle);
+  border-color: var(--ua-border-strong);
+  color: var(--ua-text-secondary);
+  transform: scale(1.05);
+}
+.user-actions__trigger:active { transform: scale(0.95); }
+.user-actions__trigger--open {
+  background: var(--ua-brand-soft);
+  border-color: var(--ua-brand);
+  color: var(--ua-brand);
+  box-shadow: 0 0 0 3px var(--ua-brand-soft);
+}
+.user-actions__trigger-icon { width: 1rem; height: 1rem; transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.user-actions__trigger--open .user-actions__trigger-icon { transform: rotate(90deg); }
+.user-actions__trigger:focus-visible { outline: 2px solid var(--ua-brand); outline-offset: 2px; }

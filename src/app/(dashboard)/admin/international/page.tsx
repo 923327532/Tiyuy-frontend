@@ -15,6 +15,25 @@ import { ChevronLeft, ChevronRight, Globe2, ShieldCheck, ShieldX, Clock, IdCard,
 
 type StatusFilter = 'ALL' | 'PENDING' | 'VERIFIED' | 'REJECTED';
 
+const ADMIN_STATUS_STYLES = {
+  total: {
+    soft: 'bg-[#e3edf1] text-[#164e63] border-[#b8ced5]',
+    solid: 'bg-[#164e63] text-white border-[#164e63]',
+  },
+  active: {
+    soft: 'bg-[#dceae4] text-[#36866c] border-[#b8d8ca]',
+    solid: 'bg-[#36866c] text-white border-[#36866c]',
+  },
+  pending: {
+    soft: 'bg-[#fbefd9] text-[#a66b1d] border-[#efd8b4]',
+    solid: 'bg-[#c58a3a] text-white border-[#c58a3a]',
+  },
+  suspended: {
+    soft: 'bg-[#f9e5e8] text-[#b94b59] border-[#edc6cc]',
+    solid: 'bg-[#c45d68] text-white border-[#c45d68]',
+  },
+} as const;
+
 const DOC_TYPE_LABELS: Record<string, string> = {
   PASSPORT: 'Pasaporte',
   NATIONAL_ID: 'Documento nacional de identidad',
@@ -22,10 +41,10 @@ const DOC_TYPE_LABELS: Record<string, string> = {
 };
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
-  PENDING: { label: 'En revisión', className: 'bg-amber-100 text-amber-700 border-amber-200' },
-  VERIFIED: { label: 'Aprobado', className: 'bg-green-100 text-green-700 border-green-200' },
-  REJECTED: { label: 'Rechazado', className: 'bg-red-100 text-red-700 border-red-200' },
-  MANUAL_REVIEW: { label: 'Revisión manual', className: 'bg-blue-100 text-blue-700 border-blue-200' },
+  PENDING: { label: 'En revisión', className: ADMIN_STATUS_STYLES.pending.soft },
+  VERIFIED: { label: 'Aprobado', className: ADMIN_STATUS_STYLES.active.soft },
+  REJECTED: { label: 'Rechazado', className: ADMIN_STATUS_STYLES.suspended.soft },
+  MANUAL_REVIEW: { label: 'Revisión manual', className: ADMIN_STATUS_STYLES.total.soft },
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -43,8 +62,8 @@ function StatusBadge({ status }: { status: string }) {
 function DocField({ label, value }: { label: string; value?: string }) {
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-wider text-gray-400 font-medium">{label}</p>
-      <p className="text-sm font-medium text-gray-800 break-words">{value || '—'}</p>
+      <p className="text-[11px] uppercase tracking-wider text-[var(--text-tertiary)] font-medium">{label}</p>
+      <p className="text-sm font-medium text-[var(--text-primary)] break-words">{value || '—'}</p>
     </div>
   );
 }
@@ -52,16 +71,16 @@ function DocField({ label, value }: { label: string; value?: string }) {
 function ImageCard({ label, url }: { label: string; url?: string }) {
   return (
     <div>
-      <p className="text-xs font-semibold text-gray-500 mb-2 flex items-center gap-1.5">
+      <p className="text-xs font-semibold text-[var(--text-secondary)] mb-2 flex items-center gap-1.5">
         {label.includes('Documento') ? <IdCard className="w-3.5 h-3.5" /> : <Camera className="w-3.5 h-3.5" />}
         {label}
       </p>
       {url ? (
-        <a href={url} target="_blank" rel="noopener noreferrer" className="block rounded-xl overflow-hidden border border-gray-200 hover:ring-2 hover:ring-[var(--brand-primary)] transition-all">
-          <img src={url} alt={label} className="w-full aspect-[4/3] object-cover bg-gray-50" />
+        <a href={url} target="_blank" rel="noopener noreferrer" className="block rounded-xl overflow-hidden border border-[var(--border-color)] hover:ring-2 hover:ring-[var(--brand-primary)] transition-all">
+          <img src={url} alt={label} className="w-full aspect-[4/3] object-cover bg-[var(--bg-secondary)]" />
         </a>
       ) : (
-        <div className="w-full aspect-[4/3] rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center text-xs text-gray-400">
+        <div className="w-full aspect-[4/3] rounded-xl border-2 border-dashed border-[var(--border-color)] bg-[var(--bg-secondary)] flex items-center justify-center text-xs text-[var(--text-tertiary)]">
           Sin imagen
         </div>
       )}
@@ -141,77 +160,88 @@ export default function InternationalPage() {
     { key: 'REJECTED', label: `Rechazados (${counts.REJECTED})` },
   ];
 
+  const filterStyles: Record<StatusFilter, (typeof ADMIN_STATUS_STYLES)[keyof typeof ADMIN_STATUS_STYLES]> = {
+    ALL: ADMIN_STATUS_STYLES.total,
+    PENDING: ADMIN_STATUS_STYLES.pending,
+    VERIFIED: ADMIN_STATUS_STYLES.active,
+    REJECTED: ADMIN_STATUS_STYLES.suspended,
+  };
+
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold text-gray-900">Usuarios Extranjeros</h1>
-        <p className="text-sm text-gray-500">
-          Revisa la foto del documento y la selfie, luego aprueba o rechaza la verificación de identidad.
-        </p>
+    <div className="space-y-3 px-3 py-3 sm:space-y-4 sm:px-6 sm:py-4">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)]">
+          <Globe2 className="h-5 w-5" aria-hidden="true" />
+        </div>
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold text-[#164e63]">Usuarios Extranjeros</h1>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            Revisa la foto del documento y la selfie, luego aprueba o rechaza la verificación de identidad.
+          </p>
+        </div>
       </div>
 
-      {/* Filtros por estado */}
-      <div className="flex flex-wrap gap-2">
-        {filterTabs.map((tab) => (
-          <button
-            key={tab.key}
-            type="button"
-            onClick={() => setStatusFilter(tab.key)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium border transition-colors cursor-pointer ${
-              statusFilter === tab.key
-                ? 'bg-[var(--brand-primary)] text-white border-[var(--brand-primary)]'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <div className="overflow-hidden rounded-xl border border-slate-100 bg-white shadow-lg">
+        {/* Filtros por estado */}
+        <div className="grid grid-cols-2 gap-1 border-b border-slate-100 bg-slate-50/30 px-3 py-2 sm:flex sm:flex-wrap sm:items-center sm:justify-start sm:px-6">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setStatusFilter(tab.key)}
+              className={`w-full rounded-md border px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer sm:w-auto ${
+                statusFilter === tab.key ? filterStyles[tab.key].solid : filterStyles[tab.key].soft
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-      {/* Lista */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Globe2 className="w-5 h-5 text-[var(--brand-primary)]" />
+        {/* Lista */}
+        <Card padding="none" className="rounded-none border-0 bg-white shadow-none">
+        <CardHeader className="mb-0 border-b border-[var(--border-light)] px-4 pb-3 pt-4 sm:px-5 sm:pb-4 sm:pt-5">
+          <CardTitle className="flex items-center gap-2 text-base font-bold text-[#164e63]">
+            <ShieldCheck className="h-5 w-5 text-[var(--brand-primary)]" />
             Solicitudes de verificación
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 pb-4 pt-4 sm:px-5 sm:pb-5 sm:pt-5">
           {isLoading ? (
-            <div className="py-10 text-center text-sm text-gray-500">Cargando usuarios...</div>
+            <div className="py-10 text-center text-sm text-[var(--text-secondary)]">Cargando usuarios...</div>
           ) : filtered.length === 0 ? (
-            <div className="py-10 text-center text-sm text-gray-500">
+            <div className="py-10 text-center text-sm text-[var(--text-secondary)]">
               No hay usuarios internacionales {statusFilter !== 'ALL' ? 'con este estado' : 'aún'}.
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[760px] table-fixed bg-white text-sm">
                 <thead>
-                  <tr className="text-left text-[11px] uppercase tracking-wider text-gray-400 border-b border-gray-100">
-                    <th className="py-2.5 pr-3 font-medium">Usuario</th>
-                    <th className="py-2.5 pr-3 font-medium">País</th>
-                    <th className="py-2.5 pr-3 font-medium">Documento</th>
-                    <th className="py-2.5 pr-3 font-medium">N° documento</th>
-                    <th className="py-2.5 pr-3 font-medium">Estado</th>
-                    <th className="py-2.5 font-medium">Acciones</th>
+                  <tr className="text-left text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">
+                    <th className="w-[24%] py-2.5 pr-3 font-medium">Usuario</th>
+                    <th className="w-[13%] py-2.5 pr-3 font-medium">País</th>
+                    <th className="w-[21%] py-2.5 pr-3 font-medium">Documento</th>
+                    <th className="w-[17%] py-2.5 pr-3 font-medium">N° documento</th>
+                    <th className="w-[13%] py-2.5 pr-3 font-medium">Estado</th>
+                    <th className="w-[12%] py-2.5 font-medium">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((u) => (
-                    <tr key={u.userId} className="border-b border-gray-50 hover:bg-gray-50/50">
+                    <tr key={u.userId} className="bg-white text-[var(--text-primary)] transition-colors hover:bg-[#f8fafc]">
                       <td className="py-3 pr-3">
-                        <p className="font-medium text-gray-800">{u.firstName || '—'} {u.lastName || ''}</p>
-                        <p className="text-xs text-gray-400">{u.email}</p>
+                        <p className="font-semibold text-[#164e63]">{u.firstName || '—'} {u.lastName || ''}</p>
+                        <p className="text-xs text-[#64748b]">{u.email}</p>
                       </td>
-                      <td className="py-3 pr-3 text-gray-600">{u.issuingCountry || '—'}</td>
-                      <td className="py-3 pr-3 text-gray-600">{DOC_TYPE_LABELS[u.internationalDocumentType] || u.internationalDocumentType}</td>
-                      <td className="py-3 pr-3 text-gray-600 font-mono text-xs">{u.internationalDocumentNumber}</td>
+                      <td className="py-3 pr-3 text-[#334155]">{u.issuingCountry || '—'}</td>
+                      <td className="py-3 pr-3 text-[#334155]">{DOC_TYPE_LABELS[u.internationalDocumentType] || u.internationalDocumentType}</td>
+                      <td className="py-3 pr-3 font-mono text-xs text-[#334155]">{u.internationalDocumentNumber}</td>
                       <td className="py-3 pr-3"><StatusBadge status={u.verificationStatus} /></td>
                       <td className="py-3">
                         <button
                           type="button"
                           onClick={() => setSelected(u)}
-                          className="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-200 transition-colors cursor-pointer"
+                          className="rounded-lg border border-[#b8ced5] bg-[#e3edf1] px-3 py-1.5 text-xs font-semibold text-[#164e63] transition-colors cursor-pointer"
                         >
                           Ver detalle
                         </button>
@@ -230,35 +260,36 @@ export default function InternationalPage() {
                 type="button"
                 disabled={page === 0}
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-200 disabled:opacity-40 cursor-pointer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-xs font-medium hover:bg-[var(--border-light)] disabled:opacity-40 cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" /> Anterior
               </button>
-              <span className="text-xs text-gray-500">Página {page + 1} de {totalPages}</span>
+              <span className="text-xs text-[var(--text-secondary)]">Página {page + 1} de {totalPages}</span>
               <button
                 type="button"
                 disabled={page >= totalPages - 1}
                 onClick={() => setPage((p) => p + 1)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-200 disabled:opacity-40 cursor-pointer"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-secondary)] text-xs font-medium hover:bg-[var(--border-light)] disabled:opacity-40 cursor-pointer"
               >
                 Siguiente <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
         </CardContent>
-      </Card>
+        </Card>
+      </div>
 
       {/* Modal de detalle */}
       <Modal isOpen={!!selected} onClose={() => setSelected(null)}>
         {selected && (
           <div className="p-6 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-lg font-bold text-[var(--text-primary)]">
                 {selected.firstName || ''} {selected.lastName || ''}
               </h3>
               <StatusBadge status={selected.verificationStatus} />
             </div>
-            <p className="text-sm text-gray-500 mb-4">{selected.email} · {selected.phone}</p>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">{selected.email} · {selected.phone}</p>
 
             <div className="grid grid-cols-2 gap-3 mb-5">
               <DocField label="País emisor" value={selected.issuingCountry} />
@@ -268,13 +299,13 @@ export default function InternationalPage() {
             </div>
 
             {selected.verificationResult && (
-              <div className="mb-5 rounded-lg bg-gray-50 border border-gray-100 px-3 py-2.5">
-                <p className="text-xs text-gray-500"><span className="font-semibold">Resultado:</span> {selected.verificationResult}</p>
+              <div className="mb-5 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-light)] px-3 py-2.5">
+                <p className="text-xs text-[var(--text-secondary)]"><span className="font-semibold">Resultado:</span> {selected.verificationResult}</p>
               </div>
             )}
 
             {/* Comparación de fotos: documento vs selfie */}
-            <p className="text-sm font-semibold text-gray-700 mb-2">Comparar fotos</p>
+            <p className="text-sm font-semibold text-[var(--text-primary)] mb-2">Comparar fotos</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
               <ImageCard label="Foto del documento" url={selected.documentImageUrl} />
               <ImageCard label="Selfie" url={selected.selfieImageUrl} />
@@ -286,7 +317,7 @@ export default function InternationalPage() {
                   type="button"
                   onClick={() => handleApprove(selected)}
                   disabled={approveMutation.isPending}
-                  className="flex-1 bg-green-600 text-white py-2.5 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors cursor-pointer"
+                  className="flex-1 bg-[var(--brand-primary)] text-white py-2.5 rounded-xl font-semibold hover:bg-[var(--brand-primary-hover)] disabled:opacity-50 transition-colors cursor-pointer"
                 >
                   ✓ Aprobar documento
                 </button>
@@ -302,7 +333,7 @@ export default function InternationalPage() {
                 </button>
               )}
               {!canReview && (
-                <p className="text-xs text-gray-400">No tienes permiso para aprobar o rechazar documentos.</p>
+                <p className="text-xs text-[var(--text-tertiary)]">No tienes permiso para aprobar o rechazar documentos.</p>
               )}
             </div>
           </div>
@@ -313,22 +344,22 @@ export default function InternationalPage() {
       {/* Modal de rechazo */}
       <Modal isOpen={showRejectModal} onClose={() => setShowRejectModal(false)}>
         <div className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Rechazar documento</h3>
-          <p className="text-sm text-gray-500 mb-4">
+          <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">Rechazar documento</h3>
+          <p className="text-sm text-[var(--text-secondary)] mb-4">
             El usuario verá el motivo del rechazo y podrá volver a subir sus documentos.
           </p>
           <textarea
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
             rows={3}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            className="w-full border border-[var(--input-border)] rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
             placeholder="Motivo del rechazo (opcional)"
           />
           <div className="flex justify-end gap-3 mt-4">
             <button
               type="button"
               onClick={() => setShowRejectModal(false)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
+              className="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-tertiary)] rounded-lg hover:bg-[var(--border-light)] transition-colors cursor-pointer"
             >
               Cancelar
             </button>
@@ -346,4 +377,3 @@ export default function InternationalPage() {
     </div>
   );
 }
-

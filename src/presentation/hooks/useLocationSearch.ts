@@ -7,6 +7,9 @@ export interface LocationPrediction {
     main_text: string;
     secondary_text: string;
   };
+  lat?: number;
+  lon?: number;
+  address?: any;
 }
 
 export function useLocationSearch(query: string) {
@@ -22,12 +25,12 @@ export function useLocationSearch(query: string) {
 
       setLoading(true);
       try {
-        const url = `/api/google-places/autocomplete?input=${encodeURIComponent(query)}`;
+        const url = `/api/google-places/autocomplete?query=${encodeURIComponent(query)}`;
         const response = await fetch(url);
         const data = await response.json();
         setPredictions(data.predictions || []);
       } catch (error) {
-        console.error('Error en Google Places:', error);
+        console.error('Error en Nominatim:', error);
         setPredictions([]);
       } finally {
         setLoading(false);

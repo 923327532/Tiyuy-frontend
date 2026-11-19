@@ -24,33 +24,24 @@ export const useGooglePlaces = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
-
   const getPlaceDetails = async (placeId: string): Promise<LocationData | null> => {
     setLoading(true);
     setError(null);
 
     try {
-      // Usar proxy en lugar de llamada directa a Google
-      const url = `/api/google-places/details?place_id=${placeId}`;
-      console.log('Getting place details (via proxy):', url);
+      const url = `/api/google-places/details?place_id=${encodeURIComponent(placeId)}`;
       
       const response = await fetch(url);
-
-      console.log('Place details response status:', response.status);
-      console.log('Place details response ok:', response.ok);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('Place details data:', data);
 
       if (data.status === 'OK' && data.result) {
         const result = data.result;
         
-        // Extraer componentes de dirección
         const addressComponents = result.address_components || [];
         let district = '';
         let province = '';
@@ -105,21 +96,15 @@ export const useGooglePlaces = () => {
     setError(null);
 
     try {
-      // Usar proxy en lugar de llamada directa a Google
-      const url = `/api/google-places/autocomplete?input=${encodeURIComponent(query)}`;
-      console.log('Searching predictions (via proxy):', url);
+      const url = `/api/google-places/autocomplete?query=${encodeURIComponent(query)}`;
       
       const response = await fetch(url);
-
-      console.log('Predictions response status:', response.status);
-      console.log('Predictions response ok:', response.ok);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('Predictions data:', data);
 
       if (data.status === 'OK') {
         return data.predictions || [];

@@ -3,30 +3,70 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const placeId = searchParams.get('place_id');
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
 
-  if (!placeId || !apiKey) {
+  if (!placeId) {
     return NextResponse.json(
-      { error: 'Missing place_id or API key' },
+      { error: 'Missing place_id parameter' },
       { status: 400 }
     );
   }
 
   try {
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${apiKey}&fields=geometry,address_components&language=es`;
+    const [lat, lon] = placeId.split(',');
     
-    console.log('Proxying Google Places details:', url);
+    if (!lat || !lon || isNaN(parseFloat(lat)) || isNaN(parseFloat(lon))) {
+      throw new Error('Invalid coordinates');
+    }
+
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1&accept-language=es`;
     
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Tiyuy-Frontend',
+      },
+    });
     
     if (!response.ok) {
-      throw new Error(`Google Places API error: ${response.status}`);
+      throw new Error(`Nominatim API error: ${response.status}`);
     }
     
     const data = await response.json();
     
-    // Agregar headers CORS
-    return NextResponse.json(data, {
+    const result = {
+      place_id: `${lat},${lon}`,
+      name: data.name || data.address?.suburb || data.address?.city || data.address?.town || '',
+      formatted_address: data.display_name || '',
+      geometry: {
+        location: {
+          lat: parseFloat(lat),
+          lng: parseFloat(lon),
+        },
+      },
+      address_components: data.address ? [
+        {
+          long_name: data.address.suburb || data.address.city_district || data.address.city || data.address.town || '',
+          short_name: data.address.suburb || data.address.city_district || data.address.city || data.address.town || '',
+          types: ['locality', 'sublocality'],
+        },
+        {
+          long_name: data.address.city || data.address.town || data.address.county || '',
+          short_name: data.address.city || data.address.town || data.address.county || '',
+          types: ['administrative_area_level_2'],
+        },
+        {
+          long_name: data.address.state || '',
+          short_name: data.address.state || '',
+          types: ['administrative_area_level_1', 'political'],
+        },
+        {
+          long_name: data.address.country || '',
+          short_name: data.address.country_code || '',
+          types: ['country', 'political'],
+        },
+      ].filter(c => c.long_name) : [],
+    };
+    
+    return NextResponse.json({ status: 'OK', result }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -35,47 +75,23 @@ export async function GET(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('Error in Google Places details proxy:', error);
+    console.error('Error in Nominatim reverse geocoding:', error);
     
-    // Fallback con datos de Lima
-    const fallbackData = {
+    return NextResponse.json({
       status: 'OK',
       result: {
         place_id: placeId,
-        name: placeId.includes('miraflores') ? 'Miraflores' : 
-              placeId.includes('surco') ? 'Surco' : 'Distrito de Lima',
-        formatted_address: placeId.includes('miraflores') ? 'Miraflores, Lima, Perú' : 
-                           placeId.includes('surco') ? 'Surco, Lima, Perú' : 
-                           'Distrito, Lima, Perú',
+        name: 'Ubicación',
+        formatted_address: 'Perú',
         geometry: {
           location: {
-            lat: -12.0464,
-            lng: -77.0428
-          }
+            lat: parseFloat(placeId.split(',')[0] || '-12.0464'),
+            lng: parseFloat(placeId.split(',')[1] || '-77.0428'),
+          },
         },
-        address_components: [
-          {
-            long_name: placeId.includes('miraflores') ? 'Miraflores' : 
-                     placeId.includes('surco') ? 'Surco' : 'Distrito',
-            short_name: placeId.includes('miraflores') ? 'Miraflores' : 
-                       placeId.includes('surco') ? 'Surco' : 'Distrito',
-            types: ['locality', 'political']
-          },
-          {
-            long_name: 'Lima',
-            short_name: 'Lima',
-            types: ['administrative_area_level_1', 'political']
-          },
-          {
-            long_name: 'Perú',
-            short_name: 'PE',
-            types: ['country', 'political']
-          }
-        ]
-      }
-    };
-    
-    return NextResponse.json(fallbackData, {
+        address_components: [],
+      },
+    }, {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',

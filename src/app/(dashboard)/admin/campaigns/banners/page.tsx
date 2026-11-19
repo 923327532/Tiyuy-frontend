@@ -12,11 +12,15 @@ import { Modal } from '@/presentation/components/ui/Modal';
 import { Input } from '@/presentation/components/ui/Input';
 import { Button } from '@/presentation/components/ui/Button';
 import { LoadingState, EmptyState, ErrorState } from '@/presentation/components/admin/AdminUIStates';
+import { useCreateActionParam } from '@/presentation/hooks/useCreateActionParam';
 import { Image, Plus, Search, Edit3, Trash2, Eye, EyeOff, Upload, Clock } from 'lucide-react';
 
 
 export default function MarketingBannersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // Abre el modal cuando se llega desde el menú "Crear".
+  useCreateActionParam(() => setIsCreateModalOpen(true));
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const [searchQuery, setSearchQuery] = useState('');

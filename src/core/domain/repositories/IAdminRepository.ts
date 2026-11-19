@@ -9,6 +9,7 @@ import {
   CreateAdminUserRequest,
   UpdateAdminUserRequest,
   DashboardStats,
+  PropertyAnalyticsResponse,
   UserStats,
   FinanceStats,
   FinanceHistoryDto,
@@ -53,6 +54,7 @@ export interface PaginatedResponse<T> {
 export interface IAdminRepository {
   // Dashboard & Analytics
   getDashboardStats(): Promise<DashboardStats>;
+  getPropertyAnalytics(): Promise<PropertyAnalyticsResponse>;
   getUserStats(): Promise<UserStats>;
   getFinanceStats(): Promise<FinanceStats>;
   getFinanceHistory(period?: string): Promise<FinanceHistoryDto>;

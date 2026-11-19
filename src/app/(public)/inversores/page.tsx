@@ -1,8 +1,7 @@
 'use client';
 
-import { TrendingUp, Target, Shield, Eye, BarChart3, ArrowRight, Mail, ChevronDown, ChevronUp, Building2, Lightbulb, Zap, Globe } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
+import { TrendingUp, Target, BarChart3, ArrowRight, Building2, Globe } from 'lucide-react';
+import { PublicPageHero } from '@/presentation/components/layout/PublicPageHero';
 
 const HIGHLIGHTS = [
   { icon: <TrendingUp className="w-5 h-5" />, label: 'Mercado total', value: 'S/ 15,000M+', desc: 'Mercado inmobiliario en Perú' },
@@ -14,24 +13,14 @@ const HIGHLIGHTS = [
 export default function InversoresPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)] antialiased text-[var(--text-primary)] selection:bg-[var(--brand-primary)]/10">
-      <div className="bg-[var(--bg-primary)] border-b border-[var(--border-light)]">
-        <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-20 sm:py-28 flex flex-col items-center justify-center text-center relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-r from-[var(--brand-primary)]/10 to-transparent blur-3xl pointer-events-none rounded-full" />
-          
-          <div className="max-w-3xl relative z-10 flex flex-col items-center">
-            <span className="inline-flex items-center gap-1.5 bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] text-xs font-bold px-3 py-1.5 rounded-full tracking-wider uppercase mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand-primary)] animate-pulse" />
-              <TrendingUp className="w-3.5 h-3.5" /> Inversores
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-[var(--text-primary)] text-balance">
-              Relación con <span className="text-[var(--brand-primary)] relative inline-block">inversores<span className="absolute bottom-1 left-0 w-full h-[6px] bg-[var(--brand-primary)]/20 -skew-x-12" /></span>
-            </h1>
-            <p className="text-lg sm:text-xl text-[var(--text-secondary)] mt-6 leading-relaxed font-medium">
-              Conoce la visión, el mercado y las oportunidades detrás de Tiyuy.
-            </p>
-          </div>
-        </div>
-      </div>
+      <PublicPageHero
+        eyebrow="Inversores"
+        icon={<TrendingUp className="h-4 w-4" />}
+        title={<>Relación con <span className="text-[var(--brand-primary)]">inversores</span></>}
+        description="Conoce la visión, el mercado y las oportunidades detrás de Tiyuy."
+        imageSrc="/assets/Inversors.png"
+        imageAlt="Reunión de asesoría para inversores"
+      />
 
       <div className="max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-16 py-12 sm:py-16 space-y-12 sm:space-y-16">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">

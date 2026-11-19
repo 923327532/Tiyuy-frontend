@@ -480,8 +480,8 @@ export default function EventDetailView({
                     frameBorder="0"
                     scrolling="no"
                     src={event.location?.latitude && event.location?.longitude 
-                      ? `https://maps.google.com/maps?q=${event.location.latitude},${event.location.longitude}&z=15&output=embed`
-                      : `https://maps.google.com/maps?q=${encodeURIComponent(event.location?.address || '')}&z=15&output=embed`
+                      ? `https://www.openstreetmap.org/export/embed.html?bbox=${event.location.longitude - 0.005},${event.location.latitude - 0.005},${event.location.longitude + 0.005},${event.location.latitude + 0.005}&layer=mapnik&marker=${event.location.latitude},${event.location.longitude}`
+                      : `https://www.openstreetmap.org/export/embed.html?bbox=-77.05,-12.06,-77.03,-12.04&layer=mapnik`
                     }
                     style={{ border: 0 }}
                     allowFullScreen

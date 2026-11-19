@@ -42,7 +42,7 @@ import { useCampaigns, useCreateCampaign } from '@/presentation/hooks/useAdmin';
 import { Card, CardHeader, CardTitle, CardContent } from '@/presentation/components/ui/Card';
 import { Button } from '@/presentation/components/ui/Button';
 import { AdminTable } from '@/presentation/components/admin/AdminTable/AdminTable';
-import { AdminFilters } from '@/presentation/components/admin/AdminFilters/AdminFilters';
+import { AdminFilters } from '@/presentation/components/admin/AdminFilters';
 ```
 
 ### 2. LÓGICA DUPLICADA - ALTO RIESGO

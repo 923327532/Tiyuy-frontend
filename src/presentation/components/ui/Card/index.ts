@@ -1,1 +1,2 @@
-export * from './Card';
+export { BaseCard, Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, KpiCard, ChartCard, SummaryCard, AttentionCard, GrowthChip } from './Card';
+export type { BaseCardProps, CardProps, CardHeaderProps, CardTitleProps, CardDescriptionProps, CardContentProps, CardFooterProps, KpiCardProps, ChartCardProps, SummaryCardProps, AttentionCardProps, GrowthChipProps } from './Card';

@@ -770,7 +770,7 @@ export function Header() {
               {/* INGRESAR - Solo si NO está autenticado */}
               {!isAuthenticated && (
                 <Link
-                  href="/profile-selector"
+                  href="/login"
                   className="hidden sm:inline-flex items-center gap-2 px-4 py-2 border border-[var(--border-color)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--bg-secondary)] transition text-sm font-medium"
                 >
                   Ingresar
