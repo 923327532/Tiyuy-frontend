@@ -1,5 +1,6 @@
 'use client';
 
+import { buildAgentPlanDiscountPayload, getApiErrorMessage } from '@/utils/agentPlanDiscount';
 import { useState, useMemo } from 'react';
 import {
   useAgentDiscounts,
@@ -645,22 +646,29 @@ export default function AgentDiscountsPage() {
         onCreate={async () => {
           if (!selectedAgent || !selectedPlan) return;
           try {
+            const built = buildAgentPlanDiscountPayload(
+              selectedPlan.code,
+              planDiscount,
+              'Descuento creado desde panel admin'
+            );
+            if (!built.ok) {
+              showNotification(built.error, 'error');
+              return;
+            }
             await createPlanDiscountMutation.mutateAsync({
               agentId: selectedAgent.id,
-              data: {
-                planCode: selectedPlan.code,
-                discountPercentage: parseFloat(planDiscount.discountPercentage),
-                customPricePen: parseFloat(planDiscount.customPrice),
-                validFrom: planDiscount.startDate ? new Date(planDiscount.startDate).toISOString() : undefined,
-                validUntil: planDiscount.endDate ? new Date(planDiscount.endDate).toISOString() : undefined,
-                notes: `Descuento creado desde panel admin`
-              }
+              data: built.payload,
             });
-            showNotification(`Descuento del ${planDiscount.discountPercentage}% aplicado a ${selectedPlan.name}`, 'success');
+            showNotification(
+              built.payload.discountPercentage !== undefined
+                ? `Descuento del ${built.payload.discountPercentage}% aplicado a ${selectedPlan.name}`
+                : `Precio fijo de S/ ${built.payload.customPricePen} aplicado a ${selectedPlan.name}`,
+              'success'
+            );
             setIsPlanDiscountModalOpen(false);
             setPlanDiscount({ discountPercentage: '', customPrice: '', startDate: '', endDate: '' });
           } catch (error) {
-            showNotification('Error al aplicar descuento', 'error');
+            showNotification(getApiErrorMessage(error, 'Error al aplicar descuento'), 'error');
           }
         }}
         isPending={createPlanDiscountMutation.isPending}

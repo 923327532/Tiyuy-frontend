@@ -753,7 +753,7 @@ export class AdminRepository implements IAdminRepository {
     agentId: number, 
     data: { 
       planCode: string; 
-      discountPercentage: number; 
+      discountPercentage?: number; 
       customPricePen?: number;
       validFrom?: string;
       validUntil?: string;

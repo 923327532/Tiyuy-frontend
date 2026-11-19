@@ -60,7 +60,7 @@ interface NotifyDeveloperRequest {
 
 interface AgentPlanDiscountRequest {
   planCode: string;
-  discountPercentage: number;
+  discountPercentage?: number;
   customPricePen?: number;
   validFrom?: string;
   validUntil?: string;

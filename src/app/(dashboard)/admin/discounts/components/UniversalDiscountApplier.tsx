@@ -8,6 +8,8 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
+import { toast } from 'sonner';
+import { buildAgentPlanDiscountPayload, getApiErrorMessage } from '@/utils/agentPlanDiscount';
 import { Button } from '@/presentation/components/ui/Button';
 import { Modal } from '@/presentation/components/ui/Modal';
 import { Input } from '@/presentation/components/ui/Input';
@@ -287,20 +289,21 @@ function AgentDiscountContent({ onClose }: AgentDiscountContentProps) {
 
   const handleCreatePlanDiscount = async () => {
     if (!selectedAgent || !selectedPlan) return;
+    const built = buildAgentPlanDiscountPayload(selectedPlan.code, planDiscount);
+    if (!built.ok) {
+      toast.error(built.error);
+      return;
+    }
     try {
       await createPlanDiscountMutation.mutateAsync({
         agentId: selectedAgent.id,
-        data: {
-          planCode: selectedPlan.code,
-          discountPercentage: Number(planDiscount.discountPercentage),
-          customPricePen: planDiscount.customPrice ? Number(planDiscount.customPrice) : undefined,
-          validFrom: new Date(planDiscount.startDate).toISOString(),
-          validUntil: new Date(planDiscount.endDate).toISOString(),
-        },
+        data: built.payload,
       });
+      toast.success(`Descuento aplicado al plan ${selectedPlan.name}`);
       resetAndClose();
     } catch (error) {
       console.error('Error creating plan discount:', error);
+      toast.error(getApiErrorMessage(error, 'No se pudo aplicar el descuento'));
     }
   };
 
