@@ -1,0 +1,8 @@
+/* Selected agent header (user detail modal look) */
+.agent-discounts__selected-agent { border: 1px solid var(--udm-border, #e8ecef); border-radius: var(--udm-radius, 1rem); overflow: hidden; }
+.agent-discounts__selected-agent .user-detail-modal__header { gap: 0.875rem; padding: 1.25rem; }
+.agent-discounts__selected-agent .user-detail-modal__name { font-size: 1.0625rem; }
+.agent-discounts__selected-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.agent-discounts__selected-actions .agent-discounts__primary-btn,
+.agent-discounts__selected-actions .agent-discounts__soft-btn { height: 2.375rem; }
+

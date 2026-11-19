@@ -1,0 +1,36 @@
+/* ==========================================
+   RESPONSIVE
+========================================== */
+@media (max-width: 640px) {
+  .generic-table__search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .generic-table__search-wrapper {
+    max-width: none;
+  }
+
+  .generic-table__th,
+  .generic-table__td {
+    padding: 0.625rem 0.75rem;
+  }
+
+  .generic-table__user-cell {
+    gap: 0.5rem;
+  }
+
+  .generic-table__avatar {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.6875rem;
+  }
+
+  .generic-table__name {
+    font-size: 0.8125rem;
+  }
+
+  .generic-table__email {
+    font-size: 0.6875rem;
+  }
+}

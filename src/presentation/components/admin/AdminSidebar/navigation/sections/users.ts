@@ -50,18 +50,11 @@ export const usersSection: SidebarNavItem = {
     },
     {
       id: 'groups',
-      label: 'Grupos de Usuarios',
+      label: 'Grupos y Canales',
       icon: Users,
       path: '/admin/groups',
       exact: true,
       requiredPermissions: ['GROUPS_VIEW'],
-    },
-    {
-      id: 'new-group',
-      label: 'Crear Grupo',
-      icon: Users,
-      path: '/admin/groups/new',
-      requiredPermissions: ['GROUPS_MANAGE'],
     },
   ],
 };

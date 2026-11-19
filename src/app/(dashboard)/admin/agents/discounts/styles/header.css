@@ -1,0 +1,44 @@
+.agent-discounts__page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.875rem;
+}
+.agent-discounts__header-copy { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.agent-discounts__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--uf-text-primary, #0f172a);
+}
+.agent-discounts__subtitle {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--uf-text-tertiary, #64748b);
+}
+.agent-discounts__back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2.375rem;
+  padding: 0 0.95rem;
+  border: 1px solid var(--uf-border, #e8ecef);
+  border-radius: var(--uf-radius, 0.75rem);
+  background: var(--uf-bg, #fff);
+  color: var(--uf-text-secondary, #334155);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--uf-shadow-sm, 0 1px 2px rgb(15 23 42 / 0.04));
+  white-space: nowrap;
+  transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease, transform 200ms ease;
+}
+.agent-discounts__back-btn:hover {
+  border-color: var(--uf-border-hover, #d8dee3);
+  background: var(--uf-bg-subtle, #fafbfc);
+  color: var(--uf-text-primary, #0f172a);
+  transform: translateY(-1px);
+}

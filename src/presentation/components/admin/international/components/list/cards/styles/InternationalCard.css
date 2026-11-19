@@ -1,0 +1,13 @@
+/* ==========================================
+   INTERNATIONAL CARD - STYLE ENTRY
+   Split into logical partials (same cascade order).
+========================================== */
+@import './tokens.css';
+@import './container.css';
+@import './header.css';
+@import './body.css';
+@import './footer.css';
+@import './animations.css';
+@import './responsive.css';
+@import './actions.css';
+@import './reduced-motion.css';

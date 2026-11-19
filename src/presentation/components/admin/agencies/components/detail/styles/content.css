@@ -1,0 +1,184 @@
+/* Tab content styles (modal chrome comes from UserDetailModal.css) */
+
+/* Tab Panel */
+.agency-detail__tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Metrics */
+.agency-detail__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .agency-detail__metrics { grid-template-columns: repeat(4, 1fr); }
+}
+
+.agency-detail__metric {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--ad-bg-subtle);
+  border: 1px solid var(--ad-border);
+  border-radius: var(--ad-radius-sm);
+}
+
+.agency-detail__metric-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  background: var(--ad-brand-soft);
+  color: var(--ad-brand);
+  flex-shrink: 0;
+}
+
+.agency-detail__metric-icon--green {
+  background: var(--ad-success-soft);
+  color: var(--ad-success);
+}
+
+.agency-detail__metric-icon--purple {
+  background: var(--ad-info-soft);
+  color: var(--ad-info);
+}
+
+.agency-detail__metric-data {
+  min-width: 0;
+}
+
+.agency-detail__metric-value {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ad-text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agency-detail__metric-label {
+  margin: 0.125rem 0 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ad-text-tertiary);
+}
+
+/* Sections */
+.agency-detail__section {
+  padding-top: 0.5rem;
+}
+
+.agency-detail__section-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ad-text-tertiary);
+}
+
+/* Contact Grid */
+.agency-detail__contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .agency-detail__contact-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.agency-detail__contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  background: var(--ad-bg-subtle);
+  border: 1px solid var(--ad-border);
+  border-radius: var(--ad-radius-sm);
+}
+
+.agency-detail__contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: var(--ad-brand-soft);
+  color: var(--ad-brand);
+  flex-shrink: 0;
+}
+
+.agency-detail__contact-label {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ad-text-muted);
+}
+
+.agency-detail__contact-value {
+  margin: 0.125rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ad-text-secondary);
+  word-break: break-word;
+}
+
+/* Plan Grid */
+.agency-detail__plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .agency-detail__plan-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.agency-detail__plan-card {
+  padding: 0.875rem;
+  background: var(--ad-bg-subtle);
+  border: 1px solid var(--ad-border);
+  border-radius: var(--ad-radius-sm);
+}
+
+.agency-detail__plan-label {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ad-text-muted);
+}
+
+.agency-detail__plan-value {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ad-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Manager */
+.agency-detail__manager {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ad-text-secondary);
+}

@@ -1,0 +1,44 @@
+/* ==========================================
+   RESPONSIVE - Tablet (640px+)
+   Grid 2x2 - each metric is its own card
+========================================== */
+@media (min-width: 640px) {
+  .users-overview__header {
+    padding: 1.375rem 1.5rem 1.125rem;
+  }
+
+  .users-overview__metrics,
+  .users-kpi-grid.users-overview__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .users-overview-metric {
+    padding: 1.375rem 1.5rem;
+  }
+
+  .users-overview__roles {
+    padding: 1.25rem 1.5rem 1.375rem;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE - Desktop (1280px+)
+   Grid 4x1 en una sola fila - each metric is its own card
+========================================== */
+@media (min-width: 1280px) {
+  .users-overview__metrics,
+  .users-kpi-grid.users-overview__metrics {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .users-overview-metric {
+    padding: 1.375rem 1.25rem;
+  }
+
+  /* Ensure no internal borders on desktop either */
+  .users-overview-metric:not(:last-child) {
+    border-right: none;
+  }
+}

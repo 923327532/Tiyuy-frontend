@@ -1,0 +1,15 @@
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .generic-table__row,
+  .generic-table__actions-menu,
+  .generic-table__action-item,
+  .generic-table__action-btn,
+  .generic-table__select-all,
+  .generic-table__row-checkbox,
+  .generic-table__search-input {
+    animation: none !important;
+    transition: none !important;
+  }
+}

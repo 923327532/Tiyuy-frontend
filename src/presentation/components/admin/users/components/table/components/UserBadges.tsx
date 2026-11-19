@@ -3,6 +3,7 @@
 import { Badge } from '@/presentation/components/ui/Badge';
 import { ROLE_LABELS } from '@/presentation/components/admin/users/userRoleConfig';
 import type { UserListItem } from '@/core/domain/entities/Admin';
+import type { UserIdentityLike } from '@/presentation/components/admin/users/types/users.types';
 
 export function RoleBadge({ user }: { user: UserListItem }) {
   const role = user.role ?? 'USER';
@@ -15,7 +16,7 @@ export function RoleBadge({ user }: { user: UserListItem }) {
   );
 }
 
-export function StatusBadge({ user }: { user: UserListItem }) {
+export function StatusBadge({ user }: { user: UserIdentityLike }) {
   const variant = user.enabled ? 'success' : 'danger';
   return (
     <Badge variant={variant} size="sm" dot className={`users-table__badge users-table__badge--${variant}`}>
@@ -24,7 +25,7 @@ export function StatusBadge({ user }: { user: UserListItem }) {
   );
 }
 
-export function VerificationBadges({ user }: { user: UserListItem }) {
+export function VerificationBadges({ user }: { user: UserIdentityLike }) {
   const emailVariant = user.emailVerified ? 'success' : 'warning';
   const phoneVariant = user.phoneVerified ? 'success' : 'warning';
 

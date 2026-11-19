@@ -1,0 +1,56 @@
+/* ==========================================
+   GENERIC USER TABLE - Unified Design System
+   Reusable table for regular & international users
+========================================== */
+
+/* CSS Variables - Brand tokens */
+:root {
+  --gt-brand: #475569;
+  --gt-brand-soft: #f1f5f9;
+  --gt-brand-hover: #334155;
+
+  --gt-success: #6b9080;
+  --gt-success-soft: #e8f0ec;
+  --gt-success-hover: #5a7a6e;
+
+  --gt-warning: #c9a876;
+  --gt-warning-soft: #f5ede0;
+  --gt-warning-hover: #b89968;
+
+  --gt-danger: #cf8a92;
+  --gt-danger-soft: #f5e5e7;
+  --gt-danger-hover: #b87a82;
+
+  --gt-info: #7ba0bc;
+  --gt-info-soft: #e6eff5;
+  --gt-info-hover: #6b8fa8;
+
+  --gt-neutral: #64748b;
+  --gt-neutral-soft: #f1f5f9;
+
+  /* Neutrals */
+  --gt-bg: #ffffff;
+  --gt-bg-subtle: #fafbfc;
+  --gt-bg-muted: #f5f7f9;
+  --gt-border: #e8ecef;
+  --gt-border-hover: #d8dee3;
+  --gt-text-primary: #0f172a;
+  --gt-text-secondary: #334155;
+  --gt-text-tertiary: #64748b;
+  --gt-text-muted: #94a3b8;
+
+  /* Shadows */
+  --gt-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --gt-shadow-md: 0 4px 12px -4px rgb(15 23 42 / 0.10), 0 2px 4px rgb(15 23 42 / 0.04);
+  --gt-shadow-lg: 0 12px 28px -8px rgb(15 23 42 / 0.12), 0 4px 8px rgb(15 23 42 / 0.04);
+
+  /* Radius */
+  --gt-radius: 0.75rem;
+  --gt-radius-sm: 0.5rem;
+  --gt-radius-lg: 1rem;
+
+  /* Transitions */
+  --gt-transition-fast: 150ms ease;
+  --gt-transition-base: 200ms ease;
+  --gt-transition-smooth: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}

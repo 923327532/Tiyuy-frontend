@@ -1,0 +1,38 @@
+/* ==========================================
+   INTERNATIONAL CARD - 2026 PREMIUM
+   Consistente con el design system muted
+========================================== */
+
+:root {
+  --intc-brand: #475569;
+  --intc-brand-soft: #f1f5f9;
+  --intc-brand-hover: #3d4a5c;
+
+  --intc-success: #6b9080;
+  --intc-success-soft: #e8f0ec;
+
+  --intc-warning: #c9a876;
+  --intc-warning-soft: #f5ede0;
+
+  --intc-danger: #cf8a92;
+  --intc-danger-soft: #f5e5e7;
+
+  --intc-bg: #ffffff;
+  --intc-bg-subtle: #fafbfc;
+  --intc-bg-muted: #f5f7f9;
+  --intc-border: #e8ecef;
+  --intc-border-strong: #d8dee3;
+  --intc-border-hover: #cdd5de;
+
+  --intc-text-primary: #0f172a;
+  --intc-text-secondary: #334155;
+  --intc-text-tertiary: #64748b;
+  --intc-text-muted: #94a3b8;
+
+  --intc-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --intc-shadow-md: 0 8px 20px -8px rgb(15 23 42 / 0.10), 0 2px 6px rgb(15 23 42 / 0.04);
+  --intc-shadow-lg: 0 16px 32px -10px rgb(15 23 42 / 0.12), 0 6px 12px rgb(15 23 42 / 0.04);
+
+  --intc-radius: 0.875rem;
+  --intc-radius-sm: 0.625rem;
+}

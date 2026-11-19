@@ -1,0 +1,33 @@
+/* ==========================================
+   EMPTY STATE
+========================================== */
+.generic-table__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--gt-text-tertiary);
+}
+
+.generic-table__empty-icon {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  color: var(--gt-text-muted);
+  opacity: 0.5;
+}
+
+.generic-table__empty-message {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--gt-text-secondary);
+}
+
+.generic-table__empty-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--gt-text-muted);
+}

@@ -1,12 +1,19 @@
 /* Table container */
 .users-table__container {
   width: 100%;
+  max-width: 100%;
   border-radius: var(--ut-radius);
   border: 1px solid var(--ut-border);
   background: var(--ut-bg);
   box-shadow: var(--ut-shadow-sm);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   animation: ut-container-enter 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.users-table__container table {
+  min-width: 920px;
 }
 
 @keyframes ut-container-enter {

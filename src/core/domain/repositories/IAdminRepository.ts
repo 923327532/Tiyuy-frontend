@@ -113,6 +113,7 @@ export interface IAdminRepository {
     params?: PaginationParams
   ): Promise<PaginatedResponse<PropertyModerationItem>>;
   getPropertyForModeration(propertyId: number): Promise<PropertyModerationItem>;
+  getPropertyModerationStats(): Promise<Record<string, number>>;
   moderateProperty(propertyId: number, request: ModeratePropertyRequest): Promise<void>;
   toggleFeaturedProperty(propertyId: number, featured: boolean): Promise<void>;
   deletePropertyAsAdmin(propertyId: number, reason?: string): Promise<void>;

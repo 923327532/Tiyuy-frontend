@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { CalendarDays, RefreshCw } from 'lucide-react';
 import type { DashboardHeaderProps } from '@/presentation/components/admin/dashboard/types/dashboard.types';
 import { greetingFor } from '@/presentation/components/admin/dashboard/utils/dashboard.utils';
+import { formatShortDate } from '@/presentation/components/admin/users/utils/users.utils';
 
 export function DashboardHeader({
   generatedAt,
@@ -12,18 +13,17 @@ export function DashboardHeader({
   userName,
 }: DashboardHeaderProps) {
   const [now, setNow] = useState<Date | null>(null);
+  const [dateLabel, setDateLabel] = useState('');
   useEffect(() => {
-    const id = window.setTimeout(() => setNow(new Date()), 0);
+    const id = window.setTimeout(() => {
+      setNow(new Date());
+      setDateLabel(formatShortDate());
+    }, 0);
     return () => window.clearTimeout(id);
   }, []);
 
   const firstName = userName?.trim().split(/\s+/)[0];
   const greeting = now ? greetingFor(now) : 'Hola';
-  const today = now?.toLocaleDateString('es-PE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
 
   const updateTime = generatedAt
     ? new Date(generatedAt).toLocaleTimeString('es-PE', {
@@ -94,16 +94,10 @@ export function DashboardHeader({
             desde un solo lugar.
           </p>
 
-          {today && (
-            <div className="
-              mt-4 flex items-center gap-2
-              text-xs font-medium capitalize
-              text-slate-500
-            ">
-              <CalendarDays className="
-                h-4 w-4 text-teal-700
-              " />
-              {today}
+          {dateLabel && (
+            <div className="mt-4 flex items-center gap-2 text-xs font-medium text-slate-500">
+              <CalendarDays className="h-4 w-4 text-teal-700" aria-hidden="true" />
+              <time>{dateLabel}</time>
             </div>
           )}
         </div>

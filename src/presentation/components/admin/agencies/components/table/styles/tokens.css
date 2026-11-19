@@ -1,0 +1,25 @@
+.agencies-table {
+  --at-brand: #475569;
+  --at-brand-soft: #f1f5f9;
+  --at-success: #6b9080;
+  --at-success-soft: #e8f0ec;
+  --at-warning: #c9a876;
+  --at-warning-soft: #f5ede0;
+  --at-danger: #cf8a92;
+  --at-danger-soft: #f5e5e7;
+  --at-info: #7ba0bc;
+  --at-info-soft: #e6eff5;
+  --at-bg: #ffffff;
+  --at-bg-subtle: #fafbfc;
+  --at-bg-muted: #f5f7f9;
+  --at-border: #e8ecef;
+  --at-border-hover: #d8dee3;
+  --at-text-primary: #0f172a;
+  --at-text-secondary: #334155;
+  --at-text-tertiary: #64748b;
+  --at-text-muted: #94a3b8;
+  --at-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --at-radius: 0.875rem;
+  --at-radius-sm: 0.625rem;
+  --at-radius-xs: 0.5rem;
+}

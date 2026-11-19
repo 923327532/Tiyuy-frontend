@@ -1,0 +1,11 @@
+/* Agent discounts panel - same visual language as the users admin section.
+   Tokens come from UsersFilters.css, UserDetailModal.css and GenericUserTable.css.
+   Split into logical partials (same cascade order). */
+@import './styles/header.css';
+@import './styles/surfaces.css';
+@import './styles/agent-search.css';
+@import './styles/selection.css';
+@import './styles/plans.css';
+@import './styles/table.css';
+@import './styles/footer.css';
+@import './styles/responsive.css';

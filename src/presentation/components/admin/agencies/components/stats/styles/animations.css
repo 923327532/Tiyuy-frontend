@@ -1,0 +1,10 @@
+@keyframes overview-card-enter { 0%{opacity:0;transform:translateY(24px) scale(.97)}60%{transform:translateY(-4px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes overview-header-enter { 0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:translateY(0)} }
+@keyframes badge-enter { 0%{opacity:0;transform:translateX(10px) scale(.9)}100%{opacity:1;transform:translateX(0) scale(1)} }
+@keyframes metric-enter { 0%{opacity:0;transform:translateY(16px) scale(.97)}60%{transform:translateY(-2px) scale(1.01)}100%{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes dot-pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.25)} }
+@keyframes aurora-border { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+@media (prefers-reduced-motion: reduce) {
+  .users-overview__card,.users-overview__card::before,.users-overview__header,.users-overview__badge,.users-overview__badge-dot,.users-overview-metric,.users-overview-metric__status-dot { animation:none !important; transition:none !important; }
+  .users-overview__card:hover,.users-overview-metric:hover { transform:none; }
+}

@@ -1,0 +1,180 @@
+.agency-delete-modal__body {
+  padding: 1.5rem;
+  background: var(--ada-bg);
+}
+
+.agency-delete-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.agency-delete-modal__label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ada-text-secondary);
+  line-height: 1.3;
+}
+
+.agency-delete-modal__label-optional {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--ada-text-muted);
+  font-style: italic;
+}
+
+.agency-delete-modal__textarea {
+  width: 100%;
+  min-height: 5.5rem;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--ada-border);
+  border-radius: var(--ada-radius-sm);
+  background: var(--ada-bg);
+  color: var(--ada-text-primary);
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 450;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  box-shadow: var(--ada-shadow-sm);
+  transition: border-color 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1), background-color 200ms ease;
+}
+
+.agency-delete-modal__textarea::placeholder {
+  color: var(--ada-text-muted);
+  font-weight: 400;
+}
+
+.agency-delete-modal__textarea:hover:not(:disabled) {
+  border-color: var(--ada-border-strong);
+}
+
+.agency-delete-modal__textarea:focus {
+  border-color: var(--ada-danger);
+  box-shadow: 0 0 0 3px var(--ada-danger-glow);
+}
+
+.agency-delete-modal__textarea:disabled {
+  background: var(--ada-bg-muted);
+  color: var(--ada-text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.agency-delete-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  padding: 1rem 1.5rem;
+  background: var(--ada-bg-subtle);
+  border-top: 1px solid var(--ada-border);
+}
+
+.agency-delete-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1.125rem;
+  border-radius: var(--ada-radius-sm);
+  border: 1px solid transparent;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease, box-shadow 200ms ease, transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.agency-delete-modal__btn--cancel {
+  background: var(--ada-bg);
+  border-color: var(--ada-border);
+  color: var(--ada-text-secondary);
+  box-shadow: var(--ada-shadow-sm);
+}
+
+.agency-delete-modal__btn--cancel:hover:not(:disabled) {
+  background: var(--ada-bg-subtle);
+  border-color: var(--ada-border-strong);
+  color: var(--ada-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--ada-shadow-md);
+}
+
+.agency-delete-modal__btn--confirm {
+  background: var(--ada-danger);
+  color: #fff;
+  box-shadow: 0 1px 2px rgb(207 138 146 / 0.25);
+}
+
+.agency-delete-modal__btn--confirm:hover:not(:disabled) {
+  background: var(--ada-danger-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px var(--ada-danger-glow);
+}
+
+.agency-delete-modal__btn--cancel:active:not(:disabled),
+.agency-delete-modal__btn--confirm:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.agency-delete-modal__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.agency-delete-modal__spinner {
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid rgb(255 255 255 / 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ada-spin 700ms linear infinite;
+}
+
+.agency-delete-modal__btn--cancel:focus-visible {
+  outline: 2px solid var(--ada-brand);
+  outline-offset: 2px;
+}
+
+.agency-delete-modal__btn--confirm:focus-visible {
+  outline: 2px solid var(--ada-danger);
+  outline-offset: 2px;
+}
+
+@keyframes ada-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .agency-delete-modal__surface { max-width: 100%; border-radius: var(--ada-radius-sm); }
+  .agency-delete-modal__header, .agency-delete-modal__body { padding: 1.25rem; }
+  .agency-delete-modal__warning { margin: 1rem 1.25rem 0; }
+  .agency-delete-modal__actions { padding: 1rem 1.25rem; flex-direction: column-reverse; }
+  .agency-delete-modal__btn { width: 100%; height: 2.75rem; }
+  .agency-delete-modal__icon { width: 2.5rem; height: 2.5rem; }
+  .agency-delete-modal__title { font-size: 1.0625rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agency-delete-modal__surface,
+  .agency-delete-modal__icon,
+  .agency-delete-modal__warning,
+  .agency-delete-modal__textarea,
+  .agency-delete-modal__btn,
+  .agency-delete-modal__spinner {
+    animation: none !important;
+    transition: none !important;
+  }
+  .agency-delete-modal__btn:hover:not(:disabled),
+  .agency-delete-modal__btn:active:not(:disabled) {
+    transform: none !important;
+  }
+}

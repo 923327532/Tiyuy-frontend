@@ -1,7 +1,10 @@
 'use client';
 
+import { AlertTriangle } from 'lucide-react';
+
 import { Modal } from '@/presentation/components/ui/Modal';
-import { Group, Channel } from '../../types';
+import type { Group, Channel } from '../../types';
+import '@/presentation/components/admin/users/components/delete-user/styles/DeleteUserModal.css';
 
 interface ViolationModalProps {
   isOpen: boolean;
@@ -40,58 +43,93 @@ export function ViolationModal({
   const isChannel = 'city' in item;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Enviar Notificación de Violación - ${item.name}`}
-    >
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Tipo de Violación
-          </label>
-          <select
-            value={violationType}
-            onChange={(e) => setViolationType(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            {VIOLATION_TYPES.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onConfirm();
+        }}
+        className="delete-user-modal__surface"
+      >
+        <header className="delete-user-modal__header">
+          <div className="delete-user-modal__icon">
+            <AlertTriangle className="w-5 h-5" aria-hidden="true" />
+          </div>
+          <div className="delete-user-modal__header-content">
+            <h3 className="delete-user-modal__title">
+              Notificación de violación
+            </h3>
+            <p className="delete-user-modal__description" title={item.name}>
+              {item.name} · {isChannel ? 'Canal' : 'Grupo'}
+            </p>
+          </div>
+        </header>
+
+        <div className="delete-user-modal__warning">
+          <AlertTriangle className="w-4 h-4" aria-hidden="true" />
+          <span>El administrador será notificado sobre esta violación.</span>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Mensaje al Administrador
-          </label>
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={`Ingresa detalles sobre la violación de políticas para este ${isChannel ? 'canal' : 'grupo'}`}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-            rows={4}
-          />
+        <div className="delete-user-modal__body">
+          <div className="delete-user-modal__field">
+            <label className="delete-user-modal__label" htmlFor="violation-type">
+              Tipo de violación
+            </label>
+            <select
+              id="violation-type"
+              className="delete-user-modal__select"
+              value={violationType}
+              onChange={(event) => setViolationType(event.target.value)}
+              disabled={isPending}
+            >
+              {VIOLATION_TYPES.map((type) => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="delete-user-modal__field">
+            <label className="delete-user-modal__label" htmlFor="violation-message">
+              Mensaje para el administrador <span className="delete-user-modal__label-optional">(requerido)</span>
+            </label>
+            <textarea
+              id="violation-message"
+              className="delete-user-modal__textarea"
+              value={message}
+              onChange={(event) => setMessage(event.target.value)}
+              rows={4}
+              placeholder={`Detalla la violación de políticas de este ${isChannel ? 'canal' : 'grupo'}...`}
+              disabled={isPending}
+              required
+            />
+          </div>
         </div>
 
-        <div className="flex gap-3 justify-end pt-4">
+        <footer className="delete-user-modal__actions">
           <button
+            type="button"
+            className="delete-user-modal__btn delete-user-modal__btn--cancel"
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition"
+            disabled={isPending}
           >
             Cancelar
           </button>
           <button
-            onClick={onConfirm}
-            disabled={!message || isPending}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition disabled:opacity-50"
+            type="submit"
+            className="delete-user-modal__btn delete-user-modal__btn--confirm"
+            disabled={!message.trim() || isPending}
           >
-            {isPending ? 'Enviando...' : 'Enviar Notificación'}
+            {isPending ? (
+              <>
+                <span className="delete-user-modal__spinner" aria-hidden="true" />
+                Enviando...
+              </>
+            ) : (
+              'Enviar notificación'
+            )}
           </button>
-        </div>
-      </div>
+        </footer>
+      </form>
     </Modal>
   );
 }

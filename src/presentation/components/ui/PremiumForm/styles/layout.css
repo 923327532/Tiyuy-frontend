@@ -1,0 +1,133 @@
+.premium-form__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (min-width: 1280px) {
+  .premium-form__layout {
+    grid-template-columns: minmax(0, 1fr) 19rem;
+  }
+}
+
+.premium-form__main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.premium-form__card,
+.premium-form__aside {
+  border: 1px solid var(--pf-line);
+  border-radius: 1rem;
+  background: var(--pf-surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 10px 30px -18px rgba(15, 23, 42, 0.25);
+}
+
+.premium-form__card {
+  overflow: hidden;
+}
+
+.premium-form__section {
+  padding: 1.25rem;
+}
+
+.premium-form__section + .premium-form__section {
+  border-top: 1px solid var(--pf-line);
+}
+
+@media (min-width: 640px) {
+  .premium-form__section {
+    padding: 1.5rem;
+  }
+}
+
+.premium-form__section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin-bottom: 1.25rem;
+}
+
+.premium-form__section-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: #e6f4f1;
+  color: #0f766e;
+}
+
+.premium-form__section-title {
+  color: var(--pf-ink);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.premium-form__section-description {
+  margin-top: 0.25rem;
+  color: var(--pf-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.premium-form__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .premium-form__grid--two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.premium-form__span-all {
+  grid-column: 1 / -1;
+}
+
+.premium-form__aside {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1.25rem;
+}
+
+.premium-form__aside-title {
+  color: var(--pf-ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.premium-form__aside-text {
+  margin-top: 0.5rem;
+  color: var(--pf-muted);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.premium-form__aside-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 1rem;
+}
+
+.premium-form__aside-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #475569;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.premium-form__aside-check {
+  flex: none;
+  color: #0d9488;
+}

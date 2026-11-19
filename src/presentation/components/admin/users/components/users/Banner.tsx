@@ -2,31 +2,21 @@
 
 import { useEffect, useState } from 'react';
 
-import {
-  Clock3,
-  ShieldCheck,
-  CalendarDays,
-} from 'lucide-react';
+import { CalendarDays, ShieldCheck } from 'lucide-react';
 
-import { formatCurrentDate } from '@/presentation/components/admin/users/utils/users.utils';
+import { formatShortDate } from '@/presentation/components/admin/users/utils/users.utils';
 
 interface BannerProps {
   className?: string;
 }
 
 export function Banner({ className = '' }: BannerProps) {
-  const [now, setNow] = useState<Date | null>(null);
+  const [dateLabel, setDateLabel] = useState('');
 
   useEffect(() => {
-    const id = window.setTimeout(() => setNow(new Date()), 0);
+    const id = window.setTimeout(() => setDateLabel(formatShortDate()), 0);
     return () => window.clearTimeout(id);
   }, []);
-
-  const today = now?.toLocaleDateString('es-PE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
 
   return (
     <header
@@ -96,18 +86,6 @@ export function Banner({ className = '' }: BannerProps) {
             inmobiliarias desde un solo lugar.
           </p>
 
-          {today && (
-            <div className="
-              mt-4 flex items-center gap-2
-              text-xs font-medium capitalize text-slate-500
-            ">
-              <CalendarDays
-                className="h-4 w-4 text-teal-700"
-                aria-hidden="true"
-              />
-              <time>{today}</time>
-            </div>
-          )}
         </div>
 
         {/* Estado del módulo */}
@@ -150,22 +128,9 @@ export function Banner({ className = '' }: BannerProps) {
       </div>
 
       {/* Pie informativo */}
-      <div className="
-        relative mt-6 flex flex-wrap
-        items-center justify-between gap-3
-        border-t border-slate-200/70 pt-4
-      ">
-        <div className="
-          flex items-center gap-2 text-xs
-          font-medium text-slate-500
-        ">
-          <Clock3 className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" />
-          <time>{formatCurrentDate()}</time>
-        </div>
-
-        <span className="text-[11px] font-medium text-slate-400">
-          Panel de administración de usuarios
-        </span>
+      <div className="relative mt-6 flex items-center gap-2 border-t border-slate-200/70 pt-4 text-xs font-medium text-slate-500">
+        <CalendarDays className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" />
+        <time>{dateLabel}</time>
       </div>
     </header>
   );

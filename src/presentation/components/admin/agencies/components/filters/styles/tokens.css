@@ -1,0 +1,18 @@
+.agencies-filters {
+  --af-bg: #ffffff;
+  --af-bg-subtle: #fafbfc;
+  --af-bg-muted: #f5f7f9;
+  --af-border: #e8ecef;
+  --af-border-hover: #d8dee3;
+  --af-success: #6b9080;
+  --af-success-soft: #e8f0ec;
+  --af-success-glow: #6b9080;
+  --af-text-primary: #0f172a;
+  --af-text-secondary: #334155;
+  --af-text-tertiary: #64748b;
+  --af-text-muted: #94a3b8;
+  --af-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --af-shadow-focus: 0 0 0 3px;
+  --af-radius: 0.75rem;
+  --af-radius-sm: 0.5rem;
+}

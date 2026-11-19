@@ -1,0 +1,159 @@
+/* ==========================================
+   PROPERTIES TABLE - MUTED DESIGN SYSTEM
+========================================== */
+
+.properties-table__container {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #ffffff;
+  overflow-x: auto;
+}
+
+.properties-table__container table {
+  min-width: 1080px;
+}
+
+.properties-table__container th {
+  background: #f1f5f9;
+  color: #0f2e3a;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.properties-table__container td {
+  vertical-align: middle;
+  padding: 0.75rem 1rem;
+}
+
+.properties-table__container tbody tr {
+  transition: background-color 150ms ease;
+}
+
+.properties-table__container tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* ---------- Identity cell ---------- */
+
+.properties-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.properties-identity__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  background: linear-gradient(135deg, #f0f7fa, #e6f2ef);
+}
+
+.properties-identity__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.properties-identity__fallback {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0f766e;
+}
+
+.properties-identity__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+/* ---------- Generic cells ---------- */
+
+.properties-cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.properties-cell-primary {
+  display: block;
+  overflow: hidden;
+  color: #0f2e3a;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.properties-cell-secondary {
+  display: block;
+  overflow: hidden;
+  color: #94a3b8;
+  font-size: 0.6875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.properties-cell-price {
+  color: #0f766e;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.properties-cell-number {
+  color: #475569;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.properties-cell-featured {
+  color: #d97706;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.properties-cell-alert {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 9999px;
+  background: #fef2f2;
+  color: #b94b59;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+/* ---------- Row actions ---------- */
+
+.properties-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.properties-row-actions button {
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .properties-row-actions {
+    max-width: 9rem;
+  }
+}

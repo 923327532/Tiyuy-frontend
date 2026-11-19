@@ -1,0 +1,41 @@
+/* ==========================================
+   ROW CHECKBOX
+========================================== */
+.generic-table__select-all,
+.generic-table__row-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1.5px solid var(--gt-border);
+  border-radius: 0.25rem;
+  background: var(--gt-bg);
+  color: transparent;
+  cursor: pointer;
+  transition: border-color var(--gt-transition-fast), background-color var(--gt-transition-fast), color var(--gt-transition-fast);
+}
+
+.generic-table__select-all:hover,
+.generic-table__row-checkbox:hover {
+  border-color: var(--gt-brand);
+}
+
+.generic-table__select-all:focus-visible,
+.generic-table__row-checkbox:focus-visible {
+  outline: 2px solid var(--gt-brand);
+  outline-offset: 2px;
+}
+
+.generic-table__select-all[aria-checked="true"],
+.generic-table__row-checkbox[aria-checked="true"] {
+  border-color: var(--gt-brand);
+  background: var(--gt-brand);
+  color: white;
+}
+
+.generic-table__select-all[aria-checked="mixed"] {
+  border-color: var(--gt-brand);
+  background: var(--gt-brand);
+  color: white;
+}

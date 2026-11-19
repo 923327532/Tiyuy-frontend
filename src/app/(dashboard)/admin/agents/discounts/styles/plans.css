@@ -1,0 +1,69 @@
+/* Plan cards */
+.agent-discounts__plan-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.875rem;
+}
+.agent-discounts__plan-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--gt-border, #e8ecef);
+  border-radius: var(--gt-radius-sm, 0.5rem);
+  background: var(--gt-bg, #fff);
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+.agent-discounts__plan-card:hover {
+  border-color: var(--uf-border-hover, #d8dee3);
+  box-shadow: var(--gt-shadow-md, 0 4px 12px -4px rgb(15 23 42 / 0.1), 0 2px 4px rgb(15 23 42 / 0.04));
+  transform: translateY(-2px);
+}
+.agent-discounts__plan-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--gt-radius-sm, 0.5rem);
+  background: var(--gt-brand-soft, #f1f5f9);
+  color: var(--gt-brand, #475569);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.agent-discounts__plan-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gt-text-primary, #0f172a);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.agent-discounts__plan-price {
+  margin-top: 0.2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--gt-text-primary, #0f172a);
+  font-variant-numeric: tabular-nums;
+}
+.agent-discounts__plan-action {
+  width: 100%;
+  margin-top: 0.875rem;
+  height: 2.25rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--uf-border, #e8ecef);
+  border-radius: var(--uf-radius-sm, 0.5rem);
+  background: var(--uf-bg, #fff);
+  color: var(--uf-text-secondary, #334155);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+.agent-discounts__plan-action:hover {
+  border-color: var(--uf-success, #6b9080);
+  background: var(--uf-success-soft, #e8f0ec);
+  color: var(--uf-success, #6b9080);
+}
