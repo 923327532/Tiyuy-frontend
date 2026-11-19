@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input } from '@/presentation/components/ui/Input/Input';
 import { useLocationSearch } from '@/presentation/hooks/useLocationSearch';
-import { MapPin, AlertCircle } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface LocationSearchProps {
   onLocationSelect: (location: {
@@ -27,7 +27,6 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
   const { predictions, loading } = useLocationSearch(query);
 
   useEffect(() => {
@@ -93,7 +92,6 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
         }
       />
 
-      {/* Dropdown de predicciones */}
       {showDropdown && predictions.length > 0 && (
         <div className="absolute z-[9999] w-full mt-1 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {predictions.map((prediction) => (
@@ -117,18 +115,6 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
               </div>
             </div>
           ))}
-        </div>
-      )}
-
-      {/* Mensaje de error si no hay API key */}
-      {!API_KEY && (
-        <div className="absolute z-50 w-full mt-1 bg-red-50 border border-red-200 rounded-lg p-3">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-600" />
-            <span className="text-sm text-red-800">
-              Google Places API key no configurada. Agrega NEXT_PUBLIC_GOOGLE_PLACES_API_KEY a tu .env.local
-            </span>
-          </div>
         </div>
       )}
     </div>

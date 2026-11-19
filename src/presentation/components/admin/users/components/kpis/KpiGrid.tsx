@@ -89,7 +89,7 @@ export function KpiGrid({
 
   return (
     <div
-      className="users-overview__metrics users-kpi-grid"
+      className="users-overview__metrics users-kpi-grid grid-cols-2 gap-4 md:gap-5 xl:grid-cols-4"
       aria-label="Indicadores generales de usuarios"
       role="group"
     >

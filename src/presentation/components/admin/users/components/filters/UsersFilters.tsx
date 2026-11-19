@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { SlidersHorizontal } from 'lucide-react';
 
 import type { UsersFiltersProps } from '@/presentation/components/admin/users/types/users.types';
@@ -20,6 +21,8 @@ export function UsersFilters({
   statusOptions,
   roleOptions,
 }: UsersFiltersProps) {
+  const [draftSearch, setDraftSearch] = useState(searchQuery);
+
   const hasFilters =
     searchQuery.trim().length > 0 ||
     statusFilter !== 'all' ||
@@ -28,7 +31,21 @@ export function UsersFilters({
   return (
     <section className="users-filters" aria-label="Filtros de usuarios">
       <div className="users-filters__main">
-        <SearchField value={searchQuery} onChange={onSearchChange} />
+        <form
+          className="flex min-w-0 flex-1 items-center gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onSearchChange(draftSearch.trim());
+          }}
+        >
+          <SearchField value={draftSearch} onChange={setDraftSearch} />
+          <button
+            type="submit"
+            className="inline-flex h-[2.625rem] min-w-24 shrink-0 items-center justify-center gap-1.5 rounded-lg bg-[#164e63] px-4 text-xs font-semibold text-white transition-colors hover:bg-[#0f3d50]"
+          >
+            Buscar
+          </button>
+        </form>
 
         <div className="users-filters__selects">
           <SelectField
@@ -46,7 +63,14 @@ export function UsersFilters({
           />
         </div>
 
-        {hasFilters && <ClearFiltersButton onClick={onClear} />}
+        {hasFilters && (
+          <ClearFiltersButton
+            onClick={() => {
+              setDraftSearch('');
+              onClear();
+            }}
+          />
+        )}
       </div>
     </section>
   );

@@ -28,7 +28,7 @@ export function UserActions<T extends UserActionUser = UserActionUser>({
   const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email;
 
   return (
-    <div className="flex items-center gap-2 border-t border-slate-100 bg-white p-4">
+    <div className="flex items-center gap-2 border-t border-slate-100 bg-white px-3 py-2.5 sm:px-4 sm:py-3">
       <button
         type="button"
         className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#164E63] px-4 py-2 text-sm font-medium text-white hover:bg-[#0F3D50] transition-colors"

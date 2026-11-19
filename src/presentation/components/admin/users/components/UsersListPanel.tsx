@@ -79,7 +79,7 @@ export function UsersListPanel({
     return () => media.removeEventListener('change', update);
   }, []);
 
-  const effectiveViewMode: ViewMode = viewMode;
+  const effectiveViewMode: ViewMode = isDesktop ? viewMode : 'table';
 
   return (
     <div className="bg-white rounded-xl shadow-lg border border-slate-100 overflow-hidden">
@@ -95,7 +95,7 @@ export function UsersListPanel({
         roleOptions={USERS_ROLE_OPTIONS}
       />
 
-      {!isLoading && hasUsers && <UsersViewToggle value={viewMode} onChange={setViewMode} />}
+      {isDesktop && <UsersViewToggle value={viewMode} onChange={setViewMode} />}
 
       {isLoading && <UsersLoadingState />}
       {Boolean(error) && <UsersErrorState error={error} onRetry={onRetry} />}

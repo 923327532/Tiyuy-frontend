@@ -19,7 +19,6 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
       : ''
   );
   const [mapCenter, setMapCenter] = useState<{lat: number, lng: number} | null>(null);
-  const [mapReady, setMapReady] = useState(false);
   const [useManualCoords, setUseManualCoords] = useState(
     formData.manualCoordinates === true || 
     (formData.latitude && formData.longitude && !formData.street && !formData.streetNumber)
@@ -27,9 +26,8 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
   const [latInput, setLatInput] = useState(formData.latitude?.toString() || '');
   const [lngInput, setLngInput] = useState(formData.longitude?.toString() || '');
   
-  // ✅ Refs para mapa y marcador
-  const mapInstanceRef = useRef<any>(null);
-  const markerRef = useRef<any>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const markerRef = useRef<L.Marker | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const { getPlaceDetails, loading, error } = useGooglePlaces();
@@ -37,9 +35,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
   const inputClass =
     'w-full px-4 py-3 rounded-lg border border-[var(--input-border)] text-sm text-[var(--text-primary)] bg-[var(--bg-card)] outline-none';
 
-  // Función para actualizar con logging
   const handleChangeWithLog = (field: string, value: any) => {
-    console.log(`📝 LocationStep - Actualizando ${field}:`, value);
     onChange(field, value);
   };
 
@@ -47,7 +43,6 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
     setUseManualCoords(useManual);
     onChange('manualCoordinates', useManual);
     
-    // Si activa manual y ya hay coordenadas, mostrar el mapa
     if (useManual && formData.latitude && formData.longitude) {
       const lat = Number(formData.latitude);
       const lng = Number(formData.longitude);
@@ -81,7 +76,6 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
     }
   };
 
-  // ✅ fullAddress como valor derivado con useMemo (EVITA BUCLE INFINITO)
   const fullAddress = useMemo(() => {
     if (useManualCoords && formData.latitude && formData.longitude) {
       return `${formData.latitude}, ${formData.longitude}${formData.district ? ` - ${formData.district}` : ''}${formData.province ? `, ${formData.province}` : ''}`;
@@ -96,135 +90,120 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
     ].filter(Boolean).join(', ');
   }, [formData.street, formData.streetNumber, formData.urbanization, formData.district, formData.province, formData.region, formData.latitude, formData.longitude, useManualCoords]);
 
-  // Función para geocodificar dirección y actualizar mapa
   const geocodeAddress = async (address: string) => {
-    if (!window.google?.maps) return;
-
-    const geocoder = new window.google.maps.Geocoder();
-    
-    geocoder.geocode({ address }, (results: any, status: any) => {
-      if (status === 'OK' && results[0]) {
-        const location = results[0].geometry.location;
-        const lat = location.lat();
-        const lng = location.lng();
-        
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=pe&limit=1`, {
+        headers: { 'User-Agent': 'Tiyuy-Frontend' },
+      });
+      const data = await response.json();
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lng = parseFloat(data[0].lon);
         onChange('latitude', lat);
         onChange('longitude', lng);
         setMapCenter({ lat, lng });
       }
-    });
+    } catch (err) {
+      console.error('Error geocoding:', err);
+    }
   };
 
-  // ✅ Fix 1: Debounce en updateFullAddress para evitar geocodificar con cada tecla
-useEffect(() => {
-  if (useManualCoords) return; // No geocodificar en modo manual
-  if (!formData.district && !formData.province) return;
+  useEffect(() => {
+    if (useManualCoords) return;
+    if (!formData.district && !formData.province) return;
 
-  // ✅ Actualizar fullAddress inmediatamente (sin mapa)
-  const parts = [
+    const parts = [
+      formData.street,
+      formData.streetNumber,
+      formData.urbanization,
+      formData.district,
+      formData.province,
+      formData.region,
+    ].filter(Boolean);
+
+    const newFullAddress = parts.join(', ');
+    if (newFullAddress !== formData.fullAddress && !useManualCoords) {
+      onChange('fullAddress', newFullAddress);
+      onChange('address', newFullAddress);
+    }
+
+    if (formData.street && formData.streetNumber && formData.district) {
+      const timer = setTimeout(() => {
+        geocodeAddress(newFullAddress);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [
+    formData.district,
+    formData.province,
     formData.street,
     formData.streetNumber,
     formData.urbanization,
-    formData.district,
-    formData.province,
     formData.region,
-  ].filter(Boolean);
+    useManualCoords,
+  ]);
 
-  const newFullAddress = parts.join(', ');
-  if (newFullAddress !== formData.fullAddress && !useManualCoords) {
-    onChange('fullAddress', newFullAddress);
-    onChange('address', newFullAddress);
-  }
+  useEffect(() => {
+    if (!mapCenter || !mapRef.current) return;
+    if (mapInstanceRef.current) return;
 
-  // ✅ Geocodificar con debounce de 1s (solo mueve el mapa después de parar de escribir)
-  if (formData.street && formData.streetNumber && formData.district) {
-    const timer = setTimeout(() => {
-      geocodeAddress(newFullAddress);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }
-}, [
-  formData.district,
-  formData.province,
-  formData.street,
-  formData.streetNumber,
-  formData.urbanization,
-  formData.region,
-  useManualCoords,
-]);
+    let cancelled = false;
 
-  // ✅ Fix 2: Separar la inicialización del mapa del movimiento del centro
-// Efecto 1: Inicializar el mapa UNA SOLA VEZ
-useEffect(() => {
-  if (!mapCenter || !mapRef.current) return;
-  if (mapInstanceRef.current) return; // ✅ Ya inicializado, no recrear
+    const initMap = async () => {
+      const L = (await import('leaflet')).default;
+      await import('leaflet/dist/leaflet.css');
+      
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      });
+      
+      if (cancelled || !mapRef.current) return;
 
-  const initializeMap = () => {
-    if (!mapRef.current) return;
+      const lat = mapCenter.lat;
+      const lng = mapCenter.lng;
 
-    mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
-      center: mapCenter,
-      zoom: 16,
-      zoomControl: true,
-      streetViewControl: false,
-      mapTypeControl: false,
-      fullscreenControl: false,
-      styles: [
-        { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-      ],
-    });
+      const map = L.map(mapRef.current, {
+        center: [lat, lng],
+        zoom: 16,
+        zoomControl: true,
+        attributionControl: true,
+      });
 
-    markerRef.current = new window.google.maps.Marker({
-      position: mapCenter,
-      map: mapInstanceRef.current,
-      draggable: true,
-      title: formData.district || 'Ubicación seleccionada',
-    });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
 
-    markerRef.current.addListener('dragend', (e: any) => {
-      const lat = e.latLng.lat();
-      const lng = e.latLng.lng();
-      onChange('latitude', lat);
-      onChange('longitude', lng);
-      setLatInput(lat.toString());
-      setLngInput(lng.toString());
-      setMapCenter({ lat, lng });
-    });
+      const marker = L.marker([lat, lng], {
+        draggable: true,
+      }).addTo(map);
 
-    setMapReady(true);
-  };
+      marker.on('dragend', (e: any) => {
+        const pos = e.target.getLatLng();
+        onChange('latitude', pos.lat);
+        onChange('longitude', pos.lng);
+        setLatInput(pos.lat.toString());
+        setLngInput(pos.lng.toString());
+        setMapCenter({ lat: pos.lat, lng: pos.lng });
+      });
 
-  if (window.google?.maps) {
-    initializeMap();
-    return;
-  }
+      mapInstanceRef.current = map;
+      markerRef.current = marker;
+    };
 
-  if (document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
-    const interval = setInterval(() => {
-      if (window.google?.maps) {
-        clearInterval(interval);
-        initializeMap();
-      }
-    }, 100);
-    return () => clearInterval(interval);
-  }
+    initMap();
 
-  window.initMap = initializeMap;
-  const script = document.createElement('script');
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY}&libraries=places&callback=initMap`;
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-}, [mapCenter !== null]); // ✅ Solo cuando pasa de null a tener valor
+    return () => { cancelled = true; };
+  }, [mapCenter !== null]);
 
-// Efecto 2: Solo MOVER el mapa cuando cambia el centro (sin reinicializar)
-useEffect(() => {
-  if (!mapCenter || !mapInstanceRef.current || !markerRef.current) return;
+  useEffect(() => {
+    if (!mapCenter || !mapInstanceRef.current || !markerRef.current) return;
 
-  // ✅ Pan suave al nuevo centro sin recrear el mapa
-  mapInstanceRef.current.panTo(mapCenter);
-  markerRef.current.setPosition(mapCenter);
-}, [mapCenter]);
+    mapInstanceRef.current.panTo([mapCenter.lat, mapCenter.lng]);
+    markerRef.current.setLatLng([mapCenter.lat, mapCenter.lng]);
+  }, [mapCenter]);
 
   const handleLocationSelect = async (location: {
     placeId: string;
@@ -244,7 +223,6 @@ useEffect(() => {
       onChange('province', locationData.province || location.secondaryText);
       onChange('region', locationData.region || 'Perú');
 
-      // Forzar el mapa con coords válidas
       if (!isNaN(lat) && !isNaN(lng)) {
         setMapCenter({ lat, lng });
         setLatInput(lat.toString());
@@ -253,7 +231,6 @@ useEffect(() => {
     }
   };
 
-  // El mapa se muestra solo si tenemos coordenadas
   const showMap = mapCenter !== null && !isNaN(mapCenter.lat) && !isNaN(mapCenter.lng);
 
   return (
@@ -334,7 +311,7 @@ useEffect(() => {
             Coordenadas del proyecto
           </h2>
           <p className="text-sm text-[var(--text-muted)] mb-4">
-            Ingresa las coordenadas exactas del proyecto. Puedes usar Google Maps para obtenerlas.
+            Ingresa las coordenadas exactas del proyecto. Puedes usar OpenStreetMap para obtenerlas.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -381,14 +358,14 @@ useEffect(() => {
             <span>
               ¿No sabes las coordenadas? Abre{' '}
               <a 
-                href="https://maps.google.com" 
+                href="https://www.openstreetmap.org" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-[var(--brand-primary)] underline hover:opacity-80"
               >
-                Google Maps
+                OpenStreetMap
               </a>
-              , haz clic derecho en la ubicación exacta y selecciona "¿Qué hay aquí?" — las coordenadas aparecerán abajo.
+              , haz clic en la ubicación exacta — las coordenadas aparecerán a la izquierda.
             </span>
           </div>
 
@@ -570,7 +547,6 @@ useEffect(() => {
             </p>
           )}
 
-          {/* Map — mismo estilo que EnhancedMap de detalle */}
           <div className="w-full h-72 rounded-xl overflow-hidden border border-[var(--border-color)]">
             <div
               ref={mapRef}

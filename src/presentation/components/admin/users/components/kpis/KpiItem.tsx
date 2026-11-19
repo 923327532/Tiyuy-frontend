@@ -21,7 +21,7 @@ export function KpiItem({
 
   return (
     <motion.article
-      className="users-overview-metric users-kpi-card"
+      className="users-overview-metric users-kpi-card rounded-xl border border-slate-100 bg-white shadow-sm !p-3 sm:!p-5"
       data-tone={tone}
       initial={reducedMotion ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -40,7 +40,7 @@ export function KpiItem({
           <span style={{ color: colors.accent }}>{icon}</span>
         </span>
 
-        <span className="users-overview-metric__status users-kpi-card__status">
+        <span className="users-overview-metric__status users-kpi-card__status !text-[0.6rem] sm:!text-[0.6875rem]">
           <span
             className="users-overview-metric__status-dot users-kpi-card__status-dot"
             style={{ background: colors.accent }}
@@ -50,14 +50,14 @@ export function KpiItem({
         </span>
       </div>
 
-      <p className="users-overview-metric__label users-kpi-card__label">{label}</p>
+      <p className="users-overview-metric__label users-kpi-card__label !text-[0.6rem] sm:!text-[0.7rem]">{label}</p>
       <p
-        className="users-overview-metric__value users-kpi-card__value"
+        className="users-overview-metric__value users-kpi-card__value !text-xl sm:!text-3xl"
         aria-label={`${value.toLocaleString('es-PE')} ${label.toLowerCase()}`}
       >
         {value.toLocaleString('es-PE')}
       </p>
-      <p className="users-overview-metric__description users-kpi-card__description">{description}</p>
+      <p className="users-overview-metric__description users-kpi-card__description !text-[0.7rem] sm:!text-[0.8125rem]">{description}</p>
 
       {progress !== undefined && (
         <div className="users-overview-metric__progress users-kpi-card__progress">

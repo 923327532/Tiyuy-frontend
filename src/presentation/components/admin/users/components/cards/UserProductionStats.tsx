@@ -12,7 +12,7 @@ interface UserProductionStatsProps {
 
 export function UserProductionStats({ user }: UserProductionStatsProps) {
   return (
-    <dl className="mt-5 grid grid-cols-2 divide-x divide-slate-100 border-t border-slate-100 pt-4">
+    <dl className="mt-3 grid grid-cols-2 divide-x divide-slate-100 border-t border-slate-100 pt-3">
       <div className="pr-3">
         <div className="mb-1 flex items-center gap-1.5 text-slate-400">
           <Building2 className="h-3.5 w-3.5" aria-hidden="true" />

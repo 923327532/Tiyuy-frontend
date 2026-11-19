@@ -61,10 +61,6 @@ export default function ProjectsPage() {
   const { data: projectStats, isLoading: statsLoading, error: statsError } = useProjectStats();
 
   // Debug estadísticas
-  console.log('[ProjectsPage] Stats data:', projectStats);
-  console.log('[ProjectsPage] Stats loading:', statsLoading);
-  console.log('[ProjectsPage] Stats error:', statsError);
-
   const toggleFeaturedMutation = useToggleFeaturedProject();
   const deleteMutation = useDeleteProject();
   const disableProjectMutation = useDisableProjectByAdmin();
