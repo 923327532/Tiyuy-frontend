@@ -144,13 +144,18 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
       return;
     }
 
-    await uploadMutation.mutateAsync({
-      propertyId,
-      files: selectedFiles,
-    });
+    try {
+      await uploadMutation.mutateAsync({
+        propertyId,
+        files: selectedFiles,
+      });
 
-    setSelectedFiles([]);
-    setPreviewUrls([]);
+      setSelectedFiles([]);
+      setPreviewUrls([]);
+      toast.success('Fotos subidas correctamente');
+    } catch {
+      toast.error('No se pudo subir la imagen, ocurrió un error');
+    }
   };
 
   return (

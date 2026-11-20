@@ -347,7 +347,13 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
           if (!formData.totalArea || Number(formData.totalArea) <= 0) {
             errors.totalArea = 'Ingresa el área total del terreno';
           }
+        } else if (formData.type === 'OFFICE') {
+          // Para oficinas solo validar área total
+          if (!formData.totalArea || Number(formData.totalArea) <= 0) {
+            errors.totalArea = 'Ingresa el área total';
+          }
         } else {
+          // Para APARTMENT, HOUSE, COMMERCIAL
           if (!formData.totalArea || Number(formData.totalArea) <= 0) {
             errors.totalArea = 'Ingresa el área total';
           }
