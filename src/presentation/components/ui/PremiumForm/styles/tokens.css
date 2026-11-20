@@ -1,0 +1,14 @@
+.premium-form {
+  --pf-accent: #0f766e;
+  --pf-accent-dark: #0f2e3a;
+  --pf-ink: #0f172a;
+  --pf-muted: #64748b;
+  --pf-line: #e2e8f0;
+  --pf-surface: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  min-width: 0;
+}

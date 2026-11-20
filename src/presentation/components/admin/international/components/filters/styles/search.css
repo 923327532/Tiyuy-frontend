@@ -1,0 +1,117 @@
+.intl-filters__search {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+}
+
+.intl-filters__search-icon {
+  position: absolute;
+  left: 0.9rem;
+  z-index: 1;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--intf-text-muted);
+  pointer-events: none;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intl-filters__input {
+  width: 100%;
+  height: 2.625rem;
+  padding: 0 2.75rem 0 2.6rem;
+  border: 1px solid var(--intf-border);
+  border-radius: var(--intf-radius);
+  outline: none;
+  background: var(--intf-bg);
+  color: var(--intf-text-primary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: var(--intf-shadow-sm);
+  transition:
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 250ms ease,
+    transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.intl-filters__input::placeholder {
+  color: var(--intf-text-muted);
+  font-weight: 400;
+}
+
+.intl-filters__input:hover {
+  border-color: var(--intf-border-hover);
+}
+
+.intl-filters__input:focus {
+  border-color: var(--intf-brand);
+  box-shadow: 0 0 0 3px var(--intf-brand-glow);
+  background: var(--intf-bg);
+}
+
+.intl-filters__search:focus-within .intl-filters__search-icon {
+  color: var(--intf-brand);
+}
+
+.intl-filters__input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.intl-filters__search-clear {
+  position: absolute;
+  right: 0.55rem;
+  z-index: 1;
+  display: flex;
+  width: 1.75rem;
+  height: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--intf-radius-sm);
+  background: transparent;
+  color: var(--intf-text-muted);
+  cursor: pointer;
+  animation: intf-clear-btn-enter 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  transition:
+    color 200ms ease,
+    background-color 200ms ease,
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.intl-filters__search-clear svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.intl-filters__search-clear:hover {
+  background: var(--intf-bg-muted);
+  color: var(--intf-text-secondary);
+  transform: scale(1.05);
+}
+
+.intl-filters__search-clear:active {
+  transform: scale(0.95);
+}
+
+.intl-filters__input:focus-visible,
+.intl-filters__search-clear:focus-visible {
+  outline: 2px solid var(--intf-brand);
+  outline-offset: 2px;
+}
+
+@keyframes intf-clear-btn-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-45deg);
+  }
+  60% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}

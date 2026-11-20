@@ -1,0 +1,123 @@
+/* ==========================================
+   CONTAINER & WRAPPER
+========================================== */
+.generic-table__container {
+  width: 100%;
+  min-width: 0;
+  background: var(--gt-bg);
+  border-radius: var(--gt-radius);
+  border: 1px solid var(--gt-border);
+  box-shadow: var(--gt-shadow-sm);
+  overflow: hidden;
+}
+
+/* Search bar */
+.generic-table__search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--gt-border);
+  background: var(--gt-bg-subtle);
+}
+
+.generic-table__search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+  min-width: 200px;
+}
+
+.generic-table__search-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--gt-text-muted);
+  pointer-events: none;
+}
+
+.generic-table__search-input {
+  width: 100%;
+  padding: 0.5rem 0.875rem 0.5rem 2.75rem;
+  border: 1px solid var(--gt-border);
+  border-radius: var(--gt-radius-sm);
+  background: var(--gt-bg);
+  color: var(--gt-text-primary);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  transition: border-color var(--gt-transition-fast), box-shadow var(--gt-transition-fast);
+}
+
+.generic-table__search-input::placeholder {
+  color: var(--gt-text-muted);
+}
+
+.generic-table__search-input:hover {
+  border-color: var(--gt-border-hover);
+}
+
+.generic-table__search-input:focus {
+  outline: none;
+  border-color: var(--gt-brand);
+  box-shadow: 0 0 0 3px var(--gt-brand-soft);
+}
+
+.generic-table__search-clear {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: var(--gt-radius-sm);
+  background: transparent;
+  color: var(--gt-text-muted);
+  cursor: pointer;
+  transition: color var(--gt-transition-fast), background-color var(--gt-transition-fast);
+}
+
+.generic-table__search-clear:hover {
+  color: var(--gt-text-tertiary);
+  background: var(--gt-bg-muted);
+}
+
+.generic-table__search-clear:focus-visible {
+  outline: 2px solid var(--gt-brand);
+  outline-offset: 2px;
+}
+
+.generic-table__results-count {
+  font-size: 0.8125rem;
+  color: var(--gt-text-tertiary);
+  white-space: nowrap;
+}
+
+/* Table wrapper for horizontal scroll */
+.generic-table__wrapper {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gt-border) transparent;
+}
+
+.generic-table__wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.generic-table__wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.generic-table__wrapper::-webkit-scrollbar-thumb {
+  background: var(--gt-border);
+  border-radius: 999px;
+}

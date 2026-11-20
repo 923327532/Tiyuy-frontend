@@ -1,0 +1,39 @@
+/* Pagination + notification */
+.agent-discounts__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  border-top: 1px solid var(--gt-border, #e8ecef);
+  background: var(--gt-bg-subtle, #fafbfc);
+}
+.agent-discounts__page-info { font-size: 0.75rem; color: var(--gt-text-tertiary, #64748b); }
+.agent-discounts__pagination { display: flex; align-items: center; gap: 0.5rem; }
+.agent-discounts__page-btn {
+  height: 2.25rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--uf-border, #e8ecef);
+  border-radius: var(--uf-radius-sm, 0.5rem);
+  background: var(--uf-bg, #fff);
+  color: var(--uf-text-secondary, #334155);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease, opacity 200ms ease;
+}
+.agent-discounts__page-btn:hover:not(:disabled) { background: var(--uf-bg-subtle, #fafbfc); border-color: var(--uf-border-hover, #d8dee3); }
+.agent-discounts__page-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.agent-discounts__notification {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 60;
+  padding: 0.75rem 1rem;
+  border-radius: var(--uf-radius, 0.75rem);
+  box-shadow: var(--uf-shadow-md, 0 6px 16px -4px rgb(15 23 42 / 0.08), 0 2px 4px rgb(15 23 42 / 0.04));
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #fff;
+}
+.agent-discounts__notification--success { background: var(--uf-success, #6b9080); }
+.agent-discounts__notification--error { background: var(--uf-danger, #cf8a92); }

@@ -1,0 +1,46 @@
+/* ==========================================
+   USERS OVERVIEW - PREMIUM UNIFIED
+   Single-surface KPI + Roles Card
+========================================== */
+
+:root {
+  /* Brand */
+  --uo-brand: #475569;
+  --uo-brand-soft: #f1f5f9;
+
+  /* Semantic */
+  --uo-success: #6b9080;
+  --uo-success-soft: #e8f0ec;
+  --uo-success-muted: #8ba899;
+
+  --uo-warning: #c9a876;
+  --uo-warning-soft: #f5ede0;
+  --uo-warning-muted: #b89968;
+
+  --uo-danger: #cf8a92;
+  --uo-danger-soft: #f5e5e7;
+  --uo-danger-muted: #b87a82;
+
+  --uo-info: #7ba0bc;
+  --uo-info-soft: #e6eff5;
+  --uo-info-muted: #6b8fa8;
+
+  /* Neutrals */
+  --uo-bg: #ffffff;
+  --uo-bg-subtle: #fafbfc;
+  --uo-bg-muted: #f5f7f9;
+  --uo-border: #e8ecef;
+  --uo-border-hover: #d8dee3;
+  --uo-text-primary: #0f172a;
+  --uo-text-secondary: #334155;
+  --uo-text-tertiary: #64748b;
+  --uo-text-muted: #94a3b8;
+
+  /* Shadows */
+  --uo-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --uo-shadow-md: 0 12px 28px -8px rgb(15 23 42 / 0.10), 0 4px 8px rgb(15 23 42 / 0.04);
+  --uo-shadow-lg: 0 24px 48px -12px rgb(15 23 42 / 0.12), 0 8px 16px rgb(15 23 42 / 0.04);
+
+  /* Radius */
+  --uo-radius: 1rem;
+}

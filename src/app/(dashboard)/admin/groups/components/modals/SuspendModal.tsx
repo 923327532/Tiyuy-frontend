@@ -1,7 +1,10 @@
 'use client';
 
+import { PauseCircle } from 'lucide-react';
+
 import { Modal } from '@/presentation/components/ui/Modal';
-import { Group, Channel } from '../../types';
+import type { Group, Channel } from '../../types';
+import '@/presentation/components/admin/users/components/role-change/styles/RoleChangeModal.css';
 
 interface SuspendModalProps {
   isOpen: boolean;
@@ -27,47 +30,69 @@ export function SuspendModal({
   const isChannel = 'city' in item;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Suspender ${isChannel ? 'Canal' : 'Grupo'}`}
-    >
-      <div className="space-y-4">
-        <p className="text-gray-600">
-          ¿Estás seguro de que quieres suspender este {isChannel ? 'canal' : 'grupo'}? 
-          Esta acción lo hará no disponible para todos los usuarios.
-        </p>
-        <p className="text-gray-900 font-medium">{item.name}</p>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Razón de la suspensión
-          </label>
-          <textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder={`Describe por qué se está suspendiendo este ${isChannel ? 'canal' : 'grupo'}`}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-            rows={3}
-          />
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onConfirm();
+        }}
+        className="role-change-modal__surface"
+      >
+        <header className="role-change-modal__header">
+          <div className="role-change-modal__header-icon">
+            <PauseCircle className="w-5 h-5" aria-hidden="true" />
+          </div>
+          <div className="role-change-modal__header-content">
+            <h3 className="role-change-modal__title">
+              Suspender {isChannel ? 'canal' : 'grupo'}
+            </h3>
+            <p className="role-change-modal__subtitle" title={item.name}>
+              {item.name}
+            </p>
+          </div>
+        </header>
+
+        <div className="role-change-modal__body">
+          <p className="text-xs leading-relaxed text-slate-500">
+            Esta acción hará que el {isChannel ? 'canal' : 'grupo'} no esté disponible
+            para todos los usuarios.
+          </p>
+
+          <div className="role-change-modal__field">
+            <label className="role-change-modal__label" htmlFor="suspend-reason">
+              Razón de la suspensión <span className="role-change-modal__required">*</span>
+            </label>
+            <textarea
+              id="suspend-reason"
+              className="role-change-modal__textarea"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              rows={3}
+              placeholder={`Describe por qué se suspende este ${isChannel ? 'canal' : 'grupo'}...`}
+              disabled={isPending}
+              required
+            />
+          </div>
         </div>
 
-        <div className="flex gap-3 justify-end pt-4">
+        <footer className="role-change-modal__actions">
           <button
+            type="button"
+            className="role-change-modal__btn role-change-modal__btn--cancel"
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition"
+            disabled={isPending}
           >
             Cancelar
           </button>
           <button
-            onClick={onConfirm}
-            disabled={!reason || isPending}
-            className="px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition disabled:opacity-50"
+            type="submit"
+            className="role-change-modal__btn role-change-modal__btn--confirm"
+            disabled={!reason.trim() || isPending}
           >
             {isPending ? 'Suspendiendo...' : 'Suspender'}
           </button>
-        </div>
-      </div>
+        </footer>
+      </form>
     </Modal>
   );
 }

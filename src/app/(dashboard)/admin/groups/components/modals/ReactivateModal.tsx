@@ -1,7 +1,10 @@
 'use client';
 
+import { RefreshCw } from 'lucide-react';
+
 import { Modal } from '@/presentation/components/ui/Modal';
-import { Group, Channel } from '../../types';
+import type { Group, Channel } from '../../types';
+import '@/presentation/components/admin/users/components/toggle-status/styles/ToggleStatusModal.css';
 
 interface ReactivateModalProps {
   isOpen: boolean;
@@ -27,47 +30,72 @@ export function ReactivateModal({
   if (!item) return null;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={`Reactivar ${itemType === 'group' ? 'Grupo' : 'Canal'}`}
-    >
-      <div className="space-y-4">
-        <p className="text-gray-600">
-          ¿Estás seguro de que quieres reactivar este ${itemType === 'group' ? 'grupo' : 'canal'}? 
-          Esta acción lo hará disponible para todos los usuarios nuevamente.
-        </p>
-        <p className="text-gray-900 font-medium">{item.name}</p>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Razón de la reactivación
-          </label>
-          <textarea
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder={`Describe por qué se está reactivando este ${itemType === 'group' ? 'grupo' : 'canal'} (ej: apelación aceptada, acuerdo alcanzado)`}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-            rows={3}
-          />
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onConfirm();
+        }}
+        className="toggle-status-modal__surface toggle-status-modal__surface--reactivate"
+      >
+        <header className="toggle-status-modal__header">
+          <div className="toggle-status-modal__icon toggle-status-modal__icon--reactivate">
+            <RefreshCw className="w-5 h-5" aria-hidden="true" />
+          </div>
+          <div className="toggle-status-modal__header-content">
+            <h3 className="toggle-status-modal__title">
+              Reactivar {itemType === 'group' ? 'grupo' : 'canal'}
+            </h3>
+            <p className="toggle-status-modal__description">
+              ¿Estás seguro de reactivar <strong>{item.name}</strong>? estará disponible
+              para todos los usuarios nuevamente.
+            </p>
+          </div>
+        </header>
+
+        <div className="toggle-status-modal__body">
+          <div className="toggle-status-modal__field">
+            <label htmlFor="reactivate-reason" className="toggle-status-modal__label">
+              Motivo
+              <span className="toggle-status-modal__label-optional">(opcional)</span>
+            </label>
+            <textarea
+              id="reactivate-reason"
+              value={reason}
+              onChange={(event) => setReason(event.target.value)}
+              className="toggle-status-modal__textarea toggle-status-modal__textarea--reactivate"
+              rows={3}
+              placeholder="Indica el motivo de la reactivación..."
+              disabled={isPending}
+            />
+          </div>
         </div>
 
-        <div className="flex gap-3 justify-end pt-4">
+        <footer className="toggle-status-modal__actions">
           <button
+            type="button"
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition"
+            disabled={isPending}
+            className="toggle-status-modal__btn toggle-status-modal__btn--cancel"
           >
             Cancelar
           </button>
           <button
-            onClick={onConfirm}
-            disabled={!reason || isPending}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
+            type="submit"
+            disabled={isPending}
+            className="toggle-status-modal__btn toggle-status-modal__btn--confirm toggle-status-modal__btn--reactivate"
           >
-            {isPending ? 'Reactivando...' : `Reactivar ${itemType === 'group' ? 'Grupo' : 'Canal'}`}
+            {isPending ? (
+              <>
+                <span className="toggle-status-modal__spinner" aria-hidden="true" />
+                Reactivando...
+              </>
+            ) : (
+              `Reactivar ${itemType === 'group' ? 'Grupo' : 'Canal'}`
+            )}
           </button>
-        </div>
-      </div>
+        </footer>
+      </form>
     </Modal>
   );
 }

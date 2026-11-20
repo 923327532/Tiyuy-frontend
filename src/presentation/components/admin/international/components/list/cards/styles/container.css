@@ -1,0 +1,26 @@
+/* ==========================================
+   CARD CONTAINER
+========================================== */
+.intc-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--intc-radius);
+  border: 1px solid var(--intc-border);
+  background: var(--intc-bg);
+  box-shadow: var(--intc-shadow-sm);
+
+  animation: intc-card-enter 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  transition:
+    transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.intc-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--intc-border-hover);
+  box-shadow: var(--intc-shadow-lg);
+}

@@ -1,0 +1,42 @@
+/* ==========================================
+   RESPONSIVE / REDUCED MOTION
+========================================== */
+
+@media (min-width: 640px) {
+  .ngp-page {
+    padding: 2rem;
+  }
+
+  .ngp-header__title {
+    font-size: 1.75rem;
+  }
+
+  .ngp-form {
+    padding: 2rem;
+  }
+
+  .ngp-form__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ngp-page,
+  .ngp-header__back-btn,
+  .ngp-form__input,
+  .ngp-form__textarea,
+  .ngp-form__btn,
+  .ngp-form__spinner {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .ngp-header__back-btn:hover,
+  .ngp-header__back-btn:active,
+  .ngp-form__btn--cancel:hover,
+  .ngp-form__btn--cancel:active,
+  .ngp-form__btn--submit:hover:not(:disabled),
+  .ngp-form__btn--submit:active:not(:disabled) {
+    transform: none !important;
+  }
+}

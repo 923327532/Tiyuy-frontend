@@ -11,6 +11,7 @@ export function UsersPagination({
   totalElements,
   onPageChange,
   onPageSizeChange,
+  itemLabel = 'usuarios',
 }: UsersPaginationProps) {
   const totalPages = Math.max(1, Math.ceil(totalElements / pageSize));
   const safePage = Math.min(Math.max(currentPage, 1), totalPages);
@@ -46,11 +47,11 @@ export function UsersPagination({
   };
 
   return (
-    <nav className="users-pagination" aria-label="Paginación de usuarios">
+    <nav className="users-pagination" aria-label={`Paginación de ${itemLabel}`}>
       <div className="users-pagination__info">
         <span className="users-pagination__info-text">
-          Mostrando <strong>{startItem}</strong> - <strong>{endItem}</strong> de{' '}
-          <strong>{totalElements}</strong> usuarios
+          Mostrando <strong>{startItem}</strong> a <strong>{endItem}</strong> de{' '}
+          <strong>{totalElements}</strong> {itemLabel}
         </span>
       </div>
 
@@ -102,7 +103,7 @@ export function UsersPagination({
                   type="button"
                   onClick={() => handlePageChange(pageNum)}
                   className={`users-pagination__page ${isActive ? 'users-pagination__page--active' : ''}`}
-                  aria-label={`Ir a página ${pageNum}`}
+                  aria-label={`Página ${pageNum}`}
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {pageNum}

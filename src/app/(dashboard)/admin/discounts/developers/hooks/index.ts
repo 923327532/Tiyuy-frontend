@@ -1,0 +1,1 @@
+export { useDeveloperSubscriptionDiscountsPage } from './useDeveloperSubscriptionDiscounts';

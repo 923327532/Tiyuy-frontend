@@ -1,0 +1,26 @@
+.user-detail-modal__surface {
+  --ad-bg: #ffffff;
+  --ad-bg-subtle: #fafbfc;
+  --ad-bg-muted: #f5f7f9;
+  --ad-border: #e8ecef;
+  --ad-border-hover: #d8dee3;
+  --ad-success: #6b9080;
+  --ad-success-soft: #e8f0ec;
+  --ad-warning: #c9a876;
+  --ad-warning-soft: #f5ede0;
+  --ad-danger: #cf8a92;
+  --ad-danger-soft: #f5e5e7;
+  --ad-info: #7ba0bc;
+  --ad-info-soft: #e6eff5;
+  --ad-brand: #475569;
+  --ad-brand-soft: #f1f5f9;
+  --ad-text-primary: #0f172a;
+  --ad-text-secondary: #334155;
+  --ad-text-tertiary: #64748b;
+  --ad-text-muted: #94a3b8;
+  --ad-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --ad-shadow-md: 0 12px 28px -8px rgb(15 23 42 / 0.10);
+  --ad-radius: 1rem;
+  --ad-radius-sm: 0.625rem;
+  --ad-radius-xs: 0.5rem;
+}

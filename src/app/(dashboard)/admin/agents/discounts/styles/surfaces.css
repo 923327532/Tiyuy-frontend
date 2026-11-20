@@ -1,0 +1,127 @@
+/* Generic surfaces */
+.agent-discounts__surface {
+  border: 1px solid var(--gt-border, #e8ecef);
+  border-radius: var(--gt-radius, 0.75rem);
+  background: var(--gt-bg, #fff);
+  box-shadow: var(--gt-shadow-sm, 0 1px 2px rgb(15 23 42 / 0.04));
+  overflow: hidden;
+}
+.agent-discounts__surface--selection { overflow: visible; }
+.agent-discounts__agent-filters .users-filters__search { max-width: none; }
+.agent-discounts__agent-filters .users-filters__main { flex-wrap: wrap; }
+.agent-discounts__card-body { padding: 1.25rem; }
+.agent-discounts__card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--gt-border, #e8ecef);
+  background: var(--gt-bg-subtle, #fafbfc);
+}
+.agent-discounts__section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--gt-text-primary, #0f172a);
+}
+.agent-discounts__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--uf-brand, #475569);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+.agent-discounts__card-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: var(--gt-text-tertiary, #64748b);
+}
+.agent-discounts__panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--gt-border, #e8ecef);
+  background: linear-gradient(180deg, var(--gt-bg, #fff) 0%, var(--gt-bg-subtle, #fafbfc) 100%);
+}
+.agent-discounts__panel-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--gt-text-primary, #0f172a);
+}
+.agent-discounts__panel-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  color: var(--gt-text-tertiary, #64748b);
+}
+.agent-discounts__toolbar { padding: 0.875rem 1.25rem; }
+.agent-discounts__toolbar .users-filters__main { flex-wrap: wrap; }
+.agent-discounts__toolbar .users-filters__search { min-width: 220px; max-width: 380px; }
+.agent-discounts__toolbar .users-filters__selects { flex-wrap: wrap; }
+.agent-discounts__toolbar .users-filters__select-wrapper { min-width: 11.5rem; }
+.agent-discounts__clear-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 2.625rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--uf-border, #e8ecef);
+  border-radius: var(--uf-radius, 0.75rem);
+  background: var(--uf-bg, #fff);
+  color: var(--uf-text-tertiary, #64748b);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--uf-shadow-sm, 0 1px 2px rgb(15 23 42 / 0.04));
+  transition: border-color 200ms ease, color 200ms ease, background-color 200ms ease;
+}
+.agent-discounts__clear-btn:hover {
+  border-color: var(--uf-border-hover, #d8dee3);
+  background: var(--uf-bg-subtle, #fafbfc);
+  color: var(--uf-text-primary, #0f172a);
+}
+.agent-discounts__primary-btn,
+.agent-discounts__soft-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2.625rem;
+  padding: 0 1rem;
+  border-radius: var(--uf-radius, 0.75rem);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease, transform 200ms ease;
+}
+.agent-discounts__primary-btn {
+  border: 1px solid var(--uf-brand, #475569);
+  background: var(--uf-brand, #475569);
+  color: #fff;
+  box-shadow: var(--uf-shadow-sm, 0 1px 2px rgb(15 23 42 / 0.04));
+}
+.agent-discounts__primary-btn:hover { background: var(--uf-text-primary, #0f172a); border-color: var(--uf-text-primary, #0f172a); transform: translateY(-1px); }
+.agent-discounts__soft-btn {
+  border: 1px solid var(--uf-border, #e8ecef);
+  background: var(--uf-bg, #fff);
+  color: var(--uf-text-secondary, #334155);
+  box-shadow: var(--uf-shadow-sm, 0 1px 2px rgb(15 23 42 / 0.04));
+}
+.agent-discounts__soft-btn:hover {
+  border-color: var(--uf-border-hover, #d8dee3);
+  background: var(--uf-bg-subtle, #fafbfc);
+  color: var(--uf-text-primary, #0f172a);
+}

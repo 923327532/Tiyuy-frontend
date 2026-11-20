@@ -45,6 +45,18 @@ export interface UsersFiltersProps {
   roleOptions: FilterOption[];
 }
 
+/** Estructura mínima compartida por usuarios y agentes para las celdas de tabla */
+export interface UserIdentityLike {
+  id: number;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  profilePhotoUrl?: string;
+  enabled: boolean;
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
+}
+
 /** Columna de la tabla de usuarios */
 export interface UserTableColumn {
   key: string;
@@ -82,6 +94,8 @@ export interface UsersPaginationProps {
   totalElements: number;
   onPageChange: (page: number) => void;
   onPageSizeChange: (size: number) => void;
+  /** Etiqueta de los elementos paginados. Por defecto "usuarios". */
+  itemLabel?: string;
 }
 
 /** Props para badge de estado de usuario */

@@ -15,3 +15,4 @@ export * from './ErrorState/ErrorState';
 export * from './FilterDropdown';
 export * from './ThemeToggle';
 export * from './InfoDialog/InfoDialog';
+export * from './PremiumForm';

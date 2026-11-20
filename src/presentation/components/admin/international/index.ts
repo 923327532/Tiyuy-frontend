@@ -1,0 +1,1 @@
+export { InternationalPage } from './InternationalPage';

@@ -1,0 +1,32 @@
+:root {
+  --acs-brand: #475569;
+  --acs-brand-soft: #f1f5f9;
+  --acs-brand-hover: #3d4a5c;
+  --acs-brand-glow: rgb(71 85 105 / 0.18);
+  --acs-success: #6b9080;
+  --acs-success-soft: #e8f0ec;
+  --acs-success-hover: #5a7d6e;
+  --acs-success-glow: rgb(107 144 128 / 0.18);
+  --acs-warning: #c9a876;
+  --acs-warning-soft: #f5ede0;
+  --acs-warning-hover: #b89968;
+  --acs-warning-glow: rgb(201 168 118 / 0.18);
+  --acs-danger: #cf8a92;
+  --acs-danger-soft: #f5e5e7;
+  --acs-danger-hover: #b87a82;
+  --acs-danger-glow: rgb(207 138 146 / 0.18);
+  --acs-bg: #ffffff;
+  --acs-bg-subtle: #fafbfc;
+  --acs-bg-muted: #f5f7f9;
+  --acs-border: #e8ecef;
+  --acs-border-strong: #d8dee3;
+  --acs-text-primary: #0f172a;
+  --acs-text-secondary: #334155;
+  --acs-text-tertiary: #64748b;
+  --acs-text-muted: #94a3b8;
+  --acs-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --acs-shadow-md: 0 8px 20px -8px rgb(15 23 42 / 0.10), 0 2px 6px rgb(15 23 42 / 0.04);
+  --acs-shadow-lg: 0 24px 48px -12px rgb(15 23 42 / 0.15), 0 8px 16px rgb(15 23 42 / 0.05);
+  --acs-radius: 1rem;
+  --acs-radius-sm: 0.625rem;
+}

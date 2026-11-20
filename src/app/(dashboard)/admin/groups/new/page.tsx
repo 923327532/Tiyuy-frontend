@@ -2,274 +2,169 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardContent } from '@/presentation/components/ui/Card';
-import { ArrowLeft, Users, Globe, MapPin, User, Mail, FileText } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
+import {
+  FileText,
+  Globe,
+  MapPin,
+  Settings2,
+  User,
+} from 'lucide-react';
+
+import { axiosClient } from '@/infrastructure/api/axios-client';
+import { Input, Textarea } from '@/presentation/components/ui/Input';
+import { Select } from '@/presentation/components/ui/Select';
+import {
+  PremiumFormSection,
+  PremiumFormView,
+} from '@/presentation/components/ui/PremiumForm';
+
+interface GroupFormData {
+  name: string;
+  description: string;
+  adminName: string;
+  adminEmail: string;
+  city: string;
+  isActive: boolean;
+}
+
+const INITIAL_FORM_DATA: GroupFormData = {
+  name: '',
+  description: '',
+  adminName: '',
+  adminEmail: '',
+  city: '',
+  isActive: true,
+};
 
 export default function NewGroupPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    adminName: '',
-    adminEmail: '',
-    city: '',
-    isActive: true
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState<GroupFormData>(INITIAL_FORM_DATA);
 
   const createGroupMutation = useMutation({
-    mutationFn: async (groupData: typeof formData) => {
-      console.log('Enviando al backend:', groupData);
-      
-      // Llamada real al backend usando ruta relativa (Vercel actúa como puente)
-      console.log('Enviando petición POST a:', '/api/admin/groups');
-      console.log('Datos enviados:', JSON.stringify(groupData, null, 2));
-      
-      // Extraer el token JWT puro del objeto Zustand
-      const authData = JSON.parse(localStorage.getItem('tiyuy-auth-token') || '{}');
-      const token = authData.state?.token || authData.token || '';
-      
-      console.log('Token JWT extraído:', token.substring(0, 50) + '...');
-      
-      const response = await fetch('/api/admin/groups', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(groupData)
-      });
-      
-      console.log('Status Code:', response.status);
-      console.log('Status Text:', response.statusText);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.log('Error Response:', errorText);
-        
-        let errorData;
-        try {
-          errorData = JSON.parse(errorText);
-        } catch {
-          errorData = { message: errorText };
-        }
-        
-        throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const responseData = await response.json();
-      console.log('Respuesta exitosa:', responseData);
-      return responseData;
+    mutationFn: async (payload: GroupFormData) => {
+      const response = await axiosClient.post('/admin/groups', payload);
+      return response.data;
     },
     onSuccess: () => {
-      // Redirigir a la página de grupos
+      alert('✅ Grupo creado exitosamente');
       router.push('/admin/groups');
     },
-    onError: (error) => {
-      console.error('Error al crear grupo:', error);
+    onError: (error: Error) => {
       alert('❌ Error al crear grupo: ' + error.message);
-    }
+    },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      console.log('Creando grupo:', formData);
-      
-      // Usar la mutación para crear el grupo
-      await createGroupMutation.mutateAsync(formData);
-      
-    } finally {
-      setIsSubmitting(false);
-    }
+  const updateField = <K extends keyof GroupFormData>(key: K, value: GroupFormData[K]) => {
+    setFormData((previous) => ({ ...previous, [key]: value }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!formData.name.trim() || !formData.adminEmail.trim()) {
+      alert('⚠️ Completa el nombre del grupo y el email del administrador.');
+      return;
+    }
+
+    createGroupMutation.mutate({
+      ...formData,
+      name: formData.name.trim(),
+      adminEmail: formData.adminEmail.trim(),
+      adminName: formData.adminName.trim(),
+      city: formData.city.trim(),
+    });
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-8">
-        <button
-          onClick={() => router.back()}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+    <div className="space-y-4 sm:space-y-6 px-3 sm:px-6 py-3 sm:py-4">
+      <PremiumFormView
+        eyebrow="Gestión de grupos y canales"
+        title="Crear grupo"
+        description="Registra un nuevo grupo de la red social con su información básica, administrador y estado inicial."
+        backHref="/admin/groups"
+        onSubmit={handleSubmit}
+        submitLabel="Crear grupo"
+        cancelHref="/admin/groups"
+        isSubmitting={createGroupMutation.isPending}
+        asideTitle="Checklist rápido"
+        asideDescription="Esta vista es reutilizable para los formularios del panel. El estilo se puede ajustar en un solo lugar."
+        asideItems={[
+          'El nombre debe ser fácil de identificar para los miembros.',
+          'El administrador será el responsable del grupo.',
+          'Puedes cambiar el estado desde el listado de grupos.',
+        ]}
+      >
+        <PremiumFormSection
+          icon={<FileText className="h-5 w-5" />}
+          title="Información básica"
+          description="Datos principales que identifican al grupo dentro de la comunidad."
+          columns={2}
         >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Crear Nuevo Grupo</h1>
-          <p className="text-gray-600">Completa la información para crear un nuevo grupo social</p>
-        </div>
-      </div>
+          <Input
+            label="Nombre del grupo *"
+            value={formData.name}
+            onChange={(event) => updateField('name', event.target.value)}
+            placeholder="Ej. Grupo Tiyuy Lima"
+            leftIcon={<FileText className="h-4 w-4" />}
+          />
+          <Input
+            label="Ciudad"
+            value={formData.city}
+            onChange={(event) => updateField('city', event.target.value)}
+            placeholder="Ej. Lima"
+            leftIcon={<MapPin className="h-4 w-4" />}
+          />
+          <div className="premium-form__span-all">
+            <Textarea
+              label="Descripción"
+              value={formData.description}
+              onChange={(event) => updateField('description', event.target.value)}
+              placeholder="Describe el propósito y las actividades del grupo..."
+              rows={4}
+            />
+          </div>
+        </PremiumFormSection>
 
-      {/* Form */}
-      <Card>
-        <CardContent className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Información Básica */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Información Básica
-              </h2>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre del Grupo *
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ej: Amantes de la Naturaleza"
-                />
-              </div>
+        <PremiumFormSection
+          icon={<User className="h-5 w-5" />}
+          title="Administrador"
+          description="Persona responsable de gestionar el grupo y sus miembros."
+          columns={2}
+        >
+          <Input
+            label="Nombre del administrador"
+            value={formData.adminName}
+            onChange={(event) => updateField('adminName', event.target.value)}
+            placeholder="Nombre completo"
+            leftIcon={<User className="h-4 w-4" />}
+          />
+          <Input
+            label="Email del administrador *"
+            type="email"
+            value={formData.adminEmail}
+            onChange={(event) => updateField('adminEmail', event.target.value)}
+            placeholder="admin@ejemplo.com"
+            leftIcon={<Globe className="h-4 w-4" />}
+          />
+        </PremiumFormSection>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Descripción *
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                  placeholder="Describe el propósito y actividades del grupo..."
-                />
-              </div>
-            </div>
-
-            {/* Información del Administrador */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Información del Administrador
-              </h2>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Nombre del Administrador *
-                  </label>
-                  <input
-                    type="text"
-                    name="adminName"
-                    value={formData.adminName}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Nombre completo"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email del Administrador *
-                  </label>
-                  <input
-                    type="email"
-                    name="adminEmail"
-                    value={formData.adminEmail}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="admin@ejemplo.com"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Ubicación */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <MapPin className="w-5 h-5" />
-                Ubicación
-              </h2>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ciudad
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Ciudad principal del grupo"
-                />
-              </div>
-            </div>
-
-            {/* Estado */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                Estado del Grupo
-              </h2>
-              
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  name="isActive"
-                  id="isActive"
-                  checked={formData.isActive}
-                  onChange={handleChange}
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                />
-                <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
-                  Grupo activo
-                </label>
-              </div>
-              <p className="text-xs text-gray-500">
-                Los grupos activos son visibles y pueden ser utilizados por los usuarios.
-              </p>
-            </div>
-
-            {/* Botones de Acción */}
-            <div className="flex gap-4 pt-6 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={() => router.back()}
-                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Creando...
-                  </>
-                ) : (
-                  <>
-                    <Users className="w-4 h-4" />
-                    Crear Grupo
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+        <PremiumFormSection
+          icon={<Settings2 className="h-5 w-5" />}
+          title="Estado inicial"
+          description="Define si el grupo estará disponible desde el momento de su creación."
+        >
+          <Select
+            label="Estado"
+            value={formData.isActive ? 'active' : 'inactive'}
+            onChange={(value) => updateField('isActive', value === 'active')}
+            options={[
+              { value: 'active', label: 'Activo' },
+              { value: 'inactive', label: 'Inactivo' },
+            ]}
+          />
+        </PremiumFormSection>
+      </PremiumFormView>
     </div>
   );
 }

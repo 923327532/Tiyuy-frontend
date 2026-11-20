@@ -1,0 +1,1 @@
+export { InternationalDetailModal } from './InternationalDetailModal';

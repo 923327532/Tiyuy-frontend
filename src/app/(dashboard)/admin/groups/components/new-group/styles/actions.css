@@ -1,0 +1,111 @@
+/* ==========================================
+   ACTIONS / BUTTONS / SPINNER / ANIMATIONS
+========================================== */
+
+.ngp-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ngp-border);
+}
+
+.ngp-form__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1.25rem;
+  border-radius: var(--ngp-radius-sm);
+  border: 1px solid transparent;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ngp-form__btn--cancel {
+  background: var(--ngp-bg);
+  border-color: var(--ngp-border);
+  color: var(--ngp-text-secondary);
+  box-shadow: var(--ngp-shadow-sm);
+}
+
+.ngp-form__btn--cancel:hover {
+  background: var(--ngp-bg-subtle);
+  border-color: var(--ngp-border-strong);
+  color: var(--ngp-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--ngp-shadow-md);
+}
+
+.ngp-form__btn--cancel:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--ngp-shadow-sm);
+}
+
+.ngp-form__btn--submit {
+  background: var(--ngp-brand);
+  color: #ffffff;
+  box-shadow: 0 1px 2px rgb(71 85 105 / 0.25);
+}
+
+.ngp-form__btn--submit:hover:not(:disabled) {
+  background: var(--ngp-brand-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px var(--ngp-brand-glow);
+}
+
+.ngp-form__btn--submit:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+.ngp-form__btn--submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.ngp-form__btn--cancel:focus-visible,
+.ngp-form__btn--submit:focus-visible {
+  outline: 2px solid var(--ngp-brand);
+  outline-offset: 2px;
+}
+
+.ngp-form__spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgb(255 255 255 / 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: ngp-spin 700ms linear infinite;
+}
+
+@keyframes ngp-page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ngp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
