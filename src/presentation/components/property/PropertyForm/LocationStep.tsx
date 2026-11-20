@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { LocationSearch } from '@/presentation/components/forms/LocationSearch/LocationSearch';
 import { useGooglePlaces } from '@/presentation/hooks/useGooglePlaces';
+import { loadGoogleMaps } from '@/utils/googleMapsLoader';
 import { AlertCircle, Info, MapPin, Crosshair, Map } from 'lucide-react';
 
 interface LocationStepProps {
@@ -26,8 +27,8 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
   const [latInput, setLatInput] = useState(formData.latitude?.toString() || '');
   const [lngInput, setLngInput] = useState(formData.longitude?.toString() || '');
   
-  const mapInstanceRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const markerRef = useRef<any>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const { getPlaceDetails, loading, error } = useGooglePlaces();
@@ -90,18 +91,25 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
     ].filter(Boolean).join(', ');
   }, [formData.street, formData.streetNumber, formData.urbanization, formData.district, formData.province, formData.region, formData.latitude, formData.longitude, useManualCoords]);
 
+  // Dirección escrita -> coordenadas, con Google Geocoding (vía /api/google-places/geocode).
   const geocodeAddress = async (address: string) => {
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=pe&limit=1`, {
-        headers: { 'User-Agent': 'Tiyuy-Frontend' },
-      });
+      const response = await fetch(`/api/google-places/geocode?address=${encodeURIComponent(address)}`);
+      if (!response.ok) return;
       const data = await response.json();
-      if (data && data.length > 0) {
-        const lat = parseFloat(data[0].lat);
-        const lng = parseFloat(data[0].lon);
-        onChange('latitude', lat);
-        onChange('longitude', lng);
-        setMapCenter({ lat, lng });
+      // Si Google solo encuentra una zona aproximada, se conserva la ubicación ya elegida
+      // en vez de mover el marcador a un lugar que podría ser incorrecto.
+      if (
+        data.status === 'OK' &&
+        data.location_type !== 'APPROXIMATE' &&
+        typeof data.lat === 'number' &&
+        typeof data.lng === 'number'
+      ) {
+        onChange('latitude', data.lat);
+        onChange('longitude', data.lng);
+        setLatInput(data.lat.toString());
+        setLngInput(data.lng.toString());
+        setMapCenter({ lat: data.lat, lng: data.lng });
       }
     } catch (err) {
       console.error('Error geocoding:', err);
@@ -143,66 +151,66 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
     useManualCoords,
   ]);
 
+  // Mapa: Google Maps JavaScript API con marcador arrastrable (o clic para mover).
   useEffect(() => {
     if (!mapCenter || !mapRef.current) return;
     if (mapInstanceRef.current) return;
 
     let cancelled = false;
 
-    const initMap = async () => {
-      const L = (await import('leaflet')).default;
-      await import('leaflet/dist/leaflet.css');
-      
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      });
-      
-      if (cancelled || !mapRef.current) return;
+    loadGoogleMaps()
+      .then((google) => {
+        if (cancelled || !mapRef.current) return;
 
-      const lat = mapCenter.lat;
-      const lng = mapCenter.lng;
+        const center = { lat: mapCenter.lat, lng: mapCenter.lng };
 
-      const map = L.map(mapRef.current, {
-        center: [lat, lng],
-        zoom: 16,
-        zoomControl: true,
-        attributionControl: true,
-      });
+        const map = new google.maps.Map(mapRef.current, {
+          center,
+          zoom: 17,
+          streetViewControl: false,
+          mapTypeControl: true,
+        });
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map);
+        const marker = new google.maps.Marker({
+          position: center,
+          map,
+          draggable: true,
+        });
 
-      const marker = L.marker([lat, lng], {
-        draggable: true,
-      }).addTo(map);
+        const moveTo = (lat: number, lng: number) => {
+          onChange('latitude', lat);
+          onChange('longitude', lng);
+          setLatInput(lat.toString());
+          setLngInput(lng.toString());
+          setMapCenter({ lat, lng });
+        };
 
-      marker.on('dragend', (e: any) => {
-        const pos = e.target.getLatLng();
-        onChange('latitude', pos.lat);
-        onChange('longitude', pos.lng);
-        setLatInput(pos.lat.toString());
-        setLngInput(pos.lng.toString());
-        setMapCenter({ lat: pos.lat, lng: pos.lng });
-      });
+        marker.addListener('dragend', () => {
+          const pos = marker.getPosition();
+          if (pos) moveTo(pos.lat(), pos.lng());
+        });
 
-      mapInstanceRef.current = map;
-      markerRef.current = marker;
+        map.addListener('click', (e: any) => {
+          if (e.latLng) moveTo(e.latLng.lat(), e.latLng.lng());
+        });
+
+        mapInstanceRef.current = map;
+        markerRef.current = marker;
+      })
+      .catch((err) => console.error('[LocationStep] Google Maps:', err));
+
+    return () => {
+      cancelled = true;
+      mapInstanceRef.current = null;
+      markerRef.current = null;
     };
-
-    initMap();
-
-    return () => { cancelled = true; };
   }, [mapCenter !== null]);
 
   useEffect(() => {
     if (!mapCenter || !mapInstanceRef.current || !markerRef.current) return;
 
-    mapInstanceRef.current.panTo([mapCenter.lat, mapCenter.lng]);
-    markerRef.current.setLatLng([mapCenter.lat, mapCenter.lng]);
+    mapInstanceRef.current.panTo({ lat: mapCenter.lat, lng: mapCenter.lng });
+    markerRef.current.setPosition({ lat: mapCenter.lat, lng: mapCenter.lng });
   }, [mapCenter]);
 
   const handleLocationSelect = async (location: {
@@ -311,7 +319,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
             Coordenadas del proyecto
           </h2>
           <p className="text-sm text-[var(--text-muted)] mb-4">
-            Ingresa las coordenadas exactas del proyecto. Puedes usar OpenStreetMap para obtenerlas.
+            Ingresa las coordenadas exactas del proyecto. Puedes usar Google Maps para obtenerlas.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -358,14 +366,14 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
             <span>
               ¿No sabes las coordenadas? Abre{' '}
               <a 
-                href="https://www.openstreetmap.org" 
+                href="https://www.google.com/maps" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-[var(--brand-primary)] underline hover:opacity-80"
               >
-                OpenStreetMap
+                Google Maps
               </a>
-              , haz clic en la ubicación exacta — las coordenadas aparecerán a la izquierda.
+              , haz clic derecho en la ubicación exacta y toca las coordenadas para copiarlas.
             </span>
           </div>
 

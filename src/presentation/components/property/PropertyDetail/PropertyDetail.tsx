@@ -363,7 +363,8 @@ export function PropertyDetail({ property }: PropertyDetailProps) {
             />
           </div>
           {/* Sidebar — oculta en móvil (se muestra en columna principal con lg:hidden) */}
-          <div className="hidden lg:block lg:col-span-3">
+          {/* lg:-mr-4 xl:-mr-10: la columna crece hacia la derecha (usa el margen vacío) sin mover su borde izquierdo */}
+          <div className="hidden lg:block lg:col-span-3 lg:-mr-4 xl:-mr-10">
             <div className="sticky top-4 space-y-4">
 
               {/* Contactar */}
