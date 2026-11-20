@@ -192,7 +192,7 @@ export const LoginForm: React.FC = () => {
             onChange={handleChange}
             error={validationErrors.email}
             leftIcon={<Mail className="w-5 h-5 text-gray-400" />}
-            className="text-base focus:scale-100 placeholder:text-gray-400"
+            className="text-base placeholder:text-gray-400"
           />
 
           <Input
@@ -204,7 +204,7 @@ export const LoginForm: React.FC = () => {
             onChange={handleChange}
             error={validationErrors.password}
             leftIcon={<Lock className="w-5 h-5 text-gray-400" />}
-            className="text-base focus:scale-100 placeholder:text-gray-400"
+            className="text-base placeholder:text-gray-400"
             rightIcon={
               <button
                 type="button"
@@ -230,7 +230,7 @@ export const LoginForm: React.FC = () => {
             </Link>
           </div>
 
-          <Button type="submit" variant="primary" size="lg" fullWidth isLoading={isLoading} className="cursor-pointer">
+          <Button type="submit" variant="brand" size="lg" fullWidth isLoading={isLoading} className="cursor-pointer">
             Iniciar Sesión
           </Button>
 
@@ -250,9 +250,9 @@ export const LoginForm: React.FC = () => {
             fullWidth
             onClick={handleGoogleSignIn}
             isLoading={googleLoading}
+            leftIcon={!googleLoading ? <Icon icon="logos:google-icon" className="w-5 h-5 shrink-0" /> : undefined}
             className="cursor-pointer"
           >
-            <Icon icon="logos:google-icon" className="w-5 h-5 shrink-0" />
             {googleLoading ? 'Conectando...' : 'Google'}
           </Button>
 

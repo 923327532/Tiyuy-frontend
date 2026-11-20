@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, ChevronDown, ChevronLeft, ChevronRight, ArrowRight, Home, Users, User, Sparkles, Shield, FolderGit, CheckCircle } from 'lucide-react';
+import { Search, MapPin, ChevronDown, ChevronLeft, ChevronRight, ArrowRight, Home, Users, Sparkles, CheckCircle } from 'lucide-react';
 import { publicApiClient } from '@/infrastructure/api/axios-client';
 
 interface PublicAgent {
@@ -25,13 +25,6 @@ interface PageResponse {
   number: number;
   size: number;
 }
-
-const FEATURES = [
-  { icon: <Shield className="w-5 h-5" />, title: 'Roommates seguros', desc: 'Verificación completa' },
-  { icon: <FolderGit className="w-5 h-5" />, title: 'Lotes transparentes', desc: 'Información clara' },
-  { icon: <Users className="w-5 h-5" />, title: 'Dueños sin barreras', desc: 'Acceso universal' },
-  { icon: <Sparkles className="w-5 h-5" />, title: 'Soporte Directo', desc: 'Trato preferencial' },
-];
 
 export default function AgentsPage() {
   const [data, setData] = useState<PageResponse | null>(null);
@@ -63,57 +56,36 @@ export default function AgentsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)]">
-      {/* ===== HERO PREMIUM ===== */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#3f9800] via-[#3f9800] to-[#2d6e00]">
-        {/* Imagen de fondo */}
+      {/* ===== HERO COMPACTO ===== */}
+      <div className="relative overflow-hidden">
+        {/* Imagen de fondo protagonista */}
         <div className="absolute inset-0 z-0" style={{
           backgroundImage: `url('https://soho.pe/wp-content/uploads/2023/07/destacado-ultimas-tendencias-de-decoracion.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: 0.12,
         }} />
-
-        {/* Curva decorativa inferior */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[var(--bg-secondary)] to-transparent" />
+        {/* Overlay sutil */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30 z-[1]" />
 
         <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 pt-24 pb-32 lg:pb-36">
-            {/* Columna izquierda - Texto */}
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/80 text-[11px] font-semibold px-3.5 py-1.5 rounded-full tracking-[0.15em] uppercase border border-white/10">
+          <div className="py-12 lg:py-16 max-w-2xl">
+            <div className="space-y-5">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white/90 text-[11px] font-semibold px-3.5 py-1.5 rounded-full tracking-[0.15em] uppercase border border-white/20">
                 <Sparkles className="w-3 h-3" />
                 Directorio
               </div>
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] tracking-tight">
-                Agentes<br />
-                <span className="text-white/70">en Perú</span>
+              <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight tracking-tight">
+                Agentes en <span className="text-white/70">Perú</span>
               </h1>
-              <p className="text-lg text-white/60 leading-relaxed max-w-lg">
+              <p className="text-base lg:text-lg text-white/60 leading-relaxed max-w-lg">
                 Profesionales del sector inmobiliario registrados en Tiyuy. Conecta con agentes en todo el Perú.
               </p>
-            </div>
-
-            {/* Columna derecha - Tarjetas flotantes */}
-            <div className="hidden lg:grid grid-cols-2 gap-4 items-center">
-              {FEATURES.map((f, i) => (
-                <div key={i}
-                  className="group bg-white rounded-2xl p-5 border border-black/5 shadow-[0_10px_35px_rgba(0,0,0,0.25)] hover:border-[#82db3e]/40 hover:shadow-[0_14px_45px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-0.5"
-                  style={{
-                    marginTop: i % 2 === 1 ? '24px' : '0',
-                  }}>
-                  <div className="w-10 h-10 rounded-xl bg-[#82db3e]/10 flex items-center justify-center text-[#82db3e] mb-3 group-hover:bg-[#82db3e] group-hover:text-white transition-all duration-300">
-                    {f.icon}
-                  </div>
-                  <h3 className="font-semibold text-[var(--text-primary)] text-sm mb-0.5">{f.title}</h3>
-                  <p className="text-xs text-[var(--text-secondary)]">{f.desc}</p>
-                </div>
-              ))}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4 -mt-14 relative z-20">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 px-4 -mt-8 relative z-20">
         {/* ===== BUSCADOR PREMIUM ===== */}
         <form onSubmit={handleSearch}
           className="bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
@@ -125,7 +97,7 @@ export default function AgentsPage() {
           </div>
           <div className="relative sm:min-w-[160px] min-w-0">
             <button type="button" onClick={() => setShowCityDropdown(!showCityDropdown)}
-              className="w-full flex items-center justify-between px-4 py-3 text-sm bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl text-[var(--text-secondary)] hover:border-[#c4beb6] focus:border-[#64cc39] focus:ring-1 focus:ring-[#64cc39]/30 transition-all duration-200">
+              className="w-full flex items-center justify-between px-4 py-3 text-sm bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl text-[var(--text-secondary)] hover:border-[var(--border-dark)] focus:border-[var(--brand-primary)] focus:ring-1 focus:ring-[var(--brand-primary)]/20 transition-all duration-200">
               <span className={city ? 'text-[var(--text-secondary)]' : 'text-[var(--text-tertiary)]'}>{city || 'Todas las ciudades'}</span>
               <ChevronDown className={`w-4 h-4 text-[var(--text-tertiary)] transition-transform duration-200 ${showCityDropdown ? 'rotate-180' : ''}`} />
             </button>
@@ -135,7 +107,7 @@ export default function AgentsPage() {
                 <div className="absolute top-full mt-1 left-0 right-0 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] z-20 overflow-hidden">
                   {[{v:'',l:'Todas las ciudades'},{v:'Lima',l:'Lima'},{v:'Arequipa',l:'Arequipa'},{v:'Cusco',l:'Cusco'},{v:'Trujillo',l:'Trujillo'},{v:'Piura',l:'Piura'},{v:'Ica',l:'Ica'}].map(opt => (
                     <button key={opt.v} type="button" onClick={() => { setCity(opt.v); setPage(0); setShowCityDropdown(false); }}
-                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-[var(--bg-secondary)] ${city === opt.v ? 'bg-[#F0F7F3] text-[#1F5A3B] font-semibold' : 'text-[var(--text-secondary)]'}`}>
+                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-[var(--bg-secondary)] ${city === opt.v ? 'bg-[var(--brand-primary)]/10 text-[var(--brand-primary-hover)] font-semibold' : 'text-[var(--text-secondary)]'}`}>
                       {opt.l}
                     </button>
                   ))}
@@ -144,7 +116,7 @@ export default function AgentsPage() {
             )}
           </div>
           <button type="submit"
-            className="sm:px-6 px-4 py-3 bg-[#1F5A3B] hover:bg-[#163F2B] text-white text-sm font-semibold rounded-xl transition-all duration-300 shadow-[0_4px_12px_rgba(31,90,59,0.2)] hover:shadow-[0_6px_20px_rgba(31,90,59,0.3)]">
+            className="sm:px-6 px-4 py-3 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-sm font-semibold rounded-xl transition-all duration-300 shadow-sm hover:shadow">
             Buscar
           </button>
         </form>
@@ -153,7 +125,7 @@ export default function AgentsPage() {
         <div className="mt-12 lg:mt-16">
           {loading ? (
             <div className="flex items-center justify-center py-24">
-              <div className="w-8 h-8 border-2 border-[#1F5A3B] border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-[var(--brand-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : !data || data.content.length === 0 ? (
             <div className="text-center py-24">
@@ -171,7 +143,7 @@ export default function AgentsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {data.content.map((agent) => (
                   <Link key={agent.id} href={`/agents/${agent.slug}`}
-                    className="group bg-[var(--bg-card)] rounded-2xl border-2 border-[var(--border-color)] p-6 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(100,204,57,0.08)] hover:border-[#64cc39] hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+                    className="group bg-[var(--bg-card)] rounded-2xl border border-[var(--border-color)] p-6 shadow-sm hover:shadow-md hover:border-[var(--brand-primary)]/30 hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
 
                     {/* Avatar + Nombre */}
                     <div className="flex items-start gap-4 mb-4">
@@ -184,10 +156,10 @@ export default function AgentsPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-[var(--text-primary)] text-[15px] leading-tight truncate group-hover:text-[#1F5A3B] transition-colors">
+                          <h3 className="font-semibold text-[var(--text-primary)] text-[15px] leading-tight truncate group-hover:text-[var(--brand-primary-hover)] transition-colors">
                             {agent.name}
                           </h3>
-                          <CheckCircle className="w-4 h-4 text-[#1F5A3B] flex-shrink-0" />
+                          <CheckCircle className="w-4 h-4 text-[var(--brand-primary)] flex-shrink-0" />
                         </div>
                         {agent.city && (
                           <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1 mt-0.5">
@@ -210,11 +182,11 @@ export default function AgentsPage() {
                     <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--text-secondary)] border-t border-[var(--border-color)] pt-4">
                       {agent.activePropertiesCount > 0 && (
                         <span className="flex items-center gap-1.5">
-                          <Home className="w-4 h-4 text-[#1F5A3B]/50" />
+                          <Home className="w-4 h-4 text-[var(--text-tertiary)]" />
                           <span className="font-medium">{agent.activePropertiesCount}</span> prop.
                         </span>
                       )}
-                      <span className="ml-auto text-xs font-medium text-[#1F5A3B] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <span className="ml-auto text-xs font-medium text-[var(--brand-primary)] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
                         Ver perfil <ArrowRight className="w-3 h-3" />
                       </span>
                     </div>
@@ -237,7 +209,7 @@ export default function AgentsPage() {
                         <button onClick={() => setPage(i - 1)}
                           className={`w-10 h-10 rounded-xl text-sm font-medium transition-all ${
                             page === i - 1
-                              ? 'bg-[#1F5A3B] text-white shadow-[0_4px_12px_rgba(31,90,59,0.2)]'
+                              ? 'bg-[var(--brand-primary)] text-white shadow-sm'
                               : 'border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]'
                           }`}>{i}</button>
                       </span>

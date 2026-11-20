@@ -27,7 +27,7 @@ const variantStyles = {
   outline: 'border-2 border-slate-300 text-slate-700 hover:bg-slate-50 focus:ring-slate-400',
   ghost: 'text-slate-700 hover:bg-slate-100 focus:ring-slate-400',
   danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-  brand: 'bg-brand-500 text-white hover:bg-brand-600 focus:ring-brand-400',
+  brand: 'bg-brand text-white hover:bg-brand-dark focus:ring-brand',
 };
 
 const sizeStyles = {
