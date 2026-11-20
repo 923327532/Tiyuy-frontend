@@ -25,16 +25,17 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
 
   // Validar archivo
   const validateFile = (file: File): boolean => {
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    
+    // Mismos formatos y límite que el backend (MediaUploadService): JPG, PNG, WEBP y 10MB.
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
     if (!validTypes.includes(file.type)) {
-      toast.error('Solo se permiten archivos JPG y PNG');
+      toast.error('Solo se permiten archivos JPG, PNG y WEBP');
       return false;
     }
-    
+
     if (file.size > maxSize) {
-      toast.error('El archivo no debe superar los 5MB');
+      toast.error('El archivo no debe superar los 10MB');
       return false;
     }
     
@@ -226,7 +227,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
           </div>
 
           <p className="text-sm text-[var(--text-muted)] mt-6">
-            Máximo 10 fotos • JPG, PNG • Máx 5MB cada una
+            Máximo 10 fotos • JPG, PNG, WEBP • Máx 10MB cada una
           </p>
         </div>
       </section>

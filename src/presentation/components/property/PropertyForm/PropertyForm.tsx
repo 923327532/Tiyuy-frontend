@@ -647,7 +647,12 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
       
       // FIX: Add missing fields from step 3
       certifications: data.certifications || [],
-      timeline: data.timeline || [],
+      // Solo los campos que declara TimelineRequest (el hito local trae además un `id` de UI).
+      timeline: (data.timeline || []).map((m: any) => ({
+        phase: m.phase || '',
+        date: m.date || '',
+        description: m.description || '',
+      })),
 
       // Lotización services (se guardan como amenities)
       ...(data.projectType === 'LOTIZATION' ? {
@@ -689,7 +694,6 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
         status: group.status || 'AVAILABLE',
         view: group.view || '',
         quantity: group.quantity || 1,
-        image: group.image || '',
         blueprintImage: group.blueprintImage || ''
       })),
       
