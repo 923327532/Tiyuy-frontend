@@ -626,7 +626,7 @@ function NotificationCard({ notification, onMarkAsRead, isHistory }: Notificatio
                 className="p-2 text-brand hover:bg-brand/10 hover:scale-110 rounded-lg transition-all duration-200"
                 title="Marcar como leída"
               >
-                <CircleCheckBig className="w-5 h-5" />
+                <CheckCheck className="w-5 h-5" />
               </button>
             )}
           </div>
