@@ -27,81 +27,88 @@ export default function NuevoProyectoPage() {
     <ProtectedRoute>
       <TrialGuard>
         <div className="min-h-screen bg-[var(--bg-secondary)] py-8">
-          <div className="max-w-7xl mx-auto px-8 xl:px-16">
+          <div className="max-w-[1400px] mx-auto px-8 xl:px-20">
             <TrialWarningBanner />
 
             {/* Hero (simple) */}
-            <div className="mb-8">
-              <div className="py-6">
+            <div className="mb-2">
+              <div className="py-2">
                 <h1 className="text-3xl font-bold text-[var(--text-primary)]">Nuevo Proyecto</h1>
                 <p className="mt-2 text-base text-[var(--text-secondary)]">Completa la información del proyecto en pasos sencillos. Puedes guardar borrador y completar más tarde.</p>
               </div>
             </div>
 
-            {/* Progress Steps (icons, styled with brand colors + progress bar) */}
+            {/* Progress Steps - Diseño moderno */}
             <div className="mb-8">
-              <div className="relative">
-                {/* Background track */}
-                <div className="absolute left-0 right-0 top-6 hidden md:block">
-                  <div style={{ height: 6, backgroundColor: 'var(--bg-tertiary)', borderRadius: 9999 }} />
-                </div>
+              <div className="bg-[var(--bg-card)] rounded-xl p-6 shadow-sm border border-[var(--border-color)]">
+                <div className="flex items-center justify-between relative">
+                  {/* Línea de progreso de fondo */}
+                  <div className="absolute left-8 right-8 top-6 hidden md:block">
+                    <div className="h-0.5 bg-[var(--bg-tertiary)] rounded-full relative">
+                      <div
+                        className="absolute left-0 top-0 h-full rounded-full transition-all duration-300 ease-out"
+                        style={{
+                          width: `${((currentStep - 1) / (PROJECT_STEPS.length - 1)) * 100}%`,
+                          backgroundColor: 'var(--brand-primary)',
+                        }}
+                      />
+                    </div>
+                  </div>
 
-                {/* Filled progress */}
-                <div className="absolute left-0 top-6 hidden md:block">
-                  <div
-                    style={{
-                      height: 6,
-                      backgroundColor: 'var(--brand-primary)',
-                      borderRadius: 9999,
-                      width: `${((currentStep - 1) / (PROJECT_STEPS.length - 1)) * 100}%`,
-                      transition: 'width 300ms ease',
-                    }}
-                  />
-                </div>
-
-                {/* Circles and segments */}
-                <div className="flex items-center w-full">
                   {PROJECT_STEPS.map((step, index) => {
                     const Icon = [Info, MapPin, Layers, Calendar, ImageIcon][step.number - 1];
                     const isCompleted = currentStep > step.number;
                     const isActive = currentStep === step.number;
-                    const circleStyle: React.CSSProperties = isActive || isCompleted 
-                      ? { backgroundColor: 'var(--brand-primary)', color: 'white', boxShadow: '0 6px 18px rgba(74,154,62,0.12)' } 
-                      : { backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-secondary)' };
-
+                    
                     return (
-                      <React.Fragment key={step.number}>
-                        <div className="flex items-center justify-center z-10" style={{ width: 48 }}>
-                          <div style={circleStyle} className={`w-12 h-12 rounded-full flex items-center justify-center transition-all`}>
-                            <Icon className="w-5 h-5" />
-                          </div>
+                      <div key={step.number} className="flex flex-col items-center relative z-10 flex-1">
+                        {/* Círculo con icono */}
+                        <div
+                          className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                            isActive
+                              ? 'scale-110 shadow-lg'
+                              : isCompleted
+                              ? 'shadow-md'
+                              : ''
+                          }`}
+                          style={{
+                            backgroundColor: isActive || isCompleted ? 'var(--brand-primary)' : 'var(--bg-tertiary)',
+                            color: isActive || isCompleted ? 'white' : 'var(--text-secondary)',
+                          }}
+                        >
+                          <Icon className={`w-5 h-5 transition-transform duration-300 ${isActive ? 'scale-110' : ''}`} />
                         </div>
 
-                        {index < PROJECT_STEPS.length - 1 && (
-                          <div className="flex-1 px-3">
-                            <div className="hidden md:block" style={{ height: 6, borderRadius: 9999, backgroundColor: currentStep > step.number ? 'var(--brand-primary)' : 'var(--bg-tertiary)', transition: 'background-color 200ms' }} />
-                            <div className="md:hidden" style={{ height: 2, borderRadius: 9999, backgroundColor: currentStep > step.number ? 'var(--brand-primary)' : 'var(--bg-tertiary)', transition: 'background-color 200ms' }} />
-                          </div>
+                        {/* Texto */}
+                        <div className="mt-3 text-center">
+                          <p
+                            className={`text-sm font-semibold hidden md:block transition-colors duration-300`}
+                            style={{
+                              color: isActive ? 'var(--text-primary)' : isCompleted ? 'var(--brand-primary)' : 'var(--text-secondary)',
+                            }}
+                          >
+                            {step.title}
+                          </p>
+                          <p
+                            className="text-xs mt-1 hidden md:block transition-colors duration-300"
+                            style={{
+                              color: isActive ? 'var(--text-secondary)' : 'var(--text-tertiary)',
+                            }}
+                          >
+                            {step.description}
+                          </p>
+                        </div>
+
+                        {/* Indicador de paso activo */}
+                        {isActive && (
+                          <div
+                            className="absolute -bottom-2 w-12 h-1 rounded-full hidden md:block"
+                            style={{ backgroundColor: 'var(--brand-primary)' }}
+                          />
                         )}
-                      </React.Fragment>
+                      </div>
                     );
                   })}
-                </div>
-
-                {/* Labels under circles */}
-                <div className="flex items-start mt-3 w-full">
-                  {PROJECT_STEPS.map((step, index) => (
-                    <React.Fragment key={`label-${step.number}`}>
-                      <div style={{ width: 48 }} className="text-center">
-                        <p className={`text-sm ${currentStep === step.number ? 'font-semibold' : 'font-medium'} hidden md:block`} style={{ color: currentStep === step.number ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{step.title}</p>
-                        <p className={`text-xs mt-0.5 hidden md:block`} style={{ color: 'var(--text-tertiary)' }}>{step.description}</p>
-                      </div>
-
-                      {index < PROJECT_STEPS.length - 1 && (
-                        <div className="flex-1" />
-                      )}
-                    </React.Fragment>
-                  ))}
                 </div>
               </div>
             </div>

@@ -912,6 +912,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
 
 
       {/* ── STEP HEADER ── */}
+      {formType !== 'project' && (
       <div className="mb-8">
         <p style={{ color: 'var(--brand-primary)' }} className="text-xs font-bold uppercase tracking-widest mb-1">
           Paso {currentStep} de {totalSteps}
@@ -926,6 +927,7 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
         </p>
         {/* Mostrar errores solo al lado de cada campo; no resumir globalmente aquí */}
       </div>
+      )}
 
       {/* ── STEP CONTENT (con contenedor robusto) ── */}
       <div className="min-h-[400px] w-full">

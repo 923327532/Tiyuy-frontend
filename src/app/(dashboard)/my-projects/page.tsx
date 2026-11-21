@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Plus } from 'lucide-react';
+import { Plus, FolderKanban, CheckCircle2, TrendingUp, Hammer, Search, Building2, MapPin, DollarSign, Layers, MoreVertical, Eye, Edit2, Trash2, Star, Upload } from 'lucide-react';
 import { ProtectedRoute } from '@/presentation/components/auth/ProtectedRoute';
 import { useAuthStore } from '@/presentation/store/authStore';
 import { useProjects } from '@/presentation/hooks/useProjects';
@@ -168,21 +168,21 @@ export default function MyProjectsPage() {
     <ProtectedRoute>
 
       <TrialGuard>
-        <div className="min-h-screen bg-[var(--bg-secondary)] py-8">
-          <div className="max-w-9xl mx-auto px-8 xl:px-16">
+        <div className="min-h-screen bg-[var(--bg-secondary)] py-6">
+          <div className="max-w-9xl mx-auto px-6 xl:px-12">
             {/* Trial warning banner */}
             <TrialWarningBanner />
           {/* Header */}
-          <div className="mb-8">
+          <div className="mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">Mis Proyectos</h1>
-                <p className="text-[var(--text-secondary)] mt-2">Administra tus proyectos inmobiliarios y desarrollos</p>
+                <p className="text-[var(--text-secondary)] mt-1">Administra tus proyectos inmobiliarios y desarrollos</p>
               </div>
 
               <Link
                 href="/dashboard/projects/new"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:from-purple-700 hover:to-purple-800 transition-all active:scale-[0.98]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] text-white font-semibold rounded-xl shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]"
               >
                 <Plus className="w-5 h-5" />
                 Nuevo Proyecto
@@ -191,57 +191,57 @@ export default function MyProjectsPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-[var(--bg-card)] rounded-lg shadow p-6">
-              <div className="flex items-center">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                  <div className="w-6 h-6 bg-purple-600 rounded"></div>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-[var(--text-secondary)]">Total Proyectos</p>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-0.5">Total Proyectos</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">{projects.length}</p>
+                </div>
+                <div className="p-2 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg shadow-purple-500/20">
+                  <FolderKanban className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-[var(--bg-card)] rounded-lg shadow p-6">
-              <div className="flex items-center">
-                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                  <div className="w-6 h-6 bg-green-600 rounded"></div>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-[var(--text-secondary)]">Publicados</p>
+            <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-0.5">Publicados</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">
                     {projects.filter((p: any) => p.status === 'PUBLISHED').length}
                   </p>
                 </div>
+                <div className="p-2 bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg shadow-green-500/20">
+                  <CheckCircle2 className="w-4 h-4 text-white" />
+                </div>
               </div>
             </div>
 
-            <div className="bg-[var(--bg-card)] rounded-lg shadow p-6">
-              <div className="flex items-center">
-                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                  <div className="w-6 h-6 bg-orange-600 rounded"></div>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-[var(--text-secondary)]">Unidades Vendidas</p>
+            <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-0.5">Unidades Vendidas</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">
                     {projects.reduce((total: number, p: any) => total + (p.soldUnits || 0), 0)}
                   </p>
                 </div>
+                <div className="p-2 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg shadow-orange-500/20">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
               </div>
             </div>
 
-            <div className="bg-[var(--bg-card)] rounded-lg shadow p-6">
-              <div className="flex items-center">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <div className="w-6 h-6 bg-blue-600 rounded"></div>
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-[var(--text-secondary)]">En Construccion</p>
+            <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-[var(--text-secondary)] mb-0.5">En Construcción</p>
                   <p className="text-2xl font-bold text-[var(--text-primary)]">
                     {projects.filter((p: any) => p.phase === 'SALE').length}
                   </p>
+                </div>
+                <div className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg shadow-blue-500/20">
+                  <Hammer className="w-4 h-4 text-white" />
                 </div>
               </div>
             </div>
@@ -249,42 +249,42 @@ export default function MyProjectsPage() {
 
 
           {/* Search and Tabs */}
-          <div className="bg-[var(--bg-card)] rounded-lg shadow mb-6">
-            <div className="p-4 border-b border-[var(--border-color)]">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
+          <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-color)] mb-6">
+            <div className="p-4">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="flex-1 relative w-full sm:w-auto">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-tertiary)]" />
                   <input
                     type="text"
                     placeholder="Buscar proyectos..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-[var(--bg-card)] text-[var(--text-primary)]"
+                    className="w-full pl-10 pr-4 py-2.5 border border-[var(--input-border)] rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-[var(--bg-card)] text-[var(--text-primary)] transition-colors"
                   />
                 </div>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto scrollbar-none">
-              <div className="flex space-x-6 sm:space-x-8 px-4 min-w-max">
-                {[
-                  { key: 'ALL', label: 'Todos', count: projects.length },
-                  { key: 'DRAFT', label: 'Borradores', count: projects.filter((p: any) => p.status === 'DRAFT').length },
-                  { key: 'PUBLISHED', label: 'Publicados', count: projects.filter((p: any) => p.status === 'PUBLISHED').length },
-                  { key: 'PAUSED', label: 'Pausados', count: projects.filter((p: any) => p.status === 'PAUSED').length },
-                  { key: 'COMPLETED', label: 'Completados', count: projects.filter((p: any) => p.status === 'COMPLETED').length },
-                ].map((tab) => (
-                  <button
-                    key={tab.key}
-                    onClick={() => setActiveTab(tab.key as any)}
-                    className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                      activeTab === tab.key
-                        ? 'border-purple-600 text-purple-600'
-                        : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
-                    }`}
-                  >
-                    {tab.label} ({tab.count})
-                  </button>
-                ))}
+                <div className="overflow-x-auto scrollbar-none flex-1">
+                  <div className="flex space-x-6 min-w-max">
+                    {[
+                      { key: 'ALL', label: 'Todos', count: projects.length },
+                      { key: 'DRAFT', label: 'Borradores', count: projects.filter((p: any) => p.status === 'DRAFT').length },
+                      { key: 'PUBLISHED', label: 'Publicados', count: projects.filter((p: any) => p.status === 'PUBLISHED').length },
+                      { key: 'PAUSED', label: 'Pausados', count: projects.filter((p: any) => p.status === 'PAUSED').length },
+                      { key: 'COMPLETED', label: 'Completados', count: projects.filter((p: any) => p.status === 'COMPLETED').length },
+                    ].map((tab) => (
+                      <button
+                        key={tab.key}
+                        onClick={() => setActiveTab(tab.key as any)}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors ${
+                          activeTab === tab.key
+                            ? 'border-[var(--brand-primary)] text-[var(--brand-primary)]'
+                            : 'border-transparent text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
+                        }`}
+                      >
+                        {tab.label} ({tab.count})
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -292,125 +292,140 @@ export default function MyProjectsPage() {
 
           {/* Projects Grid */}
           {isLoading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-              <p className="mt-4 text-[var(--text-secondary)]">Cargando proyectos...</p>
+            <div className="text-center py-16 bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)]">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[var(--brand-primary-light)] to-[var(--brand-primary)]/20 mb-4">
+                <div className="w-8 h-8 border-3 border-[var(--brand-primary)] border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <p className="text-[var(--text-secondary)] font-medium">Cargando proyectos...</p>
             </div>
           ) : filteredProjects.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-[var(--bg-tertiary)] rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 bg-[var(--text-tertiary)] rounded"></div>
+            <div className="text-center py-16 bg-[var(--bg-card)] rounded-xl border border-[var(--border-color)]">
+              <div className="w-20 h-20 bg-gradient-to-br from-[var(--brand-primary-light)] to-[var(--brand-primary)]/20 rounded-full flex items-center justify-center mx-auto mb-5">
+                <Building2 className="w-10 h-10 text-[var(--brand-primary)]" />
               </div>
-              <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{searchTerm ? 'No se encontraron proyectos' : 'No hay proyectos aun'}</h3>
-              <p className="text-[var(--text-tertiary)] mb-6">{searchTerm ? 'Intenta otros terminos de busqueda' : 'Comienza creando tu primer proyecto inmobiliario'}</p>
+              <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{searchTerm ? 'No se encontraron proyectos' : 'No hay proyectos aún'}</h3>
+              <p className="text-[var(--text-tertiary)] mb-6 max-w-md mx-auto">{searchTerm ? 'Intenta con otros términos de búsqueda' : 'Comienza creando tu primer proyecto inmobiliario y gestiona todo desde aquí'}</p>
               {!searchTerm && (
                 <Link
                   href="/dashboard/projects/new"
-                  className="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] text-white rounded-lg hover:shadow-lg transition-all font-medium"
                 >
+                  <Plus className="w-5 h-5" />
                   Crear Primer Proyecto
                 </Link>
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProjects.map((project: any) => (
-                <div key={project.id} className="bg-[var(--bg-card)] rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <div key={project.id} className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--border-color)] overflow-hidden hover:shadow-lg hover:border-[var(--brand-primary)]/30 transition-all group">
                   {/* Project Image */}
-                  <div className="aspect-video bg-[var(--bg-tertiary)] relative">
+                  <div className="aspect-video bg-[var(--bg-tertiary)] relative overflow-hidden">
                     {project.coverImageUrl ? (
                       <img
                         src={`/api/images/proxy?url=${encodeURIComponent(project.coverImageUrl)}`}
                         alt={project.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           console.error('Error loading project image:', project.coverImageUrl);
                           e.currentTarget.style.display = 'none';
                           e.currentTarget.parentElement?.classList.add('flex', 'items-center', 'justify-center');
-                          e.currentTarget.parentElement!.innerHTML = '<div class="w-12 h-12 bg-gray-300 rounded"></div>';
+                          e.currentTarget.parentElement!.innerHTML = '<div class="flex flex-col items-center justify-center w-full h-full"><svg class="w-12 h-12 text-[var(--text-tertiary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>';
                         }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-12 h-12 bg-[var(--text-tertiary)] rounded"></div>
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--bg-tertiary)] to-[var(--bg-secondary)]">
+                        <Building2 className="w-12 h-12 text-[var(--text-tertiary)]" />
                       </div>
                     )}
                     
-                    {/* Status and Phase Badges */}
-                    <div className="absolute top-2 left-2 flex gap-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status, project.lifecycleStatus, project.remainingGraceDays)}`}>
+                    {/* Status Badge */}
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm ${getStatusColor(project.status, project.lifecycleStatus, project.remainingGraceDays)}`}>
                         {getStatusText(project.status, project.lifecycleStatus, project.remainingGraceDays)}
                       </span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPhaseColor(project.phase)}`}>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm ${getPhaseColor(project.phase)}`}>
                         {getPhaseText(project.phase)}
                       </span>
-                      {project.isFeatured && (
-                        <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
+                    </div>
+
+                    {/* Featured Badge */}
+                    {project.isFeatured && (
+                      <div className="absolute top-3 right-3">
+                        <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 shadow-sm flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-current" />
                           Destacado
                         </span>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Project Info */}
                   <div className="p-4">
-                    <h3 className="font-semibold text-[var(--text-primary)] mb-2 line-clamp-1">
+                    <h3 className="font-semibold text-[var(--text-primary)] mb-1.5 line-clamp-1 text-lg">
                       {project.name}
                     </h3>
-                    <p className="text-sm text-[var(--text-secondary)] mb-3 line-clamp-2">
+                    <p className="text-sm text-[var(--text-secondary)] mb-4 line-clamp-2">
                       {project.description}
                     </p>
 
                     {/* Project Details */}
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-[var(--text-tertiary)]">Tipo:</span>
-                        <span className="font-medium text-[var(--text-primary)]">{project.type}</span>
+                    <div className="space-y-2.5 text-sm mb-4">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0" />
+                        <span className="text-[var(--text-secondary)] truncate">{project.type}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-[var(--text-tertiary)]">Unidades:</span>
-                        <span className="font-medium text-[var(--text-primary)]">{project.totalUnits}</span>
+                      <div className="flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0" />
+                        <span className="text-[var(--text-secondary)]">{project.totalUnits} unidades</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-[var(--text-tertiary)]">Desde:</span>
-                        <span className="font-medium text-[var(--text-primary)]">S/ {project.priceFrom?.toLocaleString()}</span>
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0" />
+                        <span className="text-[var(--text-secondary)]">Desde S/ {project.priceFrom?.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-[var(--text-tertiary)]">Ubicacion:</span>
-                        <span className="font-medium text-[var(--text-primary)] text-right">{project.district}</span>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-[var(--text-tertiary)] flex-shrink-0" />
+                        <span className="text-[var(--text-secondary)] truncate">{project.district}</span>
                       </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-4 pt-4 border-t border-[var(--border-color)]">
+                    <div className="pt-4 border-t border-[var(--border-color)]">
                       {/* Debug to verify project status */}
                       <div className="text-xs text-red-600 mb-2 hidden">
                         DEBUG: status={project.status}, isFeatured={project.isFeatured}
                       </div>
                       
-                      {/* Actions row - all buttons same size */}
-                      <div className="flex gap-2">
+                      {/* Primary action button */}
+                      <div className="flex gap-2 mb-2">
                         <Link
                           href={project.status === 'DRAFT' ? `/dashboard/projects/${project.id}/edit` : `/projects/detail/${project.slug}`}
                           target={project.status === 'DRAFT' ? '_self' : '_blank'}
-                          className="flex-1 text-center px-2 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-xs font-medium min-h-[36px] flex items-center justify-center"
+                          className="flex-1 text-center px-3 py-2.5 bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] text-white rounded-lg hover:shadow-md text-sm font-medium flex items-center justify-center gap-1.5 transition-all"
                         >
-                          {project.status === 'DRAFT' ? 'Editar' : 'Ver'}
+                          {project.status === 'DRAFT' ? (
+                            <>
+                              <Edit2 className="w-4 h-4" />
+                              Editar
+                            </>
+                          ) : (
+                            <>
+                              <Eye className="w-4 h-4" />
+                              Ver Proyecto
+                            </>
+                          )}
                         </Link>
-                        {project.status !== 'DRAFT' && (
-                        <Link
-                          href={`/dashboard/projects/${project.id}/edit`}
-                          className="flex-1 text-center px-2 py-2 border border-[var(--border-color)] rounded-lg hover:bg-[var(--bg-tertiary)] text-xs font-medium min-h-[36px] flex items-center justify-center text-[var(--text-secondary)]"
-                        >
-                          Editar
-                        </Link>
-                        )}
+                      </div>
+
+                      {/* Secondary actions */}
+                      <div className="flex gap-2">
                         {project.status === 'DRAFT' && (
                           <button
                             onClick={() => handlePublish(project.id, project.status)}
                             disabled={publishMutation.isPending}
-                            className="flex-1 text-center px-2 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
+                            className="flex-1 text-center px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/30 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 transition-colors"
                           >
+                            <Upload className="w-4 h-4" />
                             {publishMutation.isPending ? '...' : 'Publicar'}
                           </button>
                         )}
@@ -418,8 +433,9 @@ export default function MyProjectsPage() {
                           <button
                             onClick={() => handlePublish(project.id, project.status)}
                             disabled={publishMutation.isPending}
-                            className="flex-1 text-center px-2 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
+                            className="flex-1 text-center px-3 py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 transition-colors"
                           >
+                            <CheckCircle2 className="w-4 h-4" />
                             {publishMutation.isPending ? '...' : 'Reactivar'}
                           </button>
                         )}
@@ -427,21 +443,24 @@ export default function MyProjectsPage() {
                           <button
                             onClick={() => handleFeature(project.id)}
                             disabled={featureMutation.isPending}
-                            className="flex-1 text-center px-2 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
+                            className="flex-1 text-center px-3 py-2 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900/30 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 transition-colors"
                           >
+                            <Star className="w-4 h-4" />
                             {featureMutation.isPending ? '...' : 'Destacar'}
                           </button>
                         )}
                         {project.status === 'PUBLISHED' && project.isFeatured && (
-                          <span className="flex-1 text-center px-2 py-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-lg text-xs font-medium min-h-[36px] flex items-center justify-center">
-                            ⭐ Destacado
+                          <span className="flex-1 text-center px-3 py-2 bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5">
+                            <Star className="w-4 h-4 fill-current" />
+                            Destacado
                           </span>
                         )}
                         <button
                           onClick={() => handleDelete(project.id)}
                           disabled={deleteMutation.isPending}
-                          className="flex-1 text-center px-2 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed min-h-[36px] flex items-center justify-center"
+                          className="px-3 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 transition-colors"
                         >
+                          <Trash2 className="w-4 h-4" />
                           {deleteMutation.isPending ? '...' : 'Eliminar'}
                         </button>
                       </div>
@@ -458,7 +477,7 @@ export default function MyProjectsPage() {
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
                   disabled={currentPage === 0}
-                  className="px-3 py-2 text-sm font-semibold rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] shadow-sm"
+                  className="px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] shadow-sm"
                 >
                   Anterior
                 </button>
@@ -482,7 +501,7 @@ export default function MyProjectsPage() {
                         onClick={() => setCurrentPage(pageNum)}
                         className={`w-9 h-9 text-sm font-semibold rounded-lg transition-all duration-200 ${
                           currentPage === pageNum
-                            ? 'bg-purple-600 text-white shadow-md'
+                            ? 'bg-[var(--brand-primary)] text-white shadow-md'
                             : 'bg-[var(--bg-card)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] border border-[var(--border-color)] hover:text-[var(--text-primary)]'
                         }`}
                       >
@@ -495,7 +514,7 @@ export default function MyProjectsPage() {
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
                   disabled={currentPage >= totalPages - 1}
-                  className="px-3 py-2 text-sm font-semibold rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] shadow-sm"
+                  className="px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] shadow-sm"
                 >
                   Siguiente
                 </button>
