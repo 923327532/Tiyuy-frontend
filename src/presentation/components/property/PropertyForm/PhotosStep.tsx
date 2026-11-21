@@ -160,19 +160,12 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* ── ÁREA DE SUBIDA ── */}
       <section>
-        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
-          Fotos de tu propiedad
-        </h2>
-        <p className="text-sm text-[var(--text-muted)] mb-6">
-          Las propiedades con fotos reciben hasta 5x más visitas
-        </p>
-
         {/* Área de drag & drop */}
         <div
-          className={`relative border-2 border-dashed rounded-xl p-12 text-center transition-all ${
+          className={`relative border-2 border-dashed rounded-xl p-6 text-center transition-all ${
             isDragging 
               ? 'border-[var(--brand-primary)] bg-[var(--brand-primary-light)]' 
               : 'border-[var(--input-border)] hover:border-[var(--text-muted)]'
@@ -182,16 +175,16 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
           onDrop={handleDrop}
         >
           {/* Icono de cámara */}
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center">
-              <Camera className="w-10 h-10 text-[var(--text-muted)]" />
+          <div className="flex justify-center mb-3">
+            <div className="w-14 h-14 rounded-full bg-[var(--bg-secondary)] flex items-center justify-center">
+              <Camera className="w-7 h-7 text-[var(--text-muted)]" />
             </div>
           </div>
 
-          <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">
+          <h3 className="text-base font-semibold text-[var(--text-primary)] mb-1">
             Subir fotos de tu propiedad
           </h3>
-          <p className="text-[var(--text-secondary)] mb-8">
+          <p className="text-sm text-[var(--text-secondary)] mb-4">
             Arrastra y suelta imágenes aquí, o haz clic para seleccionar
           </p>
 
@@ -206,27 +199,27 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
           />
 
           {/* Botones */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-lg transition-all bg-[var(--brand-primary)] hover:opacity-90"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm text-white font-semibold rounded-lg transition-all bg-[var(--brand-primary)] hover:opacity-90"
             >
-              <CloudUpload className="w-5 h-5" />
+              <CloudUpload className="w-4 h-4" />
               Seleccionar archivos
             </button>
 
             <button
               type="button"
               onClick={startCamera}
-              className="flex items-center gap-2 px-6 py-3 bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] font-semibold rounded-lg hover:border-[var(--text-muted)] transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] font-semibold rounded-lg hover:border-[var(--text-muted)] transition-all"
             >
-              <Camera className="w-5 h-5" />
+              <Camera className="w-4 h-4" />
               Tomar foto
             </button>
           </div>
 
-          <p className="text-sm text-[var(--text-muted)] mt-6">
+          <p className="text-xs text-[var(--text-muted)] mt-3">
             Máximo 10 fotos • JPG, PNG, WEBP • Máx 10MB cada una
           </p>
         </div>
@@ -284,7 +277,7 @@ export function PhotosStep({ propertyId }: PhotosStepProps) {
         <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
           Consejos para mejores fotos
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { icon: '☀️', title: 'Buena iluminación', desc: 'Toma fotos con luz natural' },
             { icon: '🧹', title: 'Espacios ordenados', desc: 'Limpia y organiza antes' },

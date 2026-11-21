@@ -36,9 +36,7 @@ export function useReceivedLeads(page = 0, size = 20) {
   return useQuery<LeadsResponse>({
     queryKey: ['leads', 'received', page, size],
     queryFn: async () => {
-      console.log('🔄 [CRM] Fetching received leads...');
       const response = await axiosClient.get(`/interactions/leads/received?page=${page}&size=${size}`);
-      console.log('✅ [CRM] Leads received:', response.data?.content?.length || 0);
       return response.data;
     },
     refetchInterval: 15000, // Polling cada 15 segundos para actualización en tiempo real

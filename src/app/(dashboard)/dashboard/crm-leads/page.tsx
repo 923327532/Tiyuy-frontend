@@ -18,13 +18,13 @@ import { toast } from '@/presentation/store/toastStore';
 import { AlignJustify, ChevronDown, ChevronRight, Download, Grid, Mail, MessageCircle, Phone } from 'lucide-react';
 
 const STATUS_COLORS: Record<string, string> = {
-  ALL: 'bg-gray-500',
+  ALL: 'bg-[var(--text-muted)]',
   NEW: 'bg-blue-500',
   CONTACTED: 'bg-yellow-500',
   SCHEDULED: 'bg-purple-500',
   NEGOTIATING: 'bg-orange-500',
-  CLOSED_WON: 'bg-green-500',
-  CLOSED_LOST: 'bg-gray-400',
+  CLOSED_WON: 'bg-[var(--brand-primary)]',
+  CLOSED_LOST: 'bg-[var(--text-muted)]',
 };
 
 // Function to get status options - static Spanish labels
@@ -66,25 +66,24 @@ function StatCard({
   const displayIcon = iconMap[icon] || '📋';
 
   return (
-    <div className={`${color} rounded-xl sm:rounded-2xl p-3 sm:p-4 text-white shadow-lg hover:shadow-xl transition-shadow`}>
-      <div className="flex items-start justify-between mb-2 sm:mb-3 gap-2">
+    <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-3">
+      <div className="flex items-center justify-between mb-1.5 gap-2">
         <div className="min-w-0 flex-1">
-          <p className="text-white/70 text-[11px] sm:text-sm font-medium mb-0.5 truncate leading-tight">{title}</p>
-          <h3 className="text-xl sm:text-2xl font-bold leading-tight">{value}</h3>
+          <p className="text-[11px] font-medium text-[var(--text-muted)] mb-0.5 truncate">{title}</p>
+          <h3 className="text-lg font-bold text-[var(--text-primary)] leading-tight">{value}</h3>
         </div>
-        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center text-sm sm:text-lg backdrop-blur-sm flex-shrink-0">
-          {displayIcon}
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm" style={{ backgroundColor: `${color}20` }}>
+          <span style={{ color: color }}>{displayIcon}</span>
         </div>
       </div>
       {subtitle && (
-        <p className="text-white/60 text-[11px] sm:text-sm truncate leading-tight">{subtitle}</p>
+        <p className="text-[11px] text-[var(--text-muted)] truncate">{subtitle}</p>
       )}
       {trend && (
-        <div className="flex items-center gap-1 mt-1 sm:mt-2 flex-wrap">
-          <span className={`text-[11px] sm:text-sm font-medium leading-tight ${trend.positive ? 'text-green-300' : 'text-red-300'}`}>
+        <div className="flex items-center gap-1 mt-1">
+          <span className={`text-[11px] font-medium ${trend.positive ? 'text-[var(--brand-primary)]' : 'text-red-500'}`}>
             {trend.positive ? '↑' : '↓'} {Math.abs(trend.value)}%
           </span>
-          <span className="text-white/40 text-[10px] sm:text-xs leading-tight">vs mes anterior</span>
         </div>
       )}
     </div>
@@ -105,28 +104,28 @@ function PipelineFunnel({ leads }: { leads: Lead[] }) {
   const total = leads.length || 1;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
-      <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4 sm:mb-6">Pipeline de Leads</h3>
-      <div className="space-y-3">
+    <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-4">
+      <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Pipeline de Leads</h3>
+      <div className="space-y-2">
         {stages.map((stage) => {
           const count = getCount(stage.status);
           const percentage = Math.round((count / total) * 100);
           return (
-            <div key={stage.status} className="flex items-center gap-2 sm:gap-4">
-              <div className="w-20 sm:w-24 text-xs sm:text-sm font-medium text-gray-600 flex-shrink-0">{stage.label}</div>
+            <div key={stage.status} className="flex items-center gap-2">
+              <div className="w-20 text-xs font-medium text-[var(--text-secondary)] flex-shrink-0">{stage.label}</div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="flex-1 h-8 sm:h-10 bg-gray-100 rounded-lg overflow-hidden">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-7 bg-[var(--bg-secondary)] rounded overflow-hidden">
                     <div
-                      className={`h-full ${stage.color} transition-all duration-500 flex items-center justify-end pr-2 sm:pr-3`}
+                      className={`h-full ${stage.color} transition-all duration-500 flex items-center justify-end pr-2`}
                       style={{ width: count > 0 ? `${Math.max((count / Math.max(...stages.map(s => getCount(s.status)))) * 100, 10)}%` : '0%' }}
                     >
                       {count > 0 && (
-                        <span className="text-white font-bold text-xs sm:text-sm">{count}</span>
+                        <span className="text-white font-semibold text-xs">{count}</span>
                       )}
                     </div>
                   </div>
-                  <span className="text-xs sm:text-sm text-gray-500 w-10 sm:w-12 flex-shrink-0">{percentage}%</span>
+                  <span className="text-xs text-[var(--text-muted)] w-10 flex-shrink-0">{percentage}%</span>
                 </div>
               </div>
             </div>
@@ -154,60 +153,57 @@ function LeadRow({
   const [showStatusMenu, setShowStatusMenu] = useState(false);
 
   return (
-    <tr className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${!lead.isRead ? 'bg-blue-50/30' : ''}`}>
-      {/* Lead Info */}
-      <td className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-3">
+    <tr className={`border-b border-[var(--border-light)] hover:bg-[var(--bg-secondary)] transition-colors ${!lead.isRead ? 'bg-blue-50/30' : ''}`}>
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-2">
           <UserAvatar 
             user={{ firstName: lead.interestedUserName || '', lastName: '' }} 
             size="sm" 
           />
           <div className="min-w-0">
-            <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+            <p className="font-semibold text-[var(--text-primary)] text-sm truncate">
               {lead.interestedUserName || 'Usuario Anonimo'}
               {!lead.isRead && (
                 <span className="ml-2 inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
               )}
             </p>
-            <p className="text-xs sm:text-sm text-gray-500 truncate">{lead.contactEmail}</p>
+            <p className="text-xs text-[var(--text-muted)] truncate">{lead.contactEmail}</p>
           </div>
         </div>
       </td>
 
-      {/* Property */}
-      <td className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-3">
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-2">
           {lead.propertyCoverPhoto ? (
             <img 
               src={lead.propertyCoverPhoto} 
               alt={lead.propertyTitle}
-              className="w-12 h-9 object-cover rounded-lg flex-shrink-0"
+              className="w-10 h-8 object-cover rounded flex-shrink-0"
             />
           ) : (
-            <div className="w-12 h-9 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-lg"></span>
+            <div className="w-10 h-8 bg-[var(--bg-secondary)] rounded flex items-center justify-center flex-shrink-0">
+              <span className="text-base"></span>
             </div>
           )}
           <div className="min-w-0">
-            <p className="font-medium text-gray-900 text-xs sm:text-sm truncate">{lead.propertyTitle}</p>
+            <p className="font-medium text-[var(--text-primary)] text-xs truncate">{lead.propertyTitle}</p>
             <Link 
               href={`/property/${lead.propertySlug || lead.propertyId}`}
               target="_blank"
               className="text-xs text-blue-600 hover:underline"
             >
-              Ver Propiedad →
+              Ver →
             </Link>
           </div>
         </div>
       </td>
 
-      {/* Status */}
-      <td className="px-4 sm:px-6 py-4">
+      <td className="px-4 py-3">
         <div className="relative">
           <button
             onClick={() => setShowStatusMenu(!showStatusMenu)}
             disabled={isUpdating}
-            className={`inline-flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-full text-xs font-semibold border ${getStatusColor(lead.status)} transition-colors`}
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold border ${getStatusColor(lead.status)} transition-colors`}
           >
             <span>{getStatusIcon(lead.status)}</span>
             {getStatusLabel(lead.status)}
@@ -215,8 +211,8 @@ function LeadRow({
           </button>
 
           {showStatusMenu && (
-            <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-20 py-2">
-              <p className="px-4 py-2 text-xs font-medium text-gray-500 border-b border-gray-100">
+            <div className="absolute top-full left-0 mt-1 w-44 bg-[var(--bg-card)] rounded-lg shadow-lg border border-[var(--border-color)] z-20 py-1">
+              <p className="px-3 py-1.5 text-xs font-medium text-[var(--text-muted)] border-b border-[var(--border-light)]">
                 Cambiar Estado
               </p>
               {statusOptions.filter(s => s.value !== 'ALL').map(status => (
@@ -226,8 +222,8 @@ function LeadRow({
                     onStatusChange(lead.id, status.value);
                     setShowStatusMenu(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2 ${
-                    lead.status === status.value ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                  className={`w-full text-left px-3 py-1.5 text-xs hover:bg-[var(--bg-secondary)] transition-colors flex items-center gap-2 ${
+                    lead.status === status.value ? 'bg-blue-50 text-blue-700 font-medium' : 'text-[var(--text-secondary)]'
                   }`}
                 >
                   <span className={`w-2 h-2 rounded-full ${status.color}`}></span>
@@ -239,40 +235,37 @@ function LeadRow({
         </div>
       </td>
 
-      {/* Contact */}
-      <td className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-2">
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-1.5">
           {lead.contactPhone && (
             <a
               href={`https://wa.me/${lead.contactPhone.replace(/\D/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors"
+              className="p-1.5 bg-green-100 text-green-600 rounded hover:bg-green-200 transition-colors"
               title="WhatsApp"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-3.5 h-3.5" />
             </a>
           )}
           <a
             href={`mailto:${lead.contactEmail}`}
-            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+            className="p-1.5 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors"
             title="Email"
           >
-            <Mail className="w-4 h-4" />
+            <Mail className="w-3.5 h-3.5" />
           </a>
         </div>
       </td>
 
-      {/* Date */}
-      <td className="px-4 sm:px-6 py-4">
-        <p className="text-xs sm:text-sm text-gray-600">
+      <td className="px-4 py-3">
+        <p className="text-xs text-[var(--text-secondary)]">
           {new Date(lead.createdAt).toLocaleDateString('es-ES', {
             day: 'numeric',
             month: 'short',
-            year: 'numeric',
           })}
         </p>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-[var(--text-muted)]">
           {new Date(lead.createdAt).toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
@@ -280,23 +273,22 @@ function LeadRow({
         </p>
       </td>
 
-      {/* Actions */}
-      <td className="px-4 sm:px-6 py-4">
-        <div className="flex items-center gap-2">
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-1.5">
           {!lead.isRead && (
             <button
               onClick={() => onMarkAsRead(lead.id)}
               disabled={isUpdating}
-              className="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="px-2.5 py-1 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
             >
-              Marcar como Leido
+              Leído
             </button>
           )}
           <button
-            className="p-2 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
+            className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors flex-shrink-0"
             title="Ver Detalles"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </td>
@@ -321,96 +313,90 @@ function LeadCard({
   const [showStatusMenu, setShowStatusMenu] = useState(false);
 
   return (
-    <div className={`bg-white rounded-2xl shadow-sm border-2 p-4 sm:p-6 hover:shadow-lg transition-all ${
-      !lead.isRead ? 'border-blue-300 ring-2 ring-blue-100' : 'border-gray-200'
+    <div className={`bg-[var(--bg-card)] rounded-lg border-2 p-3 hover:shadow-md transition-all ${
+      !lead.isRead ? 'border-blue-300 ring-1 ring-blue-100' : 'border-[var(--border-color)]'
     }`}>
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4 gap-2">
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-start justify-between mb-2 gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           <UserAvatar 
             user={{ firstName: lead.interestedUserName || '', lastName: '' }} 
-            size="md" 
+            size="sm" 
           />
           <div className="min-w-0">
-            <h3 className="font-bold text-gray-900 text-sm sm:text-base truncate">
+            <h3 className="font-semibold text-[var(--text-primary)] text-sm truncate">
               {lead.interestedUserName || 'Usuario Anonimo'}
               {!lead.isRead && (
                 <span className="ml-2 inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
               )}
             </h3>
-            <p className="text-xs sm:text-sm text-gray-500 truncate">{lead.contactEmail}</p>
+            <p className="text-xs text-[var(--text-muted)] truncate">{lead.contactEmail}</p>
           </div>
         </div>
-        <span className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(lead.status)} flex-shrink-0`}>
+        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${getStatusColor(lead.status)} flex-shrink-0`}>
           {getStatusIcon(lead.status)} {getStatusLabel(lead.status)}
         </span>
       </div>
 
-      {/* Property */}
-      <div className="bg-gray-50 rounded-xl p-3 sm:p-4 mb-4">
-        <div className="flex items-center gap-3">
+      <div className="bg-[var(--bg-secondary)] rounded p-2 mb-2">
+        <div className="flex items-center gap-2">
           {lead.propertyCoverPhoto ? (
             <img 
               src={lead.propertyCoverPhoto} 
               alt={lead.propertyTitle}
-              className="w-16 h-12 object-cover rounded-lg flex-shrink-0"
+              className="w-12 h-10 object-cover rounded flex-shrink-0"
             />
           ) : (
-            <div className="w-16 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl"></span>
+            <div className="w-12 h-10 bg-[var(--bg-card)] rounded flex items-center justify-center flex-shrink-0">
+              <span className="text-xl"></span>
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-gray-900 text-sm truncate">{lead.propertyTitle}</p>
+            <p className="font-medium text-[var(--text-primary)] text-xs truncate">{lead.propertyTitle}</p>
             <Link 
               href={`/property/${lead.propertySlug || lead.propertyId}`}
               target="_blank"
               className="text-xs text-blue-600 hover:underline"
             >
-              Ver Propiedad →
+              Ver →
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Message */}
       {lead.message && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded-r-xl mb-4">
-          <p className="text-sm text-yellow-800 italic line-clamp-2">
+        <div className="bg-yellow-50 border-l-2 border-yellow-400 p-2 rounded-r mb-2">
+          <p className="text-xs text-yellow-800 italic line-clamp-2">
             &ldquo;{lead.message}&rdquo;
           </p>
         </div>
       )}
 
-      {/* Contact Info */}
-      <div className="flex items-center gap-2 mb-4 text-sm text-gray-600">
+      <div className="flex items-center gap-1.5 mb-2 text-xs text-[var(--text-muted)]">
         {lead.contactPhone && (
           <span className="flex items-center gap-1 truncate">
-            <Phone className="w-4 h-4 flex-shrink-0" />
+            <Phone className="w-3 h-3 flex-shrink-0" />
             {lead.contactPhone}
           </span>
         )}
       </div>
 
-      {/* Fecha */}
-      <p className="text-xs text-gray-400 mb-4">
+      <p className="text-xs text-[var(--text-muted)] mb-2">
         {new Date(lead.createdAt).toLocaleString('es-ES', {
           day: 'numeric',
-          month: 'long',
+          month: 'short',
           hour: '2-digit',
           minute: '2-digit',
         })}
       </p>
 
-      {/* Actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         {!lead.isRead && (
           <button
             onClick={() => onMarkAsRead(lead.id)}
             disabled={isUpdating}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-colors truncate"
+            className="flex-1 px-2 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 disabled:opacity-50 transition-colors truncate"
           >
-            Marcar como Leido
+            Leído
           </button>
         )}
         
@@ -418,13 +404,13 @@ function LeadCard({
           <button
             onClick={() => setShowStatusMenu(!showStatusMenu)}
             disabled={isUpdating}
-            className="px-3 sm:px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-200 transition-colors"
+            className="px-2 py-1.5 bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs font-medium rounded hover:bg-[var(--bg-tertiary)] transition-colors"
           >
-            Cambiar Estado
+            Estado
           </button>
 
           {showStatusMenu && (
-            <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-20 py-2">
+            <div className="absolute bottom-full right-0 mb-1 w-40 bg-[var(--bg-card)] rounded-lg shadow-lg border border-[var(--border-color)] z-20 py-1">
               {statusOptions.filter(s => s.value !== 'ALL').map(status => (
                 <button
                   key={status.value}
@@ -432,8 +418,8 @@ function LeadCard({
                     onStatusChange(lead.id, status.value);
                     setShowStatusMenu(false);
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                    lead.status === status.value ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                  className={`w-full text-left px-2 py-1 text-xs hover:bg-[var(--bg-secondary)] transition-colors ${
+                    lead.status === status.value ? 'bg-blue-50 text-blue-700 font-medium' : 'text-[var(--text-secondary)]'
                   }`}
                 >
                   {status.label}
@@ -448,9 +434,9 @@ function LeadCard({
             href={`https://wa.me/${lead.contactPhone.replace(/\D/g, '')}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 bg-green-100 text-green-600 rounded-xl hover:bg-green-200 transition-colors flex-shrink-0"
+            className="p-1.5 bg-green-100 text-green-600 rounded hover:bg-green-200 transition-colors flex-shrink-0"
           >
-            <MessageCircle className="w-5 h-5" />
+            <MessageCircle className="w-3.5 h-3.5" />
           </a>
         )}
       </div>
@@ -521,30 +507,29 @@ export default function CRMLeadsPage() {
 
   return (
     <ProtectedRoute>
-      <div className="bg-gray-50 min-h-full">
+      <div className="bg-[var(--bg-secondary)] min-h-full">
         <main>
-          {/* Header - Responsive */}
-          <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-            <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <header className="bg-[var(--bg-card)] border-b border-[var(--border-color)] sticky top-0 z-10">
+            <div className="px-4 py-2.5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900">CRM Leads</h1>
-                  <p className="text-gray-500 text-xs sm:text-sm mt-1">
-                    Gestiona tus prospectos y conviertelos en clientes
+                  <h1 className="text-lg font-bold text-[var(--text-primary)]">CRM Leads</h1>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    Gestiona tus prospectos
                     {unreadCount > 0 && (
-                      <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 animate-pulse">
+                      <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 animate-pulse">
                         {unreadCount} nuevo{unreadCount !== 1 ? 's' : ''}
                       </span>
                     )}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                  <div className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-green-50 text-green-700 rounded-xl border border-green-200">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-xs sm:text-sm font-medium">En vivo</span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-green-50 text-green-700 rounded border border-green-200">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-medium">En vivo</span>
                   </div>
-                  <button className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm">
-                    <Download className="w-4 h-4" />
+                  <button className="px-2.5 py-1.5 bg-blue-600 text-white rounded font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5 text-xs">
+                    <Download className="w-3.5 h-3.5" />
                     <span className="hidden sm:inline">Exportar</span>
                   </button>
                 </div>
@@ -552,15 +537,14 @@ export default function CRMLeadsPage() {
             </div>
           </header>
 
-          <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
-            {/* Stats Cards - Responsive grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+          <div className="p-4 space-y-3">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard 
                 title="Total Leads" 
                 value={stats.total} 
                 subtitle={`${stats.unread} no leido${stats.unread !== 1 ? 's' : ''}`}
                 icon="Users" 
-                color="bg-gradient-to-br from-blue-500 to-blue-700"
+                color="#3b82f6"
                 trend={{ value: 12, positive: true }}
               />
               <StatCard 
@@ -568,41 +552,40 @@ export default function CRMLeadsPage() {
                 value={stats.new} 
                 subtitle="Este mes"
                 icon="Fire" 
-                color="bg-gradient-to-br from-orange-500 to-red-600"
+                color="#f97316"
               />
               <StatCard 
                 title="Negociando" 
                 value={stats.negotiating} 
                 subtitle="Oportunidades activas"
                 icon="Handshake" 
-                color="bg-gradient-to-br from-purple-500 to-purple-700"
+                color="#a855f7"
               />
               <StatCard 
                 title="Tasa de Conversion" 
                 value={`${stats.conversionRate}%`}
                 subtitle={`${stats.won} leads ganados`}
                 icon="Chart" 
-                color="bg-gradient-to-br from-green-500 to-emerald-700"
+                color="#10b981"
                 trend={{ value: 5, positive: true }}
               />
             </div>
 
-            {/* Pipeline + Recent Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
               <div className="lg:col-span-2 overflow-hidden">
                 <PipelineFunnel leads={leads} />
               </div>
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-4">Actividad Reciente</h3>
-                <div className="space-y-4">
+              <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-3">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-2">Actividad Reciente</h3>
+                <div className="space-y-2">
                   {leads.slice(0, 5).map((lead) => (
-                    <div key={lead.id} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div key={lead.id} className="flex items-start gap-2">
+                      <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
                       <div className="min-w-0">
-                        <p className="text-sm text-gray-900 font-medium truncate">
-                                                  Nuevo lead de {lead.interestedUserName || 'anonimo'}
+                        <p className="text-xs text-[var(--text-primary)] font-medium truncate">
+                          Nuevo lead de {lead.interestedUserName || 'anonimo'}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-[var(--text-muted)]">
                           {new Date(lead.createdAt).toLocaleString('es-ES', {
                             hour: '2-digit',
                             minute: '2-digit',
@@ -614,7 +597,7 @@ export default function CRMLeadsPage() {
                     </div>
                   ))}
                   {leads.length === 0 && (
-                    <p className="text-sm text-gray-500 text-center py-4">
+                    <p className="text-xs text-[var(--text-muted)] text-center py-2">
                       Sin actividad reciente
                     </p>
                   )}
@@ -622,25 +605,24 @@ export default function CRMLeadsPage() {
               </div>
             </div>
 
-            {/* Filters - Responsive */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-3 sm:p-4">
-              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <span className="text-xs sm:text-sm font-medium text-gray-700 mr-1 sm:mr-2">Filtrar:</span>
+            <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-2.5">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-xs font-medium text-[var(--text-secondary)] mr-1">Filtrar:</span>
                 {statusOptions.map(status => (
                   <button
                     key={status.value}
                     onClick={() => setSelectedStatus(status.value)}
-                    className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-1 sm:gap-2 ${
+                    className={`px-2.5 py-1 rounded text-xs font-medium transition-all flex items-center gap-1.5 ${
                       selectedStatus === status.value 
-                        ? 'bg-gray-900 text-white shadow-lg' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-[var(--text-primary)] text-[var(--bg-card)]' 
+                        : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]'
                     }`}
                   >
                     {status.value !== 'ALL' && (
-                      <span className={`w-2 h-2 rounded-full ${status.color}`}></span>
+                      <span className={`w-1.5 h-1.5 rounded-full ${status.color}`}></span>
                     )}
                     {status.label}
-                    <span className={`px-1.5 sm:px-2 py-0.5 rounded text-xs ${
+                    <span className={`px-1 py-0 rounded text-xs ${
                       selectedStatus === status.value ? 'bg-white/20' : 'bg-white'
                     }`}>
                       {status.value === 'ALL' ? leads.length : leads.filter(l => l.status === status.value).length}
@@ -648,51 +630,49 @@ export default function CRMLeadsPage() {
                   </button>
                 ))}
 
-                <div className="ml-auto flex items-center gap-2">
+                <div className="ml-auto flex items-center gap-1.5">
                   <button
                     onClick={() => setViewMode('table')}
-                    className={`p-2 rounded-lg transition-colors ${viewMode === 'table' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-1.5 rounded transition-colors ${viewMode === 'table' ? 'bg-blue-100 text-blue-600' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}
                   >
-                    <AlignJustify className="w-5 h-5" />
+                    <AlignJustify className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => setViewMode('cards')}
-                    className={`p-2 rounded-lg transition-colors ${viewMode === 'cards' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-1.5 rounded transition-colors ${viewMode === 'cards' ? 'bg-blue-100 text-blue-600' : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}
                   >
-                    <Grid className="w-5 h-5" />
+                    <Grid className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Loading */}
             {isLoading && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 sm:p-16">
-                <div className="flex flex-col items-center gap-4">
+              <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-8">
+                <div className="flex flex-col items-center gap-3">
                   <div className="relative">
-                    <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                    <div className="w-10 h-10 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
                   </div>
-                  <p className="text-gray-500 font-medium">Cargando leads...</p>
+                  <p className="text-sm text-[var(--text-secondary)] font-medium">Cargando leads...</p>
                 </div>
               </div>
             )}
 
-            {/* Empty State */}
             {!isLoading && filteredLeads.length === 0 && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 sm:p-16 text-center">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-4xl text-gray-400">Vacio</span>
+              <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] p-8 text-center">
+                <div className="w-16 h-16 bg-[var(--bg-secondary)] rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-3xl text-[var(--text-muted)]">Vacio</span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1.5">
                   {selectedStatus === 'ALL' ? 'No hay leads aun' : 'No hay leads en este estado'}
                 </h3>
-                <p className="text-gray-500 max-w-md mx-auto text-sm">
+                <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
                   Los prospectos interesados en tus propiedades apareceran aqui automaticamente
                 </p>
                 {selectedStatus !== 'ALL' && (
                   <button
                     onClick={() => setSelectedStatus('ALL')}
-                    className="mt-4 px-4 py-2 text-blue-600 font-medium hover:underline"
+                    className="mt-3 px-3 py-1.5 text-xs text-blue-600 font-medium hover:underline"
                   >
                     Ver todos los leads
                   </button>
@@ -700,34 +680,33 @@ export default function CRMLeadsPage() {
               </div>
             )}
 
-            {/* Leads Table - Responsive scroll */}
             {!isLoading && filteredLeads.length > 0 && viewMode === 'table' && (
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-[var(--bg-card)] rounded-lg border border-[var(--border-color)] overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[640px]">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                    <thead className="bg-[var(--bg-secondary)] border-b border-[var(--border-color)]">
                       <tr>
-                        <th className="px-4 sm:px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2.5 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                           Lead
                         </th>
-                        <th className="px-4 sm:px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2.5 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                           Propiedad
                         </th>
-                        <th className="px-4 sm:px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2.5 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                           Estado
                         </th>
-                        <th className="px-4 sm:px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2.5 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                           Contacto
                         </th>
-                        <th className="px-4 sm:px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2.5 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                           Fecha
                         </th>
-                        <th className="px-4 sm:px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        <th className="px-4 py-2.5 text-left text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">
                           Acciones
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-[var(--border-light)]">
                       {filteredLeads.map((lead) => (
                         <LeadRow
                           key={lead.id}
@@ -744,9 +723,8 @@ export default function CRMLeadsPage() {
               </div>
             )}
 
-            {/* Leads Cards View - Responsive grid */}
             {!isLoading && filteredLeads.length > 0 && viewMode === 'cards' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                 {filteredLeads.map((lead) => (
                   <LeadCard
                     key={lead.id}

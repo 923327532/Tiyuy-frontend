@@ -222,14 +222,14 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-0.5">
                 Características de la habitación
               </h2>
-              <p className="text-sm text-[var(--text-muted)] mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-2">
                 Especifica los servicios disponibles
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-3">
                 <OptionSelector
                   label="Tipo de baño"
                   value={formData.bathroomType || 'PRIVATE'}
@@ -240,7 +240,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
                   ]}
                 />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <NumberInput
                         label="Área de la habitación"
@@ -268,18 +268,18 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-0.5">
                 Características del terreno
               </h2>
-              <p className="text-sm text-[var(--text-muted)] mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-2">
                 Especifica las medidas, servicios y zonificacion del lote
               </p>
 
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {/* ── MEDIDAS ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Medidas del lote</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2">Medidas del lote</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <NumberInput
                         label="Área total (m2) *"
@@ -324,7 +324,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
                 {/* ── TOPOGRAFIA ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Topografia</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2">Topografia</h3>
                   <OptionSelector
                     label="Tipo de terreno"
                     value={formData.topography || 'FLAT'}
@@ -340,7 +340,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
                 {/* ── SERVICIOS BASICOS ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Servicios basicos</h3>
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2">Servicios basicos</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {[
                       ['hasWater', 'Agua'],
@@ -363,8 +363,8 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
                 {/* ── ZONIFICACION Y DOCUMENTOS ── */}
                 <div>
-                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-3">Zonificacion y documentos</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2">Zonificacion y documentos</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <OptionSelector
                       label="Zonificacion / Uso de suelo"
                       value={formData.zoning || 'RESIDENTIAL'}
@@ -400,15 +400,15 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-0.5">
                 Características de la oficina
               </h2>
-              <p className="text-sm text-[var(--text-muted)] mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-2">
                 Detalles del espacio comercial
               </p>
 
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <Counter
                     label="Baños"
                     value={formData.bathrooms || 1}
@@ -432,7 +432,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <NumberInput
                       label="Área total"
@@ -472,14 +472,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
         return (
           <>
             <section>
-              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
-                Características principales
-              </h2>
-              <p className="text-sm text-[var(--text-muted)] mb-4">
-                Indica la cantidad de ambientes disponibles
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <Counter
                   label={isCommercial ? 'Ambientes' : 'Dormitorios'}
                   value={formData.bedrooms || 1}
@@ -505,14 +498,14 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
             </section>
 
             <section>
-              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
+              <h2 className="text-lg font-bold text-[var(--text-primary)] mb-0.5">
                 Medidas del inmueble
               </h2>
-              <p className="text-sm text-[var(--text-muted)] mb-4">
+              <p className="text-sm text-[var(--text-muted)] mb-2">
                 Especifica las áreas en metros cuadrados
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <NumberInput
                     label="Área total"
@@ -538,14 +531,14 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
 
             {formData.type === 'APARTMENT' && (
               <section>
-                <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
+                <h2 className="text-lg font-bold text-[var(--text-primary)] mb-0.5">
                   Detalles del departamento
                 </h2>
-                <p className="text-sm text-[var(--text-muted)] mb-4">
+                <p className="text-sm text-[var(--text-muted)] mb-2">
                   Información adicional específica para departamentos
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <NumberInput
                     label="Piso"
                     value={formData.floor}
@@ -568,7 +561,7 @@ export function CharacteristicsStep({ formData, onChange, validationErrors }: Ch
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       <style>{`
         input[type="number"].hide-arrows::-webkit-outer-spin-button,
         input[type="number"].hide-arrows::-webkit-inner-spin-button {

@@ -27,7 +27,6 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
     RENT: 'Alquiler',
   };
 
-  // Custom currency selector component
   function CurrencySelector({ value, onChange }: { value: string; onChange: (v: string) => void }) {
     const [isOpen, setIsOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -50,7 +49,7 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 border border-[var(--border-color)] rounded-lg bg-[var(--bg-card)] text-sm text-[var(--text-primary)] cursor-pointer transition-all hover:border-[var(--brand-primary)] shadow-sm font-medium"
+          className="w-full flex items-center justify-between px-4 py-3 border-2 border-[var(--border-color)] rounded-lg bg-[var(--bg-card)] text-sm text-[var(--text-primary)] cursor-pointer transition-all hover:border-[var(--brand-primary)] shadow-sm font-medium"
         >
           <span>{selected?.label || 'S/ PEN'}</span>
           <svg className={`w-4 h-4 text-[var(--text-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -74,147 +73,21 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
   }
 
   return (
-    <div className="space-y-8">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        .bis-wrap { font-family: 'Plus Jakarta Sans', sans-serif; }
-
-        .transaction-btn {
-          flex: 1;
-          padding: 14px 20px;
-          border-radius: 12px;
-          border: 1.5px solid var(--border-color);
-          background: var(--bg-card);
-          font-weight: 600;
-          font-size: 14px;
-          color: var(--text-secondary);
-          cursor: pointer;
-          transition: all 0.2s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .transaction-btn:hover {
-          border-color: var(--brand-primary);
-          color: var(--brand-primary);
-          background: var(--brand-primary-light);
-        }
-        .transaction-btn.active {
-          border-color: var(--brand-primary);
-          background: var(--brand-primary);
-          color: #fff;
-          box-shadow: 0 4px 14px rgba(0,166,62,0.3);
-        }
-
-        .type-btn {
-          padding: 12px 6px;
-          border-radius: 12px;
-          border: 1.5px solid var(--border-color);
-          background: var(--bg-card);
-          font-weight: 600;
-
-          font-size: 13px;
-          color: var(--text-secondary);
-          cursor: pointer;
-          transition: all 0.2s ease;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 4px;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          width: 100%;
-        }
-        @media (min-width: 640px) {
-          .type-btn {
-            padding: 16px 12px;
-            font-size: 13px;
-            gap: 8px;
-          }
-        }
-        .type-btn:hover {
-          border-color: var(--brand-primary);
-          color: var(--brand-primary);
-          background: var(--brand-primary-light);
-        }
-        .type-btn:hover svg { color: var(--brand-primary); }
-        .type-btn.active {
-          border-color: var(--brand-primary);
-          background: var(--brand-primary-light);
-          color: rgba(0,0,0,0.8);
-        }
-        .type-btn.active svg { color: var(--brand-primary); }
-
-        .field-label {
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.12em;
-          color: var(--text-muted);
-          margin-bottom: 10px;
-          display: block;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .form-input {
-          width: 100%;
-          padding: 13px 16px;
-          border: 1.5px solid var(--input-border);
-          border-radius: 10px;
-          font-size: 14px;
-          color: var(--text-primary);
-          background: var(--bg-card);
-          transition: all 0.2s ease;
-          outline: none;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .form-input::placeholder { color: var(--text-muted); }
-        .form-input:focus {
-          border-color: var(--brand-primary);
-          background: var(--bg-card);
-          box-shadow: 0 0 0 3px var(--brand-primary-light);
-        }
-
-        .form-select {
-          padding: 13px 16px;
-          border: 1.5px solid var(--input-border);
-          border-radius: 10px;
-          font-size: 14px;
-          color: var(--text-primary);
-          background: var(--bg-card);
-          transition: all 0.2s ease;
-          outline: none;
-          cursor: pointer;
-          appearance: none;
-          font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .form-select:focus {
-          border-color: var(--brand-primary);
-          background: var(--bg-card);
-          box-shadow: 0 0 0 3px var(--brand-primary-light);
-        }
-
-        .section-divider {
-          width: 28px;
-          height: 2.5px;
-          background: var(--brand-primary);
-          border-radius: 2px;
-          margin-bottom: 14px;
-        }
-      `}</style>
-
-      <div className="bis-wrap space-y-8">
+    <div className="space-y-3 font-['Plus_Jakarta_Sans',sans-serif]">
 
         {/* ── TRANSACCIÓN ── */}
         <div>
-          <div className="section-divider" />
-          <label className="field-label">¿Que deseas hacer?</label>
+          <div className="w-7 h-0.5 bg-[var(--brand-primary)] rounded mb-2" />
+          <label className="text-[11px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1.5 block">¿Que deseas hacer?</label>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => onChange('transactionType', 'SALE')}
-              className={`transaction-btn ${isActive('transactionType', 'SALE') ? 'active' : ''}`}
+              className={`flex-1 py-3 px-5 rounded-xl border-2 font-semibold text-sm cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                isActive('transactionType', 'SALE')
+                  ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white shadow-[0_4px_14px_rgba(0,166,62,0.3)]'
+                  : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]'
+              }`}
             >
               <Tag className="w-4 h-4" />
               Vender
@@ -222,7 +95,11 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
             <button
               type="button"
               onClick={() => onChange('transactionType', 'RENT')}
-              className={`transaction-btn ${isActive('transactionType', 'RENT') ? 'active' : ''}`}
+              className={`flex-1 py-3 px-5 rounded-xl border-2 font-semibold text-sm cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                isActive('transactionType', 'RENT')
+                  ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white shadow-[0_4px_14px_rgba(0,166,62,0.3)]'
+                  : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]'
+              }`}
             >
               <Key className="w-4 h-4" />
               Alquilar
@@ -235,17 +112,21 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
 
         {/* ── TIPO DE PROPIEDAD ── */}
         <div>
-          <div className="section-divider" />
-          <label className="field-label">Tipo de propiedad</label>
+          <div className="w-7 h-0.5 bg-[var(--brand-primary)] rounded mb-2" />
+          <label className="text-[11px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1.5 block">Tipo de propiedad</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
             {PROPERTY_TYPES.map((type) => (
               <button
                 key={type.value}
                 type="button"
                 onClick={() => onChange('type', type.value)}
-                className={`type-btn ${isActive('type', type.value) ? 'active' : ''}`}
+                className={`py-3 px-1.5 sm:py-4 sm:px-3 rounded-xl border-2 font-semibold text-[13px] cursor-pointer transition-all flex flex-col items-center gap-1 sm:gap-2 w-full ${
+                  isActive('type', type.value)
+                    ? 'border-[var(--brand-primary)] bg-[var(--brand-primary-light)] text-black/80 [&>span:first-child]:text-[var(--brand-primary)]'
+                    : 'border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)] [&:hover>span:first-child]:text-[var(--brand-primary)]'
+                }`}
               >
-                <span style={{ color: isActive('type', type.value) ? 'var(--brand-primary)' : 'var(--text-muted)', transition: 'color 0.2s' }}>
+                <span className={`transition-colors ${isActive('type', type.value) ? 'text-[var(--brand-primary)]' : 'text-[var(--text-muted)]'}`}>
                   {type.icon}
                 </span>
                 <span>{type.label}</span>
@@ -259,8 +140,8 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
 
         {/* ── PRECIO ── */}
         <div>
-          <div className="section-divider" />
-          <label className="field-label">Precio</label>
+          <div className="w-7 h-0.5 bg-[var(--brand-primary)] rounded mb-2" />
+          <label className="text-[11px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1.5 block">Precio</label>
           <div className="flex flex-col sm:flex-row gap-3">
               <CurrencySelector
                 value={formData.currency}
@@ -271,7 +152,9 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
               value={formData.price || ''}
               onChange={(e) => onChange('price', Number(e.target.value))}
               required
-              className={`form-input flex-1 ${validationErrors?.price ? 'border-red-500' : ''}`}
+              className={`w-full py-3 px-4 border-2 rounded-lg text-sm text-[var(--text-primary)] bg-[var(--bg-card)] transition-all outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand-primary)] focus:shadow-[0_0_0_3px_var(--brand-primary-light)] flex-1 ${
+                validationErrors?.price ? 'border-red-500' : 'border-[var(--input-border)]'
+              }`}
               placeholder="Ingresa el precio"
             />
           </div>
@@ -282,13 +165,15 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
 
         {/* ── DESCRIPCIÓN ── */}
         <div>
-          <div className="section-divider" />
-          <label className="field-label">Descripcion</label>
+          <div className="w-7 h-0.5 bg-[var(--brand-primary)] rounded mb-2" />
+          <label className="text-[11px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-1.5 block">Descripcion</label>
           <textarea
             value={formData.description}
             onChange={(e) => onChange('description', e.target.value)}
             rows={5}
-            className={`form-input resize-none ${validationErrors?.description ? 'border-red-500' : ''}`}
+            className={`w-full py-3 px-4 border-2 rounded-lg text-sm text-[var(--text-primary)] bg-[var(--bg-card)] transition-all outline-none resize-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand-primary)] focus:shadow-[0_0_0_3px_var(--brand-primary-light)] ${
+              validationErrors?.description ? 'border-red-500' : 'border-[var(--input-border)]'
+            }`}
             placeholder="Describe tu propiedad... (mín. 30 caracteres)"
           />
           {validationErrors?.description ? (
@@ -301,7 +186,6 @@ export function BasicInfoStep({ formData, onChange, validationErrors }: BasicInf
           )}
         </div>
 
-      </div>
     </div>
   );
 }
