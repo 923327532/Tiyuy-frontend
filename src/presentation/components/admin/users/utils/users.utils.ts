@@ -3,6 +3,7 @@
  */
 
 import type { UserListItem } from '@/core/domain/entities/Admin';
+import type { UserIdentityLike } from '@/presentation/components/admin/users/types/users.types';
 
 const dateFormatter = new Intl.DateTimeFormat('es-PE', {
   day: '2-digit',
@@ -69,11 +70,11 @@ export function formatNumber(value: number): string {
   return numberFormatter.format(value);
 }
 
-export function getFullName(user: UserListItem): string {
+export function getFullName(user: Pick<UserIdentityLike, 'firstName' | 'lastName' | 'email'>): string {
   return [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || user.email;
 }
 
-export function getInitials(user: UserListItem): string {
+export function getInitials(user: Pick<UserIdentityLike, 'firstName' | 'lastName' | 'email'>): string {
   if (user.firstName && user.lastName) {
     return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
   }
@@ -117,4 +118,15 @@ export function formatCurrentDate(): string {
   }).format(new Date());
 
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+}
+
+/** Formatea fecha corta: 18 nov. 2026 */
+export function formatShortDate(): string {
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = new Intl.DateTimeFormat('es-PE', { month: 'short' })
+    .format(now)
+    .replace('.', '');
+
+  return `${day} ${month}. ${now.getFullYear()}`;
 }

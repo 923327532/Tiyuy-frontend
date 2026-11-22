@@ -1,0 +1,18 @@
+@keyframes idm-surface-enter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.97); }
+  60% { transform: translateY(-3px) scale(1.005); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 640px) {
+  .intl-detail-modal__surface { max-width: 100%; max-height: 90vh; border-radius: var(--idm-radius-sm); }
+  .intl-detail-modal__header { padding: 1.125rem 1.25rem; flex-direction: column; }
+  .intl-detail-modal__body { padding: 1rem 1.25rem 1.25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intl-detail-modal__surface, .intl-detail-modal__btn, .intl-detail-modal__image-link {
+    animation: none !important; transition: none !important;
+  }
+  .intl-detail-modal__btn:hover:not(:disabled), .intl-detail-modal__btn:active:not(:disabled) { transform: none !important; }
+}

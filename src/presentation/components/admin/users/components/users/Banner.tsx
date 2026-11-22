@@ -2,31 +2,21 @@
 
 import { useEffect, useState } from 'react';
 
-import {
-  Clock3,
-  ShieldCheck,
-  CalendarDays,
-} from 'lucide-react';
+import { CalendarDays, ShieldCheck } from 'lucide-react';
 
-import { formatCurrentDate } from '@/presentation/components/admin/users/utils/users.utils';
+import { formatShortDate } from '@/presentation/components/admin/users/utils/users.utils';
 
 interface BannerProps {
   className?: string;
 }
 
 export function Banner({ className = '' }: BannerProps) {
-  const [now, setNow] = useState<Date | null>(null);
+  const [dateLabel, setDateLabel] = useState('');
 
   useEffect(() => {
-    const id = window.setTimeout(() => setNow(new Date()), 0);
+    const id = window.setTimeout(() => setDateLabel(formatShortDate()), 0);
     return () => window.clearTimeout(id);
   }, []);
-
-  const today = now?.toLocaleDateString('es-PE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
 
   return (
     <header
@@ -35,7 +25,7 @@ export function Banner({ className = '' }: BannerProps) {
         relative isolate w-full min-w-0 overflow-hidden
         rounded-2xl border border-slate-200/80
         bg-gradient-to-r from-[#F8FAFC] via-[#F0F7FA] to-[#EDF5F5]
-        px-5 py-6 sm:px-7 sm:py-7
+        px-5 py-4 sm:px-7 sm:py-5
         ${className}
       `}
     >
@@ -59,15 +49,14 @@ export function Banner({ className = '' }: BannerProps) {
       />
 
       <div className="
-        relative flex min-w-0 flex-col gap-6
+        relative flex min-w-0 flex-col gap-4
         lg:flex-row lg:items-center lg:justify-between
       ">
-        {/* Identidad y bienvenida */}
         <div className="min-w-0">
           <div className="
-            mb-3 inline-flex items-center gap-2
+            mb-2 inline-flex items-center gap-2
             rounded-full border border-cyan-200/70
-            bg-white/70 px-3 py-1.5
+            bg-white/70 px-3 py-1
           ">
             <span className="h-2 w-2 rounded-full bg-teal-600" />
 
@@ -77,18 +66,23 @@ export function Banner({ className = '' }: BannerProps) {
             ">
               Administración TIYUY
             </span>
+
+            <span className="flex items-center gap-1 border-l border-slate-200 pl-2 text-[10px] font-medium text-slate-500">
+              <CalendarDays className="h-3 w-3 text-teal-700" aria-hidden="true" />
+              <time>{dateLabel}</time>
+            </span>
           </div>
 
           <h1 className="
-            text-2xl font-bold tracking-tight
-            text-slate-800 sm:text-3xl
+            text-xl font-bold tracking-tight
+            text-slate-800 sm:text-2xl
           ">
             Gestión de usuarios
             <span className="text-teal-700">.</span>
           </h1>
 
           <p className="
-            mt-2 max-w-xl text-sm
+            mt-1 max-w-xl text-xs
             leading-relaxed text-slate-500
           ">
             Administra cuentas, asignación de roles y procesos
@@ -96,53 +90,41 @@ export function Banner({ className = '' }: BannerProps) {
             inmobiliarias desde un solo lugar.
           </p>
 
-          {today && (
-            <div className="
-              mt-4 flex items-center gap-2
-              text-xs font-medium capitalize text-slate-500
-            ">
-              <CalendarDays
-                className="h-4 w-4 text-teal-700"
-                aria-hidden="true"
-              />
-              <time>{today}</time>
-            </div>
-          )}
         </div>
 
         {/* Estado del módulo */}
         <div className="
           relative flex shrink-0 flex-wrap
-          items-center gap-3
+          items-center gap-2
         ">
           <div className="
-            flex items-center gap-3
-            rounded-xl border border-slate-200/80
-            bg-white/80 px-4 py-3
+            flex items-center gap-2
+            rounded-lg border border-slate-200/80
+            bg-white/80 px-3 py-2
             shadow-sm shadow-slate-200/30
           ">
             <span className="
-              h-2.5 w-2.5 rounded-full
-              bg-emerald-500 ring-4 ring-emerald-100
+              h-2 w-2 rounded-full
+              bg-emerald-500 ring-2 ring-emerald-100
             " />
 
             <div>
-              <p className="text-xs font-semibold text-slate-700">
+              <p className="text-[11px] font-semibold text-slate-700">
                 Gestión de cuentas
               </p>
-              <p className="mt-0.5 text-[10px] text-slate-400">
+              <p className="text-[10px] text-slate-400">
                 Control de usuarios y permisos
               </p>
             </div>
           </div>
 
           <div className="
-            flex items-center gap-2 rounded-xl
+            flex items-center gap-1.5 rounded-lg
             border border-teal-100 bg-white/70
-            px-3 py-3
+            px-2.5 py-2
           ">
-            <ShieldCheck className="h-4 w-4 text-teal-700" aria-hidden="true" />
-            <span className="text-xs font-semibold text-teal-800">
+            <ShieldCheck className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" />
+            <span className="text-[11px] font-semibold text-teal-800">
               Administración
             </span>
           </div>

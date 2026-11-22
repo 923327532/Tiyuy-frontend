@@ -1,0 +1,89 @@
+/* ==========================================
+   CONTAINER
+========================================== */
+.users-overview {
+  width: 100%;
+  min-width: 0;
+  perspective: 1200px;
+}
+
+/* ==========================================
+   MAIN CARD - Premium Surface
+========================================== */
+.users-overview__card {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--uo-radius);
+  background: var(--uo-bg);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow: var(--uo-shadow-sm);
+
+  transition:
+    transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  animation: overview-card-enter 800ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Aurora border */
+.users-overview__card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    var(--uo-brand) 50%,
+    transparent 100%
+  );
+  background-size: 200% 200%;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 400ms ease;
+  animation: aurora-border 4s linear infinite;
+}
+
+/* Spotlight cursor */
+.users-overview__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    600px circle at var(--mouse-x) var(--mouse-y),
+    var(--uo-brand-soft) 0%,
+    transparent 45%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 400ms ease;
+}
+
+.users-overview__card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--uo-shadow-lg);
+}
+
+.users-overview__card:hover::before {
+  opacity: 0.4;
+}
+
+.users-overview__card:hover::after {
+  opacity: 0.5;
+}

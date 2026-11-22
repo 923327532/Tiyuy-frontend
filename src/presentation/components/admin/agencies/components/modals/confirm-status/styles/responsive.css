@@ -1,0 +1,26 @@
+@media (max-width: 640px) {
+  .agency-confirm-status-modal__surface { max-width: 100%; border-radius: var(--acs-radius-sm); }
+  .agency-confirm-status-modal__header,
+  .agency-confirm-status-modal__body { padding: 1.25rem; }
+  .agency-confirm-status-modal__warning { margin: 1rem 1.25rem 0; }
+  .agency-confirm-status-modal__actions { padding: 1rem 1.25rem; flex-direction: column-reverse; }
+  .agency-confirm-status-modal__btn { width: 100%; height: 2.75rem; }
+  .agency-confirm-status-modal__icon { width: 2.5rem; height: 2.5rem; }
+  .agency-confirm-status-modal__title { font-size: 1.0625rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agency-confirm-status-modal__surface,
+  .agency-confirm-status-modal__icon,
+  .agency-confirm-status-modal__warning,
+  .agency-confirm-status-modal__textarea,
+  .agency-confirm-status-modal__btn,
+  .agency-confirm-status-modal__spinner {
+    animation: none !important;
+    transition: none !important;
+  }
+  .agency-confirm-status-modal__btn:hover:not(:disabled),
+  .agency-confirm-status-modal__btn:active:not(:disabled) {
+    transform: none !important;
+  }
+}

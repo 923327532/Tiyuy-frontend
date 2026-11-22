@@ -1,0 +1,27 @@
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .users-overview__card,
+  .users-overview__card::before,
+  .users-overview__card::after,
+  .users-overview__header,
+  .users-overview__badge,
+  .users-overview__badge-dot,
+  .users-overview-metric,
+  .users-overview-metric::before,
+  .users-overview-metric__icon,
+  .users-overview-metric__progress-fill,
+  .users-overview__roles,
+  .users-overview-role {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+
+  .users-overview__card:hover,
+  .users-overview-metric:hover,
+  .users-overview-role:hover {
+    transform: none;
+  }
+}

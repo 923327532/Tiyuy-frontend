@@ -242,15 +242,15 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
   const showMap = mapCenter !== null && !isNaN(mapCenter.lat) && !isNaN(mapCenter.lng);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
 
       {/* ── BUSCAR UBICACIÓN ── */}
       {!useManualCoords && (
         <section>
-          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">
+          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-0.5">
             ¿Dónde está ubicado tu inmueble?
           </h2>
-          <p className="text-sm text-[var(--text-muted)] mb-4">
+          <p className="text-sm text-[var(--text-muted)] mb-2">
             Escribe el nombre del distrito o provincia
           </p>
 
@@ -286,7 +286,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
       )}
 
       {/* ── TOGGLE: COORDENADAS MANUALES ── */}
-      <div className="flex items-center gap-3 p-4 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)]">
+      <div className="flex items-center gap-3 p-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)]">
         <Crosshair className="w-5 h-5 text-[var(--text-muted)] flex-shrink-0" />
         <div className="flex-1">
           <p className="text-sm font-medium text-[var(--text-secondary)]">
@@ -314,15 +314,15 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
       {/* ── CAMPOS DE COORDENADAS MANUALES ── */}
       {useManualCoords && (
         <section>
-          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-bold text-[var(--text-primary)] mb-2 flex items-center gap-2">
             <Map className="w-5 h-5 text-[var(--brand-primary)]" />
             Coordenadas del proyecto
           </h2>
-          <p className="text-sm text-[var(--text-muted)] mb-4">
+          <p className="text-sm text-[var(--text-muted)] mb-2">
             Ingresa las coordenadas exactas del proyecto. Puedes usar Google Maps para obtenerlas.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
             <div>
               <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
                 Latitud <span className="text-red-500">*</span>
@@ -361,7 +361,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
             </div>
           </div>
 
-          <div className="text-xs text-[var(--text-muted)] flex items-center gap-1.5 mb-4 p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-color)]">
+          <div className="text-xs text-[var(--text-muted)] flex items-center gap-1.5 mb-3 p-3 bg-[var(--bg-secondary)] rounded-lg border border-[var(--border-color)]">
             <Info className="w-4 h-4 text-[var(--brand-primary)] flex-shrink-0" />
             <span>
               ¿No sabes las coordenadas? Abre{' '}
@@ -378,7 +378,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
           </div>
 
           {/* Distrito para modo manual */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">Distrito</label>
               <input 
@@ -431,7 +431,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
       {/* ── CAMPOS DE DIRECCIÓN (solo en modo normal) ── */}
       {!useManualCoords && (
         <section>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">Distrito</label>
               <input type="text" value={formData.district || ''} readOnly placeholder="Se autocompleta al buscar" className={inputClass} />
@@ -461,7 +461,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
             <div>
               <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
                 Calle <span className="text-red-500">*</span>
@@ -490,7 +490,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
             </div>
           </div>
 
-          <div className="mt-4">
+          <div className="mt-3">
             <label className="block text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wide mb-1.5">
               Dirección completa <span className="text-[var(--text-muted)] font-normal normal-case">(se autocompleta)</span>
             </label>
@@ -508,7 +508,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
       {/* ── MAPA ── */}
       {showMap && (
         <section>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-2">
             <h3 className="text-base font-semibold text-[var(--text-primary)]">
               {useManualCoords ? '¿Está correcta la ubicación?' : '¿Cómo quieres mostrar tu ubicación?'}
             </h3>
@@ -523,7 +523,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
 
           {/* Radio Exacta / Aproximada */}
           {!useManualCoords && (
-            <div className="flex items-center gap-6 mb-4">
+            <div className="flex items-center gap-6 mb-3">
               {[{ label: 'Exacta', value: true }, { label: 'Aproximada', value: false }].map((opt) => {
                 const isSelected = formData.showExactAddress === opt.value;
                 return (
@@ -575,7 +575,7 @@ export function LocationStep({ formData, onChange, validationErrors }: LocationS
       {/* ── TIP ── */}
       {!useManualCoords && (
         <div
-          className="rounded-lg p-4 flex items-start gap-3"
+          className="rounded-lg p-3 flex items-start gap-3"
           style={{ backgroundColor: 'var(--brand-primary-light)', border: '1px solid var(--brand-primary)' }}
         >
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--brand-primary)]" />

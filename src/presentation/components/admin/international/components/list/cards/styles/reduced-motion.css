@@ -1,0 +1,21 @@
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+@media (prefers-reduced-motion: reduce) {
+  .intc-card,
+  .intc-card__avatar,
+  .intc-card__data-icon,
+  .intc-card__btn,
+  .intc-card__icon-btn {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .intc-card:hover {
+    transform: none;
+  }
+
+  .intc-card:hover .intc-card__avatar {
+    transform: none;
+  }
+}

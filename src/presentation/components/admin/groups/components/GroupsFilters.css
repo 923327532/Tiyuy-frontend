@@ -1,0 +1,25 @@
+/* ==========================================
+   GROUPS FILTERS - SEGMENTED TABS
+========================================== */
+
+.groups-tabs {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.groups-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.group-tab {
+  border: 1px solid transparent;
+}
+
+.group-tab:focus-visible {
+  outline: 2px solid #0f2e3a;
+  outline-offset: 2px;
+}
+
+.group-tab svg {
+  flex-shrink: 0;
+}

@@ -1,0 +1,159 @@
+.intl-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--intp-bg);
+  border-top: 1px solid var(--intp-border);
+  animation: intp-enter 500ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.intl-pagination__info {
+  display: flex;
+  align-items: center;
+}
+
+.intl-pagination__info-text {
+  font-size: 0.8125rem;
+  color: var(--intp-text-tertiary);
+  line-height: 1.4;
+}
+
+.intl-pagination__info-text strong {
+  font-weight: 700;
+  color: var(--intp-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.intl-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.intl-pagination__size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.intl-pagination__size-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--intp-text-tertiary);
+  white-space: nowrap;
+}
+
+.intl-pagination__size-select {
+  height: 2.25rem;
+  padding: 0 2rem 0 0.75rem;
+  border: 1px solid var(--intp-border);
+  border-radius: var(--intp-radius-sm);
+  background: var(--intp-bg);
+  color: var(--intp-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  box-shadow: var(--intp-shadow-sm);
+  transition:
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.intl-pagination__size-select:hover {
+  border-color: var(--intp-border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--intp-shadow-md);
+}
+
+.intl-pagination__size-select:focus {
+  outline: none;
+  border-color: var(--intp-brand);
+  box-shadow: 0 0 0 3px var(--intp-brand-glow);
+}
+
+.intl-pagination__size-select:focus-visible {
+  outline: 2px solid var(--intp-brand);
+  outline-offset: 2px;
+}
+
+@keyframes intp-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .intl-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .intl-pagination__info {
+    justify-content: center;
+  }
+
+  .intl-pagination__controls {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 640px) {
+  .intl-pagination {
+    padding: 0.875rem;
+  }
+
+  .intl-pagination__controls {
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .intl-pagination__size {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .intl-pagination__size-select {
+    flex: 1;
+    max-width: 6rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .intl-pagination__info-text {
+    font-size: 0.75rem;
+  }
+
+  .intl-pagination__size-label {
+    font-size: 0.75rem;
+  }
+
+  .intl-pagination__size-select {
+    font-size: 0.75rem;
+    height: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intl-pagination,
+  .intl-pagination__size-select {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .intl-pagination__size-select:hover {
+    transform: none !important;
+  }
+}

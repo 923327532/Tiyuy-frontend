@@ -1,0 +1,63 @@
+/* ==========================================
+   TBODY & ROWS
+========================================== */
+.generic-table__body .generic-table__row {
+  border-bottom: 1px solid var(--gt-border);
+  transition: background-color var(--gt-transition-fast);
+}
+
+.generic-table__body .generic-table__row:last-child {
+  border-bottom: none;
+}
+
+.generic-table__row--striped {
+  background: var(--gt-bg-subtle);
+}
+
+.generic-table__row--hoverable:hover {
+  background: var(--gt-bg-muted);
+}
+
+.generic-table__row--clickable {
+  cursor: pointer;
+}
+
+.generic-table__row--selected {
+  background: var(--gt-brand-soft);
+}
+
+.generic-table__row--selected:hover {
+  background: color-mix(in srgb, var(--gt-brand-soft) 80%, var(--gt-bg-muted));
+}
+
+/* ==========================================
+   TD CELLS
+========================================== */
+.generic-table__td {
+  padding: 0.875rem 1rem;
+  color: var(--gt-text-secondary);
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.generic-table__td--center {
+  text-align: center;
+}
+
+.generic-table__td--right {
+  text-align: right;
+}
+
+.generic-table__td--mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+
+.generic-table__td--checkbox {
+  width: 48px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}

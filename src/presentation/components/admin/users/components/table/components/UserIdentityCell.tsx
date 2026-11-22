@@ -1,9 +1,9 @@
 'use client';
 
-import type { UserListItem } from '@/core/domain/entities/Admin';
+import type { UserIdentityLike } from '@/presentation/components/admin/users/types/users.types';
 import { getFullName, getInitials } from '@/presentation/components/admin/users/utils/users.utils';
 
-export function UserIdentityCell({ user }: { user: UserListItem }) {
+export function UserIdentityCell({ user }: { user: UserIdentityLike }) {
   const isDisabled = !user.enabled;
 
   return (

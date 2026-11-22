@@ -1,0 +1,22 @@
+:root {
+  --irm-brand: #475569;
+  --irm-brand-soft: #f1f5f9;
+  --irm-danger: #cf8a92;
+  --irm-danger-soft: #f5e5e7;
+  --irm-danger-hover: #b87a82;
+  --irm-danger-glow: rgb(207 138 146 / 0.18);
+  --irm-bg: #ffffff;
+  --irm-bg-subtle: #fafbfc;
+  --irm-bg-muted: #f5f7f9;
+  --irm-border: #e8ecef;
+  --irm-border-strong: #d8dee3;
+  --irm-text-primary: #0f172a;
+  --irm-text-secondary: #334155;
+  --irm-text-tertiary: #64748b;
+  --irm-text-muted: #94a3b8;
+  --irm-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --irm-shadow-md: 0 8px 20px -8px rgb(15 23 42 / 0.10), 0 2px 6px rgb(15 23 42 / 0.04);
+  --irm-shadow-lg: 0 24px 48px -12px rgb(15 23 42 / 0.15), 0 8px 16px rgb(15 23 42 / 0.05);
+  --irm-radius: 1rem;
+  --irm-radius-sm: 0.625rem;
+}

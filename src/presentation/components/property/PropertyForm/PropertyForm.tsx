@@ -912,7 +912,8 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
 
 
       {/* ── STEP HEADER ── */}
-      <div className="mb-8">
+      {formType !== 'project' && (
+      <div className="mb-2">
         <p style={{ color: 'var(--brand-primary)' }} className="text-xs font-bold uppercase tracking-widest mb-1">
           Paso {currentStep} de {totalSteps}
         </p>
@@ -926,10 +927,11 @@ export function PropertyForm({ property, mode, onStepChange, formType = 'propert
         </p>
         {/* Mostrar errores solo al lado de cada campo; no resumir globalmente aquí */}
       </div>
+      )}
 
       {/* ── STEP CONTENT (con contenedor robusto) ── */}
       <div className="min-h-[400px] w-full">
-        <div className="bg-[var(--bg-card)] rounded-lg p-4 sm:p-6">
+        <div className="bg-[var(--bg-card)] rounded-lg p-3 sm:p-4">
           <ActiveComponent
             formData={formData}
             onChange={handleChange}

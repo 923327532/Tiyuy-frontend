@@ -39,7 +39,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const helperId = helperText && !error ? `${inputId}-helper` : undefined;
 
     const inputClasses = [
-      'w-full px-4 py-3 rounded-xl border transition-all duration-200 text-base',
+      'w-full px-4 py-3 rounded-xl border transition-colors duration-200 text-base',
       'placeholder:text-slate-400 placeholder:text-sm',
       leftIcon ? 'pl-12' : '',
       rightIcon ? 'pr-12' : '',
@@ -82,7 +82,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
               {rightIcon}
             </div>
           )}

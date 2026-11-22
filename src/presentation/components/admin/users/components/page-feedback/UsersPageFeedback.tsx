@@ -36,9 +36,15 @@ export function UsersErrorState({ error, onRetry }: ErrorStateProps) {
 
 interface EmptyStateProps {
   onClear: () => void;
+  title?: string;
+  description?: string;
 }
 
-export function UsersEmptyState({ onClear }: EmptyStateProps) {
+export function UsersEmptyState({
+  onClear,
+  title = 'No se encontraron usuarios',
+  description = 'Intenta ajustar tu búsqueda o criterios de filtro.',
+}: EmptyStateProps) {
   return (
     <div className="p-8 text-center">
       <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
@@ -51,8 +57,8 @@ export function UsersEmptyState({ onClear }: EmptyStateProps) {
           />
         </svg>
       </div>
-      <h4 className="text-base font-medium text-slate-900 mb-2">No se encontraron usuarios</h4>
-      <p className="text-slate-500 mb-3 text-sm">Intenta ajustar tu búsqueda o criterios de filtro.</p>
+      <h4 className="text-base font-medium text-slate-900 mb-2">{title}</h4>
+      <p className="text-slate-500 mb-3 text-sm">{description}</p>
       <button
         type="button"
         onClick={onClear}

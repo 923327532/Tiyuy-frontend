@@ -3,28 +3,18 @@
 
 import {
   Activity,
-  Clock3,
+  CalendarDays,
   TrendingDown,
   TrendingUp,
   Users,
 } from 'lucide-react';
+import { formatShortDate } from '@/presentation/components/admin/users/utils/users.utils';
 
 interface UsersHeaderStatsProps {
   activeUsers: number;
   pendingUsers: number;
   totalUsers?: number;
   activeTrend?: number;
-}
-
-function formatCurrentDate(): string {
-  const formatted = new Intl.DateTimeFormat('es-PE', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date());
-
-  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
 function formatNumber(value: number): string {
@@ -98,10 +88,6 @@ export function UsersHeaderStats({
         </div>
 
         <div className="mt-9">
-          <p className="mb-2 text-xs font-medium text-[#a9c4cc]">
-            Panel de administración
-          </p>
-
           <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             Gestión de usuarios
           </h1>
@@ -114,8 +100,8 @@ export function UsersHeaderStats({
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
           <div className="flex items-center gap-2 text-xs text-slate-300">
-            <Clock3 className="h-3.5 w-3.5" aria-hidden="true" />
-            <time>{formatCurrentDate()}</time>
+            <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+            <time>{formatShortDate()}</time>
           </div>
 
           <span className="text-[11px] text-slate-400">

@@ -16,6 +16,7 @@ import {
   Heart,
   Home,
   Check,
+  CircleCheckBig,
   AlertTriangle,
   Star,
   Search,
@@ -622,10 +623,10 @@ function NotificationCard({ notification, onMarkAsRead, isHistory }: Notificatio
             {isUnread && (
               <button
                 onClick={() => onMarkAsRead(notification.id)}
-                className="p-2 text-brand hover:bg-brand/10 rounded-lg transition-colors"
+                className="p-2 text-brand hover:bg-brand/10 hover:scale-110 rounded-lg transition-all duration-200"
                 title="Marcar como leída"
               >
-                <Check className="w-5 h-5" />
+                <CheckCheck className="w-5 h-5" />
               </button>
             )}
           </div>

@@ -1,0 +1,31 @@
+/* ==========================================
+   NEW GROUP PAGE - 2026 PREMIUM
+   Design tokens (muted design system)
+========================================== */
+
+:root {
+  --ngp-brand: #475569;
+  --ngp-brand-soft: #f1f5f9;
+  --ngp-brand-hover: #3d4a5c;
+  --ngp-brand-glow: rgb(71 85 105 / 0.15);
+
+  --ngp-bg: #ffffff;
+  --ngp-bg-subtle: #fafbfc;
+  --ngp-bg-muted: #f5f7f9;
+  --ngp-border: #e8ecef;
+  --ngp-border-strong: #d8dee3;
+  --ngp-border-hover: #cdd5de;
+
+  --ngp-text-primary: #0f172a;
+  --ngp-text-secondary: #334155;
+  --ngp-text-tertiary: #64748b;
+  --ngp-text-muted: #94a3b8;
+  --ngp-text-danger: #cf8a92;
+
+  --ngp-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --ngp-shadow-md: 0 8px 20px -8px rgb(15 23 42 / 0.10), 0 2px 6px rgb(15 23 42 / 0.04);
+  --ngp-shadow-lg: 0 20px 40px -12px rgb(15 23 42 / 0.12), 0 8px 16px rgb(15 23 42 / 0.04);
+
+  --ngp-radius: 0.875rem;
+  --ngp-radius-sm: 0.625rem;
+}

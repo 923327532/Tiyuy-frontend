@@ -3,22 +3,27 @@
 import type { KPIsProps } from './Config';
 import { KpiItem } from './KpiItem';
 import { normalizeCount, calculatePercentage, formatNumber } from './Config';
-import { Users, Clock3, UserRoundX, UserRoundCheck } from 'lucide-react';
+import { Users, Clock3, ShieldCheck, UserRoundX, UserRoundCheck } from 'lucide-react';
 
 const KPI_DEFINITIONS = [
   {
+    key: 'active',
     tone: 'active' as const,
     label: 'Usuarios activos',
     getValue: (props: KPIsProps) => normalizeCount(props.activeUsers),
-    getDescription: (props: KPIsProps) =>
-      props.totalUsers > 0
-        ? `De ${formatNumber(props.totalUsers)} usuarios registrados`
-        : 'Sin usuarios registrados',
+    getDescription: (props: KPIsProps) => {
+      const total = normalizeCount(props.totalUsers);
+      const active = normalizeCount(props.activeUsers);
+      const percentage = calculatePercentage(active, total);
+      return total > 0
+        ? `De ${formatNumber(total)} usuarios registrados${percentage !== undefined ? ` (${percentage}%)` : ''}`
+        : 'Sin usuarios registrados';
+    },
     statusLabel: 'Cuentas habilitadas',
     icon: <Users />,
-    getProgress: (props: KPIsProps) => calculatePercentage(normalizeCount(props.activeUsers), normalizeCount(props.totalUsers)),
   },
   {
+    key: 'pending',
     tone: 'pending' as const,
     label: 'Pendientes de verificación',
     getValue: (props: KPIsProps) => normalizeCount(props.pendingUsers),
@@ -31,6 +36,7 @@ const KPI_DEFINITIONS = [
     icon: <Clock3 />,
   },
   {
+    key: 'suspended',
     tone: 'suspended' as const,
     label: 'Usuarios suspendidos',
     getValue: (props: KPIsProps) => normalizeCount(props.suspendedUsers),
@@ -43,12 +49,26 @@ const KPI_DEFINITIONS = [
     icon: <UserRoundX />,
   },
   {
+    key: 'total',
     tone: 'total' as const,
     label: 'Total de usuarios',
     getValue: (props: KPIsProps) => normalizeCount(props.totalUsers),
     getDescription: 'Usuarios registrados en la plataforma',
     statusLabel: 'Resumen general',
     icon: <UserRoundCheck />,
+  },
+  {
+    key: 'verified',
+    tone: 'active' as const,
+    label: 'Usuarios verificados',
+    getValue: (props: KPIsProps) =>
+      Math.max(0, normalizeCount(props.totalUsers) - normalizeCount(props.pendingUsers)),
+    getDescription: (props: KPIsProps) =>
+      props.totalUsers > 0
+        ? 'Con email y teléfono confirmados'
+        : 'Sin usuarios registrados',
+    statusLabel: 'Identidad confirmada',
+    icon: <ShieldCheck />,
   },
 ] as const;
 
@@ -75,18 +95,16 @@ export function KpiGrid({
     >
       {KPI_DEFINITIONS.map((def, index) => {
         const value = def.getValue(props);
-        const progress = 'getProgress' in def ? def.getProgress(props) : undefined;
 
         return (
           <KpiItem
-            key={def.tone}
+            key={def.key}
             tone={def.tone}
             label={def.label}
             value={value}
             description={typeof def.getDescription === 'function' ? def.getDescription(props) : def.getDescription}
             statusLabel={typeof def.statusLabel === 'function' ? def.statusLabel(props) : def.statusLabel}
             icon={def.icon}
-            progress={progress}
             index={index}
           />
         );

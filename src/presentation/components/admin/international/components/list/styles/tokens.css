@@ -1,0 +1,24 @@
+:root {
+  --intlp-brand: #475569;
+  --intlp-brand-soft: #f1f5f9;
+  --intlp-brand-hover: #3d4a5c;
+
+  --intlp-bg: #ffffff;
+  --intlp-bg-subtle: #fafbfc;
+  --intlp-bg-muted: #f5f7f9;
+  --intlp-border: #e8ecef;
+  --intlp-border-strong: #d8dee3;
+  --intlp-border-hover: #cdd5de;
+
+  --intlp-text-primary: #0f172a;
+  --intlp-text-secondary: #334155;
+  --intlp-text-tertiary: #64748b;
+  --intlp-text-muted: #94a3b8;
+
+  --intlp-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.04);
+  --intlp-shadow-md: 0 8px 20px -8px rgb(15 23 42 / 0.10), 0 2px 6px rgb(15 23 42 / 0.04);
+  --intlp-shadow-lg: 0 24px 48px -12px rgb(15 23 42 / 0.12), 0 8px 16px rgb(15 23 42 / 0.04);
+
+  --intlp-radius: 0.875rem;
+  --intlp-radius-sm: 0.625rem;
+}

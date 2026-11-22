@@ -1,7 +1,16 @@
-import { Button } from '@/presentation/components/ui/Button';
+'use client';
+
+import { Tag, X } from 'lucide-react';
 import { Modal } from '@/presentation/components/ui/Modal';
-import { DeveloperDiscountTarget } from '@/core/domain/entities/Admin';
-import { X } from 'lucide-react';
+import type { DeveloperDiscountTarget } from '@/core/domain/entities/Admin';
+import { SECONDARY_BUTTON } from '@/presentation/components/admin/users/components/detail/ui/detailParts';
+import '@/presentation/components/admin/users/components/detail/styles/UserDetailModal.css';
+import {
+  FIELD_INPUT,
+  FIELD_LABEL,
+  PANEL,
+  PRIMARY_BUTTON,
+} from './agencyModalStyles';
 
 interface NewDiscount {
   code: string;
@@ -28,106 +37,158 @@ export default function CreateAgencyDiscountModal({
   newDiscount,
   setNewDiscount,
   onCreate,
-  isPending
+  isPending,
 }: CreateAgencyDiscountModalProps) {
+  const canCreate = Boolean(newDiscount.code.trim()) && Boolean(newDiscount.discountPercentage);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
-      <div className="bg-white rounded-2xl p-0 max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col">
-        <div className="bg-gradient-to-r from-violet-700 via-indigo-700 to-blue-700 px-5 py-4 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/15 ring-1 ring-white/25 rounded-xl flex items-center justify-center flex-shrink-0">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-white">Crear Código de Descuento</h3>
-                <p className="text-xs text-white/80">
-                  Para: {selectedAgency?.name} (RUC: {selectedAgency?.ruc})
-                </p>
-              </div>
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <div className="user-detail-modal__surface">
+        <header className="user-detail-modal__header">
+          <span className="user-detail-modal__avatar user-detail-modal__avatar--fallback">
+            <Tag className="h-5 w-5" aria-hidden="true" />
+          </span>
+
+          <div className="user-detail-modal__identity">
+            <h3 className="user-detail-modal__name" title="Crear Código de Descuento">
+              Crear Código de Descuento
+            </h3>
+            <p className="user-detail-modal__email" title={`Para: ${selectedAgency?.name ?? '—'}`}>
+              Para: {selectedAgency?.name ?? '—'} (RUC: {selectedAgency?.ruc ?? '—'})
+            </p>
+            <div className="user-detail-modal__badges">
+              <span className="user-detail-modal__role-badge user-detail-modal__role-badge--agent">
+                Descuento
+              </span>
             </div>
-            <button onClick={onClose} className="p-1.5 hover:bg-white/15 rounded-lg transition-colors text-white/80 hover:text-white">
-              <X className="w-5 h-5" />
-            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="user-detail-modal__close-btn"
+            aria-label="Cerrar modal"
+          >
+            <X className="w-5 h-5" aria-hidden="true" />
+          </button>
+        </header>
+
+        <div className="user-detail-modal__content">
+          <div className="space-y-4">
+            <section className={PANEL}>
+              <label htmlFor="discount-code" className={FIELD_LABEL}>
+                Código de Descuento
+              </label>
+              <input
+                id="discount-code"
+                type="text"
+                value={newDiscount.code}
+                onChange={(event) =>
+                  setNewDiscount({ ...newDiscount, code: event.target.value.toUpperCase() })
+                }
+                placeholder="Ej: INMO20OFF"
+                className={`${FIELD_INPUT} font-mono`}
+              />
+              <p className="mt-1.5 text-xs text-slate-500">
+                Este código será único para esta inmobiliaria.
+              </p>
+            </section>
+
+            <section className={PANEL}>
+              <label htmlFor="discount-percentage" className={FIELD_LABEL}>
+                Porcentaje de Descuento (%)
+              </label>
+              <div className="relative">
+                <input
+                  id="discount-percentage"
+                  type="number"
+                  min="0.01"
+                  max="100"
+                  step="0.01"
+                  value={newDiscount.discountPercentage}
+                  onChange={(event) =>
+                    setNewDiscount({ ...newDiscount, discountPercentage: event.target.value })
+                  }
+                  placeholder="Ej: 20"
+                  className={`${FIELD_INPUT} pr-10`}
+                />
+                <span className="pointer-events-none absolute right-3 top-2.5 text-sm font-semibold text-slate-400">
+                  %
+                </span>
+              </div>
+              <p className="mt-1.5 text-xs text-slate-500">
+                Si el plan cuesta S/100, con 20% de descuento costará S/80.
+              </p>
+            </section>
+
+            <section className={PANEL}>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="discount-start" className={FIELD_LABEL}>
+                    Fecha Inicio
+                  </label>
+                  <input
+                    id="discount-start"
+                    type="date"
+                    value={newDiscount.startDate}
+                    onChange={(event) =>
+                      setNewDiscount({ ...newDiscount, startDate: event.target.value })
+                    }
+                    className={FIELD_INPUT}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="discount-end" className={FIELD_LABEL}>
+                    Fecha Fin
+                  </label>
+                  <input
+                    id="discount-end"
+                    type="date"
+                    value={newDiscount.endDate}
+                    onChange={(event) =>
+                      setNewDiscount({ ...newDiscount, endDate: event.target.value })
+                    }
+                    className={FIELD_INPUT}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className={PANEL}>
+              <label htmlFor="discount-limit" className={FIELD_LABEL}>
+                Límite de Usos (opcional)
+              </label>
+              <input
+                id="discount-limit"
+                type="number"
+                min="1"
+                value={newDiscount.usageLimit}
+                onChange={(event) =>
+                  setNewDiscount({ ...newDiscount, usageLimit: event.target.value })
+                }
+                placeholder="Dejar vacío para ilimitado"
+                className={FIELD_INPUT}
+              />
+              <p className="mt-1.5 text-xs text-slate-500">
+                Cuántas veces puede usar este código la inmobiliaria.
+              </p>
+            </section>
           </div>
         </div>
 
-        {/* Form scrolleable */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-700">Código de Descuento</label>
-            <input
-              type="text"
-              value={newDiscount.code}
-              onChange={(e) => setNewDiscount({ ...newDiscount, code: e.target.value.toUpperCase() })}
-              placeholder="Ej: INMO20OFF"
-              className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono"
-            />
-            <p className="text-[10px] text-gray-500">Este código será único para esta inmobiliaria</p>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-700">Porcentaje de Descuento (%)</label>
-            <div className="relative">
-              <input
-                type="number" min="0.01" max="100" step="0.01"
-                value={newDiscount.discountPercentage}
-                onChange={(e) => setNewDiscount({ ...newDiscount, discountPercentage: e.target.value })}
-                placeholder="Ej: 20"
-                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-10"
-              />
-              <span className="absolute right-3 top-2.5 text-gray-400 font-bold text-sm">%</span>
-            </div>
-            <p className="text-[10px] text-gray-500">Si el plan cuesta S/100, con 20% descuento costará S/80</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-700">Fecha Inicio</label>
-              <input
-                type="date"
-                value={newDiscount.startDate}
-                onChange={(e) => setNewDiscount({ ...newDiscount, startDate: e.target.value })}
-                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-700">Fecha Fin</label>
-              <input
-                type="date"
-                value={newDiscount.endDate}
-                onChange={(e) => setNewDiscount({ ...newDiscount, endDate: e.target.value })}
-                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-gray-700">Límite de Usos (opcional)</label>
-            <input
-              type="number" min="1"
-              value={newDiscount.usageLimit}
-              onChange={(e) => setNewDiscount({ ...newDiscount, usageLimit: e.target.value })}
-              placeholder="Dejar vacío para ilimitado"
-              className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="text-[10px] text-gray-500">Cuántas veces puede usar este código la inmobiliaria</p>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="flex gap-3 p-4 border-t border-gray-200 flex-shrink-0">
-          <Button variant="outline" onClick={onClose} className="flex-1 py-2.5 text-sm font-medium">
+        <footer className="user-detail-modal__footer">
+          <button type="button" onClick={onClose} className={SECONDARY_BUTTON}>
             Cancelar
-          </Button>
-          <Button
+          </button>
+          <button
+            type="button"
             onClick={onCreate}
-            disabled={isPending}
-            className="flex-1 py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-lg text-sm font-medium shadow-lg shadow-teal-500/30"
+            disabled={isPending || !canCreate}
+            className={PRIMARY_BUTTON}
           >
             {isPending ? 'Creando...' : 'Crear Descuento'}
-          </Button>
-        </div>
+          </button>
+        </footer>
       </div>
     </Modal>
   );

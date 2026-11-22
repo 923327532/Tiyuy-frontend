@@ -1,0 +1,139 @@
+/* Agents Tab */
+.agc-agents-tab {
+  display: flex;
+  flex-direction: column;
+}
+
+.agc-agents-tab__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--ad-text-tertiary);
+}
+
+.agc-agents-tab__empty-title {
+  margin: 1rem 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ad-text-secondary);
+}
+
+.agc-agents-tab__empty-text {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ad-text-tertiary);
+}
+
+.agc-agents-tab__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 50vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Agent Row */
+.agc-agent-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ad-border);
+  border-radius: var(--ad-radius-sm);
+  background: var(--ad-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.agc-agent-row:hover {
+  background: var(--ad-bg-subtle);
+  border-color: var(--ad-border-hover);
+}
+
+.agc-agent-row:focus-visible {
+  outline: 2px solid var(--ad-brand);
+  outline-offset: 2px;
+}
+
+.agc-agent-row__avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.agc-agent-row__info {
+  min-width: 0;
+  flex: 1;
+}
+
+.agc-agent-row__name {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ad-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agc-agent-row__email {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: var(--ad-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agc-agent-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-shrink: 0;
+}
+
+.agc-agent-row__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1875rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.agc-agent-row__badge--active {
+  background: var(--ad-success-soft);
+  color: var(--ad-success);
+}
+
+.agc-agent-row__badge--inactive {
+  background: var(--ad-danger-soft);
+  color: var(--ad-danger);
+}
+
+.agc-agent-row__plan {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ad-text-tertiary);
+  white-space: nowrap;
+}
+
+.agc-agent-row__chevron {
+  color: var(--ad-text-muted);
+  flex-shrink: 0;
+}

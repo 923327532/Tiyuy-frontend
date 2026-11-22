@@ -1,0 +1,15 @@
+/* ==========================================
+   GENERIC USER TABLE - STYLE ENTRY
+   Split into logical partials (same cascade order).
+========================================== */
+@import './styles/tokens.css';
+@import './styles/container.css';
+@import './styles/table.css';
+@import './styles/rows-cells.css';
+@import './styles/user-cell.css';
+@import './styles/actions.css';
+@import './styles/selection.css';
+@import './styles/empty-state.css';
+@import './styles/responsive.css';
+@import './styles/reduced-motion.css';
+@import './styles/print.css';

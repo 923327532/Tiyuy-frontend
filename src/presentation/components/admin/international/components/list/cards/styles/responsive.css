@@ -1,0 +1,42 @@
+/* ==========================================
+   RESPONSIVE - Mobile (< 640px)
+========================================== */
+@media (max-width: 639px) {
+  .intc-card__header {
+    padding: 1rem;
+  }
+
+  .intc-card__body {
+    padding: 0 1rem 1rem;
+  }
+
+  .intc-card__footer {
+    padding: 0.75rem 1rem;
+    gap: 0.625rem;
+  }
+
+  .intc-card__avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .intc-card__avatar-text {
+    font-size: 0.8125rem;
+  }
+
+  .intc-card__name {
+    font-size: 0.8125rem;
+  }
+
+  .intc-card__email {
+    font-size: 0.6875rem;
+  }
+
+  .intc-card__data-value {
+    font-size: 0.75rem;
+  }
+
+  .intc-card__footer-value {
+    font-size: 0.6875rem;
+  }
+}

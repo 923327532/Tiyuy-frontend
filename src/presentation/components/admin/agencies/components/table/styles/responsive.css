@@ -1,0 +1,13 @@
+/* Responsive */
+@media (max-width: 768px) {
+  .agencies-table__avatar { width: 2rem; height: 2rem; font-size: 0.75rem; }
+  .agencies-table__name { font-size: 0.8125rem; }
+  .agencies-table__ruc { font-size: 0.6875rem; }
+  .agencies-table__actions { gap: 0.25rem; }
+  .agencies-table__action-btn { width: 1.75rem; height: 1.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agencies-table__container { animation: none !important; }
+  .agencies-table__action-btn { transition-duration: 0.01ms !important; }
+}

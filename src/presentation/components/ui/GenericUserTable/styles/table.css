@@ -1,0 +1,73 @@
+/* ==========================================
+   TABLE BASE
+========================================== */
+.generic-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  table-layout: fixed;
+}
+
+/* ==========================================
+   THEAD
+========================================== */
+.generic-table__head {
+  border-bottom: 1px solid var(--gt-border);
+  background: var(--gt-bg-subtle);
+}
+
+.generic-table__th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--gt-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  vertical-align: bottom;
+  user-select: none;
+}
+
+.generic-table__th--checkbox {
+  width: 48px;
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}
+
+.generic-table__th--sortable {
+  cursor: pointer;
+}
+
+.generic-table__th--sortable:hover {
+  color: var(--gt-text-secondary);
+}
+
+.generic-table__th--center {
+  text-align: center;
+}
+
+.generic-table__th--right {
+  text-align: right;
+}
+
+.generic-table__th-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.375rem;
+}
+
+.generic-table__th--center .generic-table__th-content {
+  justify-content: center;
+}
+
+.generic-table__th--right .generic-table__th-content {
+  justify-content: flex-end;
+}
+
+.generic-table__sort-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--gt-brand);
+}

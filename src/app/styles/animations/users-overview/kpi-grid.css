@@ -1,0 +1,24 @@
+/* ==========================================
+   USERS KPI GRID - 5 indicadores en una sola fila
+   (mismo criterio que inmobiliarias y extranjería)
+   ========================================== */
+@media (min-width: 640px) {
+  .users-overview .users-kpi-grid.users-overview__metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .users-overview .users-kpi-grid.users-overview__metrics {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .users-overview .users-kpi-grid.users-overview__metrics {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.125rem;
+  }
+}

@@ -1,0 +1,100 @@
+/* ==========================================
+   METRICS GRID
+========================================== */
+.users-overview__metrics,
+.users-kpi-grid.users-overview__metrics {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.users-overview-metric {
+  --metric-accent: var(--uo-brand);
+  --metric-soft: var(--uo-brand-soft);
+  --metric-muted: var(--uo-text-tertiary);
+  --metric-mouse-x: 50%;
+  --metric-mouse-y: 50%;
+
+  position: relative;
+  padding: 1.25rem;
+  min-width: 0;
+  overflow: hidden;
+  isolation: isolate;
+
+  /* Individual card styling for visual separation */
+  background: var(--uo-bg);
+  border: 1px solid var(--uo-border);
+  border-radius: 0.875rem;
+  box-shadow: var(--uo-shadow-sm);
+
+  transition:
+    background-color 300ms ease,
+    transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+
+  animation: metric-enter 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(300ms + var(--metric-index, 0) * 100ms);
+}
+
+/* Remove old mobile borders since each metric is now its own card */
+.users-overview-metric:not(:last-child) {
+  border-bottom: none;
+}
+
+/* Spotlight por métrica */
+.users-overview-metric::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    300px circle at var(--metric-mouse-x) var(--metric-mouse-y),
+    var(--metric-soft) 0%,
+    transparent 50%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 300ms ease;
+}
+
+.users-overview-metric:hover {
+  background: var(--uo-bg-subtle);
+  transform: translateY(-3px);
+  box-shadow: var(--uo-shadow-md);
+  border-color: var(--metric-accent);
+}
+
+.users-overview-metric:hover::before {
+  opacity: 0.6;
+}
+
+/* Tones */
+.users-overview-metric[data-tone='total'] {
+  --metric-accent: #475569;
+  --metric-soft: #f1f5f9;
+  --metric-muted: #64748b;
+}
+.users-overview-metric[data-tone='active'] {
+  --metric-accent: var(--uo-success);
+  --metric-soft: var(--uo-success-soft);
+  --metric-muted: var(--uo-success-muted);
+}
+.users-overview-metric[data-tone='pending'] {
+  --metric-accent: var(--uo-warning);
+  --metric-soft: var(--uo-warning-soft);
+  --metric-muted: var(--uo-warning-muted);
+}
+.users-overview-metric[data-tone='suspended'] {
+  --metric-accent: var(--uo-danger);
+  --metric-soft: var(--uo-danger-soft);
+  --metric-muted: var(--uo-danger-muted);
+}
+
+/* Stagger delays */
+.users-overview-metric:nth-child(1) { --metric-index: 0; }
+.users-overview-metric:nth-child(2) { --metric-index: 1; }
+.users-overview-metric:nth-child(3) { --metric-index: 2; }
+.users-overview-metric:nth-child(4) { --metric-index: 3; }
