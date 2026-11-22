@@ -1,7 +1,6 @@
-'use client';
+﻿'use client';
 
 import type { PropertyModerationItem } from '@/core/domain/entities/Admin';
-import { Modal } from '@/presentation/components/ui/Modal';
 
 import type { ModerationAction } from '../types/properties.types';
 import { DisableModal } from './modals/DisableModal';
@@ -50,13 +49,12 @@ export function PropertiesModals({
 }: PropertiesModalsProps) {
   if (!selected || !modal) return null;
 
-  const size = modal === 'detail' ? 'xl' : 'lg';
-
   return (
-    <Modal isOpen onClose={onClose} size={size}>
+    <>
       {modal === 'detail' && (
         <PropertyDetailModal
           property={selected}
+          isOpen
           canModerate={canModerate}
           isEnabling={isEnabling}
           onModerate={(property) => onOpenModeration(property, 'APPROVE')}
@@ -71,6 +69,7 @@ export function PropertiesModals({
         <ModerationModal
           property={selected}
           action={moderationAction}
+          isOpen
           isPending={isModerating}
           onConfirm={onConfirmModeration}
           onCancel={onClose}
@@ -80,6 +79,7 @@ export function PropertiesModals({
       {modal === 'disable' && (
         <DisableModal
           property={selected}
+          isOpen
           isPending={isDisabling}
           onConfirm={onConfirmDisable}
           onCancel={onClose}
@@ -89,11 +89,12 @@ export function PropertiesModals({
       {modal === 'notify' && (
         <NotifyModal
           property={selected}
+          isOpen
           isPending={isNotifying}
           onSend={onConfirmNotify}
           onCancel={onClose}
         />
       )}
-    </Modal>
+    </>
   );
 }

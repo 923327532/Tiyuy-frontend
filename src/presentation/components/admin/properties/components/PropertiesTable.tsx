@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import type { PropertyModerationItem } from '@/core/domain/entities/Admin';
 import { DataTable } from '@/presentation/components/ui/DataTable';
@@ -35,9 +35,9 @@ export function PropertiesTable({
     ...columns,
     {
       key: 'actions',
-      label: 'Acciones',
+      label: '',
       sortable: false,
-      width: '180px',
+      width: '104px',
       render: (_value: unknown, property: PropertyModerationItem) => (
         <PropertyRowActions
           property={property}

@@ -1,5 +1,6 @@
-'use client';
+﻿'use client';
 
+import { Star } from 'lucide-react';
 import type { PropertyModerationItem } from '@/core/domain/entities/Admin';
 import { getInitials } from '../../utils/properties.utils';
 
@@ -21,7 +22,17 @@ export function PropertyIdentityCell({ property }: PropertyIdentityCellProps) {
       </span>
 
       <span className="properties-identity__info">
-        <span className="properties-cell-primary">{property.title}</span>
+        <span className="properties-identity__title-row">
+          <span className="properties-cell-primary" title={property.title}>
+            {property.title}
+          </span>
+          {property.isFeatured && (
+            <Star
+              className="h-3 w-3 shrink-0 fill-amber-400 text-amber-500"
+              aria-label="Destacada"
+            />
+          )}
+        </span>
         <span className="properties-cell-secondary">
           {property.district || 'Sin distrito'} · #{property.id}
         </span>
