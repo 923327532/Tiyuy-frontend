@@ -83,7 +83,7 @@ export default function UsageHistoryModalContent({
                   className="text-white hover:bg-teal-600"
                 >
                   <Download className="h-4 w-4 mr-1" />
-                  Exportar CSV
+                  Exportar Excel
                 </Button>
               )}
               <button onClick={onClose} className="p-1 sm:p-1.5 hover:bg-teal-600 rounded-lg transition-colors text-white flex-shrink-0">

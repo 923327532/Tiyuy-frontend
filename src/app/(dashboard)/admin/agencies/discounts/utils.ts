@@ -1,8 +1,10 @@
 /**
- * Helpers for the Agencies Discounts page
+ * Helpers for the Agencies Discounts page: badges y exportación Excel.
  */
 
-import { DeveloperDiscountCode } from './types';
+import { exportToModernExcel, type ModernExcelColumn } from '@/utils/modernExcelExport';
+import type { FilterState } from './types';
+import type { DeveloperDiscountCode } from './types';
 
 export const getStatusBadgeClass = (status: string) => {
   switch (status) {
@@ -22,29 +24,39 @@ export const getStatusLabel = (status: string) => {
   }
 };
 
-export function exportDiscountsCsv(content: DeveloperDiscountCode[]) {
-  const headers = ['ID', 'Código', 'Inmobiliaria', 'Email', 'Descuento %', 'Usos', 'Máx. Usos', 'Estado', 'Válido Desde', 'Válido Hasta', 'Válido'];
-  const rows = content.map(d => [
-    d.id,
-    d.code,
-    d.developer.name,
-    d.developer.email,
-    d.discountPercentage,
-    d.usedCount,
-    d.maxUses || 'Ilimitado',
-    d.status,
-    new Date(d.validFrom).toLocaleDateString('es-PE'),
-    d.validUntil ? new Date(d.validUntil).toLocaleDateString('es-PE') : 'Sin expiración',
-    d.isValid ? 'Sí' : 'No',
-  ]);
-  const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', `descuentos_${new Date().toISOString().split('T')[0]}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+const STATUS_LABELS: Record<string, string> = {
+  ACTIVE: 'Activo',
+  INACTIVE: 'Inactivo',
+  EXPIRED: 'Expirado',
+  EXHAUSTED: 'Agotado',
+  USED: 'Usado',
+};
+
+const COLUMNS: ModernExcelColumn<DeveloperDiscountCode>[] = [
+  { header: 'ID', type: 'integer', value: (d) => d.id, totalLabel: 'TOTAL' },
+  { header: 'Código', value: (d) => d.code },
+  { header: 'Inmobiliaria', value: (d) => d.developer.name },
+  { header: 'Email', value: (d) => d.developer.email },
+  { header: 'Descuento %', type: 'percent', value: (d) => d.discountPercentage ?? 0, total: true },
+  { header: 'Usos', type: 'integer', value: (d) => d.usedCount ?? 0, total: true },
+  { header: 'Máx. Usos', type: 'integer', value: (d) => d.maxUses ?? 0 },
+  { header: 'Estado', type: 'status', value: (d) => STATUS_LABELS[d.status] ?? d.status },
+  { header: 'Válido Desde', type: 'date', value: (d) => d.validFrom },
+  { header: 'Válido Hasta', type: 'date', value: (d) => d.validUntil ?? '' },
+  { header: 'Válido', type: 'status', value: (d) => (d.isValid ? 'Sí' : 'No') },
+];
+
+export function exportDiscountsExcel(
+  content: DeveloperDiscountCode[],
+  filters?: FilterState
+) {
+  if (!content.length) return;
+  void exportToModernExcel({
+    title: 'Reporte de Descuentos — TIYUY',
+    fileName: `descuentos_${new Date().toISOString().slice(0, 10)}`,
+    sheetName: 'Descuentos',
+    rows: content,
+    columns: COLUMNS,
+    filters: filters ? { ...filters } : undefined,
+  });
 }

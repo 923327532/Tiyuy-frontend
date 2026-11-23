@@ -109,11 +109,11 @@ export default function AgencyQuickActions({
             <button
               key={action.id}
               onClick={() => {
-                console.log(`🔍 DEBUG: Clic en botón ${action.id}`);
+                console.log(` DEBUG: Clic en botón ${action.id}`);
                 if (!isDisabled) {
                   action.onClick();
                 } else {
-                  console.log(`❌ DEBUG: Botón ${action.id} está deshabilitado`);
+                  console.log(` DEBUG: Botón ${action.id} está deshabilitado`);
                 }
               }}
               disabled={isDisabled}

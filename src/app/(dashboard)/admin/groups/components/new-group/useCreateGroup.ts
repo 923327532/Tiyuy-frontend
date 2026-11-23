@@ -68,12 +68,12 @@ export function useCreateGroup({ onSuccess }: UseCreateGroupOptions) {
       ['admin-groups', 'admin-suspended-groups', 'admin-group-violations', 'admin-channel-violations'].forEach(
         (queryKey) => queryClient.invalidateQueries({ queryKey: [queryKey] }),
       );
-      alert('✅ Grupo creado exitosamente');
+      alert(' Grupo creado exitosamente');
       onSuccess();
     },
     onError: (error: Error) => {
       console.error('Error al crear grupo:', error);
-      alert('❌ Error al crear grupo: ' + error.message);
+      alert(' Error al crear grupo: ' + error.message);
     },
   });
 

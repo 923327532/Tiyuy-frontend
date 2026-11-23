@@ -102,7 +102,7 @@ export class GroupRepositoryImpl implements GroupRepository {
 
   async shareGroupPost(postId: number, userId: number, message?: string): Promise<GroupShare> {
     const endpoint = GROUP_ENDPOINTS.SHARE_POST(postId);
-    console.log('🔍 Share request details:');
+    console.log('Share request details:');
     console.log('  - postId:', postId);
     console.log('  - userId:', userId);
     console.log('  - message:', message);
@@ -117,23 +117,23 @@ export class GroupRepositoryImpl implements GroupRepository {
           'Content-Type': 'application/json'
         }
       });
-      console.log('✅ Share response:', response.data);
+      console.log('Share response:', response.data);
       return this.mapToGroupShare(response.data);
     } catch (error: any) {
-      console.error('❌ Share error details:');
+      console.error('Share error details:');
       console.error('  - message:', error.message);
       console.error('  - status:', error.response?.status);
       console.error('  - statusText:', error.response?.statusText);
       console.error('  - data:', error.response?.data);
       
       // Try alternative format if first attempt fails
-      console.log('🔄 Trying alternative format with object...');
+      console.log('Trying alternative format with object...');
       try {
         const altResponse = await axiosClient.post(endpoint, { shareMessage: message });
-        console.log('✅ Alternative share response:', altResponse.data);
+        console.log('Alternative share response:', altResponse.data);
         return this.mapToGroupShare(altResponse.data);
       } catch (altError: any) {
-        console.error('❌ Alternative format also failed:', altError.message);
+        console.error('Alternative format also failed:', altError.message);
         throw error;
       }
     }

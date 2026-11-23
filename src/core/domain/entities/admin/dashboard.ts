@@ -108,6 +108,9 @@ export interface MarketingStats {
   totalLeads: number;
   totalConversions: number;
   averageCTR: number;
+  conversionRate?: number;
+  campaignsByStatus?: Record<string, number>;
+  campaignsByType?: Record<string, number>;
   impressionsGrowth?: number;
   conversionsGrowth?: number;
   conversionRateGrowth?: number;

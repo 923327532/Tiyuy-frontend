@@ -34,7 +34,7 @@ export default function AgenciesDiscountsPage() {
   } = useAgenciesDiscounts();
 
   return (
-    <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-6 max-w-[1600px] mx-auto">
+    <div className="admin-page space-y-3 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0">
         <div>

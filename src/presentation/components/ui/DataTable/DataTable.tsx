@@ -10,6 +10,7 @@ export interface Column<T> {
   label: string;
   sortable?: boolean;
   width?: string;
+  minWidth?: string;
   align?: 'left' | 'center' | 'right';
   render?: (value: unknown, row: T, index: number) => React.ReactNode;
   className?: string;

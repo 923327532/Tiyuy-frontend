@@ -40,8 +40,7 @@ export function DashboardHeader({
       rounded-2xl
       border border-slate-200/80
       bg-gradient-to-r from-[#F8FAFC] via-[#F0F7FA] to-[#EDF5F5]
-      px-5 py-6
-      sm:px-7 sm:py-7
+      px-5 py-4 sm:px-7 sm:py-5
     ">
       {/* Decorative accents */}
       <div
@@ -54,31 +53,33 @@ export function DashboardHeader({
       />
 
       <div className="
-        relative flex min-w-0 flex-col gap-6
+        relative flex min-w-0 flex-col gap-4
         lg:flex-row lg:items-center
         lg:justify-between
       ">
         {/* Welcome */}
         <div className="min-w-0">
           <div className="
-            mb-3 inline-flex items-center gap-2
+            mb-2 inline-flex items-center gap-2
             rounded-full border border-cyan-200/70
-            bg-white/70 px-3 py-1.5
+            bg-white/70 px-3 py-1
           ">
-            <span className="
-              h-2 w-2 rounded-full bg-teal-600
-            " />
+            <span className="h-2 w-2 rounded-full bg-teal-600" />
             <span className="
               text-[10px] font-bold uppercase
               tracking-[0.14em] text-teal-800
             ">
               Administración TIYUY
             </span>
+            <span className="flex items-center gap-1 border-l border-slate-200 pl-2 text-[10px] font-medium text-slate-500">
+              <CalendarDays className="h-3 w-3 text-teal-700" aria-hidden="true" />
+              <time>{dateLabel}</time>
+            </span>
           </div>
 
           <h1 className="
-            text-2xl font-bold tracking-tight
-            text-slate-800 sm:text-3xl
+            text-xl font-bold tracking-tight
+            text-slate-800 sm:text-2xl
           ">
             {greeting}
             {firstName ? `, ${firstName}` : ''}
@@ -86,35 +87,28 @@ export function DashboardHeader({
           </h1>
 
           <p className="
-            mt-2 max-w-xl text-sm
+            mt-1 max-w-xl text-xs
             leading-relaxed text-slate-500
           ">
             Bienvenido a tu centro de administración.
             Supervisa y gestiona la actividad de TIYUY
             desde un solo lugar.
           </p>
-
-          {dateLabel && (
-            <div className="mt-4 flex items-center gap-2 text-xs font-medium text-slate-500">
-              <CalendarDays className="h-4 w-4 text-teal-700" aria-hidden="true" />
-              <time>{dateLabel}</time>
-            </div>
-          )}
         </div>
 
         {/* Controls */}
         <div className="
           relative flex shrink-0 flex-wrap
-          items-center gap-3
+          items-center gap-2
         ">
           <div className="
-            flex items-center gap-3
-            rounded-xl border border-slate-200/80
-            bg-white/80 px-4 py-3
+            flex items-center gap-2
+            rounded-lg border border-slate-200/80
+            bg-white/80 px-3 py-2
             shadow-sm shadow-slate-200/30
           ">
             <span className="
-              h-2.5 w-2.5 rounded-full
+              h-2 w-2 rounded-full
               bg-emerald-500
               ring-4 ring-emerald-100
             " />
@@ -141,10 +135,10 @@ export function DashboardHeader({
             disabled={isRefreshing}
             aria-busy={isRefreshing}
             className="
-              inline-flex min-h-11 items-center
-              justify-center gap-2 rounded-xl
-              bg-[#164E63] px-5 py-2.5
-              text-sm font-semibold text-white
+              inline-flex min-h-10 items-center
+              justify-center gap-2 rounded-lg
+              bg-[#164E63] px-4 py-2
+              text-xs font-semibold text-white
               shadow-sm shadow-teal-900/10
               transition-all duration-200
               hover:bg-[#0F3D50]
@@ -158,7 +152,7 @@ export function DashboardHeader({
             "
           >
             <RefreshCw className={`
-              h-4 w-4
+              h-3.5 w-3.5
               ${isRefreshing ? 'animate-spin' : ''}
             `} />
             {isRefreshing ? 'Actualizando...' : 'Actualizar'}

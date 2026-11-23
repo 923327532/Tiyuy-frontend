@@ -21,7 +21,7 @@ export default function GroupsAndChannelsPage() {
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
 
   return (
-    <div className="space-y-4 sm:space-y-6 px-3 sm:px-6 py-3 sm:py-4">
+    <div className="admin-page space-y-4 sm:space-y-6">
       <GroupsHeader onCreate={() => setIsCreateGroupModalOpen(true)} />
 
       <GroupsStats summary={groups.summary} />

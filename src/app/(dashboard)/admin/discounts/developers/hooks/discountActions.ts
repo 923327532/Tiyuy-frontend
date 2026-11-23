@@ -12,7 +12,7 @@ import {
 import { InmobiliariaWithStats } from '@/core/domain/entities/Admin';
 import { FormData, ValidationErrors, validateForm, formDataToRequest, DEFAULT_FORM_DATA } from '../utils/validation';
 import { ExtendedFilters } from './types';
-import { exportDiscountsToCsv } from './exportToCsv';
+import { exportDiscountsToExcel } from './exportToExcel';
 
 type MutationLike = { mutateAsync: (args: any) => Promise<any> };
 type Notify = (message: string, type: 'success' | 'error') => void;
@@ -21,6 +21,7 @@ export interface DiscountActionsParams {
   formData: FormData;
   editingDiscount: DeveloperSubscriptionDiscount | null;
   discounts: DeveloperSubscriptionDiscount[];
+  filters: ExtendedFilters;
   setFilters: React.Dispatch<React.SetStateAction<ExtendedFilters>>;
   setSortBy: React.Dispatch<React.SetStateAction<string>>;
   setFormData: React.Dispatch<React.SetStateAction<FormData>>;
@@ -43,6 +44,7 @@ export function useDiscountActions({
   formData,
   editingDiscount,
   discounts,
+  filters,
   setFilters,
   setSortBy,
   setFormData,
@@ -164,8 +166,15 @@ export function useDiscountActions({
   }, [deleteMutation, showNotification, refetch]);
 
   const handleExport = useCallback(() => {
-    exportDiscountsToCsv(discounts, showNotification);
-  }, [discounts, showNotification]);
+    exportDiscountsToExcel(discounts, showNotification, {
+      Búsqueda: filters.search,
+      Estado: filters.status === 'ALL' ? '' : filters.status,
+      Tipo: filters.type === 'ALL' ? '' : filters.type,
+      Alcance: filters.applicabilityScope === 'ALL' ? '' : filters.applicabilityScope,
+      'Desde': filters.dateFrom,
+      'Hasta': filters.dateTo,
+    });
+  }, [discounts, filters, showNotification]);
 
   return {
     handleFilterChange,

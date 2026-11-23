@@ -9,7 +9,7 @@ import { getRevenueChartData, revenueChartOptions, getPlanDistributionData } fro
 import {
   filterAgents,
   hasActiveFilters,
-  buildAgentsCsv,
+  exportAgentsExcel,
   type AgentsFilterCriteria,
 } from '../utils/agentsFilters';
 
@@ -96,13 +96,15 @@ export function useAgentsPage() {
   };
 
   const handleExport = () => {
-    const csvContent = buildAgentsCsv(filteredAgents);
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `agentes-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
+    exportAgentsExcel(filteredAgents, {
+      Búsqueda: searchQuery,
+      Estado: statusFilter === 'all' ? '' : statusFilter,
+      Verificación: verificationFilter === 'all' ? '' : verificationFilter,
+      Plan: planFilter === 'all' ? '' : planFilter,
+      'Ingresos mín.': minRevenue,
+      'Desde': dateRange.start ? dateRange.start.toLocaleDateString('es-PE') : '',
+      'Hasta': dateRange.end ? dateRange.end.toLocaleDateString('es-PE') : '',
+    });
   };
 
   const handleClearFilters = () => {
