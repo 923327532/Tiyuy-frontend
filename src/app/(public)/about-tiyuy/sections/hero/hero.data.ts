@@ -23,8 +23,8 @@ export const HERO_COPY = {
   description:
     'Nacimos con una visión: transformar la experiencia inmobiliaria mediante tecnología, transparencia y soluciones centradas en las personas. Conectamos propietarios, agentes y personas que buscan un espacio para vivir.',
   primaryCta: {
-    label: 'Conoce nuestro compromiso',
-    href: '#compromiso',
+    label: 'Descubre más',
+    href: '#adn',
   },
   secondaryCta: {
     label: 'Explora propiedades',

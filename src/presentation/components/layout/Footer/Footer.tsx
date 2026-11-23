@@ -225,8 +225,8 @@ export function Footer() {
 
       {/* Middle section: Payments & Social */}
       <div className="w-full px-6 md:px-8 xl:px-16 max-w-[1920px] mx-auto py-10 border-b border-white/10">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
-          <div>
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-10">
+          <div className="w-full lg:w-auto">
             <p className="text-white font-medium text-[14px] mb-4">Métodos de pago aceptados</p>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2 bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/10 transition-colors text-white text-[13px] font-medium px-4 py-2.5 rounded-xl">
@@ -249,9 +249,9 @@ export function Footer() {
             </div>
           </div>
 
-          <div>
+          <div className="w-full lg:w-auto">
             <p className="text-white font-medium text-[14px] mb-4">Conecta con nosotros</p>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               {SOCIAL_LINKS.map((social) => (
                 <a
                   key={social.label}
@@ -259,9 +259,9 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className={`size-11 rounded-full flex items-center justify-center text-gray-400 bg-white/5 border border-white/10 hover:text-white hover:border-transparent transition-all duration-300 ${social.hoverBg}`}
+                  className={`size-10 sm:size-11 rounded-full flex items-center justify-center text-gray-400 bg-white/5 border border-white/10 hover:text-white hover:border-transparent transition-all duration-300 ${social.hoverBg}`}
                 >
-                  <Icon icon={social.icon} width="18" height="18" />
+                  <Icon icon={social.icon} width="16" height="16" />
                 </a>
               ))}
             </div>
