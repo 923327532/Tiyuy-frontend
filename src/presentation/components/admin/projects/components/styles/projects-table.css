@@ -1,0 +1,145 @@
+/* Projects table - compact layout aligned with Properties/Users tables */
+
+.projects-table__container {
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+  overflow-x: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #ffffff;
+}
+
+.projects-table__container table {
+  min-width: 1240px;
+}
+
+/* Encabezados siempre visibles, incluso con clases utilitarias de DataTable */
+.projects-table__container thead,
+.projects-table__container thead tr {
+  background: #f1f5f9 !important;
+}
+
+.projects-table__container th {
+  background: #f1f5f9 !important;
+  color: #0f2e3a !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 0.45rem 0.625rem !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.projects-table__container th * {
+  color: inherit !important;
+}
+
+.projects-table__container td {
+  vertical-align: middle;
+  padding: 0.4rem 0.625rem;
+}
+
+.projects-table__container tbody tr:hover {
+  background: #f8fafc;
+}
+
+.projects-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 230px;
+}
+
+.projects-identity__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.45rem;
+  background: linear-gradient(135deg, #f0f7fa, #e6f2ef);
+}
+
+.projects-identity__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.projects-identity__fallback {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.projects-identity__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-width: 0;
+}
+
+.projects-cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-width: 0;
+}
+
+.projects-cell-owner {
+  max-width: 150px;
+}
+
+.projects-cell-primary {
+  display: block;
+  overflow: hidden;
+  color: #0f2e3a;
+  font-size: 0.78125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.projects-cell-secondary {
+  display: block;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 0.65625rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.projects-cell-price {
+  color: #0f766e;
+  font-size: 0.78125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.projects-cell-units {
+  color: #475569;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.projects-table__actions {
+  min-width: 120px;
+}
+
+/* El contenedor de la tarjeta no debe recortar el menú de acciones */
+.projects-list-panel {
+  overflow: visible !important;
+}

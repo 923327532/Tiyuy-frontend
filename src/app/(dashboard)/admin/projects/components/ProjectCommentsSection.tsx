@@ -6,9 +6,10 @@ import { useProjectComments, useDeleteProjectComment } from '@/presentation/hook
 
 interface ProjectCommentsSectionProps {
   projectId: number;
+  compact?: boolean;
 }
 
-export function ProjectCommentsSection({ projectId }: ProjectCommentsSectionProps) {
+export function ProjectCommentsSection({ projectId, compact = false }: ProjectCommentsSectionProps) {
   const { data: comments, isLoading, error } = useProjectComments(projectId);
   const deleteCommentMutation = useDeleteProjectComment();
   const queryClient = useQueryClient();
@@ -17,29 +18,27 @@ export function ProjectCommentsSection({ projectId }: ProjectCommentsSectionProp
 
   if (isLoading) {
     return (
-      <div className="mt-6">
-        <h4 className="font-medium text-gray-900 mb-3">Comentarios de Usuarios</h4>
-        <div className="text-gray-500">Cargando comentarios...</div>
+      <div className={compact ? '' : 'mt-6'}>
+        {!compact && <h4 className="font-medium text-gray-900 mb-3">Comentarios de Usuarios</h4>}
+        <div className="text-xs text-gray-500">Cargando comentarios...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="mt-6">
-        <h4 className="font-medium text-gray-900 mb-3">Comentarios de Usuarios</h4>
-        <div className="text-red-500">Error al cargar comentarios</div>
+      <div className={compact ? '' : 'mt-6'}>
+        {!compact && <h4 className="font-medium text-gray-900 mb-3">Comentarios de Usuarios</h4>}
+        <div className="text-xs text-red-500">Error al cargar comentarios</div>
       </div>
     );
   }
 
   if (!comments || comments.length === 0) {
     return (
-      <div className="mt-6">
-        <h4 className="font-medium text-gray-900 mb-3">Comentarios de Usuarios</h4>
-        <div className="text-gray-500 bg-gray-50 p-4 rounded-lg">
-          No hay comentarios para este proyecto
-        </div>
+      <div className={compact ? '' : 'mt-6'}>
+        {!compact && <h4 className="font-medium text-gray-900 mb-3">Comentarios de Usuarios</h4>}
+        <p className="text-xs text-slate-500">No hay comentarios para este proyecto</p>
       </div>
     );
   }
@@ -52,13 +51,15 @@ export function ProjectCommentsSection({ projectId }: ProjectCommentsSectionProp
   };
 
   return (
-    <div className="mt-6">
-      <h4 className="font-medium text-gray-900 mb-3">
-        Comentarios de Usuarios ({comments.length})
-      </h4>
-      <div className="space-y-3 max-h-64 overflow-y-auto">
+    <div className={compact ? '' : 'mt-6'}>
+      {!compact && (
+        <h4 className="font-medium text-gray-900 mb-3">
+          Comentarios de Usuarios ({comments.length})
+        </h4>
+      )}
+      <div className={compact ? 'space-y-2' : 'space-y-3 max-h-64 overflow-y-auto'}>
         {(showAll ? comments : comments.slice(0, MAX_VISIBLE)).map((comment: any) => (
-          <div key={comment.id} className={`bg-gray-50 p-4 rounded-lg border border-gray-200 ${comment.isFlagged ? 'border-red-300 bg-red-50' : ''}`}>
+          <div key={comment.id} className={`${compact ? 'p-3' : 'bg-gray-50 p-4'} rounded-lg border border-gray-200 ${comment.isFlagged ? 'border-red-300 bg-red-50' : ''}`}>
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
                 <span className="font-medium">{comment.userName}</span>

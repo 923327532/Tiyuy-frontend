@@ -40,6 +40,20 @@ export abstract class ProjectSection extends PropertySection {
         favoritesCount: project.favoritesCount || 0,
         inquiriesCount: project.inquiriesCount || 0,
         isActive: project.isActive ?? true,
+        startDate:
+          project.startDate ||
+          project.fechaInicio ||
+          project.fecha_inicio ||
+          project.start_date ||
+          undefined,
+        estimatedDeliveryDate:
+          project.estimatedDeliveryDate ||
+          project.estimatedDelivery ||
+          project.expectedDeliveryDate ||
+          project.fechaEntrega ||
+          project.fecha_entrega ||
+          project.estimated_delivery ||
+          undefined,
       }));
     }
     
@@ -59,11 +73,9 @@ export abstract class ProjectSection extends PropertySection {
   }
 
   async toggleFeaturedProject(projectId: number, featured: boolean): Promise<void> {
-    if (featured) {
-      await axiosClient.post(`/featured/projects/${projectId}`);
-    } else {
-      await axiosClient.delete(`/featured/projects/${projectId}`);
-    }
+    await axiosClient.put(`${this.basePath}/projects/${projectId}/featured`, undefined, {
+      params: { featured },
+    });
   }
 
   async deleteProject(projectId: number, reason?: string): Promise<void> {
@@ -96,8 +108,10 @@ export abstract class ProjectSection extends PropertySection {
     await axiosClient.post(`${this.basePath}/projects/${projectId}/disable?${params.toString()}`);
   }
 
-  async getProjectsSalesHistory(): Promise<{ labels: string[]; revenue: number[]; developers: number[]; projects: number[]; planDistribution: Record<string, Record<string, number>> }> {
-    const response = await axiosClient.get(`${this.basePath}/projects/sales-history`);
+  async getProjectsSalesHistory(period: string = '6M'): Promise<{ labels: string[]; revenue: number[]; developers: number[]; projects: number[]; planDistribution: Record<string, Record<string, number>> }> {
+    const response = await axiosClient.get(`${this.basePath}/projects/sales-history`, {
+      params: { period },
+    });
     return response.data;
   }
 

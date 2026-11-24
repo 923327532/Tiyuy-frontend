@@ -50,7 +50,7 @@ export default function AgentDiscountsPage() {
   } = useAgentDiscountsPage();
 
   return (
-    <div className="px-3 sm:px-5 py-4 sm:py-6 space-y-4 sm:space-y-6 max-w-[1600px] mx-auto">
+    <div className="admin-page space-y-4 sm:space-y-6">
       {/* Notification */}
       {notification && (
         <div className={`agent-discounts__notification agent-discounts__notification--${notification.type}`} role="status">

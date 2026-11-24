@@ -1,6 +1,21 @@
 /**
  * Admin domain entities — Marketing module entities
  */
+/** Parámetros soportados por GET /v1/admin/marketing/campaigns. */
+export interface PromotionCampaignQueryParams {
+  /** Página base 0 (Spring Pageable). */
+  page?: number;
+  size?: number;
+  status?: string;
+  /** Texto libre: título, descripción o nombre del anunciante. */
+  keyword?: string;
+  promotionType?: string;
+  ownerRole?: string;
+  /** YYYY-MM-DD o datetime ISO. */
+  startDateFrom?: string;
+  startDateTo?: string;
+}
+
 export interface PromotionCampaign {
   id: number;
   title: string;
@@ -37,6 +52,8 @@ export interface PromotionCampaign {
   ownerRole?: string;
   /** Nombre del owner (inmobiliaria/agente) */
   ownerName?: string;
+  /** Correo del owner, usado para precargar el modal de notificación. */
+  ownerEmail?: string;
   /** Logo del owner (inmobiliaria/agente) */
   ownerLogoUrl?: string;
   /** Distrito/ubicación del proyecto vinculado */
@@ -59,6 +76,13 @@ export interface PromotionCampaign {
   approvedBy?: number;
   approvedAt?: string;
   notes?: string;
+}
+
+/** Solicitud para notificar al anunciante de una campaña. */
+export interface NotifyCampaignOwnerRequest {
+  subject: string;
+  message: string;
+  includeDetails: boolean;
 }
 
 export interface CreatePromotionCampaignRequest {

@@ -180,7 +180,7 @@ export default function FiltersBar({
             className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
           >
             <Download className="h-4 w-4" />
-            <span>Exportar CSV</span>
+            <span>Exportar Excel</span>
           </Button>
           {canManage && (
             <Button

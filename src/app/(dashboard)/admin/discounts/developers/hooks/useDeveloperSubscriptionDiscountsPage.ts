@@ -113,6 +113,7 @@ export function useDeveloperSubscriptionDiscountsPage(): UseDeveloperSubscriptio
     formData,
     editingDiscount,
     discounts,
+    filters,
     setFilters,
     setSortBy,
     setFormData,

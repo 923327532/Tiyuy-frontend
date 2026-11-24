@@ -7,6 +7,8 @@ import { KpiCard } from '@/presentation/components/ui/Card';
 interface Props {
   stats?: AgentDashboardStats | null;
   loading?: boolean;
+  onSelectStatus?: (status: string) => void;
+  onSelectPlan?: (plan: string) => void;
 }
 
 function formatCurrency(n: number) {
@@ -20,7 +22,7 @@ function growth(current: number, previous: number): number | undefined {
   return Number((((current - previous) / previous) * 100).toFixed(1));
 }
 
-export function AgentsStats({ stats, loading }: Props) {
+export function AgentsStats({ stats, loading, onSelectStatus, onSelectPlan }: Props) {
   const s = stats;
 
   const kpis = [
@@ -59,7 +61,7 @@ export function AgentsStats({ stats, loading }: Props) {
       label: 'Agentes con plan activo',
       value: formatNumber(s?.activeAgents || 0),
       hint: `De ${formatNumber(s?.totalAgents || 0)} registrados`,
-      href: '/admin/agents',
+      onClick: onSelectStatus ? () => onSelectStatus('active') : undefined,
       icon: Users,
       growth: growth(s?.activeAgents || 0, s?.activeAgentsPrevious || 0),
       color: 'sage' as const,
@@ -69,7 +71,6 @@ export function AgentsStats({ stats, loading }: Props) {
       label: 'Tasa de conversión',
       value: `${(s?.conversionRate || 0).toFixed(1)}%`,
       hint: 'De registros a pagos',
-      href: '/admin/agents',
       icon: TrendingUp,
       growth: growth(s?.conversionRate || 0, s?.conversionRatePrevious || 0),
       color: 'slate' as const,
@@ -79,7 +80,7 @@ export function AgentsStats({ stats, loading }: Props) {
       label: 'Agentes Free',
       value: formatNumber(s?.freeAgents || 0),
       hint: 'Sin plan activo',
-      href: '/admin/agents',
+      onClick: onSelectPlan ? () => onSelectPlan('FREE') : undefined,
       icon: UserCheck,
       growth: growth(s?.freeAgents || 0, s?.freeAgentsPrevious || 0),
       color: 'emerald' as const,
@@ -88,7 +89,7 @@ export function AgentsStats({ stats, loading }: Props) {
 
   return (
     <section aria-label="Indicadores de agentes">
-      <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+      <div className="grid min-w-0 grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {kpis.map((kpi, index) => {
           const Icon = kpi.icon;
           return (
@@ -99,7 +100,8 @@ export function AgentsStats({ stats, loading }: Props) {
               label={kpi.label}
               hint={kpi.hint}
               growth={kpi.growth}
-              href={kpi.href}
+              href={'href' in kpi ? kpi.href : undefined}
+              onClick={'onClick' in kpi ? kpi.onClick : undefined}
               loading={loading}
               color={kpi.color}
               index={index}

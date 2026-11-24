@@ -8,6 +8,8 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  /** Permite que el contenido controle su propio scroll (ej. modales con header/footer fijos). */
+  contentClassName?: string;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -16,6 +18,7 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   children,
   size = 'md',
+  contentClassName = 'flex-1 min-h-0 overflow-y-auto',
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -59,7 +62,7 @@ export const Modal: React.FC<ModalProps> = ({
         )}
 
         {/* Content - scrollable */}
-        <div className="flex-1 min-h-0 overflow-y-auto">{children}</div>
+        <div className={contentClassName}>{children}</div>
       </div>
     </div>
   );

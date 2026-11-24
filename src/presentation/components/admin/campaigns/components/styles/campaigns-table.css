@@ -1,0 +1,142 @@
+/* Campañas: tabla compacta alineada con Proyectos/Propiedades/Usuarios. */
+
+.campaigns-table__container {
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: visible !important;
+  overflow-x: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #ffffff;
+}
+
+.campaigns-table__container table {
+  min-width: 1180px;
+}
+
+.campaigns-table__container thead,
+.campaigns-table__container thead tr {
+  background: #f1f5f9 !important;
+}
+
+.campaigns-table__container th {
+  background: #f1f5f9 !important;
+  color: #0f2e3a !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 0.45rem 0.625rem !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.campaigns-table__container th * {
+  color: inherit !important;
+}
+
+.campaigns-table__container td {
+  vertical-align: middle;
+  padding: 0.4rem 0.625rem;
+}
+
+.campaigns-table__container tbody tr:hover {
+  background: #f8fafc;
+}
+
+.campaigns-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 230px;
+}
+
+.campaigns-identity__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.45rem;
+  background: linear-gradient(135deg, #f0f7fa, #e6f2ef);
+}
+
+.campaigns-identity__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.campaigns-identity__fallback {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+.campaigns-identity__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-width: 0;
+}
+
+.campaigns-cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-width: 0;
+}
+
+.campaigns-cell-owner {
+  max-width: 150px;
+}
+
+.campaigns-cell-primary {
+  display: block;
+  overflow: hidden;
+  color: #0f2e3a;
+  font-size: 0.78125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaigns-cell-secondary {
+  display: block;
+  overflow: hidden;
+  color: #64748b;
+  font-size: 0.65625rem;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaigns-cell-price,
+.campaigns-cell-metric {
+  color: #0f766e;
+  font-size: 0.78125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.campaigns-cell-metric {
+  color: #475569;
+  font-weight: 600;
+}
+
+.campaigns-table__actions {
+  min-width: 130px;
+}
+
+.campaigns-list-panel {
+  overflow: visible !important;
+}

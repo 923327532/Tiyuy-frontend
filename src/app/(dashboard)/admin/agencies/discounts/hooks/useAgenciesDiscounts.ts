@@ -11,7 +11,7 @@ import {
   NewDiscountForm,
   EMPTY_NEW_DISCOUNT,
 } from '../types';
-import { exportDiscountsCsv } from '../utils';
+import { exportDiscountsExcel } from '../utils';
 
 export function useAgenciesDiscounts() {
   const [data, setData] = useState<PaginatedResponse<DeveloperDiscountCode> | null>(null);
@@ -152,13 +152,13 @@ export function useAgenciesDiscounts() {
     }
   };
 
-  // Export CSV
+  // Export Excel
   const handleExport = () => {
     if (!data?.content?.length) {
       alert('No hay datos para exportar');
       return;
     }
-    exportDiscountsCsv(data.content);
+    exportDiscountsExcel(data.content, filters);
   };
 
   // Load data on mount

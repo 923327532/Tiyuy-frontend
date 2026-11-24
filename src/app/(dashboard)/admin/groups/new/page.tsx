@@ -47,11 +47,11 @@ export default function NewGroupPage() {
       return response.data;
     },
     onSuccess: () => {
-      alert('✅ Grupo creado exitosamente');
+      alert('Grupo creado exitosamente');
       router.push('/admin/groups');
     },
     onError: (error: Error) => {
-      alert('❌ Error al crear grupo: ' + error.message);
+      alert('Error al crear grupo: ' + error.message);
     },
   });
 
@@ -63,7 +63,7 @@ export default function NewGroupPage() {
     event.preventDefault();
 
     if (!formData.name.trim() || !formData.adminEmail.trim()) {
-      alert('⚠️ Completa el nombre del grupo y el email del administrador.');
+      alert('Completa el nombre del grupo y el email del administrador.');
       return;
     }
 
@@ -77,7 +77,7 @@ export default function NewGroupPage() {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 px-3 sm:px-6 py-3 sm:py-4">
+    <div className="admin-page space-y-4 sm:space-y-6">
       <PremiumFormView
         eyebrow="Gestión de grupos y canales"
         title="Crear grupo"
