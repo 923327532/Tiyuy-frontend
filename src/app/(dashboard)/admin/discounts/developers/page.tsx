@@ -95,7 +95,7 @@ export default function DeveloperSubscriptionDiscountsPage() {
   }), [filters]);
 
   return (
-    <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-6 max-w-[1600px] mx-auto">
+    <div className="admin-page space-y-3 sm:space-y-6">
       {/* Notification */}
       {notification && (
         <div className={`fixed top-2 sm:top-4 right-2 sm:right-4 z-50 px-3 sm:px-4 py-2 sm:py-3 rounded-lg shadow-lg text-xs sm:text-sm ${

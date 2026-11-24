@@ -60,6 +60,7 @@ export function useAgencies(): UseAgenciesReturn {
 
   const listActions = useAgenciesListActions({
     agencies: data.agencies,
+    filters: state.filters,
     setFilters: state.setFilters,
     setCurrentPage: state.setCurrentPage,
   });

@@ -69,7 +69,7 @@ export abstract class AgentSection extends ProjectSection {
     agentId: number, 
     data: { 
       planCode: string; 
-      discountPercentage: number; 
+      discountPercentage?: number; 
       customPricePen?: number;
       validFrom?: string;
       validUntil?: string;

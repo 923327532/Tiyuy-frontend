@@ -123,12 +123,12 @@ export default function EventDetailView({
       // Try RSVP first - might work if already subscribed
       await doRsvp();
     } catch (rsvpError: any) {
-      console.log('⚠️ RSVP failed:', rsvpError.response?.data?.message || rsvpError.message);
+      console.log('RSVP failed:', rsvpError.response?.data?.message || rsvpError.message);
       
       // If not subscribed error, subscribe and retry
       if (rsvpError.response?.data?.message?.includes('must be subscribed') || 
           rsvpError.response?.status === 403) {
-        console.log('🔁 Suscripción necesaria, intentando...');
+        console.log('Suscripción necesaria, intentando...');
         
         try {
           await doSubscribe();
@@ -137,7 +137,7 @@ export default function EventDetailView({
           // Retry RSVP
           await doRsvp();
         } catch (retryError: any) {
-          console.error('❌ Error en retry:', retryError);
+          console.error('Error en retry:', retryError);
           toast.error(retryError.response?.data?.message || 'Error al confirmar asistencia');
         }
       } else {
@@ -176,12 +176,12 @@ export default function EventDetailView({
       // Try interested first - might work if already subscribed
       await doInterested();
     } catch (interestedError: any) {
-      console.log('⚠️ Interested failed:', interestedError.response?.data?.message || interestedError.message);
+      console.log('Interested failed:', interestedError.response?.data?.message || interestedError.message);
       
       // If not subscribed error, subscribe and retry
       if (interestedError.response?.data?.message?.includes('must be subscribed') || 
           interestedError.response?.status === 403) {
-        console.log('🔁 Suscripción necesaria, intentando...');
+        console.log('Suscripción necesaria, intentando...');
         
         try {
           await doSubscribe();
@@ -190,7 +190,7 @@ export default function EventDetailView({
           // Retry interested
           await doInterested();
         } catch (retryError: any) {
-          console.error('❌ Error en retry:', retryError);
+          console.error('Error en retry:', retryError);
           toast.error(retryError.response?.data?.message || 'Error al registrar interés');
         }
       } else {

@@ -3,6 +3,10 @@
  */
 
 import type { AgentListItem } from '@/core/domain/entities/Admin';
+import {
+  exportToModernExcel,
+  type ModernExcelColumn,
+} from '@/utils/modernExcelExport';
 
 export interface AgentsFilterCriteria {
   searchQuery: string;
@@ -56,11 +60,29 @@ export function hasActiveFilters(filters: AgentsFilterCriteria): boolean {
   );
 }
 
-export function buildAgentsCsv(agents: AgentListItem[]): string {
-  return [
-    ['ID', 'Nombre', 'Email', 'Estado', 'Plan', 'Ingresos Mes'].join(','),
-    ...agents.map((a) =>
-      [a.id, `${a.firstName || ''} ${a.lastName || ''}`.trim(), a.email, a.enabled ? 'Activo' : 'Inactivo', a.currentPlan || 'Free', a.monthRevenue || 0].join(',')
-    ),
-  ].join('\n');
+const COLUMNS: ModernExcelColumn<AgentListItem>[] = [
+  { header: 'ID', type: 'integer', value: (a) => a.id, totalLabel: 'TOTAL' },
+  { header: 'Nombre', value: (a) => `${a.firstName ?? ''} ${a.lastName ?? ''}`.trim() },
+  { header: 'Email', value: (a) => a.email },
+  { header: 'Estado', type: 'status', value: (a) => (a.enabled ? 'Activo' : 'Inactivo') },
+  { header: 'Verificado', type: 'status', value: (a) => (a.emailVerified ? 'Sí' : 'No') },
+  { header: 'Plan', value: (a) => a.currentPlan || 'Free' },
+  { header: 'Ingresos Mes', type: 'currency', value: (a) => a.monthRevenue ?? 0, total: true },
+  { header: 'Propiedades', type: 'integer', value: (a) => a.propertiesCount ?? 0, total: true },
+  { header: 'Registro', type: 'date', value: (a) => a.createdAt ?? '' },
+];
+
+export function exportAgentsExcel(
+  agents: AgentListItem[],
+  filters?: Record<string, unknown>
+) {
+  if (!agents.length) return;
+  void exportToModernExcel({
+    title: 'Reporte de Agentes — TIYUY',
+    fileName: `agentes_${new Date().toISOString().slice(0, 10)}`,
+    sheetName: 'Agentes',
+    rows: agents,
+    columns: COLUMNS,
+    filters,
+  });
 }

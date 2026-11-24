@@ -6,9 +6,10 @@ import { useProjectReports, useReviewReport } from '@/presentation/hooks/useAdmi
 
 interface ProjectReportsSectionProps {
   projectId: number;
+  compact?: boolean;
 }
 
-export function ProjectReportsSection({ projectId }: ProjectReportsSectionProps) {
+export function ProjectReportsSection({ projectId, compact = false }: ProjectReportsSectionProps) {
   const { data: reports, isLoading, error } = useProjectReports(projectId);
   const reviewMutation = useReviewReport();
   const queryClient = useQueryClient();
@@ -28,29 +29,27 @@ export function ProjectReportsSection({ projectId }: ProjectReportsSectionProps)
 
   if (isLoading) {
     return (
-      <div className="mt-6">
-        <h4 className="font-medium text-gray-900 mb-3">Reportes de Usuarios</h4>
-        <div className="text-gray-500">Cargando reportes...</div>
+      <div className={compact ? '' : 'mt-6'}>
+        {!compact && <h4 className="font-medium text-gray-900 mb-3">Reportes de Usuarios</h4>}
+        <div className="text-xs text-gray-500">Cargando reportes...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="mt-6">
-        <h4 className="font-medium text-gray-900 mb-3">Reportes de Usuarios</h4>
-        <div className="text-red-500">Error al cargar reportes</div>
+      <div className={compact ? '' : 'mt-6'}>
+        {!compact && <h4 className="font-medium text-gray-900 mb-3">Reportes de Usuarios</h4>}
+        <div className="text-xs text-red-500">Error al cargar reportes</div>
       </div>
     );
   }
 
   if (!reports || reports.length === 0) {
     return (
-      <div className="mt-6">
-        <h4 className="font-medium text-gray-900 mb-3">Reportes de Usuarios</h4>
-        <div className="text-gray-500 bg-gray-50 p-4 rounded-lg">
-          No hay reportes para este proyecto
-        </div>
+      <div className={compact ? '' : 'mt-6'}>
+        {!compact && <h4 className="font-medium text-gray-900 mb-3">Reportes de Usuarios</h4>}
+        <p className="text-xs text-slate-500">No hay reportes para este proyecto</p>
       </div>
     );
   }
@@ -77,13 +76,15 @@ export function ProjectReportsSection({ projectId }: ProjectReportsSectionProps)
   };
 
   return (
-    <div className="mt-6">
-      <h4 className="font-medium text-gray-900 mb-3">
-        Reportes de Usuarios ({reports.length})
-      </h4>
-      <div className="space-y-3 max-h-64 overflow-y-auto">
+    <div className={compact ? '' : 'mt-6'}>
+      {!compact && (
+        <h4 className="font-medium text-gray-900 mb-3">
+          Reportes de Usuarios ({reports.length})
+        </h4>
+      )}
+      <div className={compact ? 'space-y-2' : 'space-y-3 max-h-64 overflow-y-auto'}>
         {reports.map((report: any) => (
-          <div key={report.id} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div key={report.id} className={`${compact ? 'bg-white p-3' : 'bg-gray-50 p-4'} rounded-lg border border-gray-200`}>
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
                 <span className="font-medium">{report.reporterName}</span>

@@ -8,11 +8,13 @@ import {
   PromotionCampaign,
   CreatePromotionCampaignRequest,
   UpdatePromotionCampaignRequest,
+  NotifyCampaignOwnerRequest,
   Banner,
   CreateBannerRequest,
   FestiveCampaign,
   CreateFestiveCampaignRequest,
   BannerDisplayMode,
+  PromotionCampaignQueryParams,
 } from '@/core/domain/entities/Admin';
 import { AssociationSection } from './AssociationSection';
 
@@ -24,7 +26,7 @@ export abstract class MarketingSection extends AssociationSection {
     return response.data;
   }
 
-  async getPromotionCampaigns(params?: { page?: number; size?: number; status?: string }): Promise<PaginatedResponse<PromotionCampaign>> {
+  async getPromotionCampaigns(params?: PromotionCampaignQueryParams): Promise<PaginatedResponse<PromotionCampaign>> {
     const response = await axiosClient.get('/v1/admin/marketing/campaigns', { params });
     return response.data;
   }
@@ -64,6 +66,10 @@ export abstract class MarketingSection extends AssociationSection {
 
   async reactivatePromotionCampaign(id: number): Promise<void> {
     await axiosClient.post(`/v1/admin/marketing/campaigns/${id}/reactivate`);
+  }
+
+  async notifyCampaignOwner(id: number, request: NotifyCampaignOwnerRequest): Promise<void> {
+    await axiosClient.post(`/v1/admin/marketing/campaigns/${id}/notify`, request);
   }
 
   async getBanners(params?: { page?: number; size?: number; location?: string }): Promise<Banner[]> {

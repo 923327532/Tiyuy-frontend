@@ -1,6 +1,7 @@
 'use client';
 
 import React, { forwardRef, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowDownRight,
@@ -298,6 +299,12 @@ function AnimatedValue({
     const numberText = match[2];
     const suffix = match[3];
 
+    // Skip animation for compact currency with K/M suffix (e.g., "1.5K", "2.3M")
+    // because the animation logic removes decimal points incorrectly
+    if (/[KM]$/i.test(suffix.trim())) {
+      return;
+    }
+
     const target = Number(numberText.replace(/,/g, '').replace(/\./g, ''));
 
     if (!Number.isFinite(target) || target === 0) {
@@ -330,9 +337,11 @@ function AnimatedValue({
 function MiniSparkline({
   color,
   index,
+  className = '',
 }: {
   color: string;
   index: number;
+  className?: string;
 }) {
   const variations = [
     [8, 12, 9, 17, 13, 23, 19, 29],
@@ -351,7 +360,7 @@ function MiniSparkline({
   return (
     <svg
       viewBox="0 0 91 38"
-      className="h-10 w-[91px] overflow-visible"
+      className={`h-10 w-[91px] overflow-visible ${className}`}
       aria-hidden="true"
     >
       <polyline
@@ -394,14 +403,15 @@ export function KpiCard({
   const resolvedIconBg = iconBg ?? styles.icon.split(' ')[0];
   const resolvedIconColor = iconColor ?? styles.icon.split(' ')[1];
   const positiveGrowth = typeof growth === 'number' && growth >= 0;
+  const isInteractive = Boolean(href || onClick) && !unavailable;
 
   if (loading) {
     return (
-      <div className={`min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+      <div className={`min-w-0 rounded-2xl border border-slate-200 bg-white p-3 sm:p-5 shadow-sm ${className}`}>
         <div className="animate-pulse space-y-4">
           <div className="flex justify-between">
             <div className="h-4 w-28 rounded bg-slate-100" />
-            <div className="h-10 w-10 rounded-xl bg-slate-100" />
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-slate-100" />
           </div>
           <div className="h-8 w-32 rounded bg-slate-100" />
           <div className="h-3 w-24 rounded bg-slate-100" />
@@ -419,17 +429,15 @@ export function KpiCard({
         delay: reducedMotion ? 0 : index * 0.09,
         ease: 'easeOut',
       }}
-      whileHover={reducedMotion ? undefined : { y: -4 }}
+      whileHover={isInteractive && !reducedMotion ? { y: -4 } : undefined}
       className={`
-        group relative h-full min-w-0
+        relative h-full min-w-0 flex flex-col justify-between
         overflow-hidden rounded-2xl
         border border-slate-200/80
-        bg-white p-5
+        bg-white p-3 sm:p-5
         shadow-sm shadow-slate-200/40
         transition-shadow duration-300
-        hover:border-slate-300
-        hover:shadow-xl
-        ${styles.glow}
+        ${isInteractive ? `group hover:border-slate-300 hover:shadow-xl ${styles.glow}` : ''}
         ${className}
       `}
     >
@@ -449,23 +457,23 @@ export function KpiCard({
         {/* Card header */}
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[12px] font-semibold leading-5 text-slate-500">
+            <p className="text-[11px] sm:text-[12px] font-semibold leading-5 text-slate-500">
               {label}
             </p>
           </div>
 
           <motion.div
-            whileHover={reducedMotion ? undefined : { rotate: 8, scale: 1.08 }}
+            whileHover={isInteractive && !reducedMotion ? { rotate: 8, scale: 1.08 } : undefined}
             transition={{ duration: 0.2 }}
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${resolvedIconBg} ${resolvedIconColor}`}
+            className={`flex h-8 w-8 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl ${resolvedIconBg} ${resolvedIconColor}`}
           >
-            {icon}
+            <span className="h-5 w-5 sm:h-5 sm:w-5">{icon}</span>
           </motion.div>
         </div>
 
         {/* Value */}
-        <div className="mt-5 flex min-w-0 items-end justify-between gap-2">
-          <h3 className="min-w-0 truncate text-[27px] font-bold tracking-tight text-slate-800 tabular-nums">
+        <div className="mt-4 sm:mt-5 flex min-w-0 items-end justify-between gap-2">
+          <h3 className="min-w-0 whitespace-nowrap text-lg sm:text-[22px] font-bold tracking-tight text-slate-800 tabular-nums sm:text-[27px]">
             <AnimatedValue
               value={String(value)}
               enabled={!reducedMotion}
@@ -473,20 +481,26 @@ export function KpiCard({
           </h3>
 
           {!unavailable && (
-            <MiniSparkline color={styles.line} index={index} />
+            <MiniSparkline color={styles.line} index={index} className="hidden sm:block" />
           )}
         </div>
 
         {/* Hint */}
-        <p className="mt-2 truncate text-xs font-medium text-slate-400">
+        <p className="mt-1.5 sm:mt-2 line-clamp-2 text-[11px] sm:text-xs leading-tight font-medium text-slate-400">
           {hint}
         </p>
 
         {/* Footer */}
-        <div className="mt-5 flex min-w-0 items-center justify-between border-t border-slate-100 pt-3">
+        <div className="mt-4 sm:mt-5 flex min-w-0 items-center justify-between border-t border-slate-100 pt-3">
           {typeof growth === 'number' && !unavailable ? (
             <div className={`flex items-center gap-1 text-xs font-semibold ${positiveGrowth ? 'text-emerald-600' : 'text-rose-500'}`}>
-              {positiveGrowth ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
+              {isInteractive ? (
+                positiveGrowth
+                  ? <ArrowUpRight className="h-3.5 w-3.5" />
+                  : <ArrowDownRight className="h-3.5 w-3.5" />
+              ) : (
+                <span aria-hidden="true">{positiveGrowth ? '+' : '-'}</span>
+              )}
               {Math.abs(growth).toFixed(1)}%
               <span className="ml-1 font-normal text-slate-400">crecimiento</span>
             </div>
@@ -497,7 +511,9 @@ export function KpiCard({
             </div>
           )}
 
-          <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-1 group-hover:text-slate-600" />
+          {isInteractive && typeof growth === 'number' && (
+            <ArrowRight className="h-4 w-4 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-1 group-hover:text-slate-600" />
+          )}
         </div>
 
         {unavailable && (
@@ -511,23 +527,48 @@ export function KpiCard({
     return cardContent;
   }
 
-  const wrapperClassName = `block min-w-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 ${className}`;
+  const wrapperClassName = `
+    block min-w-0 rounded-2xl
+    ${isInteractive ? 'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2' : ''}
+    ${className}
+  `;
 
   if (href) {
+    const anchorProps = {
+      onClick: onClick as React.MouseEventHandler<HTMLAnchorElement> | undefined,
+      className: wrapperClassName,
+      ...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>),
+    };
+
+    if (href.startsWith('/')) {
+      return <Link href={href} {...anchorProps}>{cardContent}</Link>;
+    }
+
+    return <a href={href} {...anchorProps}>{cardContent}</a>;
+  }
+
+  if (onClick) {
     return (
-      <a
-        href={href}
-        onClick={onClick as React.MouseEventHandler<HTMLAnchorElement> | undefined}
+      <div
+        {...props}
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onClick();
+          }
+        }}
         className={wrapperClassName}
-        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
       >
         {cardContent}
-      </a>
+      </div>
     );
   }
 
   return (
-    <div onClick={onClick} className={wrapperClassName} {...props}>
+    <div {...props} className={`block min-w-0 rounded-2xl ${className}`}>
       {cardContent}
     </div>
   );

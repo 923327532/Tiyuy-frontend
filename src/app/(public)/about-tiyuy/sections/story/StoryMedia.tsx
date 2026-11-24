@@ -7,7 +7,7 @@ import { story } from './story.data';
 export function StoryMedia() {
   return (
     <Reveal direction="left">
-      <figure className="relative aspect-[4/5] overflow-hidden border border-neutral-200 bg-white">
+      <figure className="relative aspect-[16/10] overflow-hidden border border-neutral-200 bg-white">
         <ParallaxImage
           src={story.image}
           alt={story.alt}

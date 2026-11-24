@@ -15,7 +15,7 @@ export interface NotifyDeveloperRequest {
 
 export interface AgentPlanDiscountRequest {
   planCode: string;
-  discountPercentage: number;
+  discountPercentage?: number;
   customPricePen?: number;
   validFrom?: string;
   validUntil?: string;

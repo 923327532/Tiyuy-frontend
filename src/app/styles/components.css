@@ -2,6 +2,18 @@
    COMPONENTS - Inputs, Scrollbars, Forms
 ======================================== */
 
+/* Contenedor común de las páginas del panel admin.
+   Sin max-width centrado: mantiene la misma distancia del sidebar en todos los módulos. */
+.admin-page {
+  width: 100%;
+  min-width: 0;
+  padding: 0.875rem 1rem 6rem;
+}
+
+@media (min-width: 640px) {
+  .admin-page { padding: 1.25rem 2rem 2rem; }
+}
+
 /* === Scrollbar oculto (hero sections, carruseles) === */
 .scrollbar-hide {
   -ms-overflow-style: none;

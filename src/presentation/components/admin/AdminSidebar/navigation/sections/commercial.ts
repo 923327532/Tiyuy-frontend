@@ -1,5 +1,4 @@
 import {
-  Calendar,
   Megaphone,
   Tag,
   Target,
@@ -18,13 +17,6 @@ export const commercialSection: SidebarNavItem = {
       icon: Megaphone,
       path: '/admin/campaigns',
       exact: true,
-      requiredPermissions: ['COMMUNICATIONS_MANAGE'],
-    },
-    {
-      id: 'campaigns-list',
-      label: 'Listado de Campañas',
-      icon: Calendar,
-      path: '/admin/campaigns/list',
       requiredPermissions: ['COMMUNICATIONS_MANAGE'],
     },
     {
