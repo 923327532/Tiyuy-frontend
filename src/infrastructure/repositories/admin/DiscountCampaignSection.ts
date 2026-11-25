@@ -57,38 +57,38 @@ export abstract class DiscountCampaignSection extends UsersSection {
     return response.data;
   }
 
-  // Campaigns
+  // Campaigns - Use /v1/admin/marketing/campaigns endpoints (matches AdminMarketingController)
   async getAllCampaigns(params: PaginationParams): Promise<PaginatedResponse<Campaign>> {
     const searchParams = new URLSearchParams();
     if (params.page !== undefined) searchParams.append('page', params.page.toString());
     if (params.size !== undefined) searchParams.append('size', params.size.toString());
     if (params.sort) searchParams.append('sort', params.sort);
 
-    const response = await axiosClient.get(`${this.basePath}/campaigns?${searchParams.toString()}`);
+    const response = await axiosClient.get(`/v1/admin/marketing/campaigns?${searchParams.toString()}`);
     return response.data;
   }
 
   async getCampaignById(campaignId: number): Promise<Campaign> {
-    const response = await axiosClient.get(`${this.basePath}/campaigns/${campaignId}`);
+    const response = await axiosClient.get(`/v1/admin/marketing/campaigns/${campaignId}`);
     return response.data;
   }
 
   async createCampaign(request: CreateCampaignRequest): Promise<Campaign> {
-    const response = await axiosClient.post(`${this.basePath}/campaigns`, request);
+    const response = await axiosClient.post(`/v1/admin/marketing/campaigns`, request);
     return response.data;
   }
 
   async updateCampaign(campaignId: number, request: UpdateCampaignRequest): Promise<Campaign> {
-    const response = await axiosClient.put(`${this.basePath}/campaigns/${campaignId}`, request);
+    const response = await axiosClient.put(`/v1/admin/marketing/campaigns/${campaignId}`, request);
     return response.data;
   }
 
   async deleteCampaign(campaignId: number): Promise<void> {
-    await axiosClient.delete(`${this.basePath}/campaigns/${campaignId}`);
+    await axiosClient.delete(`/v1/admin/marketing/campaigns/${campaignId}`);
   }
 
   async getCampaignAlerts(): Promise<CampaignAlert[]> {
-    const response = await axiosClient.get(`${this.basePath}/campaigns/alerts`);
+    const response = await axiosClient.get(`/v1/admin/marketing/campaigns/alerts`);
     return response.data;
   }
 

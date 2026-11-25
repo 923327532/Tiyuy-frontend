@@ -3,6 +3,7 @@
 import { IconButton } from '@/presentation/components/ui/Button';
 import type { UserListItem } from '@/core/domain/entities/Admin';
 import { shouldShowProduction } from '@/presentation/components/admin/users/utils/users.utils';
+import { useAuthStore } from '@/presentation/store/authStore';
 
 interface RowActionsProps {
   user: UserListItem;
@@ -29,6 +30,16 @@ export function RowActions({
   onViewProperties,
   onViewProjects,
 }: RowActionsProps) {
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const isSelf = Number(user.id) === Number(currentUserId);
+  const isProtectedSuperAdmin =
+    (user as UserListItem & { adminRoleType?: string }).adminRoleType === 'SUPER_ADMIN' ||
+    user.email?.toLowerCase() === 'superadmin@tiyuy.com';
+  const isProtected = isSelf || isProtectedSuperAdmin;
+
+  const hasActiveAssets =
+    (user.publishedPropertiesCount ?? 0) > 0 || (user.publishedProjectsCount ?? 0) > 0;
+
   return (
     <div className="users-table__actions" onClick={(e) => e.stopPropagation()}>
       <IconButton
@@ -40,7 +51,7 @@ export function RowActions({
         onClick={() => onViewDetail(user)}
       />
 
-      {canManage && onToggleStatus && (
+      {canManage && onToggleStatus && !isProtected && (
         <IconButton
           variant="ghost"
           size="sm"
@@ -52,7 +63,7 @@ export function RowActions({
         />
       )}
 
-      {canDelete && onDelete && (
+      {canDelete && onDelete && !isProtected && !hasActiveAssets && (
         <IconButton
           variant="danger"
           size="sm"

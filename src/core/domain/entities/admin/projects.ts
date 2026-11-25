@@ -74,8 +74,8 @@ export interface ProjectStats {
 
 // Project moderation request
 export interface ModerateProjectRequest {
-  action: 'APPROVE' | 'REJECT' | 'SUSPEND' | 'ACTIVATE' | 'DEACTIVATE';
+  status: string;
   reason?: string;
-  notes?: string;
+  notifyDeveloper?: boolean;
 }
 

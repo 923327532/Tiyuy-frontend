@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from 'sonner';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
@@ -47,11 +49,11 @@ export default function NewGroupPage() {
       return response.data;
     },
     onSuccess: () => {
-      alert('Grupo creado exitosamente');
+      toast.success('Grupo creado exitosamente');
       router.push('/admin/groups');
     },
     onError: (error: Error) => {
-      alert('Error al crear grupo: ' + error.message);
+      toast.error('Error al crear grupo: ' + error.message);
     },
   });
 
@@ -63,7 +65,7 @@ export default function NewGroupPage() {
     event.preventDefault();
 
     if (!formData.name.trim() || !formData.adminEmail.trim()) {
-      alert('Completa el nombre del grupo y el email del administrador.');
+      toast.warning('Completa el nombre del grupo y el email del administrador.');
       return;
     }
 
@@ -79,25 +81,25 @@ export default function NewGroupPage() {
   return (
     <div className="admin-page space-y-4 sm:space-y-6">
       <PremiumFormView
-        eyebrow="Gestión de grupos y canales"
+        eyebrow="GestiÃƒÂ³n de grupos y canales"
         title="Crear grupo"
-        description="Registra un nuevo grupo de la red social con su información básica, administrador y estado inicial."
+        description="Registra un nuevo grupo de la red social con su informaciÃƒÂ³n bÃƒÂ¡sica, administrador y estado inicial."
         backHref="/admin/groups"
         onSubmit={handleSubmit}
         submitLabel="Crear grupo"
         cancelHref="/admin/groups"
         isSubmitting={createGroupMutation.isPending}
-        asideTitle="Checklist rápido"
+        asideTitle="Checklist rÃƒÂ¡pido"
         asideDescription="Esta vista es reutilizable para los formularios del panel. El estilo se puede ajustar en un solo lugar."
         asideItems={[
-          'El nombre debe ser fácil de identificar para los miembros.',
-          'El administrador será el responsable del grupo.',
+          'El nombre debe ser fÃƒÂ¡cil de identificar para los miembros.',
+          'El administrador serÃƒÂ¡ el responsable del grupo.',
           'Puedes cambiar el estado desde el listado de grupos.',
         ]}
       >
         <PremiumFormSection
           icon={<FileText className="h-5 w-5" />}
-          title="Información básica"
+          title="InformaciÃƒÂ³n bÃƒÂ¡sica"
           description="Datos principales que identifican al grupo dentro de la comunidad."
           columns={2}
         >
@@ -117,10 +119,10 @@ export default function NewGroupPage() {
           />
           <div className="premium-form__span-all">
             <Textarea
-              label="Descripción"
+              label="DescripciÃƒÂ³n"
               value={formData.description}
               onChange={(event) => updateField('description', event.target.value)}
-              placeholder="Describe el propósito y las actividades del grupo..."
+              placeholder="Describe el propÃƒÂ³sito y las actividades del grupo..."
               rows={4}
             />
           </div>
@@ -152,7 +154,7 @@ export default function NewGroupPage() {
         <PremiumFormSection
           icon={<Settings2 className="h-5 w-5" />}
           title="Estado inicial"
-          description="Define si el grupo estará disponible desde el momento de su creación."
+          description="Define si el grupo estarÃƒÂ¡ disponible desde el momento de su creaciÃƒÂ³n."
         >
           <Select
             label="Estado"
