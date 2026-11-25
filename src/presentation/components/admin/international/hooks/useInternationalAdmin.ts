@@ -17,6 +17,7 @@ export function useInternationalAdmin() {
   const [statusFilter, setStatusFilterState] = useState<InternationalStatusFilter>('ALL');
   const [searchQuery, setSearchQueryState] = useState('');
   const [selected, setSelected] = useState<InternationalUserListItem | null>(null);
+  const [approveTarget, setApproveTarget] = useState<InternationalUserListItem | null>(null);
   const [rejectTarget, setRejectTarget] = useState<InternationalUserListItem | null>(null);
   const [rejectReason, setRejectReason] = useState('');
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -72,20 +73,26 @@ export function useInternationalAdmin() {
     [users, total],
   );
 
-  const handleApprove = useCallback(
-    async (u: InternationalUserListItem) => {
-      if (!window.confirm(`¿Aprobar la identidad de ${u.firstName || ''} ${u.lastName || ''} (${u.email})?`)) return;
-      try {
-        await approveMutation.mutateAsync(u.userId);
-        toast.success('Documento aprobado. El usuario ya puede acceder a las áreas privadas.');
-        setSelected(null);
-        refetch();
-      } catch {
-        toast.error('Error al aprobar el documento');
-      }
-    },
-    [approveMutation, refetch],
-  );
+  const handleOpenApprove = useCallback((u: InternationalUserListItem) => {
+    setApproveTarget(u);
+  }, []);
+
+  const closeApproveModal = useCallback(() => {
+    setApproveTarget(null);
+  }, []);
+
+  const handleConfirmApprove = useCallback(async () => {
+    if (!approveTarget) return;
+    try {
+      await approveMutation.mutateAsync(approveTarget.userId);
+      toast.success('Documento aprobado. El usuario ya puede acceder a las áreas privadas.');
+      setSelected((prev) => (prev?.userId === approveTarget.userId ? null : prev));
+      setApproveTarget(null);
+      refetch();
+    } catch {
+      toast.error('Error al aprobar el documento');
+    }
+  }, [approveTarget, approveMutation, refetch]);
 
   const handleOpenReject = useCallback((u: InternationalUserListItem) => {
     setRejectTarget(u);
@@ -125,6 +132,7 @@ export function useInternationalAdmin() {
     setSearchQuery,
     selected,
     setSelected,
+    approveTarget,
     rejectTarget,
     rejectReason,
     setRejectReason,
@@ -139,7 +147,9 @@ export function useInternationalAdmin() {
     canReview,
     approvePending: approveMutation.isPending,
     rejectPending: rejectMutation.isPending,
-    handleApprove,
+    handleApprove: handleOpenApprove,
+    handleConfirmApprove,
+    closeApproveModal,
     handleOpenReject,
     handleReject,
     closeRejectModal,

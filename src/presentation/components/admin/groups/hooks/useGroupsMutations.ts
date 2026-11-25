@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { isChannelItem } from '../types';
 import type { GroupItem } from '../types';
@@ -49,8 +50,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
     onSuccess: () => {
       invalidateAll();
       setIsToggleModalOpen(false);
+      toast.success('Estado del grupo actualizado');
     },
-    onError: (error: Error) => alert('❌ Error al cambiar estado del grupo: ' + error.message),
+    onError: (error: Error) => toast.error('Error al cambiar estado del grupo: ' + error.message),
   });
 
   const suspendGroupMutation = useMutation({
@@ -59,9 +61,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
       invalidateAll();
       setIsSuspendModalOpen(false);
       setSuspendReason('');
-      alert('✅ Grupo suspendido exitosamente');
+      toast.success('Grupo suspendido exitosamente');
     },
-    onError: (error: Error) => alert('❌ Error al suspender grupo: ' + error.message),
+    onError: (error: Error) => toast.error('Error al suspender grupo: ' + error.message),
   });
 
   const sendGroupViolationEmailMutation = useMutation({
@@ -72,9 +74,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
       setIsViolationModalOpen(false);
       setViolationType('CONTENT_VIOLATION');
       setViolationMessage('');
-      alert('✅ Email de violación enviado exitosamente');
+      toast.success('Email de violación enviado exitosamente');
     },
-    onError: (error: Error) => alert('❌ Error al enviar email de violación: ' + error.message),
+    onError: (error: Error) => toast.error('Error al enviar email de violación: ' + error.message),
   });
 
   const toggleChannelStatusMutation = useMutation({
@@ -82,8 +84,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
     onSuccess: () => {
       invalidateAll();
       setIsToggleModalOpen(false);
+      toast.success('Estado del canal actualizado');
     },
-    onError: (error: Error) => alert('❌ Error al cambiar estado del canal: ' + error.message),
+    onError: (error: Error) => toast.error('Error al cambiar estado del canal: ' + error.message),
   });
 
   const suspendChannelMutation = useMutation({
@@ -92,9 +95,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
       invalidateAll();
       setIsSuspendModalOpen(false);
       setSuspendReason('');
-      alert('✅ Canal suspendido exitosamente');
+      toast.success('Canal suspendido exitosamente');
     },
-    onError: (error: Error) => alert('❌ Error al suspender canal: ' + error.message),
+    onError: (error: Error) => toast.error('Error al suspender canal: ' + error.message),
   });
 
   const sendChannelViolationEmailMutation = useMutation({
@@ -105,9 +108,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
       setIsViolationModalOpen(false);
       setViolationType('CONTENT_VIOLATION');
       setViolationMessage('');
-      alert('✅ Correo de violación enviado exitosamente');
+      toast.success('Correo de violación enviado exitosamente');
     },
-    onError: (error: Error) => alert('❌ Error al enviar correo de violación: ' + error.message),
+    onError: (error: Error) => toast.error('Error al enviar correo de violación: ' + error.message),
   });
 
   const reactivateGroupMutation = useMutation({
@@ -116,9 +119,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
       invalidateAll();
       setIsReactivateModalOpen(false);
       setReactivateReason('');
-      alert('✅ Grupo reactivado exitosamente');
+      toast.success('Grupo reactivado exitosamente');
     },
-    onError: (error: Error) => alert('❌ Error al reactivar grupo: ' + error.message),
+    onError: (error: Error) => toast.error('Error al reactivar grupo: ' + error.message),
   });
 
   const reactivateChannelMutation = useMutation({
@@ -127,9 +130,9 @@ export function useGroupsMutations(selection: GroupsSelection) {
       invalidateAll();
       setIsReactivateModalOpen(false);
       setReactivateReason('');
-      alert('✅ Canal reactivado exitosamente');
+      toast.success('Canal reactivado exitosamente');
     },
-    onError: (error: Error) => alert('❌ Error al reactivar canal: ' + error.message),
+    onError: (error: Error) => toast.error('Error al reactivar canal: ' + error.message),
   });
 
   const handleToggleStatus = (item: GroupItem) => {

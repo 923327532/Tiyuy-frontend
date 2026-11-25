@@ -6,6 +6,7 @@ import { InternationalStats } from './components/stats/InternationalStats';
 import { InternationalFilters } from './components/filters';
 import { InternationalListPanel } from './components/list/InternationalListPanel';
 import { InternationalDetailModal } from './components/modals/detail';
+import { InternationalApproveModal } from './components/modals/approve';
 import { InternationalRejectModal } from './components/modals/reject';
 import { useInternationalAdmin } from './hooks/useInternationalAdmin';
 
@@ -13,6 +14,7 @@ export function InternationalPage() {
   const intl = useInternationalAdmin();
 
   const selectedIsOpen = useMemo(() => Boolean(intl.selected), [intl.selected]);
+  const approveIsOpen = useMemo(() => Boolean(intl.approveTarget), [intl.approveTarget]);
 
   return (
     <div className="space-y-4 px-3 py-3 sm:space-y-6 sm:px-6 sm:py-4">
@@ -51,6 +53,14 @@ export function InternationalPage() {
         onClose={() => intl.setSelected(null)}
         onApprove={intl.handleApprove}
         onReject={intl.handleOpenReject}
+      />
+
+      <InternationalApproveModal
+        user={intl.approveTarget}
+        isOpen={approveIsOpen}
+        isPending={intl.approvePending}
+        onClose={intl.closeApproveModal}
+        onConfirm={intl.handleConfirmApprove}
       />
 
       <InternationalRejectModal

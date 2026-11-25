@@ -1,5 +1,7 @@
 'use client';
 
+import { toast } from 'sonner';
+
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -68,12 +70,12 @@ export function useCreateGroup({ onSuccess }: UseCreateGroupOptions) {
       ['admin-groups', 'admin-suspended-groups', 'admin-group-violations', 'admin-channel-violations'].forEach(
         (queryKey) => queryClient.invalidateQueries({ queryKey: [queryKey] }),
       );
-      alert(' Grupo creado exitosamente');
+      toast.success('Grupo creado exitosamente');
       onSuccess();
     },
     onError: (error: Error) => {
       console.error('Error al crear grupo:', error);
-      alert(' Error al crear grupo: ' + error.message);
+      toast.error('Error al crear grupo: ' + error.message);
     },
   });
 

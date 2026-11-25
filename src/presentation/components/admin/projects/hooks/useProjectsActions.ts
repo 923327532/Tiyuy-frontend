@@ -14,6 +14,14 @@ import {
 
 export type ProjectModerationAction = 'APPROVE' | 'REJECT' | 'SUSPEND' | 'ACTIVATE' | 'DEACTIVATE';
 
+const ACTION_TO_STATUS: Record<ProjectModerationAction, string> = {
+  APPROVE: 'PUBLISHED',
+  ACTIVATE: 'PUBLISHED',
+  REJECT: 'CANCELLED',
+  SUSPEND: 'PAUSED',
+  DEACTIVATE: 'PAUSED',
+};
+
 interface Params {
   refetch: () => void;
   closeView: () => void;
@@ -101,7 +109,11 @@ export function useProjectsActions({
     try {
       await moderateMutation.mutateAsync({
         projectId: project.id,
-        request: { action, reason },
+        request: {
+          status: ACTION_TO_STATUS[action],
+          reason,
+          notifyDeveloper: true,
+        },
       });
       toast.success('Proyecto moderado');
       closeModerate();
