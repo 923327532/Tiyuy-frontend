@@ -17,11 +17,6 @@ const nextConfig: NextConfig = {
         source: '/api/images/proxy/:path*',
         destination: '/api/images/proxy/:path*',
       },
-      // Proxy /admin/* to backend /api/admin/*
-      {
-        source: '/admin/:path*',
-        destination: `${backendApi}/admin/:path*`,
-      },
       // Proxy other API calls to backend via BACKEND_URL
       // El backend usa context-path /api, por lo que /api/:path* -> BACKEND_URL/api/:path*
       {

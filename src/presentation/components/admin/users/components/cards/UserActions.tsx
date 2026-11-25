@@ -1,11 +1,16 @@
 'use client';
 
+import { useAuthStore } from '@/presentation/store/authStore';
+
 export interface UserActionUser {
   id: number;
   enabled: boolean;
   firstName?: string | null;
   lastName?: string | null;
   email: string;
+  adminRoleType?: string;
+  publishedPropertiesCount?: number;
+  publishedProjectsCount?: number;
 }
 
 interface UserActionsProps<T extends UserActionUser = UserActionUser> {
@@ -25,6 +30,16 @@ export function UserActions<T extends UserActionUser = UserActionUser>({
   canManage,
   canDelete,
 }: UserActionsProps<T>) {
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const isSelf = Number(user.id) === Number(currentUserId);
+  const isProtectedSuperAdmin =
+    user.adminRoleType === 'SUPER_ADMIN' ||
+    user.email?.toLowerCase() === 'superadmin@tiyuy.com';
+  const isProtected = isSelf || isProtectedSuperAdmin;
+
+  const hasActiveAssets =
+    (user.publishedPropertiesCount ?? 0) > 0 || (user.publishedProjectsCount ?? 0) > 0;
+
   const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email;
 
   return (
@@ -37,7 +52,7 @@ export function UserActions<T extends UserActionUser = UserActionUser>({
         Ver detalle
       </button>
 
-      {(canManage || canDelete) && (
+      {(canManage || canDelete) && !isProtected && (
         <div className="flex items-center gap-1.5">
           {canManage && onToggleStatus && (
             <button
@@ -59,7 +74,7 @@ export function UserActions<T extends UserActionUser = UserActionUser>({
             </button>
           )}
 
-          {canDelete && onDelete && (
+          {canDelete && onDelete && !hasActiveAssets && (
             <button
               type="button"
               className="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-rose-50 p-2 text-rose-600 hover:bg-rose-100 transition-colors"
