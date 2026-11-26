@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FinanceRepository } from '@/infrastructure/repositories/FinanceRepository';
 import { toast } from '@/presentation/store/toastStore';
 import { authStorage } from '@/infrastructure/storage/auth-storage';
+import { BillingCycle } from '@/core/domain/entities/Wallet';
 
 const financeRepo = new FinanceRepository();
 
@@ -103,12 +104,12 @@ export function useSubscribeToPlan() {
   });
 }
 
-export function usePlanPrice(planId: string | number) {
+export function usePlanPrice(planId: string | number, billingCycle: BillingCycle = 'MONTHLY', discountCode?: string) {
   const user = authStorage.getUser();
   
   return useQuery({
-    queryKey: ['plan', 'price', planId, user?.id],
-    queryFn: () => financeRepo.getPlanPriceForUser(Number(planId)),
+    queryKey: ['plan', 'price', planId, user?.id, billingCycle, discountCode],
+    queryFn: () => financeRepo.getSubscriptionPrice(Number(planId), billingCycle, discountCode),
     enabled: !!planId && !!user?.id,
     staleTime: 30000, // 30s cache
   });

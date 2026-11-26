@@ -1,4 +1,4 @@
-import { Wallet, WalletTransaction, SubscriptionPlan, ActiveSubscription } from '../entities/Wallet';
+import { Wallet, WalletTransaction, SubscriptionPlan, ActiveSubscription, BillingCycle, SubscriptionPricePreview } from '../entities/Wallet';
 
 export interface IFinanceRepository {
   getWalletBalance(): Promise<Wallet>;
@@ -12,6 +12,7 @@ export interface IFinanceRepository {
   hasUserUsedFreePlan(userId: number): Promise<boolean>;
   createMercadoPagoPreference(subscriptionId: string): Promise<any>;
   subscribeToPlan(planId: string | number, paymentMethod: 'CARD' | 'MERCADOPAGO', discountCode?: string): Promise<ActiveSubscription>;
+  getSubscriptionPrice(planId: number, billingCycle?: BillingCycle, discountCode?: string): Promise<SubscriptionPricePreview>;
   getAvailableDeveloperDiscountCodes(): Promise<{
     id: number;
     code: string;

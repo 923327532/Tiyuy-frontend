@@ -170,37 +170,11 @@ function PlansPageContent() {
 
   // Calcular precio con descuento para el plan seleccionado
   const getDiscountedPrice = (plan: SubscriptionPlan) => {
-    // #1 Prioridad MÁXIMA: Descuento de agencia desde backend (AgencyPlanDiscount)
+    // El backend devuelve el precio final. Esta función solo conserva el fallback
+    // visual mientras la consulta del precio aún está cargando.
     if (plan.agencyDiscountedPrice != null && plan.agencyDiscountedPrice < plan.price) {
       return plan.agencyDiscountedPrice;
     }
-    
-    // #2 Descuento manual aplicado por código
-    const isManualDiscountValid = appliedManualDiscount?.valid && 
-      plan.name === selectedPlan?.name && 
-      appliedManualDiscount.discountedPrice !== undefined;
-    
-    if (isManualDiscountValid) {
-      return appliedManualDiscount.discountedPrice || plan.price;
-    }
-    
-    // #3 Descuento inteligente (códigos AUTO)
-    const intelligentDiscount = detectIntelligentDiscount(plan);
-    if (intelligentDiscount) {
-      return plan.price - (plan.price * intelligentDiscount.percentage / 100);
-    }
-    
-    // #4 Descuento de agente por código
-    const isAgentDiscountValid = hasDiscountCodes && 
-      availableDiscountCodes.length > 0 && 
-      (availableDiscountCodes[0] as any).status === 'ACTIVE';
-    
-    if (isAgentDiscountValid) {
-      const agentDiscount = availableDiscountCodes[0];
-      const discountPercent = (agentDiscount as any).discountPercentage || (agentDiscount as any).discountPercent || 0;
-      return plan.price - (plan.price * discountPercent / 100);
-    }
-    
     return plan.price;
   };
 

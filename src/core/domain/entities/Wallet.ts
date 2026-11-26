@@ -49,6 +49,21 @@ export interface SubscriptionPlan {
   userPlanStatusLabel?: string;
 }
 
+export type SubscriptionDiscountSource = 'NONE' | 'AGENCY_PLAN' | 'DISCOUNT_CODE' | 'DEVELOPER_CODE';
+
+export interface SubscriptionPricePreview {
+  planId: number;
+  planCode: string;
+  billingCycle: BillingCycle;
+  currency: string;
+  originalPrice: number;
+  discountAmount: number;
+  discountPercentage?: number;
+  finalPrice: number;
+  source: SubscriptionDiscountSource;
+  discountCode?: string;
+}
+
 export type BillingCycle = 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | 'LIFETIME';
 
 export interface ActiveSubscription {

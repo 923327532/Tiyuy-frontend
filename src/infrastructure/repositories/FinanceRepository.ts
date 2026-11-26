@@ -1,6 +1,6 @@
 import { apiClient } from '../api/axios-client';
 import { IFinanceRepository } from '@/core/domain/repositories/IFinanceRepository';
-import { Wallet, WalletTransaction, SubscriptionPlan, ActiveSubscription } from '@/core/domain/entities/Wallet';
+import { Wallet, WalletTransaction, SubscriptionPlan, ActiveSubscription, BillingCycle, SubscriptionPricePreview } from '@/core/domain/entities/Wallet';
 import { ENDPOINTS } from '../api/endpoints';
 import {
   WalletResponseDTO,
@@ -187,12 +187,15 @@ export class FinanceRepository implements IFinanceRepository {
     };
   }
 
-  async getPlanPriceForUser(planId: number): Promise<{ finalPrice: number; originalPrice: number; currency: string }> {
-    const response = await apiClient.get(`/finance/subscriptions/plans/${planId}/price`);
+  async getSubscriptionPrice(planId: number, billingCycle: BillingCycle = 'MONTHLY', discountCode?: string): Promise<SubscriptionPricePreview> {
+    const response = await apiClient.get<SubscriptionPricePreview>(`/finance/subscriptions/plans/${planId}/price`, {
+      params: { billingCycle, discountCode },
+    });
     return {
-      finalPrice: Number(response.data.finalPrice),
+      ...response.data,
       originalPrice: Number(response.data.originalPrice),
-      currency: response.data.currency || 'PEN',
+      discountAmount: Number(response.data.discountAmount),
+      finalPrice: Number(response.data.finalPrice),
     };
   }
 
