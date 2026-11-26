@@ -97,6 +97,33 @@ export const useUnifiedNotifications = (type?: 'all' | 'general' | 'events') => 
     staleTime: 1000 * 60,
   });
 
+  // El contador del backend incluye todas las notificaciones no leídas, no solo la página cargada.
+  const unreadCountQuery = useQuery({
+    queryKey: ['notifications', 'unread-count'],
+    queryFn: async (): Promise<number | null> => {
+      if (!isAuthenticated || !user) return null;
+
+      try {
+        const { data } = await apiClient.get<
+          number | { count?: number; unreadCount?: number }
+        >('/notifications/unread/count');
+        const raw =
+          typeof data === 'number' ? data : (data?.count ?? data?.unreadCount);
+
+        if (raw === undefined || raw === null) return null;
+
+        const value = Number(raw);
+        return Number.isFinite(value) ? value : null;
+      } catch (error) {
+        console.error('Error fetching unread notification count:', error);
+        return null;
+      }
+    },
+    enabled: isAuthenticated && !!user,
+    staleTime: 30 * 1000,
+    refetchOnWindowFocus: true,
+  });
+
   // Extraer arrays de forma segura
   const generalNotifications: GeneralNotification[] = generalNotificationsQuery.data?.content ?? [];
   const eventNotifications: EventNotification[] = eventNotificationsQuery.data?.content ?? [];
@@ -168,6 +195,7 @@ export const useUnifiedNotifications = (type?: 'all' | 'general' | 'events') => 
       // Recargar datos reales del backend para asegurar consistencia
       queryClient.invalidateQueries({ queryKey: ['notifications', 'general'] });
       queryClient.invalidateQueries({ queryKey: ['notifications', 'events'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
     },
   });
 
@@ -214,11 +242,12 @@ export const useUnifiedNotifications = (type?: 'all' | 'general' | 'events') => 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications', 'general'] });
       queryClient.invalidateQueries({ queryKey: ['notifications', 'events'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications', 'unread-count'] });
     },
   });
 
   // Contador de no leídas
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = unreadCountQuery.data ?? notifications.filter(n => !n.read).length;
 
   return {
     notifications,

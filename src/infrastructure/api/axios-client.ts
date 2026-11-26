@@ -62,6 +62,41 @@ publicApiClient.interceptors.response.use(
 
 export const apiClient = axiosClient;
 
+/**
+ * Endpoints críticos de sesión: un 401 aquí sí significa que el token dejó de servir.
+ * Se mantienen como fatales para no perder el logout real por expiración.
+ */
+function esEndpointCriticoDeSesion(url: string): boolean {
+  return (
+    url.includes('/auth/me') ||
+    url.includes('/auth/refresh') ||
+    url.includes('/auth/login') ||
+    url.includes('/auth/logout')
+  );
+}
+
+/**
+ * Peticiones opcionales: widgets del dashboard, marketing, notificaciones y favoritos.
+ * Un 401 en estas rutas no debe borrar el JWT ni redirigir al login, porque el
+ * componente que las consume ya maneja el error y el resto de la sesión sigue válida.
+ * (Los checks de favoritos ya capturaban el 401 localmente; se conserva ese comportamiento).
+ */
+function esWidgetOpcional(url: string): boolean {
+  return (
+    url.includes('/favorites/check') ||
+    url.includes('/dashboard/stats') ||
+    url.includes('/dashboard/properties') ||
+    url.includes('/dashboard/reports') ||
+    url.includes('/dashboard-stats') ||
+    url.includes('/projects/project-stats') ||
+    url.includes('/discounts') ||
+    url.includes('/marketing/stats') ||
+    url.includes('/marketing/campaigns') ||
+    url.includes('/marketing/banners') ||
+    url.includes('/notifications')
+  );
+}
+
 // Request interceptor: Agrega JWT automáticamente
 axiosClient.interceptors.request.use(
   (config) => {
@@ -83,15 +118,24 @@ axiosClient.interceptors.request.use(
       const token = getToken();
 
       if (token) {
+        const url = config.url || '';
+        const tokenExpirado = isTokenExpired(token);
+
         // 🔥 PREVENTIVO: Si el token ya expiró, limpiar y redirigir al login
-        // ANTES de hacer la petición, evitando el 401 innecesario
-        if (isTokenExpired(token)) {
+        // ANTES de hacer la petición, evitando el 401 innecesario.
+        // Solo se aplica a peticiones protegidas normales: en widgets opcionales
+        // dejamos que el componente maneje el error sin cerrar toda la sesión.
+        if (tokenExpirado && !esWidgetOpcional(url)) {
           clearTokens();
           window.location.href = '/login';
           return Promise.reject(new Error('Token expirado'));
         }
 
-        config.headers.Authorization = `Bearer ${token}`;
+        // No adjuntamos un token vencido a un widget opcional; el backend
+        // responderá 401 y el interceptor de respuesta omitirá el logout.
+        if (!tokenExpirado) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
       }
     }
 
@@ -105,16 +149,17 @@ axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      if (typeof window !== 'undefined') {
+      const url = error.config?.url || '';
+
+      // Solo cerramos sesión si es un endpoint crítico o una petición protegida
+      // normal. Los widgets opcionales (dashboard, marketing, notificaciones,
+      // favoritos/check) manejan el 401 por su cuenta y no deben expulsar al usuario.
+      const debeCerrarSesion =
+        esEndpointCriticoDeSesion(url) || !esWidgetOpcional(url);
+
+      if (debeCerrarSesion && typeof window !== 'undefined') {
         clearTokens();
-        // Solo redirigir si no es una petición que ya maneja el 401 internamente
-        // (como check de favoritos que captura el 401 y retorna false)
-        const url = error.config?.url || '';
-        const isHandledLocally = 
-          url.includes('/favorites/check') || 
-          url.includes('/favorites/check-multiple');
-        
-        if (!isHandledLocally && !window.location.pathname.startsWith('/login')) {
+        if (!window.location.pathname.startsWith('/login')) {
           window.location.href = '/login';
         }
       }

@@ -15,9 +15,10 @@ import { DonutLegend } from './DonutLegend';
 export function DashboardPropertiesDonut({
   stats,
   byStatus,
+  total: totalProperties,
 }: DashboardPropertiesDonutProps) {
   const source = getSource(stats, byStatus);
-  const total = getTotalProperties(stats, byStatus);
+  const total = getTotalProperties(stats, byStatus, totalProperties);
   const segments = buildSegments(source, STAGES, INACTIVE_SEGMENT, total);
 
   return (

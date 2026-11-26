@@ -19,11 +19,14 @@ export function DashboardAgentsPlans({ stats, loading, unavailable }: DashboardA
     agentId: String(agent.agentId),
   }));
 
-  const growth = stats
-    ? calculateGrowth(stats.activeAgents, Number(stats.activeAgentsPrevious ?? 0)) ?? 0
-    : 0;
+  const previousActiveAgents = Number(stats?.activeAgentsPrevious ?? 0);
+  const growth =
+    stats && Number.isFinite(previousActiveAgents) && previousActiveAgents > 0
+      ? calculateGrowth(stats.activeAgents, previousActiveAgents)
+      : undefined;
 
-  const isPositiveGrowth = growth >= 0;
+  const hasGrowth = typeof growth === 'number' && Number.isFinite(growth);
+  const isPositiveGrowth = hasGrowth && (growth as number) >= 0;
 
   return (
     <ChartCard
@@ -53,10 +56,16 @@ export function DashboardAgentsPlans({ stats, loading, unavailable }: DashboardA
               iconBackground="bg-[#DCEAE9]"
               iconColor="text-[#36866C]"
             >
-              <span className={`inline-flex items-center gap-1 text-[11px] font-semibold ${isPositiveGrowth ? 'text-emerald-600' : 'text-rose-500'}`}>
-                {isPositiveGrowth ? '▲' : '▼'} {Math.abs(growth).toFixed(1)}%
-                <span className="font-normal text-slate-400">vs mes anterior</span>
-              </span>
+              {hasGrowth ? (
+                <span className={`inline-flex items-center gap-1 text-[11px] font-semibold ${isPositiveGrowth ? 'text-emerald-600' : 'text-rose-500'}`}>
+                  {isPositiveGrowth ? '▲' : '▼'} {Math.abs(growth as number).toFixed(1)}%
+                  <span className="font-normal text-slate-400">vs mes anterior</span>
+                </span>
+              ) : (
+                <span className="text-[11px] font-medium text-slate-400">
+                  Sin comparación disponible
+                </span>
+              )}
             </SummaryMetric>
 
             <SummaryMetric

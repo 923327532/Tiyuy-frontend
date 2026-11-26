@@ -1,0 +1,77 @@
+/* Tarjetas de banners con el mismo lenguaje visual que Campañas/Proyectos. */
+
+.banners-cards-container {
+  container: banners-cards / inline-size;
+}
+
+.banners-cards-container .campaigns-card-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.banners-card__status {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+}
+
+.banners-card__order {
+  color: #94a3b8;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.banners-card .campaigns-card__media {
+  height: 7rem;
+}
+
+.banners-card .campaigns-card__title {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.banners-card .campaigns-card__metrics {
+  gap: 0.35rem 0.6rem;
+}
+
+.banners-card__actions {
+  display: flex;
+  align-items: center;
+}
+
+@container banners-cards (min-width: 720px) {
+  .banners-cards-container .campaigns-card-grid {
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .banners-card .campaigns-card__media {
+    height: 8.5rem;
+  }
+}
+
+@container banners-cards (min-width: 1100px) {
+  .banners-cards-container .campaigns-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@container banners-cards (min-width: 1500px) {
+  .banners-cards-container .campaigns-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .banners-card .campaigns-card__body {
+    padding: 0.75rem;
+  }
+
+  .banners-card .campaigns-card__footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

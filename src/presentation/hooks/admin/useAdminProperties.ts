@@ -7,7 +7,7 @@ import {
   NotifyOwnerRequest,
 } from '@/core/domain/entities/Admin';
 import { PaginationParams } from '@/core/domain/repositories/IAdminRepository';
-import { adminRepository, ADMIN_QUERY_KEY } from './useAdminShared';
+import { adminRepository, ADMIN_QUERY_KEY, invalidateAdminDashboard } from './useAdminShared';
 
 // Property moderation hooks
 export const usePropertiesForModeration = (
@@ -29,6 +29,7 @@ export const useModerateProperty = () => {
       adminRepository.moderateProperty(propertyId, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'properties'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -40,6 +41,7 @@ export const useToggleFeaturedProperty = () => {
       adminRepository.toggleFeaturedProperty(propertyId, featured),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'properties'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -91,6 +93,7 @@ export const useDisablePropertyByAdmin = () => {
       adminRepository.disablePropertyByAdmin(propertyId, reason, notifyOwner),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'properties'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -102,6 +105,7 @@ export const useEnablePropertyByAdmin = () => {
       adminRepository.enablePropertyByAdmin(propertyId, reason, notifyOwner),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'properties'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };

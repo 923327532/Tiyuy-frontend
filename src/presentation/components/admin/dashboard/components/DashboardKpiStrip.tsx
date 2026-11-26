@@ -17,7 +17,6 @@ import { KpiCard } from './KpiCard';
 import {
   formatCurrency,
   formatNumber,
-  calculateGrowth,
 } from '@/presentation/components/admin/dashboard/utils/dashboard.utils';
 
 interface Kpi {
@@ -36,21 +35,14 @@ interface Kpi {
 
 export function DashboardKpiStrip({
   stats,
+  finance,
+  financeUnavailable,
+  projectStats,
+  projectsUnavailable,
   marketing,
   canViewMarketing,
   marketingLoading,
 }: DashboardKpiStripProps) {
-
-  const propertiesGrowth = calculateGrowth(
-    stats?.publishedProperties ?? 0,
-    stats?.totalProperties ?? 0
-  );
-
-  const projectsGrowth = calculateGrowth(
-    stats?.activeProjects ?? 0,
-    stats?.totalProjects ?? 0
-  );
-
   const kpis: Kpi[] = [
     {
       id: 'listings',
@@ -59,18 +51,26 @@ export function DashboardKpiStrip({
       hint: `${formatNumber(stats?.pendingProperties)} por moderar`,
       href: '/admin/properties',
       icon: Building2,
-      growth: propertiesGrowth,
+      growth: stats?.propertiesGrowthPercent,
       color: 'cyan',
       insight: 'Inventario inmobiliario publicado',
     },
     {
       id: 'projects',
       label: 'Proyectos activos',
-      value: formatNumber(stats?.activeProjects),
-      hint: `De ${formatNumber(stats?.totalProjects)} registrados`,
+      value: formatNumber(
+        projectsUnavailable
+          ? undefined
+          : (projectStats?.activeProjects ?? stats?.activeProjects)
+      ),
+      hint: `De ${formatNumber(
+        projectsUnavailable
+          ? undefined
+          : (projectStats?.totalProjects ?? stats?.totalProjects)
+      )} registrados`,
       href: '/admin/projects',
       icon: FolderKanban,
-      growth: projectsGrowth,
+      growth: stats?.projectsGrowthPercent,
       color: 'indigo',
       insight: 'Portafolio de proyectos inmobiliarios',
     },
@@ -96,8 +96,16 @@ export function DashboardKpiStrip({
     {
       id: 'revenue',
       label: 'Ingresos del mes',
-      value: formatCurrency(stats?.revenueThisMonth),
-      hint: `${formatCurrency(stats?.revenueToday)} hoy`,
+      value: formatCurrency(
+        financeUnavailable
+          ? undefined
+          : (finance?.revenueThisMonth ?? stats?.revenueThisMonth)
+      ),
+      hint: `${formatCurrency(
+        financeUnavailable
+          ? undefined
+          : (finance?.revenueToday ?? stats?.revenueToday)
+      )} hoy`,
       href: '/admin/finance',
       icon: Wallet,
       growth: stats?.revenueGrowthPercent,
