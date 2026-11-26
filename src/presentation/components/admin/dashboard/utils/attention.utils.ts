@@ -28,6 +28,8 @@ export interface BuildAttentionParams {
   property?: PropertyAnalyticsResponse;
   marketing?: MarketingStats;
   discounts: DiscountCode[];
+  /** true cuando la lista de descuentos está paginada y solo vemos la primera página. */
+  discountHasMorePages?: boolean;
   unreadCount: number;
   canViewMarketing: boolean;
 }
@@ -42,10 +44,12 @@ export function buildAttentionItems({
   property,
   marketing,
   discounts,
+  discountHasMorePages = false,
   unreadCount,
   canViewMarketing,
 }: BuildAttentionParams): AttentionResult {
   const items: AttentionItem[] = [];
+  const discountCountPrefix = discountHasMorePages ? 'Al menos ' : '';
 
   if (stats?.pendingProperties && stats.pendingProperties > 0) {
     items.push({
@@ -133,7 +137,7 @@ export function buildAttentionItems({
     items.push({
       id: 'expiring-discounts',
       title: 'Descuentos por vencer',
-      description: `${expiringDiscounts} código(s) vencen en los próximos ${EXPIRING_SOON_DAYS} días.`,
+      description: `${discountCountPrefix}${expiringDiscounts} código(s) vencen en los próximos ${EXPIRING_SOON_DAYS} días.`,
       count: expiringDiscounts,
       severity: 'warning',
       href: '/admin/discounts',
@@ -147,7 +151,7 @@ export function buildAttentionItems({
     items.push({
       id: 'exhausted-discounts',
       title: 'Descuentos agotados',
-      description: `${exhaustedDiscounts} código(s) alcanzaron su límite de uso.`,
+      description: `${discountCountPrefix}${exhaustedDiscounts} código(s) alcanzaron su límite de uso.`,
       count: exhaustedDiscounts,
       severity: 'info',
       href: '/admin/discounts',

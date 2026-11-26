@@ -1,10 +1,12 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import type { AgentListItem, AgentDashboardStats } from '@/core/domain/entities/Admin';
-import { AgentDetailModal } from '../detail';
-import AgentStatsModal from '@/app/(dashboard)/admin/agents/components/AgentStatsModal';
-import PlanDetailsModal from '@/app/(dashboard)/admin/agents/components/PlanDetailsModal';
-import FreeAgentsModal from '@/app/(dashboard)/admin/agents/components/FreeAgentsModal';
+
+const AgentDetailModal = dynamic(() => import('../detail/AgentDetailModal'), { ssr: false });
+const AgentStatsModal = dynamic(() => import('@/app/(dashboard)/admin/agents/components/AgentStatsModal'), { ssr: false });
+const PlanDetailsModal = dynamic(() => import('@/app/(dashboard)/admin/agents/components/PlanDetailsModal'), { ssr: false });
+const FreeAgentsModal = dynamic(() => import('@/app/(dashboard)/admin/agents/components/FreeAgentsModal'), { ssr: false });
 
 interface AgentsModalsPanelProps {
   selectedAgent: AgentListItem | null;
@@ -35,23 +37,37 @@ export function AgentsModalsPanel({
 }: AgentsModalsPanelProps) {
   return (
     <>
-      {selectedAgent && (
-        <AgentStatsModal agent={selectedAgent} isOpen={isStatsModalOpen}
+      {selectedAgent && isStatsModalOpen && (
+        <AgentStatsModal
+          agent={selectedAgent}
+          isOpen={isStatsModalOpen}
           onClose={onCloseStats}
-          onViewDetails={onViewDetailsFromStats} />
+          onViewDetails={onViewDetailsFromStats}
+        />
       )}
-      {selectedAgent && (
-        <AgentDetailModal agent={selectedAgent} isOpen={isViewModalOpen}
-          onClose={onCloseDetail} />
+      {selectedAgent && isViewModalOpen && (
+        <AgentDetailModal
+          agent={selectedAgent}
+          isOpen={isViewModalOpen}
+          onClose={onCloseDetail}
+        />
       )}
-      <PlanDetailsModal isOpen={isPlanDetailsModalOpen}
-        onClose={onClosePlanDetails}
-        planDistribution={dashboardStats?.planDistribution} />
-      <FreeAgentsModal isOpen={isFreeAgentsModalOpen}
-        onClose={onCloseFreeAgents}
-        freeAgentList={dashboardStats?.freeAgentList}
-        lostPotentialRevenue={dashboardStats?.lostPotentialRevenue}
-        freeAgentsCount={dashboardStats?.freeAgents} />
+      {isPlanDetailsModalOpen && (
+        <PlanDetailsModal
+          isOpen={isPlanDetailsModalOpen}
+          onClose={onClosePlanDetails}
+          planDistribution={dashboardStats?.planDistribution}
+        />
+      )}
+      {isFreeAgentsModalOpen && (
+        <FreeAgentsModal
+          isOpen={isFreeAgentsModalOpen}
+          onClose={onCloseFreeAgents}
+          freeAgentList={dashboardStats?.freeAgentList}
+          lostPotentialRevenue={dashboardStats?.lostPotentialRevenue}
+          freeAgentsCount={dashboardStats?.freeAgents}
+        />
+      )}
     </>
   );
 }

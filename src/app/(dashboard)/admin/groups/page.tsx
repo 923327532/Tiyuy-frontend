@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import {
   GroupsHeader,
@@ -9,12 +10,30 @@ import {
   useGroupsAdmin,
 } from '@/presentation/components/admin/groups';
 
-import { CreateGroupModal } from './components/new-group';
-import { ViewDetailsModal } from './components/modals/ViewDetailsModal';
-import { ToggleStatusModal } from './components/modals/ToggleStatusModal';
-import { SuspendModal } from './components/modals/SuspendModal';
-import { ViolationModal } from './components/modals/ViolationModal';
-import { ReactivateModal } from './components/modals/ReactivateModal';
+const CreateGroupModal = dynamic(
+  () => import('./components/new-group').then((m) => m.CreateGroupModal),
+  { ssr: false }
+);
+const ViewDetailsModal = dynamic(
+  () => import('./components/modals/ViewDetailsModal').then((m) => m.ViewDetailsModal),
+  { ssr: false }
+);
+const ToggleStatusModal = dynamic(
+  () => import('./components/modals/ToggleStatusModal').then((m) => m.ToggleStatusModal),
+  { ssr: false }
+);
+const SuspendModal = dynamic(
+  () => import('./components/modals/SuspendModal').then((m) => m.SuspendModal),
+  { ssr: false }
+);
+const ViolationModal = dynamic(
+  () => import('./components/modals/ViolationModal').then((m) => m.ViolationModal),
+  { ssr: false }
+);
+const ReactivateModal = dynamic(
+  () => import('./components/modals/ReactivateModal').then((m) => m.ReactivateModal),
+  { ssr: false }
+);
 
 export default function GroupsAndChannelsPage() {
   const groups = useGroupsAdmin();
@@ -53,73 +72,85 @@ export default function GroupsAndChannelsPage() {
         onReactivate={groups.openReactivateModal}
       />
 
-      <ViewDetailsModal
-        isOpen={groups.isViewModalOpen}
-        onClose={() => groups.setIsViewModalOpen(false)}
-        item={groups.selectedItem}
-        viewType={groups.viewType}
-      />
+      {groups.isViewModalOpen && groups.selectedItem && (
+        <ViewDetailsModal
+          isOpen={groups.isViewModalOpen}
+          onClose={() => groups.setIsViewModalOpen(false)}
+          item={groups.selectedItem}
+          viewType={groups.viewType}
+        />
+      )}
 
-      <ToggleStatusModal
-        item={groups.selectedItem}
-        isOpen={groups.isToggleModalOpen}
-        reason={groups.toggleReason}
-        setReason={groups.setToggleReason}
-        onClose={() => {
-          groups.setIsToggleModalOpen(false);
-          groups.setToggleReason('');
-        }}
-        onConfirm={groups.confirmToggleStatus}
-        isPending={groups.isTogglePending}
-      />
+      {groups.isToggleModalOpen && (
+        <ToggleStatusModal
+          item={groups.selectedItem}
+          isOpen={groups.isToggleModalOpen}
+          reason={groups.toggleReason}
+          setReason={groups.setToggleReason}
+          onClose={() => {
+            groups.setIsToggleModalOpen(false);
+            groups.setToggleReason('');
+          }}
+          onConfirm={groups.confirmToggleStatus}
+          isPending={groups.isTogglePending}
+        />
+      )}
 
-      <SuspendModal
-        isOpen={groups.isSuspendModalOpen}
-        onClose={() => {
-          groups.setIsSuspendModalOpen(false);
-          groups.setSuspendReason('');
-        }}
-        item={groups.selectedItem}
-        reason={groups.suspendReason}
-        setReason={groups.setSuspendReason}
-        onConfirm={groups.handleSuspend}
-        isPending={groups.isSuspendPending}
-      />
+      {groups.isSuspendModalOpen && (
+        <SuspendModal
+          isOpen={groups.isSuspendModalOpen}
+          onClose={() => {
+            groups.setIsSuspendModalOpen(false);
+            groups.setSuspendReason('');
+          }}
+          item={groups.selectedItem}
+          reason={groups.suspendReason}
+          setReason={groups.setSuspendReason}
+          onConfirm={groups.handleSuspend}
+          isPending={groups.isSuspendPending}
+        />
+      )}
 
-      <ViolationModal
-        isOpen={groups.isViolationModalOpen}
-        onClose={() => {
-          groups.setIsViolationModalOpen(false);
-          groups.setViolationType('CONTENT_VIOLATION');
-          groups.setViolationMessage('');
-        }}
-        item={groups.selectedItem}
-        violationType={groups.violationType}
-        setViolationType={groups.setViolationType}
-        message={groups.violationMessage}
-        setMessage={groups.setViolationMessage}
-        onConfirm={groups.handleViolation}
-        isPending={groups.isViolationPending}
-      />
+      {groups.isViolationModalOpen && (
+        <ViolationModal
+          isOpen={groups.isViolationModalOpen}
+          onClose={() => {
+            groups.setIsViolationModalOpen(false);
+            groups.setViolationType('CONTENT_VIOLATION');
+            groups.setViolationMessage('');
+          }}
+          item={groups.selectedItem}
+          violationType={groups.violationType}
+          setViolationType={groups.setViolationType}
+          message={groups.violationMessage}
+          setMessage={groups.setViolationMessage}
+          onConfirm={groups.handleViolation}
+          isPending={groups.isViolationPending}
+        />
+      )}
 
-      <ReactivateModal
-        isOpen={groups.isReactivateModalOpen}
-        onClose={() => {
-          groups.setIsReactivateModalOpen(false);
-          groups.setReactivateReason('');
-        }}
-        item={groups.selectedItem}
-        itemType={groups.selectedItemType}
-        reason={groups.reactivateReason}
-        setReason={groups.setReactivateReason}
-        onConfirm={groups.handleReactivate}
-        isPending={groups.isReactivatePending}
-      />
+      {groups.isReactivateModalOpen && (
+        <ReactivateModal
+          isOpen={groups.isReactivateModalOpen}
+          onClose={() => {
+            groups.setIsReactivateModalOpen(false);
+            groups.setReactivateReason('');
+          }}
+          item={groups.selectedItem}
+          itemType={groups.selectedItemType}
+          reason={groups.reactivateReason}
+          setReason={groups.setReactivateReason}
+          onConfirm={groups.handleReactivate}
+          isPending={groups.isReactivatePending}
+        />
+      )}
 
-      <CreateGroupModal
-        isOpen={isCreateGroupModalOpen}
-        onClose={() => setIsCreateGroupModalOpen(false)}
-      />
+      {isCreateGroupModalOpen && (
+        <CreateGroupModal
+          isOpen={isCreateGroupModalOpen}
+          onClose={() => setIsCreateGroupModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -106,15 +106,44 @@ export abstract class MarketingSection extends AssociationSection {
     if (durationDays !== undefined) formData.append('durationDays', String(durationDays));
     if (displayOrder !== undefined) formData.append('displayOrder', String(displayOrder));
 
-    const response = await axiosClient.post('/v1/admin/marketing/banners/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    // El interceptor de axiosClient elimina Content-Type para FormData y deja
+    // que el navegador generate el boundary correcto.
+    const response = await axiosClient.post('/v1/admin/marketing/banners/upload', formData);
     return response.data;
   }
 
 
   async updateBanner(id: number, request: Partial<CreateBannerRequest>): Promise<Banner> {
     const response = await axiosClient.put(`/v1/admin/marketing/banners/${id}`, request);
+    return response.data;
+  }
+
+  /**
+   * Update a banner, optionally replacing its image with a real upload.
+   * Avoids sending base64 data URLs into the VARCHAR(500) image_url column.
+   */
+  async updateBannerWithUpload(
+    id: number,
+    image: File | null,
+    title: string,
+    placement: string,
+    displayMode?: 'SOLO_BANNER' | 'INTEGRATED',
+    description?: string,
+    linkUrl?: string,
+    durationDays?: number,
+    displayOrder?: number
+  ): Promise<Banner> {
+    const formData = new FormData();
+    if (image) formData.append('image', image);
+    formData.append('title', title);
+    formData.append('placement', placement);
+    if (displayMode) formData.append('displayMode', displayMode);
+    if (description) formData.append('description', description);
+    if (linkUrl) formData.append('linkUrl', linkUrl);
+    if (durationDays !== undefined) formData.append('durationDays', String(durationDays));
+    if (displayOrder !== undefined) formData.append('displayOrder', String(displayOrder));
+
+    const response = await axiosClient.put(`/v1/admin/marketing/banners/${id}/upload`, formData);
     return response.data;
   }
 

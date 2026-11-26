@@ -1,0 +1,20 @@
+/* Ajustes mínimos sobre la tabla compacta compartida de Campañas. */
+
+.banners-table__container table {
+  min-width: 1120px;
+}
+
+.banners-table__actions-header,
+.banners-table__container th.banners-table__actions-header {
+  text-align: right;
+}
+
+.banners-table__actions-menu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.banners-table__container .campaigns-identity {
+  max-width: none;
+}

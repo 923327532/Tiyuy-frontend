@@ -3,7 +3,7 @@
  */
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PaginationParams } from '@/core/domain/repositories/IAdminRepository';
-import { adminRepository, ADMIN_QUERY_KEY } from './useAdminShared';
+import { adminRepository, ADMIN_QUERY_KEY, invalidateAdminDashboard } from './useAdminShared';
 import { AgentPlanDiscountRequest } from './useAdminShared';
 
 // Agent management hooks
@@ -35,14 +35,15 @@ export const useToggleAgentStatus = () => {
       adminRepository.toggleAgentVerification(agentId, verified, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'agents'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
 
 // Agent Dashboard hooks
-export const useAgentDashboardStats = (period?: string) => {
+export const useAgentDashboardStats = (period: string = '30D') => {
   return useQuery({
-    queryKey: [ADMIN_QUERY_KEY, 'agents', 'dashboard-stats', period ?? '30D'],
+    queryKey: [ADMIN_QUERY_KEY, 'agents', 'dashboard-stats', period],
     queryFn: () => adminRepository.getAgentDashboardStats(period),
   });
 };

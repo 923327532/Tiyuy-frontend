@@ -1,16 +1,20 @@
 'use client';
 
 import { useState } from 'react';
+import { Briefcase, CreditCard, History, LayoutDashboard, Mail, ShieldCheck } from 'lucide-react';
 import type { AgentListItem } from '@/core/domain/entities/Admin';
-import { Modal } from '@/presentation/components/ui/Modal';
+import {
+  AdminDetailShell,
+  type AdminDetailTabItem,
+} from '@/presentation/components/admin/shared/detail-shell/AdminDetailShell';
 import { getAccountState } from './model/accountState';
-import { SECONDARY_BUTTON, type AgentDetailTab } from './ui/agentDetailParts';
-import { ModalHeader } from './components/ModalHeader';
-import { ModalTabs } from './components/ModalTabs';
+import {
+  getAgentFullName,
+  getAgentInitials,
+  type AgentDetailTab,
+} from './ui/agentDetailParts';
 import { ModalContent } from './components/ModalContent';
 import type { AgentTabProps } from './tabs';
-// Reutilizamos los estilos del modal de usuarios para obtener exactamente el mismo aspecto.
-import '@/presentation/components/admin/users/components/detail/styles/UserDetailModal.css';
 
 interface AgentDetailModalProps {
   agent: AgentListItem;
@@ -30,7 +34,15 @@ export function AgentDetailModal({
   if (!agent) return null;
 
   const accountState = getAccountState(agent);
+  const isActive = accountState === 'ACTIVE';
   const securityBadge = agent.emailVerified ? 0 : 1;
+
+  const tabs: AdminDetailTabItem<AgentDetailTab>[] = [
+    { id: 'overview', label: 'Resumen', icon: <LayoutDashboard className="h-3.5 w-3.5" /> },
+    { id: 'security', label: 'Seguridad', icon: <ShieldCheck className="h-3.5 w-3.5" />, badge: securityBadge },
+    { id: 'plan', label: 'Plan e ingresos', icon: <CreditCard className="h-3.5 w-3.5" /> },
+    { id: 'history', label: 'Historial', icon: <History className="h-3.5 w-3.5" /> },
+  ];
 
   const tabProps: AgentTabProps = {
     agent,
@@ -39,29 +51,44 @@ export function AgentDetailModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="user-detail-modal__surface">
-        <ModalHeader agent={agent} accountState={accountState} onClose={onClose} />
-
-        <ModalTabs
-          activeTab={activeTab}
-          onChange={setActiveTab}
-          securityBadge={securityBadge}
-        />
-
-        <ModalContent activeTab={activeTab} tabProps={tabProps} />
-
-        <footer className="user-detail-modal__footer">
-          <button
-            type="button"
-            onClick={onClose}
-            className={`${SECONDARY_BUTTON} user-detail-modal__close-action`}
+    <AdminDetailShell
+      isOpen={isOpen}
+      onClose={onClose}
+      title={getAgentFullName(agent)}
+      subtitle={
+        <>
+          <Mail className="h-3.5 w-3.5 shrink-0 text-teal-300" />
+          <span className="truncate">{agent.email}</span>
+        </>
+      }
+      avatarUrl={agent.profilePhotoUrl}
+      avatarFallback={getAgentInitials(agent)}
+      avatarDisabled={!agent.enabled}
+      badges={
+        <>
+          <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-0.5 text-[11px] font-semibold text-teal-100 ring-1 ring-white/20">
+            <Briefcase className="h-3 w-3" />
+            Agente
+          </span>
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ring-1 ${
+              isActive
+                ? 'bg-emerald-500/20 text-emerald-200 ring-emerald-400/30'
+                : 'bg-rose-500/20 text-rose-200 ring-rose-400/30'
+            }`}
           >
-            Cerrar
-          </button>
-        </footer>
-      </div>
-    </Modal>
+            <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-400' : 'bg-rose-400'}`} />
+            {isActive ? 'Activo' : 'Suspendido'}
+          </span>
+        </>
+      }
+      tabs={tabs}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      footerLeft={<span className="hidden sm:inline">ID de agente: #{agent.id}</span>}
+    >
+      <ModalContent activeTab={activeTab} tabProps={tabProps} />
+    </AdminDetailShell>
   );
 }
 

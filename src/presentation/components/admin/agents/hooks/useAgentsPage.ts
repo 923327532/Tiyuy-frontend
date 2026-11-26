@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { extractBackendErrorMessage, type AdminActionErrorState } from '@/presentation/components/admin/shared/action-modal/AdminActionErrorModal';
 import type { AgentListItem } from '@/core/domain/entities/Admin';
 import { useAgentList, useAgentDashboardStats, useToggleUserStatus } from '@/presentation/hooks/useAdmin';
 import { usePermissions } from '@/presentation/hooks/usePermissions';
@@ -29,6 +30,7 @@ export function useAgentsPage() {
   const [isPlanDetailsModalOpen, setIsPlanDetailsModalOpen] = useState(false);
   const [isFreeAgentsModalOpen, setIsFreeAgentsModalOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState<AgentListItem | null>(null);
+  const [actionError, setActionError] = useState<AdminActionErrorState | null>(null);
 
   const { hasPermission } = usePermissions();
   const canManageAgents = hasPermission('USERS_UPDATE');
@@ -47,12 +49,26 @@ export function useAgentsPage() {
     setIsStatsModalOpen(true);
   };
   const handleToggleStatus = async (agent: AgentListItem) => {
-    await toggleStatusMutation.mutateAsync({
-      userId: agent.id,
-      enabled: !agent.enabled,
-      reason: 'Agent status changed by admin',
-    });
-    refetch();
+    try {
+      await toggleStatusMutation.mutateAsync({
+        userId: agent.id,
+        enabled: !agent.enabled,
+        reason: 'Agent status changed by admin',
+      });
+      refetch();
+    } catch (err) {
+      setActionError({
+        isOpen: true,
+        title: agent.enabled
+          ? 'No se puede suspender este agente'
+          : 'No se pudo reactivar este agente',
+        message: extractBackendErrorMessage(
+          err,
+          'La operación fue rechazada por las reglas de seguridad del sistema.'
+        ),
+        hint: 'Verifica el estado de la cuenta o tus permisos de administrador antes de volver a intentarlo.',
+      });
+    }
   };
 
   const agents = agentsData?.content || [];
@@ -140,5 +156,6 @@ export function useAgentsPage() {
     handleViewAgent, handleViewAgentStats, handleToggleStatus,
     handleFilterChange, handleSearchChange, handleDateRangeChange,
     handleMinRevenueChange, handlePlanSelect, handleExport, handleClearFilters,
+    actionError, clearActionError: () => setActionError(null),
   };
 }

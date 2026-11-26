@@ -1,12 +1,14 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import type { UserListItem, UserPropertiesResponse, UserProjectsResponse } from '@/core/domain/entities/Admin';
-import { UserDetailModal } from './detail';
-import { RoleChangeModal } from './role-change';
-import { ToggleStatusModal } from './toggle-status';
-import { DeleteUserModal } from './delete-user';
-import { UserPropertiesModal } from './properties';
-import { UserProjectsModal } from './UserProjectsModal';
+
+const UserDetailModal = dynamic(() => import('./detail/UserDetailModal'), { ssr: false });
+const RoleChangeModal = dynamic(() => import('./role-change').then((m) => m.RoleChangeModal), { ssr: false });
+const ToggleStatusModal = dynamic(() => import('./toggle-status').then((m) => m.ToggleStatusModal), { ssr: false });
+const DeleteUserModal = dynamic(() => import('./delete-user').then((m) => m.DeleteUserModal), { ssr: false });
+const UserPropertiesModal = dynamic(() => import('./properties').then((m) => m.UserPropertiesModal), { ssr: false });
+const UserProjectsModal = dynamic(() => import('./UserProjectsModal').then((m) => m.UserProjectsModal), { ssr: false });
 
 interface UsersModalsPanelProps {
   selectedUser: UserListItem | null;
@@ -75,20 +77,22 @@ export function UsersModalsPanel({
 }: UsersModalsPanelProps) {
   return (
     <>
-      <UserDetailModal
-        user={displayUser}
-        isLoading={isLoadingDetail}
-        isOpen={isViewModalOpen}
-        onClose={onCloseDetail}
-        onVerifyEmail={onVerifyEmail}
-        onVerifyPhone={onVerifyPhone}
-        onViewProperties={onViewProperties}
-        onViewProjects={onViewProjects}
-        isEmailVerifying={isEmailVerifying}
-        isPhoneVerifying={isPhoneVerifying}
-      />
+      {isViewModalOpen && displayUser && (
+        <UserDetailModal
+          user={displayUser}
+          isLoading={isLoadingDetail}
+          isOpen={isViewModalOpen}
+          onClose={onCloseDetail}
+          onVerifyEmail={onVerifyEmail}
+          onVerifyPhone={onVerifyPhone}
+          onViewProperties={onViewProperties}
+          onViewProjects={onViewProjects}
+          isEmailVerifying={isEmailVerifying}
+          isPhoneVerifying={isPhoneVerifying}
+        />
+      )}
 
-      {selectedUser && (
+      {selectedUser && isRoleModalOpen && (
         <RoleChangeModal
           user={selectedUser}
           isOpen={isRoleModalOpen}
@@ -97,35 +101,43 @@ export function UsersModalsPanel({
         />
       )}
 
-      <ToggleStatusModal
-        user={selectedUser}
-        isOpen={isToggleModalOpen}
-        onClose={onCloseToggle}
-        onConfirm={onConfirmToggle}
-        isPending={togglePending}
-      />
+      {isToggleModalOpen && (
+        <ToggleStatusModal
+          user={selectedUser}
+          isOpen={isToggleModalOpen}
+          onClose={onCloseToggle}
+          onConfirm={onConfirmToggle}
+          isPending={togglePending}
+        />
+      )}
 
-      <DeleteUserModal
-        user={selectedUser}
-        isOpen={isDeleteModalOpen}
-        onClose={onCloseDelete}
-        onConfirm={onConfirmDelete}
-        isPending={deletePending}
-      />
+      {isDeleteModalOpen && (
+        <DeleteUserModal
+          user={selectedUser}
+          isOpen={isDeleteModalOpen}
+          onClose={onCloseDelete}
+          onConfirm={onConfirmDelete}
+          isPending={deletePending}
+        />
+      )}
 
-      <UserPropertiesModal
-        data={userPropertiesData}
-        isLoading={isLoadingProperties}
-        isOpen={isPropertiesModalOpen}
-        onClose={onCloseProperties}
-      />
+      {isPropertiesModalOpen && (
+        <UserPropertiesModal
+          data={userPropertiesData}
+          isLoading={isLoadingProperties}
+          isOpen={isPropertiesModalOpen}
+          onClose={onCloseProperties}
+        />
+      )}
 
-      <UserProjectsModal
-        data={userProjectsData}
-        isLoading={isLoadingProjects}
-        isOpen={isProjectsModalOpen}
-        onClose={onCloseProjects}
-      />
+      {isProjectsModalOpen && (
+        <UserProjectsModal
+          data={userProjectsData}
+          isLoading={isLoadingProjects}
+          isOpen={isProjectsModalOpen}
+          onClose={onCloseProjects}
+        />
+      )}
     </>
   );
 }

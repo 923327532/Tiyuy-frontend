@@ -8,6 +8,7 @@ import { AgentsFiltersBar } from './components/filters/AgentsFiltersBar';
 import { AgentsAdvancedFilters } from './components/filters/AgentsAdvancedFilters';
 import { AgentsModalsPanel } from './components/modals/AgentsModalsPanel';
 import { useAgentsPage } from './hooks/useAgentsPage';
+import { AdminActionErrorModal } from '@/presentation/components/admin/shared/action-modal/AdminActionErrorModal';
 import '@/presentation/components/admin/users/components/filters/styles/UsersFilters.css';
 import '@/presentation/components/admin/agents/styles/AgentAdvancedFilters.css';
 
@@ -91,6 +92,8 @@ export function AgentsPage() {
         onClosePlanDetails={() => a.setIsPlanDetailsModalOpen(false)}
         onCloseFreeAgents={() => a.setIsFreeAgentsModalOpen(false)}
       />
+
+      <AdminActionErrorModal error={a.actionError} onClose={a.clearActionError} />
     </div>
   );
 }

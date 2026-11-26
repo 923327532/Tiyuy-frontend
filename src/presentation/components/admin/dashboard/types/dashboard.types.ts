@@ -52,7 +52,7 @@ export interface RevenueSeriesPoint {
 
 /** Sección no disponible en el dashboard */
 export interface UnavailableSection {
-  id: 'finance' | 'property' | 'marketing' | 'discounts' | 'agents' | 'projects';
+  id: 'finance' | 'financeHistory' | 'property' | 'marketing' | 'discounts' | 'agents' | 'projects';
   label: string;
 }
 
@@ -62,6 +62,7 @@ export interface DashboardLoadingState {
   marketing: boolean;
   agents: boolean;
   projects: boolean;
+  notifications: boolean;
 }
 
 /** Props para el header del dashboard */
@@ -80,6 +81,10 @@ export interface DashboardOverviewProps {
 /** Props para la tira de KPIs */
 export interface DashboardKpiStripProps {
   stats?: DashboardStats;
+  finance?: FinanceStats;
+  financeUnavailable?: boolean;
+  projectStats?: ProjectStats;
+  projectsUnavailable?: boolean;
   marketing?: MarketingStats;
   canViewMarketing: boolean;
   marketingLoading?: boolean;
@@ -100,6 +105,8 @@ export interface DashboardRevenueCardProps {
 export interface DashboardPropertiesDonutProps {
   stats?: DashboardStats;
   byStatus?: Record<string, number>;
+  /** Total autoritativo del endpoint de analítica de propiedades. */
+  total?: number;
 }
 
 /** Props para la tarjeta de moderación */
@@ -160,6 +167,7 @@ export interface DashboardPartialNoticeProps {
 export interface UseAdminDashboardReturn {
   stats: DashboardStats | undefined;
   finance: FinanceStats | undefined;
+  financeHistoryUnavailable: boolean;
   propertyAnalytics: PropertyAnalyticsResponse | undefined;
   marketing: MarketingStats | undefined;
   financeHistory: { labels: string[]; revenue: number[] } | undefined;

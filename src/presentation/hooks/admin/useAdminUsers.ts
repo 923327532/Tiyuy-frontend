@@ -4,7 +4,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChangeUserRoleRequest } from '@/core/domain/entities/Admin';
 import { PaginationParams } from '@/core/domain/repositories/IAdminRepository';
-import { adminRepository, ADMIN_QUERY_KEY } from './useAdminShared';
+import { adminRepository, ADMIN_QUERY_KEY, invalidateAdminDashboard } from './useAdminShared';
 
 // User management hooks
 export const useUsers = (
@@ -35,6 +35,7 @@ export const useToggleUserStatus = () => {
       adminRepository.toggleUserStatus(userId, enabled, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'users'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -46,6 +47,7 @@ export const useDeleteUser = () => {
       adminRepository.deleteUser(userId, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'users'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -57,6 +59,7 @@ export const useChangeUserRole = () => {
       adminRepository.changeUserRole(userId, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'users'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -67,6 +70,7 @@ export const useVerifyUserEmail = () => {
     mutationFn: (userId: number) => adminRepository.verifyUserEmail(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'users'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -77,6 +81,7 @@ export const useVerifyUserPhone = () => {
     mutationFn: (userId: number) => adminRepository.verifyUserPhone(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'users'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -96,6 +101,7 @@ export const useApproveInternationalUser = () => {
     mutationFn: (userId: number) => adminRepository.approveInternationalUser(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'international'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -107,6 +113,7 @@ export const useRejectInternationalUser = () => {
       adminRepository.rejectInternationalUser(userId, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'international'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };

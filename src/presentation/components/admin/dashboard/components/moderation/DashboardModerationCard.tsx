@@ -27,11 +27,15 @@ export function DashboardModerationCard({
       ...QUEUE_ITEMS_CONFIG[1],
       count: stats?.pendingReports ?? 0,
     },
-    {
-      ...QUEUE_ITEMS_CONFIG[2],
-      count: propertyUnavailable ? 0 : (expiredFeatured ?? 0),
-    },
   ];
+
+  // No mostramos un 0 inventado cuando la analítica de propiedades no cargó.
+  if (!propertyUnavailable && expiredFeatured !== undefined) {
+    rows.push({
+      ...QUEUE_ITEMS_CONFIG[2],
+      count: expiredFeatured,
+    });
+  }
 
   const total = stats?.totalProperties ?? 0;
   const published = stats?.publishedProperties ?? 0;
@@ -90,7 +94,7 @@ export function DashboardModerationCard({
 
         <MetricCard
           label="Destacados vencidos"
-          value={formatNumber(propertyUnavailable ? 0 : (expiredFeatured ?? 0))}
+          value={formatNumber(propertyUnavailable ? undefined : expiredFeatured)}
           description="Cupos sin liberar"
           icon={Clock3}
           iconBackground="bg-[#E0F2FE]"
