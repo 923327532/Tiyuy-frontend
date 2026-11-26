@@ -4,6 +4,8 @@
  */
 'use client';
 
+import { extractBackendErrorMessage, type AdminActionErrorState } from '@/presentation/components/admin/shared/action-modal/AdminActionErrorModal';
+
 import { useState, useCallback } from 'react';
 import {
   useUsers as useUsersQuery,
@@ -100,6 +102,8 @@ export interface UseUsersReturn {
   handleDeleteUser: (user: UserListItem) => void;
   handleClearFilters: () => void;
   refetch: () => void;
+  actionError: AdminActionErrorState | null;
+  clearActionError: () => void;
 }
 
 export function useUsers(): UseUsersReturn {
@@ -127,6 +131,7 @@ export function useUsers(): UseUsersReturn {
   const [detailUserId, setDetailUserId] = useState<number | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserListItem | null>(null);
+  const [actionError, setActionError] = useState<AdminActionErrorState | null>(null);
   const [isRoleModalOpen, setIsRoleModalOpen] = useState(false);
   const [isToggleModalOpen, setIsToggleModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -269,28 +274,57 @@ export function useUsers(): UseUsersReturn {
 
   const confirmDeleteUser = useCallback(async () => {
     if (!selectedUserId) return;
-    await deleteUserMutation.mutateAsync({
-      userId: selectedUserId,
-      reason: deleteReason || undefined,
-    });
-    setIsDeleteModalOpen(false);
-    setDeleteReason('');
-    setSelectedUserId(null);
-    setSelectedUser(null);
+    try {
+      await deleteUserMutation.mutateAsync({
+        userId: selectedUserId,
+        reason: deleteReason || undefined,
+      });
+      setIsDeleteModalOpen(false);
+      setDeleteReason('');
+      setSelectedUserId(null);
+      setSelectedUser(null);
+    } catch (err) {
+      setIsDeleteModalOpen(false);
+      setActionError({
+        isOpen: true,
+        title: 'No se puede eliminar este usuario',
+        message: extractBackendErrorMessage(
+          err,
+          'El usuario aún tiene suscripciones activas, proyectos o propiedades asociadas.'
+        ),
+        hint: 'Verifica que el usuario no tenga un plan vigente, propiedades o proyectos publicados antes de eliminar su cuenta.',
+      });
+    }
   }, [selectedUserId, deleteReason, deleteUserMutation]);
 
   const confirmToggleStatus = useCallback(
     async (reason: string) => {
       if (!selectedUserId || !selectedUser) return;
-      await toggleStatusMutation.mutateAsync({
-        userId: selectedUserId,
-        enabled: !selectedUser.enabled,
-        reason: reason || undefined,
-      });
-      setIsToggleModalOpen(false);
-      setToggleReason('');
-      setSelectedUserId(null);
-      setSelectedUser(null);
+      const isSuspending = selectedUser.enabled;
+      try {
+        await toggleStatusMutation.mutateAsync({
+          userId: selectedUserId,
+          enabled: !selectedUser.enabled,
+          reason: reason || undefined,
+        });
+        setIsToggleModalOpen(false);
+        setToggleReason('');
+        setSelectedUserId(null);
+        setSelectedUser(null);
+      } catch (err) {
+        setIsToggleModalOpen(false);
+        setActionError({
+          isOpen: true,
+          title: isSuspending
+            ? 'No se puede suspender esta cuenta'
+            : 'No se pudo reactivar esta cuenta',
+          message: extractBackendErrorMessage(
+            err,
+            'La operación fue rechazada por las reglas de seguridad del sistema.'
+          ),
+          hint: 'Por seguridad, no es posible suspender tu propia cuenta ni cuentas protegidas de administrador.',
+        });
+      }
     },
     [selectedUserId, selectedUser, toggleStatusMutation]
   );
@@ -389,5 +423,7 @@ export function useUsers(): UseUsersReturn {
     handleDeleteUser,
     handleClearFilters,
     refetch,
+    actionError,
+    clearActionError: () => setActionError(null),
   };
 }

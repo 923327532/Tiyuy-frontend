@@ -72,7 +72,15 @@ export function buildSegments(
 export function getTotalProperties(
   stats: { totalProperties?: number; publishedProperties?: number; pendingProperties?: number } | undefined,
   byStatus: Record<string, number> | undefined,
+  authoritativeTotal?: number,
 ): number {
+  if (
+    typeof authoritativeTotal === 'number' &&
+    Number.isFinite(authoritativeTotal)
+  ) {
+    return authoritativeTotal;
+  }
+
   return byStatus
     ? Object.values(byStatus).reduce((sum, value) => sum + (value ?? 0), 0)
     : stats?.totalProperties ?? 0;

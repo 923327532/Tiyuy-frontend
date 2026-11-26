@@ -185,17 +185,14 @@ export class AnalyticsRepository implements IAnalyticsRepository {
   }
 
   async sendNewPropertyNotification(propertyId: number, userIds?: number[]): Promise<string> {
-    const params = userIds ? `?userIds=${userIds.join(',')}` : '';
-    const response = await axiosClient.post(`/notifications/new-property${propertyId}${params}`);
+    const params = userIds?.length ? `&userIds=${userIds.join(',')}` : '';
+    const response = await axiosClient.post(`/notifications/new-property?propertyId=${propertyId}${params}`);
     return response.data;
   }
 
   async triggerSearchNotifications(propertyType: string, transactionType: string, district: string): Promise<string> {
-    const response = await axiosClient.post('/notifications/trigger-search-notifications', {
-      propertyType,
-      transactionType,
-      district
-    });
+    const params = new URLSearchParams({ propertyType, transactionType, district });
+    const response = await axiosClient.post(`/notifications/trigger-search-notifications?${params.toString()}`);
     return response.data;
   }
 

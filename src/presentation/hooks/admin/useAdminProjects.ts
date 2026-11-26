@@ -4,7 +4,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ModerateProjectRequest } from '@/core/domain/entities/Admin';
 import { PaginationParams } from '@/core/domain/repositories/IAdminRepository';
-import { adminRepository, ADMIN_QUERY_KEY } from './useAdminShared';
+import { adminRepository, ADMIN_QUERY_KEY, invalidateAdminDashboard } from './useAdminShared';
 import { NotifyDeveloperRequest } from './useAdminShared';
 
 // Project management hooks
@@ -42,6 +42,7 @@ export const useModerateProject = () => {
       adminRepository.moderateProject(projectId, request),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'projects'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -53,6 +54,7 @@ export const useToggleFeaturedProject = () => {
       adminRepository.toggleFeaturedProject(projectId, featured),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'projects'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -64,6 +66,7 @@ export const useDeleteProject = () => {
       adminRepository.deleteProject(projectId, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'projects'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -115,6 +118,7 @@ export const useDisableProjectByAdmin = () => {
       adminRepository.disableProjectByAdmin(projectId, reason, notifyDeveloper),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'projects'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -126,6 +130,7 @@ export const useEnableProjectByAdmin = () => {
       adminRepository.enableProjectByAdmin(projectId, reason, notifyDeveloper),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'projects'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };
@@ -137,6 +142,7 @@ export const useReviewReport = () => {
       adminRepository.reviewReport(reportId, approve, notes),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'projects'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };

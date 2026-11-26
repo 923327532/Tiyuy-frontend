@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { usePermissions } from '@/presentation/hooks/usePermissions';
 import { useUserSearch } from '@/presentation/hooks/useUserSearch';
@@ -45,18 +44,9 @@ export default function NotificationsPage() {
   const userSearch = useUserSearch(300);
   const agentSearch = useUserSearch(300);
 
-  // Admin Alerts pagination state
-  const [alertsPage, setAlertsPage] = useState(0);
-  const [alertsSize, setAlertsSize] = useState(10);
-
-  // Notification hooks
-  const { data: notificationHistory, isLoading: isLoadingHistory } = useNotificationHistory(30, '', 0, 1000);
-  const { data: notificationHistoryAll } = useNotificationHistory(30, '', 0, 1000);
   useNotificationTypes();
   useAdminAlertStats();
 
-  // Admin Alerts hooks with pagination
-  const { data: adminAlerts, isLoading: isLoadingAdminAlerts } = useAdminAlerts({ page: alertsPage, size: alertsSize });
   const createAdminAlert = useCreateAdminAlert();
   useSendAdminAlertNow();
   const deleteAdminAlert = useDeleteAdminAlert();
@@ -88,6 +78,22 @@ export default function NotificationsPage() {
     getDeliveryStatus,
     getChannels,
   } = useNotifications();
+
+  // History pagination controls drive the server-side page/size. A separate
+  // unpaginated query keeps KPI totals independent of the visible page.
+  const { data: notificationHistory, isLoading: isLoadingHistory } = useNotificationHistory(
+    30,
+    '',
+    historyFilters.page,
+    historyFilters.size
+  );
+  const { data: notificationHistoryAll } = useNotificationHistory(30, '', 0, 1000);
+
+  const { data: adminAlerts, isLoading: isLoadingAdminAlerts } = useAdminAlerts({
+    page: historyFilters.page,
+    size: historyFilters.size,
+  });
+  const { data: adminAlertsAll } = useAdminAlerts({ page: 0, size: 1000 });
 
   const { filteredNotifications, filteredAlerts } = useFilteredHistory(
     notificationHistory,
@@ -133,7 +139,7 @@ export default function NotificationsPage() {
           sendPush: false,
           scheduledFor: undefined,
         });
-        queryClient.invalidateQueries({ queryKey: ['admin-alerts'] });
+        queryClient.invalidateQueries({ queryKey: ['admin', 'alerts'] });
       },
       onError: (error: any) => {
         showToast('error', 'Error al enviar alerta', error?.message || 'Ocurrió un error al enviar la alerta');
@@ -162,7 +168,7 @@ export default function NotificationsPage() {
       {/* KPI Cards - Siempre visibles */}
       <KpiStats
         notificationHistoryAll={notificationHistoryAll ?? null}
-        adminAlerts={adminAlerts ?? null}
+        adminAlerts={adminAlertsAll ?? null}
       />
 
       {/* Tabs - Responsive */}

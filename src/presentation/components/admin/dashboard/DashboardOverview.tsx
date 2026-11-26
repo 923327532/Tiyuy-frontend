@@ -40,7 +40,9 @@ export function DashboardOverview({ userName }: DashboardOverviewProps) {
     );
   }
 
-  const history = dashboard.financeHistory;
+  const history = dashboard.financeHistoryUnavailable
+    ? undefined
+    : dashboard.financeHistory;
   const revenueSeries = history
     ? history.labels.map((label, index) => ({ label, value: history.revenue[index] ?? 0 }))
     : undefined;
@@ -62,6 +64,10 @@ export function DashboardOverview({ userName }: DashboardOverviewProps) {
 
       <DashboardKpiStrip
         stats={dashboard.stats}
+        finance={dashboard.finance}
+        financeUnavailable={dashboard.financeUnavailable}
+        projectStats={dashboard.projectStats}
+        projectsUnavailable={dashboard.projectsUnavailable}
         marketing={dashboard.marketing}
         canViewMarketing={dashboard.canViewMarketing}
         marketingLoading={dashboard.loading.marketing}
@@ -93,6 +99,7 @@ export function DashboardOverview({ userName }: DashboardOverviewProps) {
             <DashboardPropertiesDonut
               stats={dashboard.stats}
               byStatus={dashboard.propertyAnalytics?.propertiesByStatus}
+              total={dashboard.propertyAnalytics?.totalProperties}
             />
           </div>
 
@@ -122,11 +129,11 @@ export function DashboardOverview({ userName }: DashboardOverviewProps) {
           <DashboardAttention
             items={dashboard.attention}
             overflow={dashboard.attentionOverflow}
-            isLoading={false}
+            isLoading={dashboard.loading.notifications}
           />
           <DashboardRecentActivity
             items={dashboard.activity}
-            isLoading={false}
+            isLoading={dashboard.loading.notifications}
           />
         </aside>
       </div>

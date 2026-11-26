@@ -7,7 +7,7 @@ import {
   AgencyPlanDiscount,
 } from '@/core/domain/entities/Admin';
 import { PaginationParams } from '@/core/domain/repositories/IAdminRepository';
-import { adminRepository, ADMIN_QUERY_KEY } from './useAdminShared';
+import { adminRepository, ADMIN_QUERY_KEY, invalidateAdminDashboard } from './useAdminShared';
 
 // Finance and Monetization hooks
 
@@ -134,7 +134,7 @@ export const useRefundTransaction = () => {
       adminRepository.refundTransaction(transactionId, reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'transactions'] });
-      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEY, 'finance', 'stats'] });
+      invalidateAdminDashboard(queryClient);
     },
   });
 };

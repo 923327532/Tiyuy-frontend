@@ -52,6 +52,9 @@ export function useAdminDashboard(): UseAdminDashboardReturn {
         property: propertyQuery.data,
         marketing: marketingQuery.data,
         discounts: discountsQuery.data?.content ?? [],
+        discountHasMorePages: Boolean(
+          discountsQuery.data && discountsQuery.data.totalPages > 1,
+        ),
         unreadCount: notifications.unreadCount,
         canViewMarketing,
       }),
@@ -102,6 +105,10 @@ export function useAdminDashboard(): UseAdminDashboardReturn {
         queryKey: ['notifications', 'general'],
         refetchType: 'active',
       }),
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+        refetchType: 'active',
+      }),
     ];
 
     if (canViewMarketing) tasks.push(refetchMarketing());
@@ -137,6 +144,8 @@ export function useAdminDashboard(): UseAdminDashboardReturn {
   const unavailableSections = useMemo<UnavailableSection[]>(() => {
     const list: UnavailableSection[] = [];
     if (financeQuery.isError) list.push({ id: 'finance', label: 'Finanzas' });
+    if (financeHistoryQuery.isError)
+      list.push({ id: 'financeHistory', label: 'Historial de facturación' });
     if (propertyQuery.isError) list.push({ id: 'property', label: 'Analítica de propiedades' });
     if (canViewMarketing && marketingQuery.isError)
       list.push({ id: 'marketing', label: 'Marketing y leads' });
@@ -150,6 +159,7 @@ export function useAdminDashboard(): UseAdminDashboardReturn {
     canViewMarketing,
     discountsQuery.isError,
     financeQuery.isError,
+    financeHistoryQuery.isError,
     marketingQuery.isError,
     propertyQuery.isError,
   ]);
@@ -157,9 +167,12 @@ export function useAdminDashboard(): UseAdminDashboardReturn {
   return {
     stats: statsQuery.data,
     finance: financeQuery.data,
+    financeHistoryUnavailable: financeHistoryQuery.isError,
     propertyAnalytics: propertyQuery.data,
     marketing: marketingQuery.data,
-    financeHistory: financeHistoryQuery.data,
+    financeHistory: financeHistoryQuery.isError
+      ? undefined
+      : financeHistoryQuery.data,
     agentStats: agentsQuery.data,
     projectStats: projectStatsQuery.data,
     canViewMarketing,
@@ -175,6 +188,7 @@ export function useAdminDashboard(): UseAdminDashboardReturn {
       marketing: canViewMarketing && marketingQuery.isLoading,
       agents: agentsQuery.isLoading,
       projects: projectStatsQuery.isLoading,
+      notifications: notifications.isLoading,
     },
     financeUnavailable: financeQuery.isError,
     propertyUnavailable: propertyQuery.isError,

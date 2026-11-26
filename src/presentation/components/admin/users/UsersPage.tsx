@@ -5,6 +5,7 @@ import { AdminBulkOperations } from '@/presentation/components/admin/AdminBulkOp
 import { UsersHeader, UsersStats, UsersListPanel, UsersModalsPanel } from './components';
 import { getUserConditionalColumns, getUsersSummary } from './config';
 import { useUsers } from './hooks/useUsers';
+import { AdminActionErrorModal } from '@/presentation/components/admin/shared/action-modal/AdminActionErrorModal';
 
 export function UsersPage() {
   const u = useUsers();
@@ -106,6 +107,8 @@ export function UsersPage() {
         onConfirmToggle={u.confirmToggleStatus}
         onConfirmDelete={u.confirmDeleteUser}
       />
+
+      <AdminActionErrorModal error={u.actionError} onClose={u.clearActionError} />
     </div>
   );
 }
