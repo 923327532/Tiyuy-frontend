@@ -1,7 +1,7 @@
 'use client';
 
-import { Search, X, Plus } from 'lucide-react';
-import { AgentListItem } from '@/core/domain/entities/Admin';
+import { Plus, Search, X } from 'lucide-react';
+import type { AgentListItem } from '@/core/domain/entities/Admin';
 
 interface AgentSelectionProps {
   agentSearchQuery: string;
@@ -45,7 +45,6 @@ export function AgentSelection({
         </h2>
       </div>
 
-      {/* Same filter bar as the users section */}
       <div className="users-filters agent-discounts__agent-filters">
         <div className="users-filters__main">
           <div className="agent-discounts__search-wrap">
@@ -92,8 +91,14 @@ export function AgentSelection({
                     </span>
                     <span className="agent-discounts__agent-info">
                       <span className="agent-discounts__agent-name">{agent.firstName} {agent.lastName}</span>
-                      <span className="agent-discounts__agent-meta">
-                        {agent.email}{agent.dni && ` • DNI: ${agent.dni}`}
+                      <span className="agent-discounts__agent-meta flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <span className="max-w-full truncate">{agent.email}</span>
+                        {agent.dni && (
+                          <>
+                            <span className="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
+                            <span className="font-medium tabular-nums text-slate-600">DNI: {agent.dni}</span>
+                          </>
+                        )}
                       </span>
                     </span>
                     <span className={`agent-discounts__status-badge ${agent.enabled ? 'agent-discounts__status-badge--active' : 'agent-discounts__status-badge--expired'}`}>
@@ -119,40 +124,60 @@ export function AgentSelection({
       </div>
 
       <div className="agent-discounts__card-body">
-        {/* Selected agent - same header as the user detail modal */}
         {selectedAgent && (
-          <div className="agent-discounts__selected-agent user-detail-modal__header">
-            {selectedAgent.profilePhotoUrl ? (
-              <img src={selectedAgent.profilePhotoUrl} alt="" className="user-detail-modal__avatar" />
-            ) : (
-              <div className="user-detail-modal__avatar user-detail-modal__avatar--fallback">
-                {selectedAgent.firstName?.[0]}{selectedAgent.lastName?.[0]}
-              </div>
-            )}
-            <div className="user-detail-modal__identity">
-              <h3 className="user-detail-modal__name">{selectedAgent.firstName} {selectedAgent.lastName}</h3>
-              <p className="user-detail-modal__email">
-                {selectedAgent.email}{selectedAgent.dni && ` • DNI: ${selectedAgent.dni}`}
-              </p>
-              <div className="user-detail-modal__badges">
-                <span className="user-detail-modal__role-badge user-detail-modal__role-badge--agent">Agente</span>
-                <span className={`agent-discounts__status-badge ${selectedAgent.enabled ? 'agent-discounts__status-badge--active' : 'agent-discounts__status-badge--expired'}`}>
-                  <span className="agent-discounts__status-dot" />
-                  {selectedAgent.enabled ? 'Activo' : 'Inactivo'}
-                </span>
-                {selectedAgent.currentPlan && (
-                  <span className="user-detail-modal__role-badge user-detail-modal__role-badge--developer">
-                    {selectedAgent.currentPlan}
+          <div className="agent-discounts__selected-agent user-detail-modal__header flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+              {selectedAgent.profilePhotoUrl ? (
+                <img src={selectedAgent.profilePhotoUrl} alt="" className="user-detail-modal__avatar shrink-0" />
+              ) : (
+                <div className="user-detail-modal__avatar user-detail-modal__avatar--fallback flex shrink-0 items-center justify-center">
+                  {selectedAgent.firstName?.[0]}{selectedAgent.lastName?.[0]}
+                </div>
+              )}
+              <div className="user-detail-modal__identity min-w-0 flex-1">
+                <h3 className="user-detail-modal__name truncate">
+                  {selectedAgent.firstName} {selectedAgent.lastName}
+                </h3>
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500">
+                  <span className="max-w-full truncate" title={selectedAgent.email ?? undefined}>
+                    {selectedAgent.email}
                   </span>
-                )}
+                  {selectedAgent.dni && (
+                    <>
+                      <span className="hidden text-slate-300 sm:inline" aria-hidden="true">•</span>
+                      <span className="font-medium tabular-nums text-slate-600">DNI: {selectedAgent.dni}</span>
+                    </>
+                  )}
+                </div>
+                <div className="user-detail-modal__badges mt-2 flex flex-wrap items-center gap-1.5">
+                  <span className="user-detail-modal__role-badge user-detail-modal__role-badge--agent">Agente</span>
+                  <span className={`agent-discounts__status-badge ${selectedAgent.enabled ? 'agent-discounts__status-badge--active' : 'agent-discounts__status-badge--expired'}`}>
+                    <span className="agent-discounts__status-dot" />
+                    {selectedAgent.enabled ? 'Activo' : 'Inactivo'}
+                  </span>
+                  {selectedAgent.currentPlan && (
+                    <span className="user-detail-modal__role-badge user-detail-modal__role-badge--developer">
+                      {selectedAgent.currentPlan}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
+
             {canManageDiscounts && (
-              <div className="agent-discounts__selected-actions">
-                <button type="button" onClick={onOpenAssign} className="agent-discounts__soft-btn">
+              <div className="agent-discounts__selected-actions flex w-full shrink-0 flex-col items-stretch gap-2 xs:flex-row sm:w-auto sm:flex-row sm:items-center">
+                <button
+                  type="button"
+                  onClick={onOpenAssign}
+                  className="agent-discounts__soft-btn flex w-full items-center justify-center sm:w-auto"
+                >
                   Asignar Existente
                 </button>
-                <button type="button" onClick={onCreate} className="agent-discounts__primary-btn">
+                <button
+                  type="button"
+                  onClick={onCreate}
+                  className="agent-discounts__primary-btn flex w-full items-center justify-center sm:w-auto"
+                >
                   <Plus className="h-4 w-4" aria-hidden="true" />
                   Crear Nuevo
                 </button>

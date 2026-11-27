@@ -1,8 +1,40 @@
-/* Selected agent header (user detail modal look) */
-.agent-discounts__selected-agent { border: 1px solid var(--udm-border, #e8ecef); border-radius: var(--udm-radius, 1rem); overflow: hidden; }
-.agent-discounts__selected-agent .user-detail-modal__header { gap: 0.875rem; padding: 1.25rem; }
+/* Selected agent header (user detail modal look), now responsive. */
+.agent-discounts__selected-agent {
+  border: 1px solid var(--udm-border, #e8ecef);
+  border-radius: var(--udm-radius, 1rem);
+  overflow: hidden;
+}
+
+.agent-discounts__selected-agent .user-detail-modal__header {
+  gap: 1rem;
+  padding: 1.25rem;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 .agent-discounts__selected-agent .user-detail-modal__name { font-size: 1.0625rem; }
-.agent-discounts__selected-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+.agent-discounts__selected-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
 .agent-discounts__selected-actions .agent-discounts__primary-btn,
 .agent-discounts__selected-actions .agent-discounts__soft-btn { height: 2.375rem; }
 
+@media (min-width: 480px) {
+  .agent-discounts__selected-actions { flex-direction: row; }
+}
+
+@media (min-width: 640px) {
+  .agent-discounts__selected-agent .user-detail-modal__header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .agent-discounts__selected-actions { width: auto; align-items: center; }
+}
