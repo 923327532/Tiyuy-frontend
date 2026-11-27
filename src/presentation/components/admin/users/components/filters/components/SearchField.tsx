@@ -6,9 +6,15 @@ interface SearchFieldProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  ariaLabel?: string;
 }
 
-export function SearchField({ value, onChange, placeholder = 'Buscar por email, nombre o DNI...' }: SearchFieldProps) {
+export function SearchField({
+  value,
+  onChange,
+  placeholder = 'Buscar por email, nombre o DNI...',
+  ariaLabel = 'Buscar usuarios por email, nombre o DNI',
+}: SearchFieldProps) {
   return (
     <div className="users-filters__search">
       <Search className="users-filters__search-icon" aria-hidden="true" />
@@ -18,7 +24,7 @@ export function SearchField({ value, onChange, placeholder = 'Buscar por email, 
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        aria-label="Buscar usuarios por email, nombre o DNI"
+        aria-label={ariaLabel}
         className="users-filters__input"
       />
 

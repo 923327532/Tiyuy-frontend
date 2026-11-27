@@ -1,21 +1,12 @@
-import { Button } from '@/presentation/components/ui/Button';
-import { Modal } from '@/presentation/components/ui/Modal';
-import { AgentListItem } from '@/core/domain/entities/Admin';
-import { X } from 'lucide-react';
+'use client';
 
-interface PlanDiscountData {
-  discountPercentage: string;
-  customPrice: string;
-  startDate: string;
-  endDate: string;
-}
-
-interface SelectedPlan {
-  code: string;
-  name: string;
-  price: string;
-  color: string;
-}
+import { BadgePercent } from 'lucide-react';
+import type { AgentListItem } from '@/core/domain/entities/Admin';
+import {
+  DiscountFormFooter,
+  DiscountFormModalShell,
+} from '@/presentation/components/admin/discounts/components/modals';
+import { PlanDiscountForm, type PlanDiscountData, type SelectedPlan } from './PlanDiscountForm';
 
 interface PlanDiscountModalProps {
   isOpen: boolean;
@@ -28,156 +19,40 @@ interface PlanDiscountModalProps {
   isPending: boolean;
 }
 
+/** Contenedor del descuento por plan con el shell esmeralda del panel. */
 export default function PlanDiscountModal({
-  isOpen,
-  onClose,
-  selectedAgent,
-  selectedPlan,
-  planDiscount,
-  setPlanDiscount,
-  onCreate,
-  isPending
+  isOpen, onClose, selectedAgent, selectedPlan, planDiscount, setPlanDiscount, onCreate, isPending,
 }: PlanDiscountModalProps) {
   if (!selectedPlan) return null;
 
+  const agentName = [selectedAgent?.firstName, selectedAgent?.lastName]
+    .filter(Boolean).join(' ').trim();
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white rounded-2xl p-0 max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col mx-2 sm:mx-0">
-        {/* Header verde */}
-        <div className="bg-[#00E676] px-3 sm:px-5 py-3 sm:py-4 flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-200 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
-                <span className="text-green-800 font-bold text-base sm:text-lg">P</span>
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-sm sm:text-lg font-bold text-gray-800 truncate">Descuento por Plan</h3>
-                <p className="text-[10px] sm:text-xs text-green-700 truncate">
-                  Para: {selectedAgent?.firstName} {selectedAgent?.lastName}
-                </p>
-              </div>
-            </div>
-            <button onClick={onClose} className="p-1 sm:p-1.5 hover:bg-green-300 rounded-lg transition-colors text-gray-600 flex-shrink-0">
-              <X className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Content scrolleable */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3">
-          {/* Plan info */}
-          <div className="bg-gray-50 p-2 sm:p-3 rounded-lg flex items-center gap-2 sm:gap-3">
-            <div className={`w-10 h-10 sm:w-12 sm:h-12 ${selectedPlan.color} rounded-lg flex items-center justify-center text-white text-base sm:text-lg font-bold flex-shrink-0`}>
-              {selectedPlan.code[0]}
-            </div>
-            <div className="min-w-0">
-              <h4 className="font-semibold text-gray-900 text-[10px] sm:text-sm truncate">{selectedPlan.name}</h4>
-              <p className="text-base sm:text-lg font-bold text-gray-900">{selectedPlan.price}</p>
-              <p className="text-[8px] sm:text-[10px] text-gray-500">Precio original del plan</p>
-            </div>
-          </div>
-
-          <div className="space-y-1 sm:space-y-1.5">
-            <label className="text-[10px] sm:text-xs font-semibold text-gray-700">Porcentaje de Descuento (%)</label>
-            <div className="relative">
-              <input
-                type="number" min="1" max="100"
-                value={planDiscount.discountPercentage}
-                onChange={(e) => {
-                  const newDiscountPercentage = e.target.value;
-                  const originalPrice = parseInt(selectedPlan.price.replace('S/', ''));
-                  const discount = parseFloat(newDiscountPercentage) || 0;
-                  const discountedPrice = originalPrice * (1 - discount / 100);
-                  setPlanDiscount({
-                    ...planDiscount,
-                    discountPercentage: newDiscountPercentage,
-                    customPrice: discountedPrice > 0 ? discountedPrice.toFixed(2) : ''
-                  });
-                }}
-                placeholder="Ej: 20"
-                className="w-full px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 pr-8 sm:pr-10"
-              />
-              <span className="absolute right-2 sm:right-3 top-2 sm:top-2.5 text-gray-400 font-bold text-[10px] sm:text-sm">%</span>
-            </div>
-          </div>
-
-          {planDiscount.discountPercentage && (
-            <div className="bg-green-50 p-2 sm:p-3 rounded-lg">
-              <p className="text-[10px] sm:text-xs text-gray-600">Precio con descuento:</p>
-              <p className="text-base sm:text-lg font-bold text-green-600">S/{planDiscount.customPrice}</p>
-              <p className="text-[8px] sm:text-[10px] text-gray-500">
-                Ahorro: S/{(parseInt(selectedPlan.price.replace('S/', '')) - (planDiscount.customPrice ? parseFloat(planDiscount.customPrice) : 0)).toFixed(2)}
-              </p>
-            </div>
-          )}
-
-          <div className="space-y-1 sm:space-y-1.5">
-            <label className="text-[10px] sm:text-xs font-semibold text-gray-700">Duración del Descuento</label>
-            <div className="flex gap-1 sm:gap-1.5 flex-wrap">
-              {[
-                { label: '12h', hours: 12 },
-                { label: '24h', hours: 24 },
-                { label: '3d', hours: 72 },
-                { label: '7d', hours: 168 },
-                { label: '30d', hours: 720 }
-              ].map((option) => (
-                <button
-                  key={option.hours}
-                  type="button"
-                  onClick={() => {
-                    const start = new Date();
-                    const end = new Date(start.getTime() + option.hours * 60 * 60 * 1000);
-                    setPlanDiscount({
-                      ...planDiscount,
-                      startDate: start.toISOString().split('T')[0],
-                      endDate: end.toISOString().split('T')[0]
-                    });
-                  }}
-                  className="px-2 sm:px-2.5 py-1 sm:py-1.5 border border-gray-300 rounded-lg text-[9px] sm:text-xs hover:bg-teal-50 hover:border-teal-500 transition-colors"
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-            <p className="text-[8px] sm:text-[10px] text-gray-500">El descuento solo será válido durante este periodo</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-            <div className="space-y-1 sm:space-y-1.5">
-              <label className="text-[10px] sm:text-xs font-semibold text-gray-700">Fecha Inicio</label>
-              <input
-                type="datetime-local"
-                value={planDiscount.startDate ? new Date(planDiscount.startDate).toISOString().slice(0, 16) : ''}
-                onChange={(e) => setPlanDiscount({ ...planDiscount, startDate: e.target.value })}
-                className="w-full px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="space-y-1 sm:space-y-1.5">
-              <label className="text-[10px] sm:text-xs font-semibold text-gray-700">Fecha Fin</label>
-              <input
-                type="datetime-local"
-                value={planDiscount.endDate ? new Date(planDiscount.endDate).toISOString().slice(0, 16) : ''}
-                onChange={(e) => setPlanDiscount({ ...planDiscount, endDate: e.target.value })}
-                className="w-full px-2 sm:px-3 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="flex gap-2 sm:gap-3 p-3 sm:p-4 border-t border-gray-200 flex-shrink-0">
-          <Button variant="outline" onClick={onClose} className="flex-1 py-2 sm:py-2.5 text-[10px] sm:text-sm font-medium">
-            Cancelar
-          </Button>
-          <Button
-            onClick={onCreate}
-            disabled={isPending || !planDiscount.discountPercentage}
-            className="flex-1 py-2 sm:py-2.5 bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white rounded-lg text-[10px] sm:text-sm font-medium shadow-lg shadow-teal-500/30"
-          >
-            {isPending ? 'Aplicando...' : 'Aplicar Descuento'}
-          </Button>
-        </div>
-      </div>
-    </Modal>
+    <DiscountFormModalShell
+      isOpen={isOpen}
+      onClose={onClose}
+      tone="emerald"
+      icon={<BadgePercent className="h-5 w-5" aria-hidden="true" />}
+      title="Descuento por Plan"
+      subtitle={agentName ? `Para: ${agentName}` : undefined}
+      footer={
+        <DiscountFormFooter
+          tone="emerald"
+          onClose={onClose}
+          onSubmit={() => void onCreate()}
+          isPending={isPending}
+          disabled={!planDiscount.discountPercentage}
+          label="Aplicar Descuento"
+          pendingLabel="Aplicando..."
+        />
+      }
+    >
+      <PlanDiscountForm
+        selectedPlan={selectedPlan}
+        planDiscount={planDiscount}
+        setPlanDiscount={setPlanDiscount}
+      />
+    </DiscountFormModalShell>
   );
 }

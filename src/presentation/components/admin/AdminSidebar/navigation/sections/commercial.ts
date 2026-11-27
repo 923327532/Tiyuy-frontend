@@ -33,12 +33,5 @@ export const commercialSection: SidebarNavItem = {
       path: '/admin/discounts',
       requiredPermissions: ['DISCOUNTS_CREATE'],
     },
-    {
-      id: 'agent-discounts',
-      label: 'Descuentos de Agentes',
-      icon: Target,
-      path: '/admin/agents/discounts',
-      requiredPermissions: ['DISCOUNTS_MANAGE'],
-    },
   ],
 };
