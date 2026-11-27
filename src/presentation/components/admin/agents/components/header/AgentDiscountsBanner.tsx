@@ -39,7 +39,7 @@ export function AgentDiscountsBanner({ className = '' }: Props) {
 
       <div className="relative flex min-w-0 flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-cyan-200/70 bg-white/70 px-3 py-1">
+          <div className="mb-2 inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-cyan-200/70 bg-white/70 px-3 py-1">
             <span className="h-2 w-2 rounded-full bg-teal-600" />
             <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-teal-800">
               Administración TIYUY
@@ -62,8 +62,8 @@ export function AgentDiscountsBanner({ className = '' }: Props) {
 
         </div>
 
-        <div className="relative flex shrink-0 flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 shadow-sm shadow-slate-200/30">
+        <div className="relative flex max-w-full shrink-0 flex-wrap items-center gap-2">
+          <div className="flex max-w-full items-center gap-2 rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 shadow-sm shadow-slate-200/30">
             <span className="h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-emerald-100" />
             <div>
               <p className="text-[11px] font-semibold text-slate-700">Gestión de descuentos</p>
@@ -71,7 +71,7 @@ export function AgentDiscountsBanner({ className = '' }: Props) {
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 rounded-lg border border-teal-100 bg-white/70 px-2.5 py-2">
+          <div className="flex max-w-full items-center gap-1.5 rounded-lg border border-teal-100 bg-white/70 px-2.5 py-2">
             <ShieldCheck className="h-3.5 w-3.5 text-teal-700" aria-hidden="true" />
             <span className="text-[11px] font-semibold text-teal-800">Administración</span>
           </div>

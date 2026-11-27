@@ -62,9 +62,7 @@
 .agent-discounts__agent-meta {
   font-size: 0.75rem;
   color: var(--uf-text-tertiary, #64748b);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
 }
 .agent-discounts__agent-dropdown-empty {
   padding: 1rem;
