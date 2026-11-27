@@ -13,7 +13,7 @@ export function HeroSection() {
       className="relative flex min-h-[min(440px,calc(100svh-4rem))] items-center overflow-hidden"
     >
       {/* ============ LEFT PANEL - White ============ */}
-      <div className="absolute inset-y-0 left-0 z-10 w-full bg-white lg:w-[46%]" />
+      <div className="absolute inset-y-0 left-0 z-10 w-full bg-[var(--bg-primary)] lg:w-[46%]" />
 
       {/* ============ RIGHT PANEL - Blue with Curve ============ */}
       <div className="absolute inset-y-0 right-0 z-0 hidden w-[54%] lg:block">
@@ -42,7 +42,7 @@ export function HeroSection() {
         >
           <path
             d="M 0 0 C 140 50, 20 160, 160 260 C 220 360, 40 480, 0 700 Z"
-            fill="#ffffff"
+            className="fill-[var(--bg-primary)]"
           />
         </svg>
 
@@ -119,7 +119,7 @@ export function HeroSection() {
           {/* Headline */}
           <h1
             id="hero-title"
-            className="hero-fade hero-delay-200 text-[clamp(1.8rem,3.2vw,2.8rem)] font-bold leading-[1.08] tracking-[-0.03em] text-[#1a1a2e]"
+            className="hero-fade hero-delay-200 text-[clamp(1.8rem,3.2vw,2.8rem)] font-bold leading-[1.08] tracking-[-0.03em] text-[var(--text-primary)]"
           >
             Transformamos el
             <br />
@@ -132,7 +132,7 @@ export function HeroSection() {
           </h1>
 
           {/* Description */}
-          <p className="hero-fade hero-delay-400 mt-6 max-w-[400px] text-[15px] leading-[1.7] text-[#4b5563]">
+          <p className="hero-fade hero-delay-400 mt-6 max-w-[400px] text-[15px] leading-[1.7] text-[var(--text-secondary)]">
             {HERO_COPY.description}
           </p>
 
@@ -147,9 +147,9 @@ export function HeroSection() {
             </a>
             <a
               href={HERO_COPY.secondaryCta.href}
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#6b7280] transition-colors hover:text-[var(--brand-primary)]"
+              className="inline-flex items-center gap-2 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--brand-primary)]"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#e5e7eb] transition-colors hover:border-[var(--brand-primary)]">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-color)] transition-colors hover:border-[var(--brand-primary)]">
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </span>
               {HERO_COPY.secondaryCta.label}
@@ -185,13 +185,13 @@ export function HeroSection() {
       </div>
 
       {/* ============ MOBILE / TABLET FALLBACK ============ */}
-      <div className="relative z-10 w-full bg-white px-4 py-6 sm:px-6 sm:py-8 lg:hidden">
+      <div className="relative z-10 w-full bg-[var(--bg-primary)] px-4 py-6 sm:px-6 sm:py-8 lg:hidden">
         <div className="hero-fade hero-delay-100 mb-5">
           {/* Decorative line */}
           <div className="h-1 w-10 rounded-full bg-[var(--brand-primary)]" />
         </div>
 
-        <h1 className="hero-fade hero-delay-200 text-[clamp(1.5rem,5vw,2.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-[#1a1a2e]">
+        <h1 className="hero-fade hero-delay-200 text-[clamp(1.5rem,5vw,2.2rem)] font-bold leading-[1.08] tracking-[-0.02em] text-[var(--text-primary)]">
           Transformamos el
           <br />
           mercado inmobiliario
@@ -199,7 +199,7 @@ export function HeroSection() {
           <span className="text-[var(--brand-primary)]">peruano.</span>
         </h1>
 
-        <p className="hero-fade hero-delay-400 mt-4 max-w-[360px] text-[14px] leading-[1.6] text-[#4b5563]">
+        <p className="hero-fade hero-delay-400 mt-4 max-w-[360px] text-[14px] leading-[1.6] text-[var(--text-secondary)]">
           {HERO_COPY.description}
         </p>
 
