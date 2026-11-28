@@ -33,11 +33,12 @@ export function KpiItem({
       style={{
         '--metric-accent': colors.accent,
         '--metric-soft': colors.accentSoft,
+        '--metric-muted': colors.accentMuted,
       } as React.CSSProperties}
     >
       <div className="users-overview-metric__top users-kpi-card__top">
         <span className="users-overview-metric__icon users-kpi-card__icon" aria-hidden="true">
-          <span style={{ color: colors.accent }}>{icon}</span>
+          <span style={{ color: colors.accentMuted }}>{icon}</span>
         </span>
 
         <span className="users-overview-metric__status users-kpi-card__status !text-[0.6rem] sm:!text-[0.6875rem]">
@@ -63,7 +64,7 @@ export function KpiItem({
         <div className="users-overview-metric__progress users-kpi-card__progress">
           <div className="users-overview-metric__progress-meta users-kpi-card__progress-info">
             <span>Proporción del total</span>
-            <strong style={{ color: colors.accent }}>{progress}%</strong>
+            <strong style={{ color: colors.accentMuted }}>{progress}%</strong>
           </div>
 
           <div

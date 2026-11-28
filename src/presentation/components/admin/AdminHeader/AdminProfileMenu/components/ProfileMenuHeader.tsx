@@ -11,16 +11,16 @@ interface ProfileMenuHeaderProps {
 
 export function ProfileMenuHeader({ profile }: ProfileMenuHeaderProps) {
   return (
-    <div className="border-b border-white/10 bg-white/[0.03] p-4">
+    <div className="border-b border-[var(--border-admin-sidebar)] bg-[var(--bg-admin-sidebar-hover)] p-4">
       <div className="flex items-center gap-3">
         <UserAvatar user={profile} size="md" />
 
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-white">
+          <p className="truncate text-sm font-semibold text-[var(--text-admin-sidebar)]">
             {profile.firstName} {profile.lastName}
           </p>
 
-          <p className="mt-0.5 truncate text-xs text-slate-400">
+          <p className="mt-0.5 truncate text-xs text-[var(--text-admin-sidebar-muted)]">
             {profile.email || 'Cuenta administrativa'}
           </p>
 
@@ -28,9 +28,9 @@ export function ProfileMenuHeader({ profile }: ProfileMenuHeaderProps) {
             className="
               mt-2 inline-flex items-center
               gap-1 rounded-full
-              bg-cyan-400/10 px-2 py-0.5
+              bg-[var(--bg-admin-sidebar-active)] px-2 py-0.5
               text-[10px] font-medium
-              capitalize text-cyan-300
+              capitalize text-[var(--color-admin-accent)]
             "
           >
             <ShieldCheck className="h-3 w-3" />

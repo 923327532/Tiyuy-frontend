@@ -89,9 +89,9 @@
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
   --bg-inverse: #0f172a;
-  --bg-admin-sidebar: #0f2e3a;
-  --bg-admin-sidebar-hover: rgba(255, 255, 255, 0.05);
-  --bg-admin-sidebar-active: rgba(255, 255, 255, 0.1);
+  --bg-admin-sidebar: #29283D;
+  --bg-admin-sidebar-hover: #35344B;
+  --bg-admin-sidebar-active: #41405C;
   --bg-card: #ffffff;
   --bg-card-hover: #f8fafc;
 
@@ -106,8 +106,9 @@
   --text-on-brand: #ffffff;
   --text-on-primary: #ffffff;
   --text-disabled: #9ca3af;
-  --text-admin-sidebar: #e2e8f0;
-  --text-admin-sidebar-muted: #94a3b8;
+  --text-admin-sidebar: #FFFFFF;
+  --text-admin-sidebar-muted: #D9D8E8;
+  --text-admin-sidebar-heading: #D9D8E8;
 
   /* ============================================
      BORDER COLORS
@@ -119,7 +120,22 @@
   --border-error: #ef4444;
   --border-success: #22c55e;
   --border-warning: #f59e0b;
-  --border-admin-sidebar: rgba(255, 255, 255, 0.1);
+  --border-admin-sidebar: rgba(255, 255, 255, 0.10);
+  --color-admin-accent: #4A9A3E;
+
+  /* ADMIN METRIC CARDS */
+  --admin-metric-total-accent: #3d7086;
+  --admin-metric-total-soft: #e8f0f3;
+  --admin-metric-total-text: #164e63;
+  --admin-metric-active-accent: #569a84;
+  --admin-metric-active-soft: #e7f1eb;
+  --admin-metric-active-text: #28684f;
+  --admin-metric-pending-accent: #d09f62;
+  --admin-metric-pending-soft: #fcf4e7;
+  --admin-metric-pending-text: #965f1c;
+  --admin-metric-danger-accent: #cf7b84;
+  --admin-metric-danger-soft: #faeaec;
+  --admin-metric-danger-text: #a63d49;
 
   /* ============================================
      OVERLAY COLORS

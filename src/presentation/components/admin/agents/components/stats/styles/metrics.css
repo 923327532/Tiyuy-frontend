@@ -10,18 +10,18 @@
 .users-overview-metric:nth-last-child(-n + 2) { border-bottom: none; }
 .users-overview-metric:nth-child(odd) { border-right: 1px solid var(--uo-border); }
 .users-overview-metric:hover { background: var(--uo-bg-subtle); }
-.users-overview-metric[data-tone='total'] { --metric-accent:#475569; --metric-soft:#f1f5f9; --metric-muted:#64748b; }
+.users-overview-metric[data-tone='total'] { --metric-accent:var(--admin-metric-total-accent); --metric-soft:var(--admin-metric-total-soft); --metric-muted:var(--admin-metric-total-text); }
 .users-overview-metric[data-tone='active'] { --metric-accent:var(--uo-success); --metric-soft:var(--uo-success-soft); --metric-muted:var(--uo-success-muted); }
 .users-overview-metric[data-tone='pending'] { --metric-accent:var(--uo-warning); --metric-soft:var(--uo-warning-soft); --metric-muted:var(--uo-warning-muted); }
 .users-overview-metric[data-tone='suspended'] { --metric-accent:var(--uo-danger); --metric-soft:var(--uo-danger-soft); --metric-muted:var(--uo-danger-muted); }
 .users-overview-metric__top { position: relative; z-index: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 0.75rem; margin-bottom: 0.75rem; }
-.users-overview-metric__icon { display: inline-flex; align-items: center; justify-content: center; width: 2.125rem; height: 2.125rem; flex-shrink: 0; border-radius: 0.625rem; background: var(--metric-soft); color: var(--metric-accent); }
+.users-overview-metric__icon { display: inline-flex; align-items: center; justify-content: center; width: 2.125rem; height: 2.125rem; flex-shrink: 0; border-radius: 0.625rem; background: var(--metric-soft); color: var(--metric-muted, var(--metric-accent)); }
 .users-overview-metric__icon span { display: inline-flex; }
 .users-overview-metric__icon svg { width: 1rem; height: 1rem; stroke-width: 2; }
-.users-overview-metric__status { display: inline-flex; max-width: 100%; align-items: center; gap: 0.35rem; padding: 0.25rem 0.5rem; border-radius: 999px; background: var(--metric-soft); border: 1px solid color-mix(in srgb, var(--metric-accent) 15%, transparent); color: var(--metric-accent); font-size: 0.625rem; font-weight: 600; line-height: 1.2; letter-spacing: 0.02em; }
+.users-overview-metric__status { display: inline-flex; max-width: 100%; align-items: center; gap: 0.35rem; padding: 0.25rem 0.5rem; border-radius: 999px; background: var(--metric-soft); border: 1px solid color-mix(in srgb, var(--metric-accent) 15%, transparent); color: var(--metric-muted, var(--metric-accent)); font-size: 0.625rem; font-weight: 600; line-height: 1.2; letter-spacing: 0.02em; }
 .users-overview-metric__status-dot { width: 0.35rem; height: 0.35rem; flex-shrink: 0; border-radius: 50%; background: var(--metric-accent); animation: dot-pulse 2.5s ease-in-out infinite; }
 .users-overview-metric__label { position: relative; z-index: 1; margin: 0; color: var(--uo-text-tertiary); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; line-height: 1.25; }
-.users-overview-metric__value { position: relative; z-index: 1; margin: 0.35rem 0 0; color: var(--uo-text-primary); font-size: 1.35rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; background: linear-gradient(90deg, var(--uo-text-primary) 0%, var(--metric-accent) 50%, var(--uo-text-primary) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.users-overview-metric__value { position: relative; z-index: 1; margin: 0.35rem 0 0; color: var(--uo-text-primary); font-size: 1.35rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; background: linear-gradient(90deg, var(--uo-text-primary) 0%, var(--metric-muted, var(--metric-accent)) 50%, var(--uo-text-primary) 100%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .users-overview-metric__description { position: relative; z-index: 1; margin: 0.35rem 0 0; color: var(--uo-text-tertiary); font-size: 0.75rem; line-height: 1.4; }
 
 @media (min-width: 640px) {

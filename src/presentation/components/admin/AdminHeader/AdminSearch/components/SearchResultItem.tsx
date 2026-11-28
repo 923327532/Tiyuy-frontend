@@ -36,8 +36,8 @@ export function SearchResultItem({
         text-left transition
         ${
           isActive
-            ? 'bg-cyan-400/10 text-white'
-            : 'text-white/75 hover:bg-white/[0.07] hover:text-white'
+          ? 'bg-[var(--bg-admin-sidebar-active)] text-[var(--text-admin-sidebar)]'
+          : 'text-[var(--text-admin-sidebar-muted)] hover:bg-[var(--bg-admin-sidebar-active)] hover:text-[var(--text-admin-sidebar)]'
         }
       `}
     >
@@ -48,8 +48,8 @@ export function SearchResultItem({
           rounded-lg transition
           ${
             isActive
-              ? 'bg-cyan-400/15 text-cyan-300'
-              : 'bg-white/[0.06] text-slate-400 group-hover:text-cyan-300'
+              ? 'bg-[var(--bg-admin-sidebar)] text-[var(--color-admin-accent)]'
+              : 'bg-[var(--bg-admin-sidebar)] text-[var(--text-admin-sidebar-muted)] group-hover:text-[var(--color-admin-accent)]'
           }
         `}
       >
@@ -61,13 +61,13 @@ export function SearchResultItem({
           {route.label}
         </span>
 
-        <span className="mt-0.5 block truncate text-[11px] text-slate-400">
+        <span className="mt-0.5 block truncate text-[11px] text-[var(--text-admin-sidebar-muted)]">
           {route.href}
         </span>
       </span>
 
       {isActive && (
-        <CornerDownLeft className="h-4 w-4 shrink-0 text-cyan-300" />
+        <CornerDownLeft className="h-4 w-4 shrink-0 text-[var(--color-admin-accent)]" />
       )}
     </button>
   );

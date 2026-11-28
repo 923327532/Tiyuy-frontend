@@ -124,7 +124,7 @@ export function AdminShell({ children }: AdminShellProps) {
 
         <aside
           className={[
-            'fixed inset-y-0 left-0 top-16 z-40 flex h-[calc(100vh-64px)] w-64 flex-col overflow-hidden bg-[#0f2e3a] transition-transform duration-200 ease-in-out',
+            'fixed inset-y-0 left-0 top-16 z-40 flex h-[calc(100vh-64px)] w-64 flex-col overflow-hidden bg-[var(--bg-admin-sidebar)] transition-transform duration-200 ease-in-out',
             mobileOpen ? 'translate-x-0' : '-translate-x-full',
             'md:static md:top-0 md:z-auto md:h-full md:shrink-0 md:translate-x-0 md:transition-[width]',
             collapsed ? 'md:w-[72px]' : 'md:w-64',

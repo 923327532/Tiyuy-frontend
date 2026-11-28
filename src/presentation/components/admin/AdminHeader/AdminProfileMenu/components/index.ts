@@ -5,4 +5,5 @@ export { ProfileMenuHeader } from './ProfileMenuHeader';
 export { ProfileMenuLinks } from './ProfileMenuLinks';
 export { ProfileMenuModeSwitcher } from './ProfileMenuModeSwitcher';
 export { ProfileMenuLogout } from './ProfileMenuLogout';
+export { ProfileMenuLogoutConfirmation } from './ProfileMenuLogoutConfirmation';
 export { ProfileMenuFooter } from './ProfileMenuFooter';

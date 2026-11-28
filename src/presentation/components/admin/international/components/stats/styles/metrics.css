@@ -42,7 +42,7 @@
   box-shadow: var(--uo-shadow-md);
 }
 
-.users-overview .users-overview-metric[data-tone='total'] { --metric-accent: #475569; --metric-soft: #f1f5f9; --metric-muted: #64748b; }
+.users-overview .users-overview-metric[data-tone='total'] { --metric-accent: var(--admin-metric-total-accent); --metric-soft: var(--admin-metric-total-soft); --metric-muted: var(--admin-metric-total-text); }
 .users-overview .users-overview-metric[data-tone='active'] { --metric-accent: var(--uo-success); --metric-soft: var(--uo-success-soft); --metric-muted: var(--uo-success-muted); }
 .users-overview .users-overview-metric[data-tone='pending'] { --metric-accent: var(--uo-warning); --metric-soft: var(--uo-warning-soft); --metric-muted: var(--uo-warning-muted); }
 .users-overview .users-overview-metric[data-tone='suspended'] { --metric-accent: var(--uo-danger); --metric-soft: var(--uo-danger-soft); --metric-muted: var(--uo-danger-muted); }
@@ -66,7 +66,7 @@
   flex-shrink: 0;
   border-radius: 0.625rem;
   background: var(--metric-soft);
-  color: var(--metric-accent);
+  color: var(--metric-muted, var(--metric-accent));
 }
 .users-overview .users-overview-metric__icon span { display: inline-flex; }
 .users-overview .users-overview-metric__icon svg { width: 1rem; height: 1rem; stroke-width: 2; }
@@ -79,7 +79,7 @@
   border-radius: 999px;
   background: var(--metric-soft);
   border: 1px solid color-mix(in srgb, var(--metric-accent) 15%, transparent);
-  color: var(--metric-accent);
+  color: var(--metric-muted, var(--metric-accent));
   font-size: 0.625rem;
   font-weight: 600;
   line-height: 1.2;

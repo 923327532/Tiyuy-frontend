@@ -6,8 +6,8 @@
 
 .banners-cards-container .campaigns-card-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 0.625rem;
+  padding: 0.625rem;
 }
 
 .banners-card__status {
@@ -25,7 +25,7 @@
 }
 
 .banners-card .campaigns-card__media {
-  height: 7rem;
+  height: 6.5rem;
 }
 
 .banners-card .campaigns-card__title {
@@ -33,8 +33,13 @@
   line-height: 1.35;
 }
 
+.banners-card .campaigns-card__body {
+  gap: 0.375rem;
+  padding: 0.75rem;
+}
+
 .banners-card .campaigns-card__metrics {
-  gap: 0.35rem 0.6rem;
+  gap: 0.3rem 0.5rem;
 }
 
 .banners-card__actions {
@@ -44,12 +49,12 @@
 
 @container banners-cards (min-width: 720px) {
   .banners-cards-container .campaigns-card-grid {
-    gap: 1rem;
-    padding: 1rem;
+    gap: 0.75rem;
+    padding: 0.75rem;
   }
 
   .banners-card .campaigns-card__media {
-    height: 8.5rem;
+    height: 7.5rem;
   }
 }
 

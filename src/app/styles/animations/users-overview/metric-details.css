@@ -21,7 +21,7 @@
   flex-shrink: 0;
   border-radius: 0.625rem;
   background: var(--metric-soft);
-  color: var(--metric-accent);
+  color: var(--metric-muted, var(--metric-accent));
   transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
   animation: icon-breathe 4s ease-in-out infinite;
 }
@@ -51,7 +51,7 @@
   border-radius: 999px;
   background: var(--metric-soft);
   border: 1px solid color-mix(in srgb, var(--metric-accent) 15%, transparent);
-  color: var(--metric-accent);
+  color: var(--metric-muted, var(--metric-accent));
   font-size: 0.6875rem;
   font-weight: 600;
   line-height: 1.2;
@@ -96,7 +96,7 @@
   background: linear-gradient(
     90deg,
     var(--uo-text-primary) 0%,
-    var(--metric-accent) 50%,
+    var(--metric-muted, var(--metric-accent)) 50%,
     var(--uo-text-primary) 100%
   );
   background-size: 200% 100%;
@@ -141,7 +141,7 @@
 
 .users-overview-metric__progress-meta strong {
   flex-shrink: 0;
-  color: var(--metric-accent);
+  color: var(--metric-muted, var(--metric-accent));
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }

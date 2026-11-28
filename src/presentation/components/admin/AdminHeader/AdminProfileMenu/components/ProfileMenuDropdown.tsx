@@ -30,8 +30,8 @@ export function ProfileMenuDropdown({
       className="
         absolute right-0 top-full z-50 mt-3
         w-72 overflow-hidden
-        rounded-xl border border-[#24505e]
-        bg-[#0f2e3a]
+        rounded-xl border border-[var(--border-admin-sidebar)]
+        bg-[var(--bg-admin-sidebar)]
         shadow-[0_12px_40px_rgba(0,0,0,0.35)]
         animate-menu-drop-in
         motion-reduce:animate-none
@@ -44,7 +44,7 @@ export function ProfileMenuDropdown({
 
         <div
           role="separator"
-          className="my-2 border-t border-white/10"
+          className="my-2 border-t border-[var(--border-admin-sidebar)]"
         />
 
         <ProfileMenuModeSwitcher

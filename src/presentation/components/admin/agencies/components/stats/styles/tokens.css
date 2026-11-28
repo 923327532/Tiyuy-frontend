@@ -4,17 +4,15 @@
   --uo-brand-soft: #f1f5f9;
 
   /* Semantic */
-  --uo-success: #6b9080;
-  --uo-success-soft: #e8f0ec;
-  --uo-success-muted: #8ba899;
-
-  --uo-warning: #c9a876;
-  --uo-warning-soft: #f5ede0;
-  --uo-warning-muted: #b89968;
-
-  --uo-danger: #cf8a92;
-  --uo-danger-soft: #f5e5e7;
-  --uo-danger-muted: #b87a82;
+  --uo-success: var(--admin-metric-active-accent);
+  --uo-success-soft: var(--admin-metric-active-soft);
+  --uo-success-muted: var(--admin-metric-active-text);
+  --uo-warning: var(--admin-metric-pending-accent);
+  --uo-warning-soft: var(--admin-metric-pending-soft);
+  --uo-warning-muted: var(--admin-metric-pending-text);
+  --uo-danger: var(--admin-metric-danger-accent);
+  --uo-danger-soft: var(--admin-metric-danger-soft);
+  --uo-danger-muted: var(--admin-metric-danger-text);
 
   --uo-info: #7ba0bc;
   --uo-info-soft: #e6eff5;

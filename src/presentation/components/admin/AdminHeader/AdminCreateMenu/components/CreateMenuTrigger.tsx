@@ -27,24 +27,24 @@ export function CreateMenuTrigger({
       aria-controls={menuId}
       className="
         group inline-flex items-center gap-2
-        rounded-xl border border-white/10
-        bg-white/[0.07] px-3.5 py-2
-        text-sm font-semibold text-white
+        rounded-xl border border-[var(--border-admin-sidebar)]
+        bg-[var(--bg-admin-sidebar-hover)] px-3.5 py-2
+        text-sm font-semibold text-[var(--text-admin-sidebar)]
         shadow-sm transition-all duration-200
-        hover:border-cyan-400/30
-        hover:bg-white/[0.12]
+        hover:border-[var(--color-admin-accent)]
+        hover:bg-[var(--bg-admin-sidebar-active)]
         focus-visible:outline-none
-        focus-visible:ring-2 focus-visible:ring-cyan-400
+        focus-visible:ring-2 focus-visible:ring-[var(--color-admin-accent)]
         focus-visible:ring-offset-2
-        focus-visible:ring-offset-[#0f2e3a]
+        focus-visible:ring-offset-[var(--bg-admin-sidebar)]
       "
     >
       <span
         className="
           flex h-6 w-6 items-center justify-center
-          rounded-lg border border-cyan-400/20
-          bg-cyan-400/10 text-cyan-400
-          transition-colors group-hover:bg-cyan-400/20
+          rounded-lg border border-[var(--color-admin-accent)]
+          bg-[var(--bg-admin-sidebar-active)] text-[var(--color-admin-accent)]
+          transition-colors group-hover:bg-[var(--bg-admin-sidebar-hover)]
         "
       >
         <Plus className="h-4 w-4" aria-hidden="true" />
@@ -54,9 +54,9 @@ export function CreateMenuTrigger({
 
       <ChevronDown
         className={`
-          h-3.5 w-3.5 text-slate-400
+          h-3.5 w-3.5 text-[var(--text-admin-sidebar-muted)]
           transition-transform duration-200
-          ${open ? 'rotate-180 text-cyan-400' : ''}
+          ${open ? 'rotate-180 text-[var(--color-admin-accent)]' : ''}
         `}
         aria-hidden="true"
       />

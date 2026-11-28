@@ -37,19 +37,19 @@ export function ProfileMenuTrigger({
         group flex items-center gap-1.5
         rounded-full p-0.5
         transition
-        hover:bg-white/10
+        hover:bg-[var(--bg-admin-sidebar-hover)]
         focus-visible:outline-none
         focus-visible:ring-2
-        focus-visible:ring-cyan-400
+        focus-visible:ring-[var(--color-admin-accent)]
         focus-visible:ring-offset-2
-        focus-visible:ring-offset-[#0f2e3a]
+        focus-visible:ring-offset-[var(--bg-admin-sidebar)]
       "
     >
       <span
         className="
           rounded-full ring-2 ring-transparent
           transition
-          group-hover:ring-cyan-400/50
+          group-hover:ring-[var(--color-admin-accent)]
         "
       >
         <UserAvatar user={user} size="sm" />
@@ -57,7 +57,7 @@ export function ProfileMenuTrigger({
 
       <ChevronDown
         className={`
-          hidden h-4 w-4 text-white/60
+          hidden h-4 w-4 text-[var(--text-admin-sidebar-muted)]
           transition-transform duration-200
           xl:block
           ${open ? 'rotate-180' : ''}

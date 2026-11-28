@@ -8,7 +8,7 @@ interface ProfileMenuLogoutProps {
 
 export function ProfileMenuLogout({ onLogout }: ProfileMenuLogoutProps) {
   return (
-    <div role="none" className="mt-2 border-t border-white/10 pt-2">
+    <div role="none" className="mt-2 border-t border-[var(--border-admin-sidebar)] pt-2">
       <button
         type="button"
         role="menuitem"

@@ -50,9 +50,9 @@ export function AdminHeader({
         className="
           sticky top-0 z-50
           flex h-16 items-center justify-between
-          border-b border-white/10
-          bg-[#0f2e3a]
-          px-3 text-white
+          border-b border-[var(--border-admin-sidebar)]
+          bg-[var(--bg-admin-sidebar)]
+          px-3 text-[var(--text-admin-sidebar)]
           shadow-[0_2px_12px_rgba(0,0,0,0.12)]
           sm:px-5
           lg:px-6
@@ -69,11 +69,11 @@ export function AdminHeader({
                 onClick={onToggleSidebar}
                 className="
                   flex h-10 w-10 shrink-0 items-center justify-center
-                  rounded-xl text-white/75
+                  rounded-xl text-[var(--text-admin-sidebar-muted)]
                   transition-colors
-                  hover:bg-white/10 hover:text-white
+                  hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]
                   focus-visible:outline-none
-                  focus-visible:ring-2 focus-visible:ring-white/70
+                  focus-visible:ring-2 focus-visible:ring-[var(--color-admin-accent)]
                   md:hidden
                 "
                 aria-label="Abrir menú de navegación"
@@ -87,11 +87,11 @@ export function AdminHeader({
                 onClick={onToggleSidebar}
                 className="
                   hidden h-10 w-10 shrink-0 items-center justify-center
-                  rounded-xl text-white/75
+                  rounded-xl text-[var(--text-admin-sidebar-muted)]
                   transition-colors
-                  hover:bg-white/10 hover:text-white
+                  hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]
                   focus-visible:outline-none
-                  focus-visible:ring-2 focus-visible:ring-white/70
+                  focus-visible:ring-2 focus-visible:ring-[var(--color-admin-accent)]
                   md:flex
                 "
                 aria-label={
@@ -129,7 +129,7 @@ export function AdminHeader({
             <img
               src="/assets/images/logo_s.svg"
               alt="TIYUY"
-              className="h-10 w-auto object-contain"
+              className="h-14 w-auto object-contain"
             />
           </Link>
 
@@ -150,11 +150,11 @@ export function AdminHeader({
             href="/admin/notifications"
             className="
               relative flex h-10 w-10 items-center justify-center
-              rounded-xl text-white/75
+              rounded-xl text-[var(--text-admin-sidebar-muted)]
               transition-colors
-              hover:bg-white/10 hover:text-white
+              hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]
               focus-visible:outline-none
-              focus-visible:ring-2 focus-visible:ring-white/70
+              focus-visible:ring-2 focus-visible:ring-[var(--color-admin-accent)]
             "
             aria-label={notificationLabel}
           >
@@ -168,7 +168,7 @@ export function AdminHeader({
                   justify-center rounded-full
                   bg-rose-500 px-1
                   text-[10px] font-bold text-white
-                  ring-2 ring-[#0f2e3a]
+                  ring-2 ring-[var(--bg-admin-sidebar)]
                 "
                 aria-hidden="true"
               >
@@ -182,11 +182,11 @@ export function AdminHeader({
             href="/admin/finance"
             className="
               hidden h-10 w-10 items-center justify-center
-              rounded-xl text-white/75
+              rounded-xl text-[var(--text-admin-sidebar-muted)]
               transition-colors
-              hover:bg-white/10 hover:text-white
+              hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]
               focus-visible:outline-none
-              focus-visible:ring-2 focus-visible:ring-white/70
+              focus-visible:ring-2 focus-visible:ring-[var(--color-admin-accent)]
               sm:flex
             "
             aria-label="Ir a finanzas"
@@ -200,11 +200,11 @@ export function AdminHeader({
             onClick={toggleMobileMenu}
             className="
               flex h-10 w-10 items-center justify-center
-              rounded-xl text-white/75
+              rounded-xl text-[var(--text-admin-sidebar-muted)]
               transition-colors
-              hover:bg-white/10 hover:text-white
+              hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]
               focus-visible:outline-none
-              focus-visible:ring-2 focus-visible:ring-white/70
+              focus-visible:ring-2 focus-visible:ring-[var(--color-admin-accent)]
               md:hidden
             "
             aria-label={

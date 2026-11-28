@@ -15,7 +15,7 @@ export function ProfileMenuModeSwitcher({
 }: ProfileMenuModeSwitcherProps) {
   return (
     <div role="group" aria-label="Modo de navegación">
-      <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+      <p className="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-widest text-[var(--text-admin-sidebar-heading)]">
         Modo de navegación
       </p>
 
@@ -31,12 +31,12 @@ export function ProfileMenuModeSwitcher({
           text-left transition
           ${
             !isAdminMode
-              ? 'bg-cyan-400/10 text-cyan-300'
-              : 'text-white/75 hover:bg-white/[0.07] hover:text-white'
+              ? 'bg-[var(--bg-admin-sidebar-active)] text-[var(--color-admin-accent)]'
+              : 'text-[var(--text-admin-sidebar-muted)] hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]'
           }
         `}
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.07]">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-admin-sidebar-hover)]">
           <User className="h-4 w-4" />
         </span>
 
@@ -45,13 +45,13 @@ export function ProfileMenuModeSwitcher({
             Modo usuario
           </span>
 
-          <span className="block text-xs text-slate-400">
+          <span className="block text-xs text-[var(--text-admin-sidebar-muted)]">
             Ver plataforma como usuario
           </span>
         </span>
 
         {!isAdminMode && (
-          <span className="h-2 w-2 rounded-full bg-cyan-400" />
+          <span className="h-2 w-2 rounded-full bg-[var(--color-admin-accent)]" />
         )}
       </button>
 
@@ -67,12 +67,12 @@ export function ProfileMenuModeSwitcher({
           text-left transition
           ${
             isAdminMode
-              ? 'bg-cyan-400/10 text-cyan-300'
-              : 'text-white/75 hover:bg-white/[0.07] hover:text-white'
+              ? 'bg-[var(--bg-admin-sidebar-active)] text-[var(--color-admin-accent)]'
+              : 'text-[var(--text-admin-sidebar-muted)] hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]'
           }
         `}
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.07]">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--bg-admin-sidebar-hover)]">
           <ShieldCheck className="h-4 w-4" />
         </span>
 
@@ -81,13 +81,13 @@ export function ProfileMenuModeSwitcher({
             Modo {roleType}
           </span>
 
-          <span className="block text-xs text-slate-400">
+          <span className="block text-xs text-[var(--text-admin-sidebar-muted)]">
             Panel de administración
           </span>
         </span>
 
         {isAdminMode && (
-          <span className="h-2 w-2 rounded-full bg-cyan-400" />
+          <span className="h-2 w-2 rounded-full bg-[var(--color-admin-accent)]" />
         )}
       </button>
     </div>

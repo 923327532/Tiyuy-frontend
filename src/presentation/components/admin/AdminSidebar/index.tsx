@@ -1,13 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-
-import {
-  LogoutDialog,
-  SidebarFooter,
-  SidebarNav,
-} from './components';
-import { useLogout } from './hooks/useLogout';
+import { SidebarNav } from './components';
 import { useSidebarNavigation } from './hooks/useSidebarNavigation';
 import type { AdminSidebarProps } from './types';
 
@@ -24,9 +17,6 @@ export function AdminSidebar({
     expandSection,
   } = useSidebarNavigation();
 
-  const handleLogout = useLogout();
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
-
   const handleSectionClick = (sectionId: string) => {
     if (collapsed) {
       onRequestExpand?.();
@@ -38,28 +28,14 @@ export function AdminSidebar({
   };
 
   return (
-    <>
-      <SidebarNav
-        items={filteredNavigation}
-        collapsed={collapsed}
-        expandedSections={expandedSections}
-        pathname={pathname}
-        onSectionClick={handleSectionClick}
-        onNavigate={onNavigate}
-      />
-
-      <SidebarFooter
-        collapsed={collapsed}
-        onLogoutClick={() => setShowLogoutModal(true)}
-      />
-
-      {showLogoutModal && (
-        <LogoutDialog
-          onCancel={() => setShowLogoutModal(false)}
-          onConfirm={handleLogout}
-        />
-      )}
-    </>
+    <SidebarNav
+      items={filteredNavigation}
+      collapsed={collapsed}
+      expandedSections={expandedSections}
+      pathname={pathname}
+      onSectionClick={handleSectionClick}
+      onNavigate={onNavigate}
+    />
   );
 }
 

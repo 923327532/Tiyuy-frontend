@@ -34,8 +34,8 @@ export function SearchResults({
       className="
         absolute left-0 right-0 top-full z-[60]
         mt-2 max-h-80 overflow-y-auto
-        rounded-xl border border-[#24505e]
-        bg-[#0f2e3a]
+        rounded-xl border border-[var(--border-admin-sidebar)]
+        bg-[var(--bg-admin-sidebar-hover)]
         shadow-[0_12px_40px_rgba(0,0,0,0.35)]
         animate-menu-drop-in
         motion-reduce:animate-none
@@ -45,16 +45,16 @@ export function SearchResults({
       <div
         className="
           flex items-center justify-between
-          border-b border-white/10
+          border-b border-[var(--border-admin-sidebar)]
           px-4 py-3
         "
       >
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-admin-sidebar-heading)]">
           Resultados
         </span>
 
         {hasResults && (
-          <span className="rounded-full bg-cyan-400/10 px-2 py-0.5 text-[10px] font-medium text-cyan-300">
+          <span className="rounded-full bg-[var(--bg-admin-sidebar-active)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-admin-accent)]">
             {routes.length} encontrados
           </span>
         )}

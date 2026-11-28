@@ -18,10 +18,10 @@ interface SidebarNavItemProps {
 }
 
 const BASE_CLASSES = `
-  group flex w-full items-center gap-3 rounded-xl
+  group flex w-full items-center gap-3 rounded-lg
   px-3 py-2.5 text-left text-sm transition-all duration-200
   focus-visible:outline-none
-  focus-visible:ring-2 focus-visible:ring-cyan-400
+  focus-visible:ring-2 focus-visible:ring-[var(--color-admin-accent)]
 `;
 
 export function SidebarNavItem({
@@ -43,12 +43,12 @@ export function SidebarNavItem({
   const iconSize = level === 0 ? 'h-5 w-5' : 'h-4 w-4';
 
   const activeClasses = active
-    ? 'border border-cyan-400/20 bg-cyan-400/10 text-cyan-300'
-    : 'border border-transparent text-slate-400 hover:border-white/10 hover:bg-white/[0.06] hover:text-white';
+    ? 'border border-transparent bg-[var(--bg-admin-sidebar-active)] text-[var(--text-admin-sidebar)]'
+    : 'border border-transparent text-[var(--text-admin-sidebar-muted)] hover:border-[var(--border-admin-sidebar)] hover:bg-[var(--bg-admin-sidebar-hover)] hover:text-[var(--text-admin-sidebar)]';
 
   const iconClasses = active
-    ? 'text-cyan-400'
-    : 'text-slate-400 group-hover:text-cyan-300';
+    ? 'text-[var(--text-admin-sidebar)]'
+    : 'text-[var(--text-admin-sidebar-muted)] group-hover:text-[var(--text-admin-sidebar)]';
 
   const itemClasses = `${BASE_CLASSES} ${activeClasses} ${
     level > 0 ? 'pl-3' : ''
@@ -82,12 +82,12 @@ export function SidebarNavItem({
           {hasChildren &&
             (isSectionExpanded ? (
               <ChevronDown
-                className="h-4 w-4 shrink-0 text-slate-500"
+                className="h-4 w-4 shrink-0 text-[var(--text-admin-sidebar-muted)]"
                 aria-hidden="true"
               />
             ) : (
               <ChevronRight
-                className="h-4 w-4 shrink-0 text-slate-500"
+                className="h-4 w-4 shrink-0 text-[var(--text-admin-sidebar-muted)]"
                 aria-hidden="true"
               />
             ))}
@@ -125,7 +125,7 @@ export function SidebarNavItem({
       {hasChildren && !collapsed && isSectionExpanded && (
         <div
           className="
-            ml-4 mt-1 space-y-1 border-l border-white/10
+            ml-4 mt-1 space-y-1 border-l border-[var(--border-admin-sidebar)]
             pl-2
           "
         >

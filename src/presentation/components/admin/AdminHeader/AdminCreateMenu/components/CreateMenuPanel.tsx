@@ -29,10 +29,9 @@ export function CreateMenuPanel({
         absolute right-0 top-full z-50 mt-3
         w-[310px] max-w-[calc(100vw-2rem)]
         overflow-hidden rounded-2xl
-        border border-[#24505e]
-        bg-[#0f2e3a] p-2
+        border border-[var(--border-admin-sidebar)]
+        bg-[var(--bg-admin-sidebar)] p-2
         shadow-[0_18px_55px_-15px_rgba(0,0,0,0.65)]
-        ring-1 ring-white/[0.04]
         animate-menu-drop-in
       "
     >
@@ -42,18 +41,18 @@ export function CreateMenuPanel({
           <div
             className="
               flex h-8 w-8 items-center justify-center
-              rounded-lg border border-cyan-400/20
-              bg-cyan-400/10
+              rounded-lg border border-[var(--color-admin-accent)]
+              bg-[var(--bg-admin-sidebar-active)]
             "
           >
-            <Plus className="h-4 w-4 text-cyan-400" aria-hidden="true" />
+            <Plus className="h-4 w-4 text-[var(--color-admin-accent)]" aria-hidden="true" />
           </div>
 
           <div>
-            <p className="text-sm font-bold text-white">
+            <p className="text-sm font-bold text-[var(--text-admin-sidebar)]">
               Acciones rápidas
             </p>
-            <p className="mt-0.5 text-[11px] text-slate-400">
+            <p className="mt-0.5 text-[11px] text-[var(--text-admin-sidebar-muted)]">
               Operaciones administrativas de TIYUY
             </p>
           </div>
@@ -68,7 +67,7 @@ export function CreateMenuPanel({
           aria-label={group.label}
           className={
             groupIndex > 0
-              ? 'mt-2 border-t border-white/10 pt-2'
+              ? 'mt-2 border-t border-[var(--border-admin-sidebar)] pt-2'
               : ''
           }
         >
@@ -76,7 +75,7 @@ export function CreateMenuPanel({
             className="
               px-3 py-2 text-[10px] font-bold
               uppercase tracking-[0.13em]
-              text-slate-500
+              text-[var(--text-admin-sidebar-heading)]
             "
           >
             {group.label}
@@ -97,26 +96,26 @@ export function CreateMenuPanel({
                     rounded-xl border border-transparent
                     px-3 py-2.5 text-left
                     transition-all duration-150
-                    hover:border-[#24505e]
-                    hover:bg-[#163b48]
-                    focus-visible:border-cyan-400/30
-                    focus-visible:bg-[#163b48]
+                    hover:border-[var(--border-admin-sidebar)]
+                    hover:bg-[var(--bg-admin-sidebar-hover)]
+                    focus-visible:border-[var(--color-admin-accent)]
+                    focus-visible:bg-[var(--bg-admin-sidebar-hover)]
                     focus-visible:outline-none
                     focus-visible:ring-2
                     focus-visible:ring-inset
-                    focus-visible:ring-cyan-400
+                    focus-visible:ring-[var(--color-admin-accent)]
                   "
                 >
                   <span
                     className="
                       flex h-10 w-10 shrink-0
                       items-center justify-center
-                      rounded-xl border border-white/10
-                      bg-white/[0.04] text-slate-400
+                      rounded-xl border border-[var(--border-admin-sidebar)]
+                      bg-[var(--bg-admin-sidebar-hover)] text-[var(--text-admin-sidebar-muted)]
                       transition-all duration-150
-                      group-hover/item:border-cyan-400/20
-                      group-hover/item:bg-cyan-400/10
-                      group-hover/item:text-cyan-400
+                      group-hover/item:border-[var(--color-admin-accent)]
+                      group-hover/item:bg-[var(--bg-admin-sidebar-active)]
+                      group-hover/item:text-[var(--color-admin-accent)]
                     "
                   >
                     <Icon
@@ -129,9 +128,9 @@ export function CreateMenuPanel({
                     <span
                       className="
                         block text-[13px] font-semibold
-                        text-slate-200
+                        text-[var(--text-admin-sidebar)]
                         transition-colors
-                        group-hover/item:text-white
+                        group-hover/item:text-[var(--color-admin-accent)]
                       "
                     >
                       {action.label}
@@ -140,9 +139,9 @@ export function CreateMenuPanel({
                     <span
                       className="
                         mt-0.5 block text-[11px]
-                        text-slate-500
+                        text-[var(--text-admin-sidebar-muted)]
                         transition-colors
-                        group-hover/item:text-slate-400
+                        group-hover/item:text-[var(--text-admin-sidebar)]
                       "
                     >
                       {action.description}
@@ -152,10 +151,10 @@ export function CreateMenuPanel({
                   <ArrowUpRight
                     className="
                       h-4 w-4 shrink-0
-                      text-slate-600 opacity-0
+                      text-[var(--text-admin-sidebar-heading)] opacity-0
                       transition-all duration-150
                       group-hover/item:translate-x-0.5
-                      group-hover/item:text-cyan-400
+                      group-hover/item:text-[var(--color-admin-accent)]
                       group-hover/item:opacity-100
                     "
                     aria-hidden="true"
@@ -168,8 +167,8 @@ export function CreateMenuPanel({
       ))}
 
       {/* Footer */}
-      <div className="mt-2 border-t border-white/10 px-3 py-2.5">
-        <p className="text-center text-[10px] text-slate-500">
+      <div className="mt-2 border-t border-[var(--border-admin-sidebar)] px-3 py-2.5">
+        <p className="text-center text-[10px] text-[var(--text-admin-sidebar-heading)]">
           Panel administrativo · TIYUY
         </p>
       </div>

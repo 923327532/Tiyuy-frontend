@@ -22,7 +22,7 @@ export function BannersPageView() {
   );
 
   return (
-    <div className="admin-page space-y-4 sm:space-y-6">
+    <div className="admin-page space-y-3 sm:space-y-4">
       <BannersHeader
         onRefresh={page.refetch}
         onCreate={() => page.setIsCreateOpen(true)}

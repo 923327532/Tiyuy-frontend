@@ -32,12 +32,36 @@ interface ToneColors {
 }
 
 const TONE_COLORS: Record<BannerTone, ToneColors> = {
-  total: { accent: '#164e63', accentSoft: '#e3edf1', accentMuted: '#164e63' },
-  active: { accent: '#36866c', accentSoft: '#dceae4', accentMuted: '#36866c' },
-  pending: { accent: '#c58a3a', accentSoft: '#fbefd9', accentMuted: '#a66b1d' },
-  suspended: { accent: '#64748b', accentSoft: '#eef2f6', accentMuted: '#64748b' },
-  danger: { accent: '#c45d68', accentSoft: '#f9e5e8', accentMuted: '#b94b59' },
-  info: { accent: '#39769b', accentSoft: '#e5f0f8', accentMuted: '#39769b' },
+  total: {
+    accent: 'var(--admin-metric-total-accent)',
+    accentSoft: 'var(--admin-metric-total-soft)',
+    accentMuted: 'var(--admin-metric-total-text)',
+  },
+  active: {
+    accent: 'var(--admin-metric-active-accent)',
+    accentSoft: 'var(--admin-metric-active-soft)',
+    accentMuted: 'var(--admin-metric-active-text)',
+  },
+  pending: {
+    accent: 'var(--admin-metric-pending-accent)',
+    accentSoft: 'var(--admin-metric-pending-soft)',
+    accentMuted: 'var(--admin-metric-pending-text)',
+  },
+  suspended: {
+    accent: 'var(--color-neutral-500)',
+    accentSoft: 'var(--color-neutral-100)',
+    accentMuted: 'var(--color-neutral-600)',
+  },
+  danger: {
+    accent: 'var(--admin-metric-danger-accent)',
+    accentSoft: 'var(--admin-metric-danger-soft)',
+    accentMuted: 'var(--admin-metric-danger-text)',
+  },
+  info: {
+    accent: 'var(--color-info)',
+    accentSoft: 'var(--color-info-light)',
+    accentMuted: 'var(--color-info-on-light)',
+  },
 };
 
 const PLACEMENT_COLORS = [

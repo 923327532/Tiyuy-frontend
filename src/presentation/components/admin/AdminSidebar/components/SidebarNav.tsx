@@ -32,7 +32,7 @@ export function SidebarNav({
         <p
           className="
             mb-3 px-3 text-[10px] font-bold uppercase
-            tracking-[0.15em] text-slate-500
+            tracking-[0.15em] text-[var(--text-admin-sidebar-heading)]
           "
         >
           Navegación principal

@@ -24,24 +24,24 @@ export interface KpiItemProps {
 
 export const TONE_CONFIG: Record<KpiTone, { accent: string; accentSoft: string; accentMuted: string }> = {
   active: {
-    accent: '#36866c',
-    accentSoft: '#dceae4',
-    accentMuted: '#36866c',
+    accent: 'var(--admin-metric-active-accent)',
+    accentSoft: 'var(--admin-metric-active-soft)',
+    accentMuted: 'var(--admin-metric-active-text)',
   },
   pending: {
-    accent: '#c58a3a',
-    accentSoft: '#fbefd9',
-    accentMuted: '#a66b1d',
+    accent: 'var(--admin-metric-pending-accent)',
+    accentSoft: 'var(--admin-metric-pending-soft)',
+    accentMuted: 'var(--admin-metric-pending-text)',
   },
   suspended: {
-    accent: '#c45d68',
-    accentSoft: '#f9e5e8',
-    accentMuted: '#b94b59',
+    accent: 'var(--admin-metric-danger-accent)',
+    accentSoft: 'var(--admin-metric-danger-soft)',
+    accentMuted: 'var(--admin-metric-danger-text)',
   },
   total: {
-    accent: '#164e63',
-    accentSoft: '#e3edf1',
-    accentMuted: '#164e63',
+    accent: 'var(--admin-metric-total-accent)',
+    accentSoft: 'var(--admin-metric-total-soft)',
+    accentMuted: 'var(--admin-metric-total-text)',
   },
 };
 

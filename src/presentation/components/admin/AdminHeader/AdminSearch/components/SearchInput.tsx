@@ -33,7 +33,7 @@ export function SearchInput({
           pointer-events-none absolute left-3
           top-1/2 h-4 w-4
           -translate-y-1/2
-          text-slate-400
+          text-[var(--text-admin-sidebar-muted)]
         "
         aria-hidden="true"
       />
@@ -59,21 +59,21 @@ export function SearchInput({
         }
         className="
           h-10 w-full rounded-xl
-          border border-white/10
-          bg-white/[0.06]
+          border border-[var(--border-admin-sidebar)]
+          bg-[var(--bg-admin-sidebar-hover)]
           py-2 pl-10 pr-20
-          text-sm text-white
-          placeholder:text-slate-400
+          text-sm text-[var(--text-admin-sidebar)]
+          placeholder:text-[var(--text-admin-sidebar-muted)]
           outline-none
           transition-all duration-200
 
-          hover:border-white/20
-          hover:bg-white/[0.09]
+          hover:border-[var(--border-admin-sidebar)]
+          hover:bg-[var(--bg-admin-sidebar-active)]
 
-          focus:border-cyan-400/50
-          focus:bg-white/[0.09]
+          focus:border-[var(--color-admin-accent)]
+          focus:bg-[var(--bg-admin-sidebar-active)]
           focus:ring-2
-          focus:ring-cyan-400/10
+          focus:ring-[var(--color-admin-accent)]
 
           [&::-webkit-search-cancel-button]:hidden
         "
@@ -88,12 +88,12 @@ export function SearchInput({
             aria-label="Limpiar búsqueda"
             className="
               flex h-7 w-7 items-center justify-center
-              rounded-lg text-slate-400
+              rounded-lg text-[var(--text-admin-sidebar-muted)]
               transition
-              hover:bg-white/10 hover:text-white
+              hover:bg-[var(--bg-admin-sidebar-active)] hover:text-[var(--text-admin-sidebar)]
               focus-visible:outline-none
               focus-visible:ring-2
-              focus-visible:ring-cyan-400
+              focus-visible:ring-[var(--color-admin-accent)]
             "
           >
             <X className="h-3.5 w-3.5" />
@@ -103,11 +103,11 @@ export function SearchInput({
         <kbd
           className="
             hidden items-center gap-1
-            rounded-md border border-white/10
-            bg-white/[0.05]
+            rounded-md border border-[var(--border-admin-sidebar)]
+            bg-[var(--bg-admin-sidebar-hover)]
             px-1.5 py-1
             text-[10px] font-medium
-            text-slate-400
+            text-[var(--text-admin-sidebar-muted)]
             sm:inline-flex
           "
         >
